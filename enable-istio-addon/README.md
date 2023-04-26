@@ -31,7 +31,7 @@ To enable Istio on AKS, you can either create a new AKS cluster or use an existi
     NAME                               READY   STATUS    RESTARTS   AGE
     istiod-asm-1-17-67f9f55ccb-4lxhk   1/1     Running   0          50s
     ```
-4. Note that *sidecar injection mentioned [below](./README.md#enable-automatic-sidecar-injection-of-the-add-on) must be enabled to use Istio's features*.
+4. Note that *sidecar injection mentioned [below](#enable-automatic-sidecar-injection-of-the-add-on) must be enabled to use Istio's features*.
 
 For detailed documentation, refer to [https://learn.microsoft.com/en-us/azure/aks/istio-deploy-addon](https://learn.microsoft.com/en-us/azure/aks/istio-deploy-addon). 
 
@@ -43,7 +43,7 @@ To know the version of Istio enabled on AKS, run `kubectl get pods -n aks-istio-
 
 Sidecar injection must be enabled to use Istio's features. 
 
-1. To automatically install a sidecar to new pods, annotate each required namespace using the required version obtained from [above](./README.md#know-the-version-of-the-enabled-add-on). For example, to annotate the "default" namespace, run `kubectl label namespace default istio.io/rev=asm-1-17`.
+1. To automatically install a sidecar to new pods, annotate each required namespace using the required version obtained from [above](#know-the-version-of-the-enabled-add-on). For example, to annotate the "default" namespace, run `kubectl label namespace default istio.io/rev=asm-1-17`.
 
     a. To obtain a list of such annotated namespaces, run `kubectl get namespaces --show-labels | grep istio.io/rev=asm`, or run `kubectl get namespace -l istio.io/rev=asm-1-17` if you prefer.
 

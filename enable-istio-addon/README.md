@@ -31,7 +31,7 @@ To enable Istio on AKS, you can either create a new AKS cluster or use an existi
     NAME                               READY   STATUS    RESTARTS   AGE
     istiod-asm-1-17-67f9f55ccb-4lxhk   1/1     Running   0          50s
     ```
-4. Note that *sidecar injection mentioned [below](./README.md#enable-istio-addon#enable-automatic-sidecar-injection-of-the-add-on) must be enabled to use Istio's features*.
+4. Note that *sidecar injection mentioned [below](./README.md#enable-automatic-sidecar-injection-of-the-add-on) must be enabled to use Istio's features*.
 
 For detailed documentation, refer to [https://learn.microsoft.com/en-us/azure/aks/istio-deploy-addon](https://learn.microsoft.com/en-us/azure/aks/istio-deploy-addon). 
 

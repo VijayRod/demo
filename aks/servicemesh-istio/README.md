@@ -9,7 +9,7 @@ For more info, refer [this](https://docs.microsoft.com/en-us/azure/aks/serviceme
 
 1. To enable the Istio add-on for new or existing clusters, refer [this](https://docs.microsoft.com/en-us/azure/aks/servicemesh-istio-install). 
 
-   - Sidecar injection must be enabled to use Istio's features. Also, the Istio ingress gateway must be enabled, with its Gateway and VirtualService resources, to manage inbound or outbound traffic for the mesh.
+   1a. Sidecar injection must be enabled to use Istio's features. Also, the Istio ingress gateway must be enabled, with its Gateway and VirtualService resources, to manage inbound or outbound traffic for the mesh.
 
 2. To disable the Istio add-on, refer [this](https://docs.microsoft.com/en-us/azure/aks/servicemesh-istio-uninstall).
 
@@ -17,7 +17,7 @@ For more info, refer [this](https://docs.microsoft.com/en-us/azure/aks/serviceme
 
 1. To enable or delete, refer [this](https://docs.microsoft.com/en-us/azure/aks/servicemesh-istio-ingress). The Istio gateway associates the `kubernetes` or `kubernetes-internal` load balancers (in the node resource group) to manage inbound or outbound traffic for the mesh, letting you specify which traffic you want to enter or leave the mesh.
 
-   - Applications aren't accessible from outside the cluster by default after enabling the ingress gateway, ensure you map the deployment's ingress to the Istio ingress gateway using the `Gateway` and `VirtualService` resources mentioned in the same link.
+   1a. Applications aren't accessible from outside the cluster by default after enabling the ingress gateway, ensure you map the deployment's ingress to the Istio ingress gateway using the `Gateway` and `VirtualService` resources mentioned in the same link.
 
 2. For the `EXTERNAL-IP`, run the below for the respective gateway:
 
@@ -28,21 +28,21 @@ kubectl get svc aks-istio-ingressgateway-internal -n aks-istio-ingress # interna
 
 ## Section 2: Know the version of the enabled add-on
 
-To know the version of Istio enabled on AKS, run `kubectl get pods -n aks-istio-system`. 
+1. To know the version of Istio enabled on AKS, run `kubectl get pods -n aks-istio-system`. 
 
-- A pod name `istiod-asm-1-17-67f9f55ccb-4lxhk` in its output indicates version 1-17 i.e. 1.17. 
+   1a. A pod name `istiod-asm-1-17-67f9f55ccb-4lxhk` in its output indicates version 1-17 i.e. 1.17. 
 
-  - The version is required for configuration of the sidecar injection.
+   1b. The version is required for configuration of the sidecar injection.
 
 ## Section 3: Debug
 
 ### Section 3a: Debug - Errors with the `az aks` or `az aks mesh` commands
 
-For unexpected errors with the `az aks` or `az aks mesh` commands, ensure these are updated to the latest version with `az upgrade` and `az extension update --name aks-preview`. 
+1. For unexpected errors with the `az aks` or `az aks mesh` commands, ensure these are updated to the latest version with `az upgrade` and `az extension update --name aks-preview`. 
 
-- Then re-run the `az aks` or `az aks mesh` command with `--debug`. 
+   1a. Then re-run the `az aks` or `az aks mesh` command with `--debug`. 
 
-  - For example, to capture logs to a file, run `az aks mesh enable -g myResourceGroupName -n myClusterName --debug 2> debug_output.log`.
+   1b. For example, to capture logs to a file, run `az aks mesh enable -g myResourceGroupName -n myClusterName --debug 2> debug_output.log`.
 
 ### Section 3b: Debug - Verify the control plane is healthy
 
@@ -50,9 +50,9 @@ For unexpected errors with the `az aks` or `az aks mesh` commands, ensure these 
 
 2. To verify the cluster is in a "Succeeded" state, run `az aks show -g myResourceGroupName -n myClusterName --query 'provisioningState'`. 
 
-   - If it's not in the "Succeeded" state, view the activity log for the cluster resource group in the Azure portal to review failed operations for the error.
+   2a. If it's not in the "Succeeded" state, view the activity log for the cluster resource group in the Azure portal to review failed operations for the error.
    
-     - Or run `az aks update -g myResourceGroupName -n myClusterName` to reconcile the cluster to its goal state.
+   2b. Or run `az aks update -g myResourceGroupName -n myClusterName` to reconcile the cluster to its goal state.
 
 3. To ensure that the service mesh "mode" is set to "Istio", run `az aks show -g myResourceGroupName -n myClusterName --query 'serviceMeshProfile'`. The output should include it:
 
@@ -127,25 +127,25 @@ Note: Please make sure to replace "myClusterName" and "myResourceGroupName" with
 
 ### Section 3e: Debug - Unexpected Issues
 
-To get the Istiod pod logs, run the command `kubectl logs -l app=istiod -n aks-istio-system`. 
+1. To get the Istiod pod logs, run the command `kubectl logs -l app=istiod -n aks-istio-system`. 
 
- - To see the recent logs, add `--since=2m` or `--since=1h`. 
+   1a. To see the recent logs, add `--since=2m` or `--since=1h`. 
  
-   - To save the output to a file, add `> istiod_logs.txt`.
+   1b. To save the output to a file, add `> istiod_logs.txt`.
 
-To get the logs for a pod in CrashLoopBackOff, find the failing container with the command `kubectl describe pod -n namespace_name crashing_pod_name`. 
+2. To get the logs for a pod in CrashLoopBackOff, find the failing container with the command `kubectl describe pod -n namespace_name crashing_pod_name`. 
 
-  - Then, capture the logs with the command `kubectl logs -n namespace_name crashing_pod_name -c failing_container_name --previous`. 
+   2a. Then, capture the logs with the command `kubectl logs -n namespace_name crashing_pod_name -c failing_container_name --previous`. 
   
-    - You can also view the live logs with Container Insights or view historical logs in the ContainerLog table in Log Analytics.
+   2b. You can also view the live logs with Container Insights or view historical logs in the ContainerLog table in Log Analytics.
 
-View known issues here: [insert link here] or here: [insert link here].
+3. View known issues here: [insert link here] or here: [insert link here].
 
 ### Section 3f: Debug - Metrics Issues
 
-Enable Managed Prometheus and view metrics in the InsightsMetrics table.
+1. Enable Managed Prometheus and view metrics in the InsightsMetrics table.
 
-Use Azure Managed Grafana to visualize metrics.
+2. Use Azure Managed Grafana to visualize metrics.
 
 ### Section 3g: Debug - Connectivity Issues Between Pods
 
@@ -180,7 +180,7 @@ Use Azure Managed Grafana to visualize metrics.
    
 ### Section 3h: Debug - Connectivity Issues Through the Istio Ingress Gateway
 
-Ensure the ingress gateway resource is created with the appropriate `Gateway` and `VirtualService` resources as shown here.
+1. Ensure the ingress gateway resource is created with the appropriate `Gateway` and `VirtualService` resources as shown here.
 
 ## Section 4: For Advanced Users
 

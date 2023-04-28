@@ -8,12 +8,15 @@ For more info, refer [this](https://docs.microsoft.com/en-us/azure/aks/serviceme
 ### Section 1a: Enable or disable the Istio add-on
 
 1. To enable the Istio add-on for new or existing clusters, refer [this](https://docs.microsoft.com/en-us/azure/aks/servicemesh-istio-install). Sidecar injection must be enabled to use Istio's features. Also, the Istio ingress gateway must be enabled, with its Gateway and VirtualService resources, to manage inbound or outbound traffic for the mesh.
+
 2. To disable the Istio add-on, refer [this](https://docs.microsoft.com/en-us/azure/aks/servicemesh-istio-uninstall).
 
 ### Section 1b: Enable external or internal Istio ingress gateway
 
-1. To enable or delete, refer [this](https://docs.microsoft.com/en-us/azure/aks/servicemesh-istio-ingress). Gateway associates the Kubernetes or Kubernetes-internal load balancers (in the node resource group) to manage inbound or outbound traffic for the mesh, letting you specify which traffic you want to enter or leave the mesh.
-   - Applications aren't accessible from outside the cluster by default after enabling the ingress gateway, ensure you map the deployment's ingress to the Istio ingress gateway using the Gateway and VirtualService resources mentioned in the same link.
+1. To enable or delete, refer [this](https://docs.microsoft.com/en-us/azure/aks/servicemesh-istio-ingress). The Istio gateway associates the `kubernetes` or `kubernetes-internal` load balancers (in the node resource group) to manage inbound or outbound traffic for the mesh, letting you specify which traffic you want to enter or leave the mesh.
+
+   - Applications aren't accessible from outside the cluster by default after enabling the ingress gateway, ensure you map the deployment's ingress to the Istio ingress gateway using the `Gateway` and `VirtualService` resources mentioned in the same link.
+
 2. For the `EXTERNAL-IP`, run the below for the respective gateway:
 
 ```
@@ -42,15 +45,24 @@ For unexpected errors with the `az aks` or `az aks mesh` commands, ensure these 
 3. To ensure that the service mesh mode is set to Istio, run `az aks show -g myResourceGroupName -n myClusterName --query 'serviceMeshProfile'`. The output should include:
 
    ```
+   {
+     "istio": {
+       "components": {
+         "ingressGateways": null
+       }
+     },
+     "mode": "Istio"
+   }
    ```
-4. To verify if the Istio control plane pods (istiod) have a "Running" status, run "kubectl get pods -n aks-istio-system". Make sure to obtain access credentials for the cluster with `az aks get-credentials -g myResourceGroupName -n myClusterName`. The output should include the name of the pod(s) and their status, for example:
+   
+4. To verify if the Istio control plane pods (istiod) have a "Running" status, run `kubectl get pods -n aks-istio-system`. Make sure to obtain access credentials for the cluster with `az aks get-credentials -g myResourceGroupName -n myClusterName`. The output should include the name of the pod(s) and their status, for example:
 
 ```
 NAME                               READY   STATUS    RESTARTS   AGE
 istiod-asm-1-17-67f9f55ccb-4lxhk   1/1     Running   0          50s
 ```
 
-### Section 3c: Debug sidecar injection of the add-on:
+### Section 3c: Debug sidecar injection of the add-on
 
 To enable sidecar injection, refer to this guide. This installs a sidecar to <ins>new</ins> pods, but not the existing ones, which enables the use of Istio's features in the new pods.
 
@@ -69,7 +81,7 @@ If Istio's features are no longer required for a namespace, for example, the "de
 
 Note: Please make sure to replace "myClusterName" and "myResourceGroupName" with the actual names of your cluster and resource group respectively, in all the commands.
 
-### Section 3d: Debug with Istioctl
+### Section 3d: Debug with istioctl
 
 1. To verify that Istioctl can connect to the cluster, run the command `istioctl x precheck`. A successful run should display the following message: 
 
@@ -156,3 +168,4 @@ Ensure the ingress gateway resource is created with the appropriate `Gateway` an
        1biii. The Istio service mesh architecture includes the proxy underpinning Istio, as shown here.
 2. The Istio custom resources installed by the add-on can be seen with `kubectl get crd -A | grep "istio.io"`.
 3. To view the ready status displayed in Envoy's access logs for a pod "hello", run `kubectl logs hello -c istio-proxy | grep "Envoy proxy is ready"`.
+4. You can find a sample application that is ideal for testing Istio's features on GitHub [here](https://github.com/istio/istio/tree/main/samples/bookinfo).

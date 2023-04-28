@@ -131,7 +131,7 @@ Note: Please make sure to replace "myClusterName" and "myResourceGroupName" with
 
    1a. To see the recent logs, add `--since=2m` or `--since=1h`. 
  
-   1b. To save the output to a file, add `> istiod_logs.txt`.
+      1b.i. To save the output to a file, add `> istiod_logs.txt`.
 
 2. To get the logs for a pod in `CrashLoopBackOff`, find the failing container with the command `kubectl describe pod -n namespace_name crashing_pod_name`. 
 

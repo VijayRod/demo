@@ -1,16 +1,16 @@
 # servicemesh-istio
 This is my personal page dedicated to troubleshooting and debugging AKS with the Istio-based service mesh, and any opinions expressed here are my own. The commonly used tools for this project are [Azure CLI](https://learn.microsoft.com/en-us/cli/azure/install-azure-cli), kubectl, [istioctl](https://istio.io/latest/docs/setup/getting-started/#download), and optionally [jq](https://stedolan.github.io/jq/download/), or you can use the Bash environment in [Azure Cloud Shell](https://learn.microsoft.com/en-us/azure/cloud-shell/quickstart?tabs=azurecli). For a quick start guide, refer [this](https://learn.microsoft.com/en-us/azure/aks/learn/quick-kubernetes-deploy-cli).
 
-# Section 1: Know more and know limitations
+## Section 1: Know more and know limitations
 
 For more info, refer [this](https://docs.microsoft.com/en-us/azure/aks/servicemesh-istio-about). This includes limitations too. [Roadmap is here](https://docs.microsoft.com/en-us/azure/aks/servicemesh-istio-roadmap).
 
-## Section 1a: Enable or disable the Istio add-on
+### Section 1a: Enable or disable the Istio add-on
 
 1. To enable the Istio add-on for new or existing clusters, refer [this](https://docs.microsoft.com/en-us/azure/aks/servicemesh-istio-install). Sidecar injection must be enabled to use Istio's features. Also, the Istio ingress gateway must be enabled, with its Gateway and VirtualService resources, to manage inbound or outbound traffic for the mesh.
 2. To disable the Istio add-on, refer [this](https://docs.microsoft.com/en-us/azure/aks/servicemesh-istio-uninstall).
 
-## Section 1b: Enable external or internal Istio ingress gateway
+### Section 1b: Enable external or internal Istio ingress gateway
 
 1. To enable or delete, refer [this](https://docs.microsoft.com/en-us/azure/aks/servicemesh-istio-ingress). Gateway associates the Kubernetes or Kubernetes-internal load balancers (in the node resource group) to manage inbound or outbound traffic for the mesh, letting you specify which traffic you want to enter or leave the mesh.
    - Applications aren't accessible from outside the cluster by default after enabling the ingress gateway, ensure you map the deployment's ingress to the Istio ingress gateway using the Gateway and VirtualService resources mentioned in the same link.
@@ -21,17 +21,17 @@ kubectl get svc aks-istio-ingressgateway-external -n aks-istio-ingress # externa
 kubectl get svc aks-istio-ingressgateway-internal -n aks-istio-ingress # internal ingress gateway.
 ```
 
-# Section 2: Know the version of the enabled add-on
+## Section 2: Know the version of the enabled add-on
 
 To know the version of Istio enabled on AKS, run `kubectl get pods -n aks-istio-system`. A pod name `istiod-asm-1-17-67f9f55ccb-4lxhk` in its output indicates version 1-17 i.e. 1.17. The version is required for configuration of the sidecar injection.
 
-# Section 3: Debug
+## Section 3: Debug
 
-## Section 3a: Debug - Errors with the `az aks` or `az aks mesh` commands
+### Section 3a: Debug - Errors with the `az aks` or `az aks mesh` commands
 
 For unexpected errors with the `az aks` or `az aks mesh` commands, ensure these are updated to the latest version with `az upgrade` and `az extension update --name aks-preview`. Then re-run the `az aks` or `az aks mesh` command with `--debug`. For example, to capture logs to a file, run `az aks mesh enable -g myResourceGroupName -n myClusterName --debug 2> debug_output.log`.
 
-## Section 3b: Debug - Verify the control plane is healthy
+### Section 3b: Debug - Verify the control plane is healthy
 
 1. To verify the cluster is "Running", run `az aks show -g secureshack2 -n myClusterName --query 'powerState.code'`.
 
@@ -69,7 +69,7 @@ If Istio's features are no longer required for a namespace, for example, the "de
 
 Note: Please make sure to replace "myClusterName" and "myResourceGroupName" with the actual names of your cluster and resource group respectively, in all the commands.
 
-Section 3d: Debug with Istioctl
+### Section 3d: Debug with Istioctl
 
 1. To verify that Istioctl can connect to the cluster, run the command `istioctl x precheck`. A successful run should display the following message: 
 
@@ -146,7 +146,7 @@ Use Azure Managed Grafana to visualize metrics.
 
 Ensure the ingress gateway resource is created with the appropriate `Gateway` and `VirtualService` resources as shown here.
 
-### Section 4: For Advanced Users
+## Section 4: For Advanced Users
 
 1. The istio-proxy container is the Envoy sidecar injected by Istio.
    1a. The sidecar containers are injected using a mutating admission webhook seen with kubectl get mutatingwebhookconfigurations | grep istio-sidecar-injector.

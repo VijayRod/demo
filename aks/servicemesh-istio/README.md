@@ -123,7 +123,7 @@ Note: Please make sure to replace "myClusterName" and "myResourceGroupName" with
    
    2b. "SYNCED" and "NOT SENT" are usually seen in the output. "STALE" indicates a networking issue between Envoy and Istiod.
    
-   2c. Refer to the advanced user note below for further information about the output if required.
+   2c. Refer to the advanced user note [below](#section-4-for-advanced-users) for further information about the output if required.
 
 ### Section 3e: Debug - Unexpected pod issues
 

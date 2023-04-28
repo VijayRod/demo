@@ -38,7 +38,7 @@ kubectl get svc aks-istio-ingressgateway-internal -n aks-istio-ingress # interna
 
 ### Section 3a: Debug - Errors with the `az aks` or `az aks mesh` commands
 
-1. For unexpected errors with the `az aks` or `az aks mesh` commands, ensure these are updated to the latest version with `az upgrade` and `az extension update --name aks-preview`. 
+1. For unexpected errors with the `az aks` or `az aks mesh` commands, ensure these are updated to the latest version with [`az upgrade`](https://learn.microsoft.com/en-us/cli/azure/update-azure-cli) and `az extension update --name aks-preview`. 
 
    1a. Then re-run the `az aks` or `az aks mesh` command with `--debug`. 
 
@@ -50,7 +50,7 @@ kubectl get svc aks-istio-ingressgateway-internal -n aks-istio-ingress # interna
 
 2. To verify the cluster is in a "Succeeded" state, run `az aks show -g myResourceGroupName -n myClusterName --query 'provisioningState'`. 
 
-   2a. If it's not in the "Succeeded" state, view the activity log for the cluster resource group in the Azure portal to review failed operations for the error.
+   2a. If it's not in the "Succeeded" state, view the [activity log](https://learn.microsoft.com/en-us/azure/azure-monitor/essentials/activity-log?tabs=powershell) for the cluster resource group in the Azure portal to review failed operations for the error.
    
    2b. Or run `az aks update -g myResourceGroupName -n myClusterName` to reconcile the cluster to its goal state.
 
@@ -109,7 +109,7 @@ Note: Please make sure to replace "myClusterName" and "myResourceGroupName" with
 
    1b. For any other error, re-run the command with `--vklog=9` for higher log level verbosity. 
    
-       1bi. To save the output to a file, add `> istioctl_logs.txt`.
+   1c. To save the output to a file, add `> istioctl_logs.txt`.
    
 2. To retrieve the proxy sync status for all Envoys in a mesh, run the command `istioctl proxy-status -i aks-istio-system`. This will return one row for each pod that has the proxy.
 
@@ -133,21 +133,21 @@ Note: Please make sure to replace "myClusterName" and "myResourceGroupName" with
  
    1b. To save the output to a file, add `> istiod_logs.txt`.
 
-2. To get the logs for a pod in CrashLoopBackOff, find the failing container with the command `kubectl describe pod -n namespace_name crashing_pod_name`. 
+2. To get the logs for a pod in `CrashLoopBackOff`, find the failing container with the command `kubectl describe pod -n namespace_name crashing_pod_name`. 
 
    2a. Then, capture the logs with the command `kubectl logs -n namespace_name crashing_pod_name -c failing_container_name --previous`. 
   
-   2b. You can also view the live logs with Container Insights or view historical logs in the ContainerLog table in Log Analytics.
+   2b. You can also view the [live logs](https://learn.microsoft.com/en-us/azure/azure-monitor/containers/container-insights-livedata-overview) with Container Insights or view historical logs in the [`ContainerLog`](https://learn.microsoft.com/en-us/azure/azure-monitor/containers/container-insights-log-query) table in [Log Analytics](https://learn.microsoft.com/en-us/azure/aks/monitor-aks).
 
-3. View known issues here: [insert link here] or here: [insert link here].
+3. View known issues [here](https://github.com/Azure/AKS/issues?q=is%3Aissue+is%3Aopen+istio) or (here)[https://github.com/Azure/AKS/releases].
 
 ### Section 3f: Debug - Metrics Issues
 
-1. Enable Managed Prometheus and view metrics in the InsightsMetrics table.
+1. Enable [Managed Prometheus](https://learn.microsoft.com/en-us/azure/azure-monitor/essentials/prometheus-metrics-enable?tabs=azure-portal) and view metrics in the `InsightsMetrics` table.
 
-2. Use Azure Managed Grafana to visualize metrics.
+2. Use [Azure Managed Grafana](https://learn.microsoft.com/en-Us/azure/azure-monitor/essentials/prometheus-metrics-overview#grafana-integration) to visualize metrics.
 
-### Section 3g: Debug - Connectivity Issues Between Pods
+### Section 3g: Debug - Connectivity issues between pods
 
 1. To confirm connectivity between pods in annotated namespace(s), create new pods/deployments and use `curl` to access them. Run the following commands:
 
@@ -172,15 +172,17 @@ Note: Please make sure to replace "myClusterName" and "myResourceGroupName" with
    kubectl logs hello -c istio-proxy
    ```
    
-2. If connection errors occur for all pods in the namespace, temporarily disable sidecar injection for the namespace by running `kubectl label namespace default istio.io/rev-`. Then <ins>recreate</ins> the pods, so they do not have the sidecar, and retest connectivity between the pods to ensure it works fine without the sidecar.
+2. If connection errors occur for all pods in the namespace, temporarily disable sidecar injection for the namespace by running `kubectl label namespace default istio.io/rev-`. 
+
+   2a. Then <ins>recreate</ins> the pods, so they do not have the sidecar, and retest connectivity between the pods to ensure it works fine without the sidecar.
    
 3. To review network policies in the cluster, run `kubectl get networkpolicy -A`.
    
-4. To capture simultaneous TCP dumps on source and destination nodes during the reproduction of the issue, use the steps mentioned here. Note the names, namespaces, and IPs of the source and destination pods with `kubectl get pod -A -owide`, and the names and IPs of the source and destination nodes with `kubectl get no -owide`.
+4. To capture simultaneous TCP dumps on source and destination nodes during the reproduction of the issue, use the steps mentioned [here](https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/capture-tcp-dump-linux-node-aks). Note the names, namespaces, and IPs of the source and destination pods with `kubectl get pod -A -owide`, and the names and IPs of the source and destination nodes with `kubectl get no -owide`.
    
-### Section 3h: Debug - Connectivity Issues Through the Istio Ingress Gateway
+### Section 3h: Debug - Connectivity issues through the Istio ingress gateway
 
-1. Ensure the ingress gateway resource is created with the appropriate `Gateway` and `VirtualService` resources as shown here.
+1. Ensure the ingress gateway resource is created with the appropriate `Gateway` and `VirtualService` resources as shown [here]().
 
 ## Section 4: For Advanced Users
 
@@ -190,11 +192,11 @@ Note: Please make sure to replace "myClusterName" and "myResourceGroupName" with
    
    1b. Use `istioctl proxy-status -i aks-istio-system` to retrieve the proxy sync status for all Envoys in a mesh. Each row in the output denotes an Envoy proxy in each pod in the cluster.
    
-       1bi. CDS, LDS, EDS, RDS, and ECDS are Envoy (the proxy underpinning Istio) services mentioned here and here.
+       1bi. CDS, LDS, EDS, RDS, and ECDS are Envoy (the proxy underpinning Istio) services mentioned [here](https://github.com/istio/istio/issues/34139#issuecomment-1064377239) and [here](https://www.envoyproxy.io/docs/envoy/latest/intro/arch_overview/operations/dynamic_configuration).
        
-       1bii. SYNCED and NOT SENT statuses are usually seen, STALE usually indicates a networking issue between Envoy and Istiod as indicated here.
+       1bii. SYNCED and NOT SENT statuses are usually seen, STALE usually indicates a networking issue between Envoy and Istiod as indicated [here](https://istio.io/latest/docs/ops/diagnostic-tools/proxy-cmd/).
        
-       1biii. The Istio service mesh architecture includes the proxy underpinning Istio, as shown here.
+       1biii. The Istio service mesh architecture includes the proxy underpinning Istio, as shown [here](https://istio.io/latest/docs/ops/deployment/architecture/).
 
 2. The Istio custom resources installed by the add-on can be seen with `kubectl get crd -A | grep "istio.io"`.
 

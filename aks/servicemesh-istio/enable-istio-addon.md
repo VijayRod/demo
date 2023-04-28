@@ -76,18 +76,18 @@ To confirm connectivity between pods in the annotated namespace(s), you can eith
     kubectl exec -it nginx -- curl 10.244.2.14:8080
     ```
 
-    a. If an incorrect port is used, you will get a `delayed connect error` like below. This is an HTTP error 500.
+   a. If an incorrect port is used, you will get a `delayed connect error` like below. This is an HTTP error 500.
     
-       ```bash
-       kubectl exec -it nginx -- curl 10.244.2.14:90
-       upstream connect error or disconnect/reset before headers. reset reason: connection failure, transport failure reason: delayed connect error: 111
-       ```
+      ```bash
+      kubectl exec -it nginx -- curl 10.244.2.14:90
+      upstream connect error or disconnect/reset before headers. reset reason: connection failure, transport failure reason: delayed connect error: 111
+      ```
        
-    b. If there are other connection errors, check source and destination access logs by running:
+   b. If there are other connection errors, check source and destination access logs by running:
     
-        ```bash
-        kubectl logs hello -c istio-proxy
-        ```
+      ```bash
+      kubectl logs hello -c istio-proxy
+      ```
 
     c. If the connection errors are occurring for all pods in the namespace, you may want to temporarily disable sidecar injection by running `kubectl label namespace default istio.io/rev-`. Then, recreate the pods so they do not have the sidecar and retest connectivity between the pods to ensure it works fine without the sidecar.
 

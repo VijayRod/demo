@@ -3,19 +3,19 @@ This is my personal page dedicated to troubleshooting and debugging AKS with the
 
 ## Section 1: Know more and know limitations
 
-For more info, refer [this](https://docs.microsoft.com/en-us/azure/aks/servicemesh-istio-about). This includes limitations too. [Roadmap is here](https://docs.microsoft.com/en-us/azure/aks/servicemesh-istio-roadmap).
+For more info, refer [this](https://techcommunity.microsoft.com/t5/apps-on-azure-blog/istio-based-service-mesh-add-on-for-azure-kubernetes-service/ba-p/3800229). [This](https://learn.microsoft.com/en-us/azure/aks/istio-about) includes limitations too. [Roadmap is here](https://aka.ms/asm-roadmap).
 
 ### Section 1a: Enable or disable the Istio add-on
 
-1. To enable the Istio add-on for new or existing clusters, refer [this](https://docs.microsoft.com/en-us/azure/aks/servicemesh-istio-install). 
+1. To enable the Istio add-on for new or existing clusters, refer [this](https://learn.microsoft.com/en-us/azure/aks/istio-deploy-addon). 
 
    1a. Sidecar injection must be enabled to use Istio's features. Also, the Istio ingress gateway must be enabled, with its Gateway and VirtualService resources, to manage inbound or outbound traffic for the mesh.
 
-2. To disable the Istio add-on, refer [this](https://docs.microsoft.com/en-us/azure/aks/servicemesh-istio-uninstall).
+2. To disable the Istio add-on, refer [this](https://learn.microsoft.com/en-us/azure/aks/istio-deploy-addon#delete-resources).
 
 ### Section 1b: Enable external or internal Istio ingress gateway
 
-1. To enable or delete, refer [this](https://docs.microsoft.com/en-us/azure/aks/servicemesh-istio-ingress). The Istio gateway associates the `kubernetes` or `kubernetes-internal` load balancers (in the node resource group) to manage inbound or outbound traffic for the mesh, letting you specify which traffic you want to enter or leave the mesh.
+1. To enable or delete, refer [this](https://learn.microsoft.com/en-us/azure/aks/istio-deploy-ingress). The Istio gateway associates the `kubernetes` or `kubernetes-internal` load balancers (in the node resource group) to manage inbound or outbound traffic for the mesh, letting you specify which traffic you want to enter or leave the mesh.
 
    1a. Applications aren't accessible from outside the cluster by default after enabling the ingress gateway, ensure you map the deployment's ingress to the Istio ingress gateway using the `Gateway` and `VirtualService` resources mentioned in the same link.
 
@@ -93,9 +93,9 @@ kubectl describe pod hello | grep "Started container istio-proxy"
 
 Note: Please make sure to replace "myClusterName" and "myResourceGroupName" with the actual names of your cluster and resource group respectively, in all the commands.
 
-### Section 3d: Debug with istioctl
+### Section 3d: Debug with `istioctl`
 
-1. To verify that Istioctl can connect to the cluster, run the command `istioctl x precheck`. A successful run should display the following message: 
+1. To verify that `istioctl` can connect to the cluster, run the command `istioctl x precheck`. A successful run should display the following message: 
 
    ```
    No issues found when checking the cluster. Istio is safe to install or upgrade!
@@ -109,7 +109,7 @@ Note: Please make sure to replace "myClusterName" and "myResourceGroupName" with
 
    1b. For any other error, re-run the command with `--vklog=9` for higher log level verbosity. 
    
-       - To save the output to a file, add `> istioctl_logs.txt`.
+       1bi. To save the output to a file, add `> istioctl_logs.txt`.
    
 2. To retrieve the proxy sync status for all Envoys in a mesh, run the command `istioctl proxy-status -i aks-istio-system`. This will return one row for each pod that has the proxy.
 
@@ -125,7 +125,7 @@ Note: Please make sure to replace "myClusterName" and "myResourceGroupName" with
    
    2c. Refer to the advanced user note below for further information about the output if required.
 
-### Section 3e: Debug - Unexpected Issues
+### Section 3e: Debug - Unexpected pod issues
 
 1. To get the Istiod pod logs, run the command `kubectl logs -l app=istiod -n aks-istio-system`. 
 

@@ -194,14 +194,14 @@ Note: Please make sure to replace "myClusterName" and "myResourceGroupName" with
    
    1b. Use `istioctl proxy-status -i aks-istio-system` to retrieve the proxy sync status for all Envoys in a mesh. Each row in the output denotes an Envoy proxy in each pod in the cluster.
    
-       1bi. CDS, LDS, EDS, RDS, and ECDS are Envoy (the proxy underpinning Istio) services mentioned [here](https://github.com/istio/istio/issues/34139#issuecomment-1064377239) and [here](https://www.envoyproxy.io/docs/envoy/latest/intro/arch_overview/operations/dynamic_configuration).
+      1b.i. CDS, LDS, EDS, RDS, and ECDS are Envoy (the proxy underpinning Istio) services mentioned [here](https://github.com/istio/istio/issues/34139#issuecomment-1064377239) and [here](https://www.envoyproxy.io/docs/envoy/latest/intro/arch_overview/operations/dynamic_configuration).
        
-       1bii. SYNCED and NOT SENT statuses are usually seen, STALE usually indicates a networking issue between Envoy and Istiod as indicated [here](https://istio.io/latest/docs/ops/diagnostic-tools/proxy-cmd/).
+      1b.ii. SYNCED and NOT SENT statuses are usually seen, STALE usually indicates a networking issue between Envoy and Istiod as indicated [here](https://istio.io/latest/docs/ops/diagnostic-tools/proxy-cmd/).
        
-       1biii. The Istio service mesh architecture includes the proxy underpinning Istio, as shown [here](https://istio.io/latest/docs/ops/deployment/architecture/).
+      1b.iii. The Istio service mesh architecture includes the proxy underpinning Istio, as shown [here](https://istio.io/latest/docs/ops/deployment/architecture/).
 
 2. The Istio custom resources installed by the add-on can be seen with `kubectl get crd -A | grep "istio.io"`.
 
 3. To view the ready status displayed in Envoy's access logs for a pod "hello", run `kubectl logs hello -c istio-proxy | grep "Envoy proxy is ready"`.
 
-4. You can find a sample application that is ideal for testing Istio's features on GitHub [here](https://github.com/istio/istio/tree/main/samples/bookinfo).
+4. You can find a sample application that is ideal for testing Istio's features on GitHub [here](https://learn.microsoft.com/en-us/azure/aks/istio-deploy-addon#deploy-sample-application).

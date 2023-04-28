@@ -6,7 +6,10 @@ This page has guidance on how to troubleshoot and debug the enabling of the Isti
 To enable Istio on AKS, you can either create a new AKS cluster or use an existing one. Use the following commands:
 
 1. For a new cluster, run `az aks create -g myResourceGroupName -n myClusterName --enable-asm` with the appropriate names.
+   
    a. For an existing cluster, run `az aks mesh enable -g myResourceGroupName -n myClusterName`.
+   
+   b. For detailed steps, refer to [https://learn.microsoft.com/en-us/azure/aks/istio-deploy-addon](https://learn.microsoft.com/en-us/azure/aks/istio-deploy-addon).
 2. To capture logs for unexpected failures, re-run the respective command with `--debug`. For example, to capture logs to a file, run `az aks mesh enable -g myResourceGroupName -n myClusterName --debug 2> debug_output.log`.
 3. To verify success:
 
@@ -33,8 +36,6 @@ To enable Istio on AKS, you can either create a new AKS cluster or use an existi
     ```
 4. Note that *sidecar injection mentioned [below](#enable-automatic-sidecar-injection-of-the-add-on) must be enabled to use Istio's features*.
 
-For detailed documentation, refer to [https://learn.microsoft.com/en-us/azure/aks/istio-deploy-addon](https://learn.microsoft.com/en-us/azure/aks/istio-deploy-addon). 
-
 ### Know the version of the enabled add-on
 
 To know the version of Istio enabled on AKS, run `kubectl get pods -n aks-istio-system`. The pod name `istiod-asm-1-17-67f9f55ccb-4lxhk` in its output indicates version `1-17` i.e. 1.17.
@@ -46,8 +47,10 @@ Sidecar injection must be enabled to use Istio's features.
 1. To automatically install a sidecar to new pods, annotate each required namespace using the required version obtained from [above](#know-the-version-of-the-enabled-add-on). For example, to annotate the "default" namespace, run `kubectl label namespace default istio.io/rev=asm-1-17`.
 
     a. To obtain a list of such annotated namespaces, run `kubectl get namespaces --show-labels | grep istio.io/rev=asm`, or run `kubectl get namespace -l istio.io/rev=asm-1-17` if you prefer.
+    
+    b. For *manual* sidecar injection, refer to [https://learn.microsoft.com/en-us/azure/aks/istio-deploy-addon#enable-sidecar-injection](https://learn.microsoft.com/en-us/azure/aks/istio-deploy-addon#enable-sidecar-injection).
 
-2. To verify the injection of the sidecar, create a new pod in the labeled namespace and confirm it includes an `istio-proxy` container. For example:
+2. To verify the injection of the sidecar, create a new pod in the labeled namespace and confirm it includes an `istio-proxy` container. Examples below assume "default" namespace is annotated, else add `-n namespacename`.
 
     ```bash
     kubectl run hello --image=gcr.io/google-samples/hello-app:1.0
@@ -57,9 +60,9 @@ Sidecar injection must be enabled to use Istio's features.
 
 3. If Istio's features are no longer required for a namespace, say with the name "default", run `kubectl label namespace default istio.io/rev-` to remove the sidecar injection.
 
-### Verify pod connectivity is fine
+### Optionally, verify connectivity between pods in the annotated namespace(s)
 
-To verify pod connectivity, follow the steps below:
+To confirm connectivity between pods in the annotated namespace(s), you can either use curl to access your own pods/deployments or follow the steps outlined below. Note that it is crucial to create <ins>new</ins> pods/deployments rather than using existing ones.
 
 1. Create another pod and ensure you are able to connect. Run the following commands and verify the "hello" and "nginx" pods are in the Running status:
     ```bash
@@ -68,19 +71,25 @@ To verify pod connectivity, follow the steps below:
     ```
    Note the IP of the "hello" pod.
 
-2. Run the below by replacing the IP of the "hello" pod. Ensure you use port 8080 since this is used by the hello app. If an incorrect port is used, you will get a `delayed connect error` HTTP error 500.:
+2. Run the below by replacing the IP of the "hello" pod. Ensure you use port 8080 since this is used by the hello app.:
     ```bash
     kubectl exec -it nginx -- curl 10.244.2.14:8080
     ```
 
-    a. If there are connection errors, check source and destination access logs by running:
+    a. If an incorrect port is used, you will get a `delayed connect error` like below. This is an HTTP error 500.
+    
+       ```bash
+       kubectl exec -it nginx -- curl 10.244.2.14:90
+       upstream connect error or disconnect/reset before headers. reset reason: connection failure, transport failure reason: delayed connect error: 111
+       ```
+       
+    b. If there are other connection errors, check source and destination access logs by running:
+    
         ```bash
         kubectl logs hello -c istio-proxy
         ```
 
-    b. If the connection errors are occurring for all pods in the namespace, you may want to temporarily disable sidecar injection by running `kubectl label namespace default istio.io/rev-`. Then, recreate the pods so they do not have the sidecar and retest connectivity between the pods to ensure it works fine without the sidecar.
-
-3. For manual sidecar injection, refer to [https://learn.microsoft.com/en-us/azure/aks/istio-deploy-addon#enable-sidecar-injection](https://learn.microsoft.com/en-us/azure/aks/istio-deploy-addon#enable-sidecar-injection).
+    c. If the connection errors are occurring for all pods in the namespace, you may want to temporarily disable sidecar injection by running `kubectl label namespace default istio.io/rev-`. Then, recreate the pods so they do not have the sidecar and retest connectivity between the pods to ensure it works fine without the sidecar.
 
 ### For advanced users
 

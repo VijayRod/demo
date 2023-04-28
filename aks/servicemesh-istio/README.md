@@ -76,7 +76,7 @@ istiod-asm-1-17-67f9f55ccb-4lxhk   1/1     Running   0          50s
 
 ### Section 3c: Debug sidecar injection of the add-on
 
-1. To enable sidecar injection, refer to this guide. This installs a sidecar to <ins>new</ins> pods, but not the existing ones, which enables the use of Istio's features in the new pods.
+1. To enable sidecar injection, refer to [this](https://learn.microsoft.com/en-us/azure/aks/istio-deploy-addon#enable-sidecar-injection) guide. This installs a sidecar to <ins>new</ins> pods, but not the existing ones, which enables the use of Istio's features in the new pods.
 
 2. To verify the injection of the sidecar, create a new pod in the labeled namespace and confirm that it includes an istio-proxy container. For example:
 
@@ -109,7 +109,7 @@ Note: Please make sure to replace "myClusterName" and "myResourceGroupName" with
 
    1b. For any other error, re-run the command with `--vklog=9` for higher log level verbosity. 
    
-   1c. To save the output to a file, add `> istioctl_logs.txt`.
+   1c. To save the output to a file, add `> istioctl_logs.txt` to the command.
    
 2. To retrieve the proxy sync status for all Envoys in a mesh, run the command `istioctl proxy-status -i aks-istio-system`. This will return one row for each pod that has the proxy.
 
@@ -119,7 +119,7 @@ Note: Please make sure to replace "myClusterName" and "myResourceGroupName" with
    nginx.default      Kubernetes     SYNCED     SYNCED     SYNCED     SYNCED     NOT SENT     istiod-asm-1-17-67f9f55ccb-j85bk     1.17.1-distroless
    ```
 
-   2a. If an envoy/pod is missing from the above list, it means that it is not currently connected to an Istio Pilot instance and thus will not receive any configuration. Additionally, if it is marked as "STALE", it likely means there are networking issues or the Istio Pilot needs to be scaled.
+   2a. If an envoy/pod is missing from the above output, it means that it is not currently connected to an Istio Pilot instance and thus will not receive any configuration. Additionally, if it is marked as "STALE", it likely means there are networking issues or the Istio Pilot needs to be scaled.
    
    2b. "SYNCED" and "NOT SENT" are usually seen in the output. "STALE" indicates a networking issue between Envoy and Istiod.
    
@@ -139,7 +139,7 @@ Note: Please make sure to replace "myClusterName" and "myResourceGroupName" with
   
    2b. You can also view the [live logs](https://learn.microsoft.com/en-us/azure/azure-monitor/containers/container-insights-livedata-overview) with Container Insights or view historical logs in the [`ContainerLog`](https://learn.microsoft.com/en-us/azure/azure-monitor/containers/container-insights-log-query) table in [Log Analytics](https://learn.microsoft.com/en-us/azure/aks/monitor-aks).
 
-3. View known issues [here](https://github.com/Azure/AKS/issues?q=is%3Aissue+is%3Aopen+istio) or (here)[https://github.com/Azure/AKS/releases].
+3. View known issues [here](https://github.com/Azure/AKS/issues?q=is%3Aissue+is%3Aopen+istio) or [here](https://github.com/Azure/AKS/releases).
 
 ### Section 3f: Debug - Metrics Issues
 
@@ -178,11 +178,13 @@ Note: Please make sure to replace "myClusterName" and "myResourceGroupName" with
    
 3. To review network policies in the cluster, run `kubectl get networkpolicy -A`.
    
-4. To capture simultaneous TCP dumps on source and destination nodes during the reproduction of the issue, use the steps mentioned [here](https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/capture-tcp-dump-linux-node-aks). Note the names, namespaces, and IPs of the source and destination pods with `kubectl get pod -A -owide`, and the names and IPs of the source and destination nodes with `kubectl get no -owide`.
+4. To capture simultaneous TCP dumps on source and destination nodes during the reproduction of the issue, use the steps mentioned [here](https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/capture-tcp-dump-linux-node-aks). 
+
+   4a. Note the names, namespaces, and IPs of the source and destination pods with `kubectl get pod -A -owide`, and the names and IPs of the source and destination nodes with `kubectl get no -owide`.
    
 ### Section 3h: Debug - Connectivity issues through the Istio ingress gateway
 
-1. Ensure the ingress gateway resource is created with the appropriate `Gateway` and `VirtualService` resources as shown [here]().
+1. Ensure the ingress gateway resource is created with the appropriate `Gateway` and `VirtualService` resources as shown [here](#section-1b-enable-external-or-internal-istio-ingress-gateway).
 
 ## Section 4: For Advanced Users
 

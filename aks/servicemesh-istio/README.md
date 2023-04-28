@@ -7,7 +7,9 @@ For more info, refer [this](https://docs.microsoft.com/en-us/azure/aks/serviceme
 
 ### Section 1a: Enable or disable the Istio add-on
 
-1. To enable the Istio add-on for new or existing clusters, refer [this](https://docs.microsoft.com/en-us/azure/aks/servicemesh-istio-install). Sidecar injection must be enabled to use Istio's features. Also, the Istio ingress gateway must be enabled, with its Gateway and VirtualService resources, to manage inbound or outbound traffic for the mesh.
+1. To enable the Istio add-on for new or existing clusters, refer [this](https://docs.microsoft.com/en-us/azure/aks/servicemesh-istio-install). 
+
+   - Sidecar injection must be enabled to use Istio's features. Also, the Istio ingress gateway must be enabled, with its Gateway and VirtualService resources, to manage inbound or outbound traffic for the mesh.
 
 2. To disable the Istio add-on, refer [this](https://docs.microsoft.com/en-us/azure/aks/servicemesh-istio-uninstall).
 
@@ -26,13 +28,21 @@ kubectl get svc aks-istio-ingressgateway-internal -n aks-istio-ingress # interna
 
 ## Section 2: Know the version of the enabled add-on
 
-To know the version of Istio enabled on AKS, run `kubectl get pods -n aks-istio-system`. A pod name `istiod-asm-1-17-67f9f55ccb-4lxhk` in its output indicates version 1-17 i.e. 1.17. The version is required for configuration of the sidecar injection.
+To know the version of Istio enabled on AKS, run `kubectl get pods -n aks-istio-system`. 
+
+- A pod name `istiod-asm-1-17-67f9f55ccb-4lxhk` in its output indicates version 1-17 i.e. 1.17. 
+
+  - The version is required for configuration of the sidecar injection.
 
 ## Section 3: Debug
 
 ### Section 3a: Debug - Errors with the `az aks` or `az aks mesh` commands
 
-For unexpected errors with the `az aks` or `az aks mesh` commands, ensure these are updated to the latest version with `az upgrade` and `az extension update --name aks-preview`. Then re-run the `az aks` or `az aks mesh` command with `--debug`. For example, to capture logs to a file, run `az aks mesh enable -g myResourceGroupName -n myClusterName --debug 2> debug_output.log`.
+For unexpected errors with the `az aks` or `az aks mesh` commands, ensure these are updated to the latest version with `az upgrade` and `az extension update --name aks-preview`. 
+
+- Then re-run the `az aks` or `az aks mesh` command with `--debug`. 
+
+  - For example, to capture logs to a file, run `az aks mesh enable -g myResourceGroupName -n myClusterName --debug 2> debug_output.log`.
 
 ### Section 3b: Debug - Verify the control plane is healthy
 

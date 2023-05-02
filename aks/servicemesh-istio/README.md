@@ -1,4 +1,7 @@
-# servicemesh-istio
+[![Istio service mesh addon](https://techcommunity.microsoft.com/t5/image/serverpage/image-id/462327iA69EF8B8167AEC91)](https://techcommunity.microsoft.com/t5/apps-on-azure-blog/istio-based-service-mesh-add-on-for-azure-kubernetes-service/ba-p/3800229)
+
+
+## servicemesh-istio
 This is my personal page dedicated to troubleshooting and debugging AKS with the Istio-based service mesh, and any opinions expressed here are my own. The commonly used tools for this project are [Azure CLI](https://learn.microsoft.com/en-us/cli/azure/install-azure-cli), kubectl, [istioctl](https://istio.io/latest/docs/setup/getting-started/#download), and optionally [jq](https://stedolan.github.io/jq/download/), or you can use the Bash environment in [Azure Cloud Shell](https://learn.microsoft.com/en-us/azure/cloud-shell/quickstart?tabs=azurecli). For a quick start guide, refer [this](https://learn.microsoft.com/en-us/azure/aks/learn/quick-kubernetes-deploy-cli).
 
 ## Section 1: Know more and know limitations
@@ -93,7 +96,7 @@ kubectl describe pod hello | grep "Started container istio-proxy"
 
 Note: Please make sure to replace "myClusterName" and "myResourceGroupName" with the actual names of your cluster and resource group respectively, in all the commands.
 
-### Section 3d: Debug with `istioctl`
+### Section 3d: Debug with [`istioctl`](https://istio.io/latest/docs/setup/getting-started/#download)
 
 1. To verify that `istioctl` can connect to the cluster, run the command `istioctl x precheck`. A successful run should display the following message: 
 

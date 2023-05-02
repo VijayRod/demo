@@ -1,6 +1,5 @@
 [![Istio service mesh addon](https://techcommunity.microsoft.com/t5/image/serverpage/image-id/462327iA69EF8B8167AEC91)](https://techcommunity.microsoft.com/t5/apps-on-azure-blog/istio-based-service-mesh-add-on-for-azure-kubernetes-service/ba-p/3800229)
 
-
 ## servicemesh-istio
 This is my personal page dedicated to troubleshooting and debugging AKS with the Istio-based service mesh, and any opinions expressed here are my own. The commonly used tools for this project are [Azure CLI](https://learn.microsoft.com/en-us/cli/azure/install-azure-cli), kubectl, [istioctl](https://istio.io/latest/docs/setup/getting-started/#download), and optionally [jq](https://stedolan.github.io/jq/download/), or you can use the Bash environment in [Azure Cloud Shell](https://learn.microsoft.com/en-us/azure/cloud-shell/quickstart?tabs=azurecli). For a quick start guide, refer [this](https://learn.microsoft.com/en-us/azure/aks/learn/quick-kubernetes-deploy-cli).
 
@@ -191,6 +190,8 @@ Note: Please make sure to replace "myClusterName" and "myResourceGroupName" with
 
 ## Section 4: For Advanced Users
 
+[![Istio Architecture](https://istio.io/latest/docs/ops/deployment/architecture/arch.svg)](https://istio.io/latest/docs/ops/deployment/architecture/)
+
 1. The istio-proxy container is the Envoy sidecar injected by Istio.
    
    1a. The sidecar containers are injected using a mutating admission webhook seen with `kubectl get mutatingwebhookconfigurations | grep istio-sidecar-injector`.
@@ -207,4 +208,4 @@ Note: Please make sure to replace "myClusterName" and "myResourceGroupName" with
 
 3. To view the ready status displayed in Envoy's access logs for a pod "hello", run `kubectl logs hello -c istio-proxy | grep "Envoy proxy is ready"`.
 
-4. You can find a sample application that is ideal for testing Istio's features on GitHub [here](https://learn.microsoft.com/en-us/azure/aks/istio-deploy-addon#deploy-sample-application).
+4. You can find a sample application that is ideal for testing Istio's features [here](https://learn.microsoft.com/en-us/azure/aks/istio-deploy-addon#deploy-sample-application).

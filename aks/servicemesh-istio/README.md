@@ -122,9 +122,9 @@ Note: Please make sure to replace "myClusterName" and "myResourceGroupName" with
    nginx.default      Kubernetes     SYNCED     SYNCED     SYNCED     SYNCED     NOT SENT     istiod-asm-1-17-67f9f55ccb-j85bk     1.17.1-distroless
    ```
 
-   2a. If an envoy/pod is missing from the above output, it means that it is not currently connected to an Istio Pilot instance and thus will not receive any configuration. Additionally, if it is marked as "STALE", it likely means there are networking issues or the Istio Pilot needs to be scaled.
+   2a. If an envoy/pod is missing from the above output, it means that it is not currently connected to an Istio Pilot instance and thus will not receive any configuration.
    
-   2b. "SYNCED" and "NOT SENT" are usually seen in the output. "STALE" indicates a networking issue between Envoy and Istiod.
+   2b. `SYNCED` and `NOT SENT` are usually seen in the output. `STALE` indicates a networking issue between Envoy and Istiod or the Istio Pilot needs to be scaled.
    
    2c. Refer to the advanced user note [below](#section-4-for-advanced-users) for further information about the output if required.
 
@@ -152,7 +152,7 @@ Note: Please make sure to replace "myClusterName" and "myResourceGroupName" with
 
 ### Section 3g: Debug - Connectivity issues between pods
 
-1. To confirm connectivity between pods in annotated namespace(s), create new pods/deployments and use `curl` to access them. Run the following commands:
+1. To confirm connectivity between pods, create new pods/deployments in the annotated namespace(s), and use curl within the pod(s) to access each other. For example, run the following commands for the default namespace:
 
    ```
    kubectl run hello --image=gcr.io/google-samples/hello-app:1.0
@@ -197,9 +197,9 @@ Note: Please make sure to replace "myClusterName" and "myResourceGroupName" with
    
    1b. Use `istioctl proxy-status -i aks-istio-system` to retrieve the proxy sync status for all Envoys in a mesh. Each row in the output denotes an Envoy proxy in each pod in the cluster.
    
-      1b.i. "CDS", "LDS", "EDS", "RDS", and "ECDS", seen in the output of the above command, are Envoy (the proxy underpinning Istio) services mentioned [here](https://github.com/istio/istio/issues/34139#issuecomment-1064377239) and [here](https://www.envoyproxy.io/docs/envoy/latest/intro/arch_overview/operations/dynamic_configuration).
+      1b.i. `CDS`, `LDS`, `EDS`, `RDS`, and `ECDS`, seen in the output of the above command, are Envoy (the proxy underpinning Istio) services mentioned [here](https://github.com/istio/istio/issues/34139#issuecomment-1064377239) and [here](https://www.envoyproxy.io/docs/envoy/latest/intro/arch_overview/operations/dynamic_configuration).
        
-      1b.ii. "SYNCED" and "NOT SENT" statuses are usually seen, "STALE" usually indicates a networking issue between Envoy and Istiod as indicated [here](https://istio.io/latest/docs/ops/diagnostic-tools/proxy-cmd/).
+      1b.ii. `SYNCED` and `NOT SENT` statuses are usually seen, "STALE" usually indicates a networking issue between Envoy and Istiod as indicated [here](https://istio.io/latest/docs/ops/diagnostic-tools/proxy-cmd/).
        
       1b.iii. The Istio service mesh architecture includes the proxy underpinning Istio, as shown [here](https://istio.io/latest/docs/ops/deployment/architecture/).
 

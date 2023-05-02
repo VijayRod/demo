@@ -1,3 +1,4 @@
+# *This is an archived version. Updated version is [here](https://github.com/VijayRod/demo/tree/master/aks/servicemesh-istio).*
 
 This page has guidance on how to troubleshoot and debug the enabling of the Istio add-on on AKS.
 

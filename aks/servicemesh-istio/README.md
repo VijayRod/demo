@@ -20,6 +20,7 @@ This is my personal page dedicated to troubleshooting and debugging AKS with the
   - [Traffic - Connectivity issues between pods](#traffic---connectivity-issues-between-pods)
   - [Traffic - Connectivity issues through the Istio ingress gateway](#traffic---connectivity-issues-through-the-istio-ingress-gateway)
   - [Other - Unexpected pod issues](#other---unexpected-pod-issues)
+  - [Known issues]()
  
 ## Istio Add-On Configuration
 
@@ -230,4 +231,6 @@ istiod-asm-1-17-67f9f55ccb-4lxhk   1/1     Running   0          50s
   
    2b. You can also view the [live logs](https://learn.microsoft.com/en-us/azure/azure-monitor/containers/container-insights-livedata-overview) with Container Insights or view historical logs in the [`ContainerLog`](https://learn.microsoft.com/en-us/azure/azure-monitor/containers/container-insights-log-query) table in [Log Analytics](https://learn.microsoft.com/en-us/azure/aks/monitor-aks).
 
-3. View known issues [here](https://github.com/Azure/AKS/issues?q=is%3Aissue+is%3Aopen+istio) or [here](https://github.com/Azure/AKS/releases).
+### Known issues
+
+If there are any known issues, you can find them listed [here](https://github.com/Azure/AKS/issues?q=is%3Aissue+is%3Aopen+istio) or [here](https://github.com/Azure/AKS/releases).

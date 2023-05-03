@@ -3,9 +3,17 @@
 ## servicemesh-istio
 This is my personal page dedicated to troubleshooting and debugging AKS with the Istio-based service mesh, and any opinions expressed here are my own. The commonly used tools for this project are [Azure CLI](https://learn.microsoft.com/en-us/cli/azure/install-azure-cli), kubectl, [istioctl](https://istio.io/latest/docs/setup/getting-started/#download), and optionally [jq](https://stedolan.github.io/jq/download/), or you can use the Bash environment in [Azure Cloud Shell](https://learn.microsoft.com/en-us/azure/cloud-shell/quickstart?tabs=azurecli). For a quick start guide, refer [this](https://learn.microsoft.com/en-us/azure/aks/learn/quick-kubernetes-deploy-cli).
 
-## Section 1: Know more and know limitations
+## Table of Contents
 
-For more info, refer [this](https://techcommunity.microsoft.com/t5/apps-on-azure-blog/istio-based-service-mesh-add-on-for-azure-kubernetes-service/ba-p/3800229). [This](https://learn.microsoft.com/en-us/azure/aks/istio-about) includes limitations too. [Roadmap is here](https://aka.ms/asm-roadmap).
+- [Istio Add-On Configuration]()
+  - [Enable or disable the Istio add-on](#section-1a-enable-or-disable-the-istio-add-on)
+  - [Enable external or internal Istio ingress gateway](#section-1b-enable-external-or-internal-istio-ingress-gateway)
+  - [Know more and know limitations](#section-1c-know-more-and-know-limitations)
+  - [For Advanced Users](#section-1d-for-advanced-users)
+- [Know the version of the enabled add-on](#section-2-know-the-version-of-the-enabled-add-on)
+- [Troubleshoot and debug](#section-3-troubleshoot-and-debug)
+
+## Section 1: Istio Add-On Configuration
 
 ### Section 1a: Enable or disable the Istio add-on
 
@@ -28,6 +36,32 @@ kubectl get svc aks-istio-ingressgateway-external -n aks-istio-ingress # externa
 kubectl get svc aks-istio-ingressgateway-internal -n aks-istio-ingress # internal ingress gateway.
 ```
 
+### Section 1: Know more and know limitations
+
+For more info, refer [this](https://techcommunity.microsoft.com/t5/apps-on-azure-blog/istio-based-service-mesh-add-on-for-azure-kubernetes-service/ba-p/3800229). [This](https://learn.microsoft.com/en-us/azure/aks/istio-about) includes limitations too. [Roadmap is here](https://aka.ms/asm-roadmap).
+
+### Section 1c: For Advanced Users
+
+[![Istio Architecture](https://istio.io/latest/docs/ops/deployment/architecture/arch.svg)](https://istio.io/latest/docs/ops/deployment/architecture/)
+
+1. The istio-proxy container is the Envoy sidecar injected by Istio.
+   
+   1a. The sidecar containers are injected using a mutating admission webhook seen with `kubectl get mutatingwebhookconfigurations | grep istio-sidecar-injector`.
+   
+   1b. Use `istioctl proxy-status -i aks-istio-system` to retrieve the proxy sync status for all Envoys in a mesh. Each row in the output denotes an Envoy proxy in each pod in the cluster.
+   
+      1b.i. `CDS`, `LDS`, `EDS`, `RDS`, and `ECDS`, seen in the output of the above command, are Envoy (the proxy underpinning Istio) services mentioned [here](https://github.com/istio/istio/issues/34139#issuecomment-1064377239) and [here](https://www.envoyproxy.io/docs/envoy/latest/intro/arch_overview/operations/dynamic_configuration).
+       
+      1b.ii. `SYNCED` and `NOT SENT` statuses are usually seen, `STALE` usually indicates a networking issue between Envoy and Istiod as indicated [here](https://istio.io/latest/docs/ops/diagnostic-tools/proxy-cmd/).
+       
+      1b.iii. The Istio service mesh architecture includes the proxy underpinning Istio, as shown [here](https://istio.io/latest/docs/ops/deployment/architecture/).
+
+2. The Istio custom resources installed by the add-on can be seen with `kubectl get crd -A | grep "istio.io"`.
+
+3. To view the ready status displayed in Envoy's access logs for a pod "hello", run `kubectl logs hello -c istio-proxy | grep "Envoy proxy is ready"`.
+
+4. You can find a sample application that is ideal for testing Istio's features [here](https://learn.microsoft.com/en-us/azure/aks/istio-deploy-addon#deploy-sample-application).
+
 ## Section 2: Know the version of the enabled add-on
 
 1. To know the version of Istio enabled on AKS, run `kubectl get pods -n aks-istio-system`. 
@@ -36,7 +70,7 @@ kubectl get svc aks-istio-ingressgateway-internal -n aks-istio-ingress # interna
 
    1b. The version is required for configuration of the sidecar injection.
 
-## Section 3: Debug
+## Section 3: Troubleshoot and debug
 
 ### Section 3a: Debug - Errors with the `az aks` or `az aks mesh` commands
 
@@ -189,25 +223,3 @@ Note: Please make sure to replace "myClusterName" and "myResourceGroupName" with
 ### Section 3h: Debug - Connectivity issues through the Istio ingress gateway
 
 1. Ensure the ingress gateway resource is created with the appropriate `Gateway` and `VirtualService` resources as shown [here](#section-1b-enable-external-or-internal-istio-ingress-gateway).
-
-## Section 4: For Advanced Users
-
-[![Istio Architecture](https://istio.io/latest/docs/ops/deployment/architecture/arch.svg)](https://istio.io/latest/docs/ops/deployment/architecture/)
-
-1. The istio-proxy container is the Envoy sidecar injected by Istio.
-   
-   1a. The sidecar containers are injected using a mutating admission webhook seen with `kubectl get mutatingwebhookconfigurations | grep istio-sidecar-injector`.
-   
-   1b. Use `istioctl proxy-status -i aks-istio-system` to retrieve the proxy sync status for all Envoys in a mesh. Each row in the output denotes an Envoy proxy in each pod in the cluster.
-   
-      1b.i. `CDS`, `LDS`, `EDS`, `RDS`, and `ECDS`, seen in the output of the above command, are Envoy (the proxy underpinning Istio) services mentioned [here](https://github.com/istio/istio/issues/34139#issuecomment-1064377239) and [here](https://www.envoyproxy.io/docs/envoy/latest/intro/arch_overview/operations/dynamic_configuration).
-       
-      1b.ii. `SYNCED` and `NOT SENT` statuses are usually seen, `STALE` usually indicates a networking issue between Envoy and Istiod as indicated [here](https://istio.io/latest/docs/ops/diagnostic-tools/proxy-cmd/).
-       
-      1b.iii. The Istio service mesh architecture includes the proxy underpinning Istio, as shown [here](https://istio.io/latest/docs/ops/deployment/architecture/).
-
-2. The Istio custom resources installed by the add-on can be seen with `kubectl get crd -A | grep "istio.io"`.
-
-3. To view the ready status displayed in Envoy's access logs for a pod "hello", run `kubectl logs hello -c istio-proxy | grep "Envoy proxy is ready"`.
-
-4. You can find a sample application that is ideal for testing Istio's features [here](https://learn.microsoft.com/en-us/azure/aks/istio-deploy-addon#deploy-sample-application).

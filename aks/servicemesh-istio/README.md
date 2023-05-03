@@ -9,6 +9,7 @@ This is my personal page dedicated to troubleshooting and debugging AKS with the
   - [Enable or disable the Istio add-on](#enable-or-disable-the-istio-add-on)
   - [Enable external or internal Istio ingress gateway](#enable-external-or-internal-istio-ingress-gateway)
   - [Know more and know limitations](#know-more-and-know-limitations)
+  - [A Brief History of the Istio Project](#know-more-and-know-limitations)
   - [For Advanced Users](#for-advanced-users)
 - [Know the version of the enabled add-on](#know-the-version-of-the-enabled-add-on)
 - [Troubleshoot and debug](#troubleshoot-and-debug)
@@ -48,6 +49,12 @@ kubectl get svc aks-istio-ingressgateway-internal -n aks-istio-ingress # interna
 ### Know more and know limitations
 
 For more info, refer [this](https://techcommunity.microsoft.com/t5/apps-on-azure-blog/istio-based-service-mesh-add-on-for-azure-kubernetes-service/ba-p/3800229). [This](https://learn.microsoft.com/en-us/azure/aks/istio-about) includes limitations too. [Roadmap is here](https://aka.ms/asm-roadmap).
+
+### A Brief History of the Istio Project
+
+The Istio project was [started](https://istio.io/latest/about/faq/) by teams from Google and IBM in partnership with the Envoy team from Lyft. It’s been developed fully in the open on GitHub.
+
+Istio was accepted to [CNCF](https://www.cncf.io/projects/istio/) on September 30, 2022.
 
 ### For Advanced Users
 

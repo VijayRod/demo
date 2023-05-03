@@ -251,3 +251,5 @@ Installing Istio with `istioctl upgrade` together with the Istio-based service m
 - pods in annotated namespaces not being deployed with AKS Istio add-on's `istio-proxy` sidecar container.
 
 You can use `istioctl uninstall --purge` to clean up the non-add-on objects, but this would also delete the add-on CRDs. Therefore, after the clean up, it may be better to disable the add-on with `az aks mesh disable -g myResourceGroupName -n myClusterName`, and then re-enable it with `az aks mesh enable -g myResourceGroupName -n myClusterName`. Additionally, pods not having the sidecar container would need to be re-created.
+
+(Credits: Sergio Turrent.)

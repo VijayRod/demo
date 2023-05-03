@@ -175,7 +175,7 @@ istiod-asm-1-17-67f9f55ccb-4lxhk   1/1     Running   0          50s
    
    2b. `SYNCED` and `NOT SENT` are usually seen in the output. `STALE` indicates a networking issue between Envoy and Istiod or the Istio Pilot needs to be scaled.
    
-   2c. Refer to the advanced user note [below](#section-4-for-advanced-users) for further information about the output if required.
+   2c. Refer to the advanced user note [above](#for-advanced-users) for further information about the output if required.
 
 3. To retrieve information about proxy configuration from an Envoy instance, run `istioctl proxy-config -i aks-istio-system all -o json hello -n default` for example for pod 'hello' in namespace 'default'. Instead of 'all', one of 'clusters|listeners|routes|endpoints|bootstrap|log|secret' can be used.
 

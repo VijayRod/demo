@@ -12,14 +12,14 @@ This is my personal page dedicated to troubleshooting and debugging AKS with the
   - [For Advanced Users](#for-advanced-users)
 - [Know the version of the enabled add-on](#know-the-version-of-the-enabled-add-on)
 - [Troubleshoot and debug](#troubleshoot-and-debug)
-  - [Enable or disable - Errors with the az aks or az aks mesh commands]()
-  - [Enable or disable - Debug sidecar injection of the add-on]()
-  - [Monitor - Verify the control plane is healthy]()
-  - [Monitor - Debug with istioctl]()
-  - [Monitor - Metrics Issues]()
-  - [Traffic - Connectivity issues between pods]()
-  - [Traffic - Connectivity issues through the Istio ingress gateway]()
-  - [Other - Unexpected pod issues]()
+  - [Enable or disable - Errors with the az aks or az aks mesh commands](#enable-or-disable---errors-with-the-az-aks-or-az-aks-mesh-commands)
+  - [Enable or disable - Debug sidecar injection of the add-on](#enable-or-disable---debug-sidecar-injection-of-the-add-on)
+  - [Monitor - Verify the control plane is healthy](#monitor---verify-the-control-plane-is-healthy)
+  - [Monitor - Debug with istioctl](#monitor---debug-with-istioctl)
+  - [Monitor - Metrics Issues](#monitor---metrics-issues)
+  - [Traffic - Connectivity issues between pods](#traffic---connectivity-issues-between-pods)
+  - [Traffic - Connectivity issues through the Istio ingress gateway](#traffic---connectivity-issues-through-the-istio-ingress-gateway)
+  - [Other - Unexpected pod issues](#other---unexpected-pod-issues)
  
 ## Istio Add-On Configuration
 

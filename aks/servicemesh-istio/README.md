@@ -36,11 +36,11 @@ kubectl get svc aks-istio-ingressgateway-external -n aks-istio-ingress # externa
 kubectl get svc aks-istio-ingressgateway-internal -n aks-istio-ingress # internal ingress gateway.
 ```
 
-### Section 1: Know more and know limitations
+### Section 1c: Know more and know limitations
 
 For more info, refer [this](https://techcommunity.microsoft.com/t5/apps-on-azure-blog/istio-based-service-mesh-add-on-for-azure-kubernetes-service/ba-p/3800229). [This](https://learn.microsoft.com/en-us/azure/aks/istio-about) includes limitations too. [Roadmap is here](https://aka.ms/asm-roadmap).
 
-### Section 1c: For Advanced Users
+### Section 1d: For Advanced Users
 
 [![Istio Architecture](https://istio.io/latest/docs/ops/deployment/architecture/arch.svg)](https://istio.io/latest/docs/ops/deployment/architecture/)
 

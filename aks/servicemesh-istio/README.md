@@ -241,3 +241,12 @@ istiod-asm-1-17-67f9f55ccb-4lxhk   1/1     Running   0          50s
 ### Known issues
 
 If there are any known issues, you can find them listed [here](https://github.com/Azure/AKS/issues?q=is%3Aissue+is%3Aopen+istio) or [here](https://github.com/Azure/AKS/releases).
+
+### Known Issues with Installing Istio using istioctl upgrade and Istio-based Service Mesh Add-on
+
+Installing Istio with `istioctl upgrade` together with the Istio-based service mesh add-on is *not supported*. As documented [here](https://learn.microsoft.com/en-us/azure/aks/istio-about#limitations), the add-on doesn't work with AKS clusters that have Istio installed outside of the add-on installation. Attempting to install the add-on in these circumstances may result in errors and symptoms such as:
+- `istioctl upgrade` deploying objects to the default `istio-system` namespace (which is different from the `aks-istio-system` namespace used by the AKS Istio add-on)
+- namespaces with a different label found with `kubectl get namespace -l istio-injection=enabled` (the AKS Istio add-on uses explicit versioning for namespace labels, as indicated [here](https://learn.microsoft.com/en-us/azure/aks/istio-deploy-addon#enable-sidecar-injection))
+- pods in annotated namespaces not being deployed with AKS Istio add-on's `istio-proxy` sidecar container.
+
+You can use `istioctl uninstall --purge` to clean up the non-add-on objects, but this would also delete the add-on CRDs. Therefore, after the clean up, it may be better to disable the add-on with `az aks mesh disable -g myResourceGroupName -n myClusterName`, and then re-enable it with `az aks mesh enable -g myResourceGroupName -n myClusterName`. Additionally, pods not having the sidecar container would need to be re-created.

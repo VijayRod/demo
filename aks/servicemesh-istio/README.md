@@ -5,7 +5,7 @@ This is my personal page dedicated to troubleshooting and debugging AKS with the
 
 ## Table of Contents
 
-- [Istio Add-On Configuration]()
+- [Istio Add-On Configuration](#section-1-istio-add-on-configuration)
   - [Enable or disable the Istio add-on](#section-1a-enable-or-disable-the-istio-add-on)
   - [Enable external or internal Istio ingress gateway](#section-1b-enable-external-or-internal-istio-ingress-gateway)
   - [Know more and know limitations](#section-1c-know-more-and-know-limitations)

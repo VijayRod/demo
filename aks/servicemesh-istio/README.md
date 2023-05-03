@@ -5,17 +5,25 @@ This is my personal page dedicated to troubleshooting and debugging AKS with the
 
 ## Table of Contents
 
-- [Istio Add-On Configuration](#section-1-istio-add-on-configuration)
-  - [Enable or disable the Istio add-on](#section-1a-enable-or-disable-the-istio-add-on)
-  - [Enable external or internal Istio ingress gateway](#section-1b-enable-external-or-internal-istio-ingress-gateway)
-  - [Know more and know limitations](#section-1c-know-more-and-know-limitations)
-  - [For Advanced Users](#section-1d-for-advanced-users)
-- [Know the version of the enabled add-on](#section-2-know-the-version-of-the-enabled-add-on)
-- [Troubleshoot and debug](#section-3-troubleshoot-and-debug)
+- [Istio Add-On Configuration](#istio-add-on-configuration)
+  - [Enable or disable the Istio add-on](#enable-or-disable-the-istio-add-on)
+  - [Enable external or internal Istio ingress gateway](#enable-external-or-internal-istio-ingress-gateway)
+  - [Know more and know limitations](#know-more-and-know-limitations)
+  - [For Advanced Users](#for-advanced-users)
+- [Know the version of the enabled add-on](#know-the-version-of-the-enabled-add-on)
+- [Troubleshoot and debug](#troubleshoot-and-debug)
+  - [Enable or disable - Errors with the az aks or az aks mesh commands]()
+  - [Enable or disable - Debug sidecar injection of the add-on]()
+  - [Monitor - Verify the control plane is healthy]()
+  - [Monitor - Debug with istioctl]()
+  - [Monitor - Metrics Issues]()
+  - [Traffic - Connectivity issues between pods]()
+  - [Traffic - Connectivity issues through the Istio ingress gateway]()
+  - [Other - Unexpected pod issues]()
+ 
+## Istio Add-On Configuration
 
-## Section 1: Istio Add-On Configuration
-
-### Section 1a: Enable or disable the Istio add-on
+### Enable or disable the Istio add-on
 
 1. To enable the Istio add-on for new or existing clusters, refer [this](https://learn.microsoft.com/en-us/azure/aks/istio-deploy-addon). 
 
@@ -23,7 +31,7 @@ This is my personal page dedicated to troubleshooting and debugging AKS with the
 
 2. To disable the Istio add-on, refer [this](https://learn.microsoft.com/en-us/azure/aks/istio-deploy-addon#delete-resources).
 
-### Section 1b: Enable external or internal Istio ingress gateway
+### Enable external or internal Istio ingress gateway
 
 1. To enable or delete, refer [this](https://learn.microsoft.com/en-us/azure/aks/istio-deploy-ingress). The Istio gateway associates the `kubernetes` or `kubernetes-internal` load balancers (in the node resource group) to manage inbound or outbound traffic for the mesh, letting you specify which traffic you want to enter or leave the mesh.
 
@@ -36,11 +44,11 @@ kubectl get svc aks-istio-ingressgateway-external -n aks-istio-ingress # externa
 kubectl get svc aks-istio-ingressgateway-internal -n aks-istio-ingress # internal ingress gateway.
 ```
 
-### Section 1c: Know more and know limitations
+### Know more and know limitations
 
 For more info, refer [this](https://techcommunity.microsoft.com/t5/apps-on-azure-blog/istio-based-service-mesh-add-on-for-azure-kubernetes-service/ba-p/3800229). [This](https://learn.microsoft.com/en-us/azure/aks/istio-about) includes limitations too. [Roadmap is here](https://aka.ms/asm-roadmap).
 
-### Section 1d: For Advanced Users
+### For Advanced Users
 
 [![Istio Architecture](https://istio.io/latest/docs/ops/deployment/architecture/arch.svg)](https://istio.io/latest/docs/ops/deployment/architecture/)
 
@@ -62,7 +70,7 @@ For more info, refer [this](https://techcommunity.microsoft.com/t5/apps-on-azure
 
 4. You can find a sample application that is ideal for testing Istio's features [here](https://learn.microsoft.com/en-us/azure/aks/istio-deploy-addon#deploy-sample-application).
 
-## Section 2: Know the version of the enabled add-on
+## Know the version of the enabled add-on
 
 1. To know the version of Istio enabled on AKS, run `kubectl get pods -n aks-istio-system`. 
 
@@ -70,9 +78,9 @@ For more info, refer [this](https://techcommunity.microsoft.com/t5/apps-on-azure
 
    1b. The version is required for configuration of the sidecar injection.
 
-## Section 3: Troubleshoot and debug
+## Troubleshoot and debug
 
-### Section 3a: Debug - Errors with the `az aks` or `az aks mesh` commands
+### Enable or disable - Errors with the `az aks` or `az aks mesh` commands
 
 1. For unexpected errors with the `az aks` or `az aks mesh` commands, ensure these are updated to the latest version with [`az upgrade`](https://learn.microsoft.com/en-us/cli/azure/update-azure-cli) and `az extension update --name aks-preview`. 
 
@@ -80,7 +88,26 @@ For more info, refer [this](https://techcommunity.microsoft.com/t5/apps-on-azure
 
    1b. For example, to capture logs to a file, run `az aks mesh enable -g myResourceGroupName -n myClusterName --debug 2> debug_output.log`.
 
-### Section 3b: Debug - Verify the control plane is healthy
+### Enable or disable - Debug sidecar injection of the add-on
+
+1. To enable sidecar injection, refer to [this](https://learn.microsoft.com/en-us/azure/aks/istio-deploy-addon#enable-sidecar-injection) guide. This installs a sidecar to <ins>new</ins> pods, but not the existing ones, which enables the use of Istio's features in the new pods.
+
+2. To verify the injection of the sidecar, create a new pod in the labeled namespace and confirm that it includes an istio-proxy container. For example:
+
+```
+kubectl run hello --image=gcr.io/google-samples/hello-app:1.0
+kubectl get pod # Ensure the "hello" pod is in Running state with two containers.
+kubectl describe pod hello | grep "Started container istio-proxy"
+# kubectl delete po hello # cleanup.
+```
+
+3. To obtain a list of such annotated namespaces, run `kubectl get namespaces --show-labels | grep istio.io/rev=asm` or run `kubectl get namespace -l istio.io/rev=asm-1-17` if you prefer.
+
+4. If Istio's features are no longer required for a namespace, for example, the "default" namespace, run `kubectl label namespace default istio.io/rev-` to remove the sidecar injection.
+
+Note: Please make sure to replace "myClusterName" and "myResourceGroupName" with the actual names of your cluster and resource group respectively, in all the commands.
+
+### Monitor - Verify the control plane is healthy
 
 1. To verify the cluster is "Running", run `az aks show -g secureshack2 -n myClusterName --query 'powerState.code'`.
 
@@ -110,26 +137,7 @@ NAME                               READY   STATUS    RESTARTS   AGE
 istiod-asm-1-17-67f9f55ccb-4lxhk   1/1     Running   0          50s
 ```
 
-### Section 3c: Debug sidecar injection of the add-on
-
-1. To enable sidecar injection, refer to [this](https://learn.microsoft.com/en-us/azure/aks/istio-deploy-addon#enable-sidecar-injection) guide. This installs a sidecar to <ins>new</ins> pods, but not the existing ones, which enables the use of Istio's features in the new pods.
-
-2. To verify the injection of the sidecar, create a new pod in the labeled namespace and confirm that it includes an istio-proxy container. For example:
-
-```
-kubectl run hello --image=gcr.io/google-samples/hello-app:1.0
-kubectl get pod # Ensure the "hello" pod is in Running state with two containers.
-kubectl describe pod hello | grep "Started container istio-proxy"
-# kubectl delete po hello # cleanup.
-```
-
-3. To obtain a list of such annotated namespaces, run `kubectl get namespaces --show-labels | grep istio.io/rev=asm` or run `kubectl get namespace -l istio.io/rev=asm-1-17` if you prefer.
-
-4. If Istio's features are no longer required for a namespace, for example, the "default" namespace, run `kubectl label namespace default istio.io/rev-` to remove the sidecar injection.
-
-Note: Please make sure to replace "myClusterName" and "myResourceGroupName" with the actual names of your cluster and resource group respectively, in all the commands.
-
-### Section 3d: Debug with `istioctl`
+### Monitor - Debug with `istioctl`
 
 1. To verify that [`istioctl`](https://istio.io/latest/docs/setup/getting-started/#download) can connect to the cluster, run the command `istioctl x precheck`. A successful run should display the following message: 
 
@@ -163,29 +171,13 @@ Note: Please make sure to replace "myClusterName" and "myResourceGroupName" with
 
 3. To retrieve information about proxy configuration from an Envoy instance, run `istioctl proxy-config -i aks-istio-system all -o json hello -n default` for example for pod 'hello' in namespace 'default'. Instead of 'all', one of 'clusters|listeners|routes|endpoints|bootstrap|log|secret' can be used.
 
-### Section 3e: Debug - Unexpected pod issues
-
-1. To get the Istiod pod logs, run the command `kubectl logs -l app=istiod -n aks-istio-system`. To list the Istio pods, run `kubectl get po -l app=istiod -n aks-istio-system`.
-
-   1a. To see the recent logs, add `--since=2m` or `--since=1h`. 
- 
-      1a.i. To save the output to a file, add `> istiod_logs.txt`.
-
-2. To get the logs for a pod in `CrashLoopBackOff`, find the failing container with the command `kubectl describe pod -n namespace_name crashing_pod_name`. 
-
-   2a. Then, capture the logs with the command `kubectl logs -n namespace_name crashing_pod_name -c failing_container_name --previous`. 
-  
-   2b. You can also view the [live logs](https://learn.microsoft.com/en-us/azure/azure-monitor/containers/container-insights-livedata-overview) with Container Insights or view historical logs in the [`ContainerLog`](https://learn.microsoft.com/en-us/azure/azure-monitor/containers/container-insights-log-query) table in [Log Analytics](https://learn.microsoft.com/en-us/azure/aks/monitor-aks).
-
-3. View known issues [here](https://github.com/Azure/AKS/issues?q=is%3Aissue+is%3Aopen+istio) or [here](https://github.com/Azure/AKS/releases).
-
-### Section 3f: Debug - Metrics Issues
+### Monitor - Metrics Issues
 
 1. Enable [Managed Prometheus](https://learn.microsoft.com/en-us/azure/azure-monitor/essentials/prometheus-metrics-enable?tabs=azure-portal) and view metrics in the `InsightsMetrics` table. The metrics are listed [here](https://learn.microsoft.com/en-us/azure/azure-monitor/essentials/prometheus-metrics-scrape-default), and the troubleshooting steps are [here](https://learn.microsoft.com/en-us/azure/azure-monitor/essentials/prometheus-metrics-troubleshoot).
 
 2. Use [Azure Managed Grafana](https://learn.microsoft.com/en-Us/azure/azure-monitor/essentials/prometheus-metrics-overview#grafana-integration) to visualize metrics.
 
-### Section 3g: Debug - Connectivity issues between pods
+### Traffic - Connectivity issues between pods
 
 1. To confirm connectivity between pods, create new pods/deployments in the annotated namespace(s), and use curl within the pod(s) to access each other. For example, run the following commands for the default namespace:
 
@@ -220,6 +212,22 @@ Note: Please make sure to replace "myClusterName" and "myResourceGroupName" with
 
    4a. Note the names, namespaces, and IPs of the source and destination pods with `kubectl get pod -A -owide`, and the names and IPs of the source and destination nodes with `kubectl get no -owide`.
    
-### Section 3h: Debug - Connectivity issues through the Istio ingress gateway
+### Traffic - Connectivity issues through the Istio ingress gateway
 
 1. Ensure the ingress gateway resource is created with the appropriate `Gateway` and `VirtualService` resources as shown [here](#section-1b-enable-external-or-internal-istio-ingress-gateway).
+
+### Other - Unexpected pod issues
+
+1. To get the Istiod pod logs, run the command `kubectl logs -l app=istiod -n aks-istio-system`. To list the Istio pods, run `kubectl get po -l app=istiod -n aks-istio-system`.
+
+   1a. To see the recent logs, add `--since=2m` or `--since=1h`. 
+ 
+      1a.i. To save the output to a file, add `> istiod_logs.txt`.
+
+2. To get the logs for a pod in `CrashLoopBackOff`, find the failing container with the command `kubectl describe pod -n namespace_name crashing_pod_name`. 
+
+   2a. Then, capture the logs with the command `kubectl logs -n namespace_name crashing_pod_name -c failing_container_name --previous`. 
+  
+   2b. You can also view the [live logs](https://learn.microsoft.com/en-us/azure/azure-monitor/containers/container-insights-livedata-overview) with Container Insights or view historical logs in the [`ContainerLog`](https://learn.microsoft.com/en-us/azure/azure-monitor/containers/container-insights-log-query) table in [Log Analytics](https://learn.microsoft.com/en-us/azure/aks/monitor-aks).
+
+3. View known issues [here](https://github.com/Azure/AKS/issues?q=is%3Aissue+is%3Aopen+istio) or [here](https://github.com/Azure/AKS/releases).

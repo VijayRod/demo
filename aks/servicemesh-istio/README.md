@@ -95,9 +95,9 @@ kubectl describe pod hello | grep "Started container istio-proxy"
 
 Note: Please make sure to replace "myClusterName" and "myResourceGroupName" with the actual names of your cluster and resource group respectively, in all the commands.
 
-### Section 3d: Debug with [`istioctl`](https://istio.io/latest/docs/setup/getting-started/#download)
+### Section 3d: Debug with `istioctl`
 
-1. To verify that `istioctl` can connect to the cluster, run the command `istioctl x precheck`. A successful run should display the following message: 
+1. To verify that [`istioctl`](https://istio.io/latest/docs/setup/getting-started/#download) can connect to the cluster, run the command `istioctl x precheck`. A successful run should display the following message: 
 
    ```
    No issues found when checking the cluster. Istio is safe to install or upgrade!
@@ -109,11 +109,11 @@ Note: Please make sure to replace "myClusterName" and "myResourceGroupName" with
    Error: unable to retrieve Pods: the server has asked for the client to provide credentials (get pods)
    ```
 
-   1b. For any other error, re-run the command with `--vklog=9` for higher log level verbosity. 
+   1b. For any other error, re-run the istioctl command with `--vklog=9` for higher log level verbosity. 
    
    1c. To save the output to a file, add `> istioctl_logs.txt` to the command.
    
-2. To retrieve the proxy sync status for all Envoys in a mesh, run the command `istioctl proxy-status -i aks-istio-system`. This will return one row for each pod that has the proxy.
+2. To retrieve the proxy sync status for all Envoys in a mesh, run the command `istioctl proxy-status -i aks-istio-system`, or istioctl x precheck -n default to only check a single namespace "default". This will return one row for each pod that has the proxy.
 
    ```
    NAME               CLUSTER        CDS        LDS        EDS        RDS        ECDS         ISTIOD                               VERSION
@@ -127,9 +127,11 @@ Note: Please make sure to replace "myClusterName" and "myResourceGroupName" with
    
    2c. Refer to the advanced user note [below](#section-4-for-advanced-users) for further information about the output if required.
 
+3. To retrieve information about proxy configuration from an Envoy instance, run `istioctl proxy-config -i aks-istio-system all -o json hello -n default` for example for pod 'hello' in namespace 'default'. Instead of 'all', one of 'clusters|listeners|routes|endpoints|bootstrap|log|secret' can be used.
+
 ### Section 3e: Debug - Unexpected pod issues
 
-1. To get the Istiod pod logs, run the command `kubectl logs -l app=istiod -n aks-istio-system`. 
+1. To get the Istiod pod logs, run the command `kubectl logs -l app=istiod -n aks-istio-system`. To list the Istio pods, run `kubectl get po -l app=istiod -n aks-istio-system`.
 
    1a. To see the recent logs, add `--since=2m` or `--since=1h`. 
  

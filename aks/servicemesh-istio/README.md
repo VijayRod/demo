@@ -57,6 +57,8 @@ The Istio project was [started](https://istio.io/latest/about/faq/) by teams fro
 
 Istio was accepted to [CNCF](https://www.cncf.io/projects/istio/) on September 30, 2022.
 
+(Credits: Pkc, Axel.)
+
 ### For Advanced Users
 
 [![Istio Architecture](https://istio.io/latest/docs/ops/deployment/architecture/arch.svg)](https://istio.io/latest/docs/ops/deployment/architecture/)

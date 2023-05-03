@@ -147,7 +147,7 @@ Note: Please make sure to replace "myClusterName" and "myResourceGroupName" with
 
 ### Section 3f: Debug - Metrics Issues
 
-1. Enable [Managed Prometheus](https://learn.microsoft.com/en-us/azure/azure-monitor/essentials/prometheus-metrics-enable?tabs=azure-portal) and view metrics in the `InsightsMetrics` table.
+1. Enable [Managed Prometheus](https://learn.microsoft.com/en-us/azure/azure-monitor/essentials/prometheus-metrics-enable?tabs=azure-portal) and view metrics in the `InsightsMetrics` table. The metrics are listed [here](https://learn.microsoft.com/en-us/azure/azure-monitor/essentials/prometheus-metrics-scrape-default), and the troubleshooting steps are [here](https://learn.microsoft.com/en-us/azure/azure-monitor/essentials/prometheus-metrics-troubleshoot).
 
 2. Use [Azure Managed Grafana](https://learn.microsoft.com/en-Us/azure/azure-monitor/essentials/prometheus-metrics-overview#grafana-integration) to visualize metrics.
 

@@ -20,7 +20,7 @@ This is my personal page dedicated to troubleshooting and debugging AKS with the
   - [Traffic - Connectivity issues between pods](#traffic---connectivity-issues-between-pods)
   - [Traffic - Connectivity issues through the Istio ingress gateway](#traffic---connectivity-issues-through-the-istio-ingress-gateway)
   - [Other - Unexpected pod issues](#other---unexpected-pod-issues)
-  - [Known issues]()
+  - [Known issues](#known-issues)
  
 ## Istio Add-On Configuration
 

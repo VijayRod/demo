@@ -64,7 +64,7 @@ nginx   2/2     Running   0          21s
     Image:         docker.io/istio/proxyv2:1.17.2
 ```
 
-Now enabling the AKS Istio add-on (after running istio upgrade). The test pod has an unhealthy istio-proxy container.
+After running the `istioctl upgrade` command, the AKS Istio add-on was enabled. However, when testing a pod, the `istio-proxy` container was found to be in an unhealthy state.
 
 ```
 ~# az aks mesh enable -g myResourceGroupName -n aksbefore 

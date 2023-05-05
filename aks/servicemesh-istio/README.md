@@ -55,7 +55,7 @@ For more info, refer [this](https://techcommunity.microsoft.com/t5/apps-on-azure
 
 The Istio project was [started](https://istio.io/latest/about/faq/) by teams from Google and IBM in partnership with the Envoy team from Lyft. It’s been developed fully in the open on GitHub.
 
-Istio was accepted to [CNCF](https://www.cncf.io/projects/istio/) on September 30, 2022.
+Istio was accepted to [CNCF](https://www.cncf.io/projects/istio/) on September 30, 2022. You can read more about it in this [blog post](https://www.cncf.io/blog/2022/09/28/istio-sails-into-the-cloud-native-computing-foundation/).
 
 (Credits: Pkc, Axel.)
 

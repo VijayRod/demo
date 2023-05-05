@@ -8,7 +8,7 @@ This is my personal page dedicated to troubleshooting and debugging AKS with the
 - [Istio Add-On Configuration](#istio-add-on-configuration)
   - [Enable or disable the Istio add-on](#enable-or-disable-the-istio-add-on)
   - [Enable external or internal Istio ingress gateway](#enable-external-or-internal-istio-ingress-gateway)
-  - [Know more and know limitations](#know-more-and-know-limitations)
+  - [Know more](#know-more)
   - [A Brief History of the Istio Project](#a-brief-history-of-the-istio-project)
   - [For Advanced Users](#for-advanced-users)
 - [Know the version of the enabled add-on](#know-the-version-of-the-enabled-add-on)
@@ -22,6 +22,7 @@ This is my personal page dedicated to troubleshooting and debugging AKS with the
   - [Traffic - Connectivity issues through the Istio ingress gateway](#traffic---connectivity-issues-through-the-istio-ingress-gateway)
   - [Other - Unexpected pod issues](#other---unexpected-pod-issues)
   - [Known issues](#known-issues)
+    - [Relevant links, known limitations, and future plans](#relevant-links-known-limitations-and-future-plans) 
     - [Installing Istio using `istioctl upgrade` and Istio-based Service Mesh Add-on](#installing-istio-using-istioctl-upgrade-and-istio-based-service-mesh-add-on) 
  
 ## Istio Add-On Configuration

@@ -1,6 +1,6 @@
-This is an unsupported scenario as mentioned [here](../../servicemesh-istio#installing-istio-using-istioctl-upgrade-and-istio-based-service-mesh-add-on).
+The scenarios listed on this page are *not supported*. See [link](../../servicemesh-istio#installing-istio-using-istioctl-upgrade-and-istio-based-service-mesh-add-on) for more details.
 
-### Istio installed *before* the AKS Istio add-on is enabled.
+### Istio installed with `istioctl` *before* the AKS Istio add-on is enabled.
 
 ```
 ~# istioctl upgrade
@@ -139,7 +139,7 @@ nginx   1/2     Running   0          63s
 2023-05-04T10:18:55.134527Z     warning envoy config external/envoy/source/common/config/grpc_stream.h:201      StreamAggregatedResources gRPC config stream to xds-grpc closed since 326s ago: 14, connection error: desc = "transport: authentication handshake failed: x509: certificate signed by unknown authority (possibly because of \"crypto/rsa: verification error\" while trying to verify candidate authority certificate \"cluster.local\")"  thread=13
 ```
 
-### Istio installed *after* the AKS Istio add-on is enabled.
+### Istio installed with `istioctl` *after* the AKS Istio add-on is enabled.
 
 ```
 ~# az aks mesh enable -g myResourceGroupName -n aksafter

@@ -47,9 +47,11 @@ kubectl get svc aks-istio-ingressgateway-external -n aks-istio-ingress # externa
 kubectl get svc aks-istio-ingressgateway-internal -n aks-istio-ingress # internal ingress gateway.
 ```
 
-### Know more and know limitations
+### Know more
 
-For more info, refer [this](https://techcommunity.microsoft.com/t5/apps-on-azure-blog/istio-based-service-mesh-add-on-for-azure-kubernetes-service/ba-p/3800229). [This](https://learn.microsoft.com/en-us/azure/aks/istio-about) includes limitations too. [Roadmap is here](https://aka.ms/asm-roadmap).
+To learn more about the AKS Istio add-on, check out these links:
+- [link1](https://techcommunity.microsoft.com/t5/apps-on-azure-blog/istio-based-service-mesh-add-on-for-azure-kubernetes-service/ba-p/3800229): This is the pubic preview announcement.
+- [link2](https://learn.microsoft.com/en-us/azure/aks/istio-about): This is the documentation.
 
 ### A Brief History of the Istio Project
 
@@ -243,7 +245,13 @@ istiod-asm-1-17-67f9f55ccb-4lxhk   1/1     Running   0          50s
 
 ### Known issues
 
-If there are any known issues, you can find them listed [here](https://github.com/Azure/AKS/issues?q=is%3Aissue+is%3Aopen+istio) or [here](https://github.com/Azure/AKS/releases).
+#### Relevant links, known limitations, and future plans
+
+For any known issues, see [link1](https://github.com/Azure/AKS/issues?q=is%3Aissue+is%3Aopen+istio) and [link2](https://github.com/Azure/AKS/releases).
+
+To review the limitations, check out [link3](https://learn.microsoft.com/en-us/azure/aks/istio-about#limitations).
+
+For the roadmap, visit [link4](https://aka.ms/asm-roadmap).
 
 #### Installing Istio using `istioctl upgrade` and Istio-based Service Mesh Add-on
 

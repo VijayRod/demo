@@ -60,7 +60,7 @@ The Istio project was [started](https://istio.io/latest/about/faq/) by teams fro
 
 Istio was accepted to [CNCF](https://www.cncf.io/projects/istio/) on September 30, 2022. You can read more about it in this [blog post](https://www.cncf.io/blog/2022/09/28/istio-sails-into-the-cloud-native-computing-foundation/).
 
-(Credits: Pkc, Axel.)
+(Credit: Pkc, Axel.)
 
 ### For Advanced Users
 
@@ -263,4 +263,4 @@ Installing Istio with `istioctl upgrade` together with the Istio-based service m
 
 You can use `istioctl uninstall --purge` to clean up the non-add-on objects, but this would also delete the add-on CRDs. Therefore, after the clean up, it may be better to disable the add-on with `az aks mesh disable -g myResourceGroupName -n myClusterName`, and then re-enable it with `az aks mesh enable -g myResourceGroupName -n myClusterName`. Additionally, pods not having the sidecar container would need to be re-created.
 
-(Credits: Sergio Turrent.)
+(Credit: Sergio Turrent.)

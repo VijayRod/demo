@@ -167,4 +167,38 @@ istiod-asm-1-17-67f9f55ccb-h6bl5   1/1     Running   0          39s
 ~# kubectl get ns --show-labels
 NAME                STATUS   AGE     LABELS
 istio-system        Active   129m    kubernetes.io/metadata.name=istio-system
+
+~# kubectl create ns istioaddontest
+namespace/istioaddontest created
+
+~# kubectl label ns istioaddontest istio.io/rev=asm-1-17
+namespace/istioaddontest labeled
+
+~# kubectl run nginx --image=nginx -n istioaddontest
+pod/nginx created
+
+~# kubectl get po nginx -n istioaddontest
+NAME    READY   STATUS    RESTARTS   AGE
+nginx   0/2     Pending   0          10s
+
+~# kubectl describe po nginx -n istioaddontest | grep -e istio-proxy: -e istio/proxy -e healthz
+  istio-proxy:
+    Image:         mcr.microsoft.com/oss/istio/proxyv2:1.17.1-distroless
+    Readiness:  http-get http://:15021/healthz/ready delay=1s timeout=3s period=2s #success=1 #failure=30
+      
+~# kubectl describe po nginx -n istioaddontest
+  Normal   Started           <invalid>                      kubelet            Started container istio-proxy
+  Warning  Unhealthy         <invalid> (x9 over <invalid>)  kubelet            Readiness probe failed: Get "http://10.244.0.212:15021/healthz/ready": dial tcp 10.244.0.212:15021: connect: connection refused
+
+ ~# kubectl logs nginx -n istioaddontest -c istio-proxy | tail
+2023-05-05T00:53:38.273721Z     warn    ca      ca request failed, starting attempt 3 in 407.989929ms
+2023-05-05T00:53:38.682543Z     warn    ca      ca request failed, starting attempt 4 in 796.11504ms
+2023-05-05T00:53:39.479868Z     warn    sds     failed to warm certificate: failed to generate workload certificate: create certificate: rpc error: code = Unavailable desc = connection error: desc = "transport: authentication handshake failed: x509: certificate signed by unknown authority (possibly because of \"crypto/rsa: verification error\" while trying to verify candidate authority certificate \"cluster.local\")"
+2023-05-05T00:53:42.607386Z     info    ads     ADS: new connection for node:nginx.istioaddontest-18
+2023-05-05T00:53:42.958116Z     warn    ca      ca request failed, starting attempt 1 in 98.774281ms
+2023-05-05T00:53:43.057542Z     warn    ca      ca request failed, starting attempt 2 in 202.852812ms
+2023-05-05T00:53:43.261025Z     warn    ca      ca request failed, starting attempt 3 in 386.076186ms
+2023-05-05T00:53:43.647643Z     warn    ca      ca request failed, starting attempt 4 in 776.988066ms
+2023-05-05T00:53:44.425989Z     warning envoy config external/envoy/source/common/config/grpc_stream.h:163      StreamSecrets gRPC config stream to sds-grpc closed: 2, failed to generate secret for ROOTCA: failed to generate workload certificate: create certificate: rpc error: code = Unavailable desc = connection error: desc = "transport: authentication handshake failed: x509: certificate signed by unknown authority (possibly because of \"crypto/rsa: verification error\" while trying to verify candidate authority certificate \"cluster.local\")"  thread=15
+2023-05-05T00:53:44.425793Z     info    ads     ADS: "@" nginx.istioaddontest-18 terminated
 ```

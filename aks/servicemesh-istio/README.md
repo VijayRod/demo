@@ -23,7 +23,7 @@ This is my personal page dedicated to troubleshooting and debugging AKS with the
   - [Other - Unexpected pod issues](#other---unexpected-pod-issues)
   - [Known issues](#known-issues)
     - [Relevant links, known limitations, and future plans](#relevant-links-known-limitations-and-future-plans) 
-    - [Installing Istio using `istioctl upgrade` and Istio-based Service Mesh Add-on](#installing-istio-using-istioctl-upgrade-and-istio-based-service-mesh-add-on) 
+    - [Installing Istio using `istioctl upgrade` and AKS Istio-based service mesh add-on](#installing-istio-using-istioctl-upgrade-and-aks-istio-based-service-mesh-add-on) 
  
 ## Istio Add-On Configuration
 
@@ -254,9 +254,9 @@ To review the limitations, check out [link3](https://learn.microsoft.com/en-us/a
 
 For the roadmap, visit [link4](https://aka.ms/asm-roadmap).
 
-#### Installing Istio using `istioctl upgrade` and Istio-based Service Mesh Add-on
+#### Installing Istio using `istioctl upgrade` and AKS Istio-based service mesh add-on
 
-Installing Istio with `istioctl upgrade` together with the Istio-based service mesh add-on is *not supported*. As documented [here](https://learn.microsoft.com/en-us/azure/aks/istio-about#limitations), the add-on doesn't work with AKS clusters that have Istio installed outside of the add-on installation. Attempting to install the add-on in these circumstances may result in errors and symptoms such as:
+Installing Istio with `istioctl upgrade`, `istioctl install`, or `helm install` while also using the AKS Istio-based service mesh add-on is *not supported*. As documented [here](https://learn.microsoft.com/en-us/azure/aks/istio-about#limitations), the add-on doesn't work with AKS clusters that have Istio installed outside of the add-on installation. Attempting to install the add-on in these circumstances may result in errors and symptoms such as:
 - `istioctl upgrade` deploying objects to the default `istio-system` namespace (which is different from the `aks-istio-system` namespace used by the AKS Istio add-on)
 - Namespaces with a different label found with `kubectl get namespace -l istio-injection=enabled` (the AKS Istio add-on uses explicit versioning for namespace labels, as indicated [here](https://learn.microsoft.com/en-us/azure/aks/istio-deploy-addon#enable-sidecar-injection))
 - Pods deployed with the `istio-proxy` sidecar container using the image from `docker.io/istio` instead of the AKS Istio add-on's `mcr.microsoft.com/oss/istio`, as indicated [here](./logs/istioctl-upgrade.md).

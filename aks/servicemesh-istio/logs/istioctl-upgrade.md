@@ -67,7 +67,7 @@ nginx   2/2     Running   0          21s
 Now enabling the AKS Istio add-on (after running istio upgrade). The test pod has an unhealthy istio-proxy container.
 
 ```
-~# az aks mesh enable -g myResourceGroupName -n aksmeshtest 
+~# az aks mesh enable -g myResourceGroupName -n aksbefore 
 ### The above command has run successfully.
 
 ~# kubectl get crd | grep istio
@@ -142,7 +142,7 @@ nginx   1/2     Running   0          63s
 ### Istio installed *after* the AKS Istio add-on is enabled.
 
 ```
-~# az aks mesh enable -g myResourceGroupName -n aksmeshtesti
+~# az aks mesh enable -g myResourceGroupName -n aksafter
 ### The above command has run successfully.
 
 ~# istioctl upgrade

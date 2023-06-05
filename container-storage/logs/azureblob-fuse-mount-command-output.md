@@ -18,7 +18,7 @@ After creating a storage account with a container, and setting up the secret, th
 First, create the secret:
 
 ```
-kubectl create secret generic azure-secret --from-literal azurestorageaccountname=vrblobstor --from-literal azurestorageaccountkey="KEY" --type=Opaque
+kubectl create secret generic azure-secret --from-literal azurestorageaccountname=name --from-literal azurestorageaccountkey="KEY" --type=Opaque
 ```
 
 Then, apply the following YAML configuration:
@@ -46,7 +46,7 @@ spec:
     readOnly: false
     # volumeid has to be unique for every identical storage blob container in the cluster
     # character `#` is reserved for internal use and cannot be used in volumehandle
-    volumeHandle: a123456
+    volumeHandle: a12345
     volumeAttributes:
       containerName: mycontainer
     nodeStageSecretRef:

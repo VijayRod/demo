@@ -74,7 +74,7 @@ NAME                          READY   STATUS              RESTARTS   AGE
 nginx-works                   1/1     Running             0          8s
 ```
 
-Additionally, the <u>containerd client</u> also indicates that "500m" is an invalid value:
+Additionally, the <ins>containerd client</ins> also indicates that "500m" is an invalid value:
 
 ```
 ctr image pull docker.io/library/hello-world:latest
@@ -82,7 +82,7 @@ ctr run --memory-limit 500m docker.io/library/hello-world:latest hello
 ctr: invalid value "500m" for flag -memory-limit: parse error
 ```
 
-Root Cause Analysis (RCA): When creating a pod, the warning message is shown to the user. However, Kubernetes does not block such pod creations upstream, suggesting that this behavior is by design in Kubernetes. It is the user's responsibility to pay attention to these warnings.
+<ins>Root Cause Analysis (RCA)</ins>: When creating a pod, the warning message is shown to the user. However, Kubernetes does not block such pod creations upstream, suggesting that this behavior is by design in Kubernetes. It is the user's responsibility to pay attention to these warnings.
 
 For more information and references:
 

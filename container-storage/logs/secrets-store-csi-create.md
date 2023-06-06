@@ -94,6 +94,11 @@ aks-secrets-store-csi-driver-windows       0         0         0       0        
 aks-secrets-store-provider-azure           3         3         3       3            3           kubernetes.io/os=linux     3h7m
 aks-secrets-store-provider-azure-windows   0         0         0       0            0           kubernetes.io/os=windows   3h7m
 
+kubectl api-versions | grep secrets-store
+
+secrets-store.csi.x-k8s.io/v1
+secrets-store.csi.x-k8s.io/v1alpha1
+
 kubectl get crd | grep store
 
 secretproviderclasses.secrets-store.csi.x-k8s.io            2023-06-06T14:11:50Z

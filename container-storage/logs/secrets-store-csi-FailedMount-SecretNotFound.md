@@ -76,3 +76,11 @@ Warning  FailedMount  91s (x21 over 28m)   kubelet            MountVolume.SetUp 
 kubectl delete po busybox-secrets-store-inline-user-msi --force
 kubectl delete SecretProviderClass azure-kvname-user-msi
 ```
+
+Similar errors can occur if a key or certificate is not found. The link in the error points to [Azure Key Vault recovery management with soft delete and purge protection](https://learn.microsoft.com/en-us/azure/key-vault/general/key-vault-recovery?tabs=azure-powershell).
+
+```
+Warning  FailedMount  26s (x7 over 58s)  kubelet            MountVolume.SetUp failed for volume "secrets-store01-inline" : rpc error: code = Unknown desc = failed to mount secrets store objects for pod default/busybox-secrets-store-inline-user-msi, err: rpc error: code = Unknown desc = failed to mount objects, error: failed to get objectType:key, objectName:key1, objectVersion:: keyvault.BaseClient#GetKey: Failure responding to request: StatusCode=404 -- Original Error: autorest/azure: Service returned an error. Status=404 Code="KeyNotFound" Message="A key with (name/id) key1 was not found in this key vault. If you recently deleted this key you may be able to recover it using the correct recovery command. For help resolving this issue, please see https://go.microsoft.com/fwlink/?linkid=2125182"
+  
+Warning  FailedMount  1s (x5 over 9s)  kubelet            MountVolume.SetUp failed for volume "secrets-store01-inline" : rpc error: code = Unknown desc = failed to mount secrets store objects for pod default/busybox-secrets-store-inline-user-msi, err: rpc error: code = Unknown desc = failed to mount objects, error: failed to get objectType:cert, objectName:cert1, objectVersion:: keyvault.BaseClient#GetCertificate: Failure responding to request: StatusCode=404 -- Original Error: autorest/azure: Service returned an error. Status=404 Code="CertificateNotFound" Message="A certificate with (name/id) cert1 was not found in this key vault. If you recently deleted this certificate you may be able to recover it using the correct recovery command. For help resolving this issue, please see https://go.microsoft.com/fwlink/?linkid=2125182"
+```

@@ -7,7 +7,9 @@ RCA: Verify that the secret "secret1" mentioned in the error exists in the key v
 rgname=resourceGroupName
 clustername=clusterName
 keyvaultName=keyvaultName
+```
 
+```
 userAssignedIdentityID=$(az aks show -g $rgname -n $clustername --query addonProfiles.azureKeyvaultSecretsProvider.identity.clientId -o tsv)
 tenantId=$(az aks show -g $rgname -n $clustername --query identity.tenantId -o tsv)
 
@@ -61,7 +63,9 @@ spec:
         volumeAttributes:
           secretProviderClass: "azure-kvname-user-msi"
 EOF
+```
 
+```
 kubectl get po busybox-secrets-store-inline-user-msi
 
 NAME                                    READY   STATUS              RESTARTS   AGE

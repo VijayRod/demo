@@ -21,7 +21,9 @@ az keyvault set-policy -n $keyvaultName --key-permissions get --spn "$userAssign
 az keyvault set-policy -n $keyvaultName --secret-permissions get --spn "$userAssignedIdentityID"
 # Set policy to access certs in your key vault
 az keyvault set-policy -n $keyvaultName --certificate-permissions get --spn "$userAssignedIdentityID"
+```
 
+```
 userAssignedIdentityID=$(az aks show -g $rgname -n $clustername --query addonProfiles.azureKeyvaultSecretsProvider.identity.clientId -o tsv)
 tenantId=$(az aks show -g $rgname -n $clustername --query identity.tenantId -o tsv)
 az aks get-credentials -g $rgname -n $clustername --overwrite-existing

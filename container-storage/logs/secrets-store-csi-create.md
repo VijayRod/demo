@@ -124,9 +124,34 @@ The behavior of this command has been altered by the following extension: aks-pr
 ```
 
 ```
-# Describe the pod.
-kubectl describe pod/busybox-secrets-store-inline-user-msi
-kubectl get pod/busybox-secrets-store-inline-user-msi
+# Sample describes.
+
+Name:         azure-kvname-user-msi
+Namespace:    default
+Labels:       <none>
+Annotations:  <none>
+API Version:  secrets-store.csi.x-k8s.io/v1
+Kind:         SecretProviderClass
+Metadata:
+  Creation Timestamp:  2023-06-07T09:29:18Z
+  Generation:          1
+  Resource Version:    218906
+  UID:                 34405d15-c71b-46a1-9070-6d7be195c230
+Spec:
+  Parameters:
+    Cloud Name:
+    Keyvault Name:  dummyName
+    Objects:        array:
+  - |
+    objectName: ExampleSecret
+    objectType: secret              # object types: secret, key, or cert
+    objectVersion: ""               # [OPTIONAL] object versions, default to latest if empty
+    Tenant Id:                  dummyt-1111-1111-1111-111111111111
+    Use Pod Identity:           false
+    Use VM Managed Identity:    true
+    User Assigned Identity ID:  dummyi-1111-1111-1111-111111111111
+  Provider:                     azure
+Events:                         <none>
 
 Name:             busybox-secrets-store-inline-user-msi
 Namespace:        default
@@ -187,6 +212,14 @@ Node-Selectors:              <none>
 Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
                              node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
 Events:                      <none>
+
+```
+
+```
+# Describe the secret provide class and pod.
+kubectl describe SecretProviderClass azure-kvname-user-msi
+kubectl describe pod/busybox-secrets-store-inline-user-msi
+kubectl get pod/busybox-secrets-store-inline-user-msi
 
 # Cleanup.
 kubectl delete pod/busybox-secrets-store-inline-user-msi --force

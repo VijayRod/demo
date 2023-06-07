@@ -105,6 +105,22 @@ kubectl get crd | grep store
 
 secretproviderclasses.secrets-store.csi.x-k8s.io            2023-06-06T14:11:50Z
 secretproviderclasspodstatuses.secrets-store.csi.x-k8s.io   2023-06-06T14:11:50Z
+
+az aks show -g $rgname -n $clustername --query addonProfiles.azureKeyvaultSecretsProvider
+
+The behavior of this command has been altered by the following extension: aks-preview
+{
+  "config": {
+    "enableSecretRotation": "false",
+    "rotationPollInterval": "2m"
+  },
+  "enabled": true,
+  "identity": {
+    "clientId": "dummyidc-1111-1111-1111-111111111111",
+    "objectId": "dummyido-1111-1111-1111-111111111111",
+    "resourceId": "/subscriptions/dummyids-1111-1111-1111-111111111111/resourcegroups/dummyResourceGroupName/providers/Microsoft.ManagedIdentity/userAssignedIdentities/azurekeyvaultsecretsprovider-akskv"
+  }
+}
 ```
 
 ```

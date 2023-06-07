@@ -128,6 +128,66 @@ The behavior of this command has been altered by the following extension: aks-pr
 kubectl describe pod/busybox-secrets-store-inline-user-msi
 kubectl get pod/busybox-secrets-store-inline-user-msi
 
+Name:             busybox-secrets-store-inline-user-msi
+Namespace:        default
+Priority:         0
+Service Account:  default
+Node:             aks-nodepool1-32184550-vmss000000/10.224.0.4
+Start Time:       Tue, 06 Jun 2023 17:44:54 +0000
+Labels:           <none>
+Annotations:      <none>
+Status:           Running
+IP:               10.244.2.3
+IPs:
+  IP:  10.244.2.3
+Containers:
+  busybox:
+    Container ID:  containerd://75aadeee6dcf91587f551ba9293feb18e39e107f73d0876f52fb305ec362ba83
+    Image:         registry.k8s.io/e2e-test-images/busybox:1.29-1
+    Image ID:      registry.k8s.io/e2e-test-images/busybox@sha256:39e1e963e5310e9c313bad51523be012ede7b35bb9316517d19089a010356592
+    Port:          <none>
+    Host Port:     <none>
+    Command:
+      /bin/sleep
+      10000
+    State:          Running
+      Started:      Wed, 07 Jun 2023 07:38:21 +0000
+    Last State:     Terminated
+      Reason:       Completed
+      Exit Code:    0
+      Started:      Wed, 07 Jun 2023 04:51:40 +0000
+      Finished:     Wed, 07 Jun 2023 07:38:20 +0000
+    Ready:          True
+    Restart Count:  5
+    Environment:    <none>
+    Mounts:
+      /mnt/secrets-store from secrets-store01-inline (ro)
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-774tx (ro)
+Conditions:
+  Type              Status
+  Initialized       True
+  Ready             True
+  ContainersReady   True
+  PodScheduled      True
+Volumes:
+  secrets-store01-inline:
+    Type:              CSI (a Container Storage Interface (CSI) volume source)
+    Driver:            secrets-store.csi.k8s.io
+    FSType:
+    ReadOnly:          true
+    VolumeAttributes:      secretProviderClass=azure-kvname-user-msi
+  kube-api-access-774tx:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    ConfigMapOptional:       <nil>
+    DownwardAPI:             true
+QoS Class:                   BestEffort
+Node-Selectors:              <none>
+Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+Events:                      <none>
+
 # Cleanup.
 kubectl delete pod/busybox-secrets-store-inline-user-msi --force
 kubectl delete secretproviderclass.secrets-store.csi.x-k8s.io/azure-kvname-user-msi

@@ -26,7 +26,8 @@ Wait for ProvisioningState=Succeeded for the installed extension.
 az k8s-extension list --cluster-type managedClusters -g $rgname --cluster-name $clustername -otable
 ```
 
-TBD https://learn.microsoft.com/en-us/azure/storage/container-storage/use-container-storage-with-managed-disks:
 ```
 kubectl api-versions | grep containerstorage
+
+containerstorage.azure.com/v1alpha1
 ```

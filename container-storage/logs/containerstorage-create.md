@@ -7,7 +7,7 @@ clustername=clusterName
 ```
 
 ```
-az aks create -g $rgname -n $clustername -l westeurope # Optionally with region.
+az aks create -g $rgname -n $clustername -s Standard_D4s_v5 -l westeurope # Minimum of four virtual CPUs (vCPUs). Optionally with region.
 
 az aks nodepool update -g $rgname --cluster-name $clustername -n nodepool1 --labels acstor.azure.com/io-engine=acstor
 # az aks nodepool show -g $rgname --cluster-name $clustername -n nodepool1 --query nodeLabels | grep acstor # Has output "acstor.azure.com/io-engine": "acstor"

@@ -118,7 +118,7 @@ The behavior of this command has been altered by the following extension: aks-pr
   "identity": {
     "clientId": "dummyidc-1111-1111-1111-111111111111",
     "objectId": "dummyido-1111-1111-1111-111111111111",
-    "resourceId": "/subscriptions/dummyids-1111-1111-1111-111111111111/resourcegroups/dummyResourceGroupName/providers/Microsoft.ManagedIdentity/userAssignedIdentities/azurekeyvaultsecretsprovider-akskv"
+    "resourceId": "/subscriptions/dummyids-1111-1111-1111-111111111111/resourcegroups/dummyResourceGroupName/providers/Microsoft.ManagedIdentity/userAssignedIdentities/azurekeyvaultsecretsprovider-dummyclustername"
   }
 }
 ```

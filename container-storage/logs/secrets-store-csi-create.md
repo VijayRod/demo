@@ -11,10 +11,6 @@ keyvaultResourceGroupName=keyvaultResourceGroupName
 ```
 az aks create -g $rgname -n $clustername --enable-addons azure-keyvault-secrets-provider
 # (for existing cluster) az aks enable-addons --addons azure-keyvault-secrets-provider -g $rgname -n $clustername
-az aks get-credentials -g $rgname -n $clustername --overwrite-existing
-
-userAssignedIdentityID=$(az aks show -g $rgname -n $clustername --query addonProfiles.azureKeyvaultSecretsProvider.identity.clientId -o tsv)
-tenantId=$(az aks show -g $rgname -n $clustername --query identity.tenantId -o tsv)
 
 az keyvault create -g $keyvaultResourceGroupName -n $keyvaultName --retention-days 7 --public-network-access Enabled  --enable-rbac-authorization false # Test.
 az keyvault secret set --vault-name $keyvaultName -n ExampleSecret --value MyAKSExampleSecret
@@ -25,6 +21,10 @@ az keyvault set-policy -n $keyvaultName --key-permissions get --spn "$userAssign
 az keyvault set-policy -n $keyvaultName --secret-permissions get --spn "$userAssignedIdentityID"
 # Set policy to access certs in your key vault
 az keyvault set-policy -n $keyvaultName --certificate-permissions get --spn "$userAssignedIdentityID"
+
+userAssignedIdentityID=$(az aks show -g $rgname -n $clustername --query addonProfiles.azureKeyvaultSecretsProvider.identity.clientId -o tsv)
+tenantId=$(az aks show -g $rgname -n $clustername --query identity.tenantId -o tsv)
+az aks get-credentials -g $rgname -n $clustername --overwrite-existing
 
 cat << EOF | kubectl apply -f -
 # This is a SecretProviderClass example using user-assigned identity to access your key vault

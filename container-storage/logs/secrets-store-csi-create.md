@@ -77,6 +77,18 @@ EOF
 ```
 
 ```
+## show secrets held in secrets-store
+kubectl exec busybox-secrets-store-inline-user-msi -- ls /mnt/secrets-store/
+
+ExampleSecret
+
+## print a test secret 'ExampleSecret' held in secrets-store
+kubectl exec busybox-secrets-store-inline-user-msi -- cat /mnt/secrets-store/ExampleSecret
+
+MyAKSExampleSecretroot
+```
+
+```
 # Describe the secret provide class and pod.
 kubectl describe SecretProviderClass azure-kvname-user-msi
 kubectl describe pod/busybox-secrets-store-inline-user-msi

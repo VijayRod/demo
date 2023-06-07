@@ -76,6 +76,17 @@ spec:
 EOF
 ```
 
+```
+# Describe the secret provide class and pod.
+kubectl describe SecretProviderClass azure-kvname-user-msi
+kubectl describe pod/busybox-secrets-store-inline-user-msi
+kubectl get pod/busybox-secrets-store-inline-user-msi
+
+# Cleanup.
+kubectl delete pod/busybox-secrets-store-inline-user-msi --force
+kubectl delete secretproviderclass.secrets-store.csi.x-k8s.io/azure-kvname-user-msi
+```
+
 Each node has a aks-secrets-store-csi-driver pod and a aks-secrets-store-provider-azure pod.
 
 ```
@@ -213,15 +224,4 @@ Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists fo
                              node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
 Events:                      <none>
 
-```
-
-```
-# Describe the secret provide class and pod.
-kubectl describe SecretProviderClass azure-kvname-user-msi
-kubectl describe pod/busybox-secrets-store-inline-user-msi
-kubectl get pod/busybox-secrets-store-inline-user-msi
-
-# Cleanup.
-kubectl delete pod/busybox-secrets-store-inline-user-msi --force
-kubectl delete secretproviderclass.secrets-store.csi.x-k8s.io/azure-kvname-user-msi
 ```

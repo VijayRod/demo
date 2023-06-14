@@ -1,0 +1,41 @@
+```
+# Replace the below with appropriate values.
+rgname=
+clustername=
+keyvaultName=
+keyvaultResourceGroupName=
+keyName=ContosoFirstKey
+```
+
+```
+# Key vault and key.
+az keyvault create -g $keyvaultResourceGroupName -n $keyvaultName --enable-purge-protection true --retention-days 7
+az keyvault key create --vault-name $keyvaultName --name $keyName --protection software
+keyVaultId=$(az keyvault show --name $keyvaultName --query "[id]" -o tsv)
+keyVaultKeyUrl=$(az keyvault key show --vault-name $keyvaultName --name $keyName --query "[key.kid]" -o tsv)
+
+# disk-encryption-set.
+az disk-encryption-set create -n myDiskEncryptionSetName  -g $rgname --source-vault $keyVaultId --key-url $keyVaultKeyUrl
+desIdentity=$(az disk-encryption-set show -n myDiskEncryptionSetName  -g $rgname --query "[identity.principalId]" -o tsv)
+az keyvault set-policy -g $keyvaultResourceGroupName -n $keyvaultName --object-id $desIdentity --key-permissions wrapkey unwrapkey get
+
+# cluster.
+diskEncryptionSetId=$(az disk-encryption-set show -n mydiskEncryptionSetName -g $rgname --query "[id]" -o tsv)
+az aks create -g $rgname -n $clustername --node-osdisk-diskencryptionset-id $diskEncryptionSetId # --node-osdisk-type Ephemeral
+```
+
+```
+az aks show -g $rgname -n $clustername --query diskEncryptionSetId -otsv
+
+# Here is a sample output below.
+# The behavior of this command has been altered by the following extension: aks-preview
+# /subscriptions/dummys-1111-1111-1111-111111111111/resourceGroups/resourceGroupName/providers/Microsoft.Compute/diskEncryptionSets/myDiskEncryptionSetName
+```
+
+Here are some related links:
+
+- [aks/azure-disk-customer-managed-keys](https://learn.microsoft.com/en-us/azure/aks/azure-disk-customer-managed-keys)
+- [key-vault/adding-a-key-secret](https://learn.microsoft.com/en-us/azure/key-vault/general/manage-with-cli2#adding-a-key-secret-or-certificate-to-the-key-vault)
+- [information-protection/byok-price-restrictions](https://learn.microsoft.com/en-us/azure/information-protection/byok-price-restrictions)
+- [virtual-machines/disk-encryption#customer-managed-keys](https://learn.microsoft.com/en-us/azure/virtual-machines/disk-encryption#customer-managed-keys)
+- [virtual-machines/ephemeral-os-disks#customer-managed-key](https://learn.microsoft.com/en-us/azure/virtual-machines/ephemeral-os-disks#customer-managed-key).

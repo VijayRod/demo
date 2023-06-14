@@ -27,7 +27,8 @@ az k8s-extension list --cluster-type managedClusters -g $rgname --cluster-name $
 ```
 
 ```
+az aks get-credentials -g $rgname -n $clustername --overwrite-existing
 kubectl api-versions | grep containerstorage
 
-containerstorage.azure.com/v1alpha1
+# This returns -> containerstorage.azure.com/v1alpha1
 ```

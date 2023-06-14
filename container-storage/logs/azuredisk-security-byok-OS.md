@@ -26,6 +26,8 @@ diskEncryptionSetId=$(az disk-encryption-set show -n mydiskEncryptionSetName -g 
 az aks create -g $rgname -n $clustername --node-osdisk-diskencryptionset-id $diskEncryptionSetId # --node-osdisk-type Ephemeral
 ```
 
+To verify, you can use the following command:
+
 ```
 az aks show -g $rgname -n $clustername --query diskEncryptionSetId -otsv
 

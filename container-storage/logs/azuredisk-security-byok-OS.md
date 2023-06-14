@@ -23,7 +23,7 @@ az keyvault set-policy -g $keyvaultResourceGroupName -n $keyvaultName --object-i
 
 # cluster.
 diskEncryptionSetId=$(az disk-encryption-set show -n mydiskEncryptionSetName -g $rgname --query "[id]" -o tsv)
-az aks create -g $rgname -n $clustername --node-osdisk-diskencryptionset-id $diskEncryptionSetId # --node-osdisk-type Ephemeral
+az aks create -g $rgname -n $clustername --node-osdisk-diskencryptionset-id $diskEncryptionSetId # --node-osdisk-type Ephemeral -s Standard_DS3_v2
 ```
 
 To verify, you can use the following command:

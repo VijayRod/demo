@@ -1,3 +1,5 @@
+The provided code snippet demonstrates the creation and configuration of Azure Disk encryption resources, including a key vault, key, disk encryption set, and an AKS cluster with disk encryption set integration with BYOK (Bring Your Own Key).
+
 ```
 # Replace the below with appropriate values.
 rgname=

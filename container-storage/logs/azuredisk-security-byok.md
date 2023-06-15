@@ -33,7 +33,19 @@ az aks show -g $rgname -n $clustername --query diskEncryptionSetId -otsv
 
 # Here is a sample output below.
 # The behavior of this command has been altered by the following extension: aks-preview
-# /subscriptions/dummys-1111-1111-1111-111111111111/resourceGroups/resourceGroupName/providers/Microsoft.Compute/diskEncryptionSets/myDiskEncryptionSetName
+# /subscriptions/dummys-1111-1111-1111-111111111111/resourceGroups/diskEncryptionSetResourceGroupName/providers/Microsoft.Compute/diskEncryptionSets/myDiskEncryptionSetName
+```
+
+```
+# This is an optional vmss command. Replace the name of the VM Scale Set in the following command.
+nodeResourceGroupName=$(az aks show -g $rgname -n $clustername --query nodeResourceGroup -otsv)
+az vmss show -g $nodeResourceGroupName -n aks-nodepool1-18780979-vmss --instance-id 0 --query storageProfile.osDisk.managedDisk.diskEncryptionSet
+
+# Here is a sample output below.
+# {
+#   "id": "/subscriptions/dummys-1111-1111-1111-111111111111/resourceGroups/diskEncryptionSetResourceGroupName/providers/Microsoft.Compute/diskEncryptionSets/myDiskEncryptionSetName",
+#   "resourceGroup": "diskEncryptionSetResourceGroupName"
+# }
 ```
 
 Here are some related links:

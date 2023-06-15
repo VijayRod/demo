@@ -46,6 +46,8 @@ az vmss show -g $nodeResourceGroupName -n aks-nodepool1-18780979-vmss --instance
 #   "id": "/subscriptions/dummys-1111-1111-1111-111111111111/resourceGroups/diskEncryptionSetResourceGroupName/providers/Microsoft.Compute/diskEncryptionSets/myDiskEncryptionSetName",
 #   "resourceGroup": "diskEncryptionSetResourceGroupName"
 # }
+
+# Alternatively, when navigating to the "Disks" section of the VM Scale Set in the portal, the OS Disk Encryption is shown as "SSE with CMK" (Customer Managed Key) instead of "SSE with PMK" (Platform Managed Key).
 ```
 
 Here are some related links:

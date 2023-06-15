@@ -24,10 +24,7 @@ Verify if the CRDs are installed by running the following command and checking f
 
 ```
 kubectl api-versions | grep containerstorage
-```
 
-It returns output as shown below.
-
-```
-containerstorage.azure.com/v1alpha1
+# Here is a sample output below.
+# containerstorage.azure.com/v1alpha1
 ```

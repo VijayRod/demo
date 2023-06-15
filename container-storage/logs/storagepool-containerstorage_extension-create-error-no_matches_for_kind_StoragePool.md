@@ -1,4 +1,4 @@
-RCA: This error indicates that the custom resource definitions (CRDs) for container storage  are not installed in the cluster. To resolve this issue, you can install the microsoft.azurecontainerstorage extension in this cluster with the `az k8s-extension create` command as indicated [here](containerstorage-create.md).
+RCA: This error indicates that the custom resource definitions (CRDs) for container storage  are not installed in the cluster. To resolve this issue, you can install the microsoft.azurecontainerstorage extension in this cluster with the `az k8s-extension create` command as indicated [here](storagepool-containerstorage_extension-create.md).
 
 ```
 cat << EOF | k apply -f -

@@ -56,4 +56,5 @@ Here are some related links:
 - [key-vault/adding-a-key-secret](https://learn.microsoft.com/en-us/azure/key-vault/general/manage-with-cli2#adding-a-key-secret-or-certificate-to-the-key-vault)
 - [information-protection/byok-price-restrictions](https://learn.microsoft.com/en-us/azure/information-protection/byok-price-restrictions)
 - [virtual-machines/disk-encryption#customer-managed-keys](https://learn.microsoft.com/en-us/azure/virtual-machines/disk-encryption#customer-managed-keys)
+- [virtual-machines/disk-encryption#encryption-at-host---end-to-end-encryption-for-your-vm-data](https://learn.microsoft.com/en-us/azure/virtual-machines/disk-encryption#encryption-at-host---end-to-end-encryption-for-your-vm-data)
 - [virtual-machines/ephemeral-os-disks#customer-managed-key](https://learn.microsoft.com/en-us/azure/virtual-machines/ephemeral-os-disks#customer-managed-key).

@@ -1,4 +1,4 @@
-This uses the steps mentioned in https://learn.microsoft.com/en-us/azure/storage/container-storage/use-container-storage-with-managed-disks after adding the container storage extension mentioned here. The disk for the storage pool is created in the MC_ node resource group by the Azure Container Storage orchestrator. 
+This uses the steps mentioned in https://learn.microsoft.com/en-us/azure/storage/container-storage/use-container-storage-with-managed-disks after adding the container storage extension mentioned [here](storagepool-containerstorage_extension-create.md). The disk for the storage pool is created in the MC_ node resource group by the Azure Container Storage orchestrator. 
 
 ```
 cat << EOF | kubectl apply -f -

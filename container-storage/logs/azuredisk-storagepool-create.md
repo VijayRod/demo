@@ -52,9 +52,4 @@ spec:
 EOF
 ```
 
-```
-# Cleanup.
-kubectl delete pod fiopod
-kubectl delete pvc azurediskpvc
-kubectl delete storagepool azuredisk -n acstor
-```
+

@@ -18,16 +18,32 @@ az aks nodepool add -g $rgname --cluster-name $clustername -n $nodepoolname -s S
 export AKS_MI_OBJECT_ID=$(az aks show -g $rgname -n $clustername --query "identityProfile.kubeletidentity.objectId" -o tsv)
 export AKS_NODE_RG=$(az aks show -g $rgname --n $clustername  --query "nodeResourceGroup" -o tsv)
 az role assignment create --assignee $AKS_MI_OBJECT_ID --role "Contributor" --resource-group "$AKS_NODE_RG"
-
-# azurecontainerstorage extension create.
-az k8s-extension create --cluster-type managedClusters -g $rgname --cluster-name $clustername --name azurecontainerstorage --extension-type microsoft.azurecontainerstorage --scope cluster --release-train prod --release-namespace acstor
-az k8s-extension list --cluster-type managedClusters -g $rgname --cluster-name $clustername
 ```
 
 ```
+# Get cluster credentials.
+az aks get-credentials -g $rgname -n $clustername --overwrite-existing
+
+# List the nodes associated with Azure Container Storage.
+kubectl get no --selector=acstor.azure.com/io-engine=acstor
+
+# Here is a sample output below.
+# NAME                               STATUS   ROLES   AGE   VERSION
+# aks-npacstor-26728444-vmss000000   Ready    agent   30m   v1.25.6
+# aks-npacstor-26728444-vmss000001   Ready    agent   30m   v1.25.6
+# aks-npacstor-26728444-vmss000002   Ready    agent   30m   v1.25.6
+
 # Miscellaneous notes.
 # az aks nodepool update -g $rgname --cluster-name $clustername -n $nodepoolname --labels acstor.azure.com/io-engine=acstor
 # az aks nodepool show -g $rgname --cluster-name $clustername -n $nodepoolname --query nodeLabels | grep acstor ## Has output "acstor.azure.com/io-engine": "acstor"
+```
+
+Install the Azure Container Storage extension.
+
+```
+# azurecontainerstorage extension create.
+az k8s-extension create --cluster-type managedClusters -g $rgname --cluster-name $clustername --name azurecontainerstorage --extension-type microsoft.azurecontainerstorage --scope cluster --release-train prod --release-namespace acstor
+az k8s-extension list --cluster-type managedClusters -g $rgname --cluster-name $clustername
 ```
 
 Wait for ProvisioningState=Succeeded for the installed extension.
@@ -37,16 +53,6 @@ az k8s-extension list --cluster-type managedClusters -g $rgname --cluster-name $
 ```
 
 ```
-az aks get-credentials -g $rgname -n $clustername --overwrite-existing
-
-kubectl get no --selector=acstor.azure.com/io-engine=acstor
-
-# Here is a sample output below.
-# NAME                               STATUS   ROLES   AGE   VERSION
-# aks-npacstor-26728444-vmss000000   Ready    agent   30m   v1.25.6
-# aks-npacstor-26728444-vmss000001   Ready    agent   30m   v1.25.6
-# aks-npacstor-26728444-vmss000002   Ready    agent   30m   v1.25.6
-
 kubectl api-versions | grep containerstorage
 
 # Here is a sample output below.

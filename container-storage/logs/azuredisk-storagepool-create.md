@@ -1,6 +1,7 @@
-This uses the steps mentioned in https://learn.microsoft.com/en-us/azure/storage/container-storage/use-container-storage-with-managed-disks after adding the container storage extension mentioned [here](storagepool-containerstorage_extension-create.md). The disk for the storage pool is created in the MC_ node resource group by the Azure Container Storage orchestrator. 
+This uses the steps mentioned in https://learn.microsoft.com/en-us/azure/storage/container-storage/use-container-storage-with-managed-disks after adding the container storage extension mentioned [here](storagepool-containerstorage_extension-create.md). 
 
 ```
+# Create the storage pool.
 cat << EOF | kubectl apply -f -
 apiVersion: containerstorage.azure.com/v1alpha1
 kind: StoragePool
@@ -16,6 +17,7 @@ EOF
 ```
 
 ```
+# Create the persistent volume claim and the pod.
 cat << EOF | kubectl apply -f -
 apiVersion: v1
 kind: PersistentVolumeClaim

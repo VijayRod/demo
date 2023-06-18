@@ -12,7 +12,7 @@ nodepoolname=npacstor
 az aks create -g $rgname -n $clustername -l westeurope # Optionally with region.
 
 # Nodepool create.
-az aks nodepool add -g $rgname --cluster-name $clustername -n $nodepoolname -s Standard_D4s_v5  --node-count 3 --labels acstor.azure.com/io-engine=acstor --node-osdisk-type Ephemeral --mode user ## Required minimum of three nodes, four virtual CPUs (vCPUs), and the label.
+az aks nodepool add -g $rgname --cluster-name $clustername -n $nodepoolname -s Standard_D8s_v3 --node-count 3 --labels acstor.azure.com/io-engine=acstor --node-osdisk-type Ephemeral --mode user ## Required minimum of three nodes, four virtual CPUs (vCPUs), and the label.
 
 # Role assignment create.
 export AKS_MI_OBJECT_ID=$(az aks show -g $rgname -n $clustername --query "identityProfile.kubeletidentity.objectId" -o tsv)

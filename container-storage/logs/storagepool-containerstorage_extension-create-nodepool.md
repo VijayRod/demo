@@ -10,7 +10,9 @@ nodepoolname=npacstor
 ```
 # Create a node pool to associate with Azure Container Storage.
 az aks nodepool add -g $rgname --cluster-name $clustername -n $nodepoolname -s Standard_D8s_v3 --node-count 3 --labels acstor.azure.com/io-engine=acstor --node-osdisk-type Ephemeral --mode user ## Required minimum of three nodes, four virtual CPUs (vCPUs), and the label.
+```
 
+```
 # Get cluster credentials.
 az aks get-credentials -g $rgname -n $clustername --overwrite-existing
 

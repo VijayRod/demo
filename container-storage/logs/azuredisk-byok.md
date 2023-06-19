@@ -10,18 +10,18 @@ keyName=ContosoFirstKey
 ```
 
 ```
-# Key vault and key.
+# Create the key vault and the key.
 az keyvault create -g $keyvaultResourceGroupName -n $keyvaultName --enable-purge-protection true --retention-days 7
 az keyvault key create --vault-name $keyvaultName --name $keyName --protection software
 keyVaultId=$(az keyvault show --name $keyvaultName --query "[id]" -o tsv)
 keyVaultKeyUrl=$(az keyvault key show --vault-name $keyvaultName --name $keyName --query "[key.kid]" -o tsv)
 
-# disk-encryption-set.
+# Create the disk-encryption-set.
 az disk-encryption-set create -n myDiskEncryptionSetName  -g $rgname --source-vault $keyVaultId --key-url $keyVaultKeyUrl
 desIdentity=$(az disk-encryption-set show -n myDiskEncryptionSetName  -g $rgname --query "[identity.principalId]" -o tsv)
 az keyvault set-policy -g $keyvaultResourceGroupName -n $keyvaultName --object-id $desIdentity --key-permissions wrapkey unwrapkey get
 
-# cluster.
+# Create the cluster.
 diskEncryptionSetId=$(az disk-encryption-set show -n mydiskEncryptionSetName -g $rgname --query "[id]" -o tsv)
 az aks create -g $rgname -n $clustername --node-osdisk-diskencryptionset-id $diskEncryptionSetId # --node-osdisk-type Ephemeral -s Standard_DS3_v2
 ```

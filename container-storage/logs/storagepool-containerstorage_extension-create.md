@@ -1,4 +1,4 @@
-This page utilizes the creation steps mentioned in the following Microsoft Azure documentation: https://learn.microsoft.com/en-us/azure/storage/container-storage/container-storage-aks-quickstart?tabs=cli. For additional information, you can refer to the [update](https://azure.microsoft.com/en-us/updates/public-preview-azure-container-storage/) and the [blog](https://azure.microsoft.com/en-us/blog/transforming-containerized-applications-with-azure-container-storage-now-in-preview/).
+This page utilizes the creation steps mentioned in the following Microsoft Azure documentation: https://learn.microsoft.com/en-us/azure/storage/container-storage/container-storage-aks-quickstart?tabs=cli. For additional information, you can refer to the [update](https://azure.microsoft.com/en-us/updates/public-preview-azure-container-storage/) and the [blog](https://azure.microsoft.com/en-us/blog/transforming-containerized-applications-with-azure-container-storage-now-in-preview/). After creating installing the Azure Container Storage extension, proceed with creating a labeled node pool.
 
 ```
 # Replace values in the below.
@@ -15,27 +15,6 @@ az aks create -g $rgname -n $clustername -l westeurope # Optionally with region.
 export AKS_MI_OBJECT_ID=$(az aks show -g $rgname -n $clustername --query "identityProfile.kubeletidentity.objectId" -o tsv)
 export AKS_NODE_RG=$(az aks show -g $rgname --n $clustername  --query "nodeResourceGroup" -o tsv)
 az role assignment create --assignee $AKS_MI_OBJECT_ID --role "Contributor" --resource-group "$AKS_NODE_RG"
-```
-
-```
-# Create a node pool to associate with Azure Container Storage.
-az aks nodepool add -g $rgname --cluster-name $clustername -n $nodepoolname -s Standard_D8s_v3 --node-count 3 --labels acstor.azure.com/io-engine=acstor --node-osdisk-type Ephemeral --mode user ## Required minimum of three nodes, four virtual CPUs (vCPUs), and the label.
-
-# Get cluster credentials.
-az aks get-credentials -g $rgname -n $clustername --overwrite-existing
-
-# List the nodes associated with Azure Container Storage.
-kubectl get no --selector=acstor.azure.com/io-engine=acstor
-
-# Here is a sample output below.
-# NAME                               STATUS   ROLES   AGE   VERSION
-# aks-npacstor-26728444-vmss000000   Ready    agent   30m   v1.25.6
-# aks-npacstor-26728444-vmss000001   Ready    agent   30m   v1.25.6
-# aks-npacstor-26728444-vmss000002   Ready    agent   30m   v1.25.6
-
-# Miscellaneous commands.
-# az aks nodepool update -g $rgname --cluster-name $clustername -n $nodepoolname --labels acstor.azure.com/io-engine=acstor
-# az aks nodepool show -g $rgname --cluster-name $clustername -n $nodepoolname --query nodeLabels | grep acstor ## Has output "acstor.azure.com/io-engine": "acstor"
 ```
 
 Install the Azure Container Storage extension.

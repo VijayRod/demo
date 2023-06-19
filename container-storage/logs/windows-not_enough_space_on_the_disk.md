@@ -108,7 +108,7 @@ Here is a sample cmd script to reproduce this issue. Please only run it in a tes
 
 ```
 rem Run it after SSH'ing to the node.
-set dest "c:\windows2"
+set dest="c:\windows2"
 xcopy /E /I /C /Y /H /J C:\Windows %dest%
 FOR /L %i IN (3,1,10) DO ( set dest2=%dest% && xcopy /E /I /C /Y /H /J %dest2% c:\windows%i && echo c:\windows%i )
 ```

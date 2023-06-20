@@ -120,6 +120,58 @@ Path,CurrentFileCount,CurrentFileSize,FileCount,DirectoryCount,DirectorySize,Dir
 # To demonstrate a different directory, you can use the following example: C:\du\du.exe /accepteula -nobanner -l 1 -q -c c:\var\log\pods.
 ```
 
+Here's an hpc daemonset to monitor disk usage on every Windows node:
+
+```
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: monitor-diskspace
+  labels:
+    app: monitor-diskspace # privileged-daemonset
+spec:
+  selector:
+    matchLabels:
+      app: monitor-diskspace
+  template:
+    metadata:
+      labels:
+        app: monitor-diskspace
+    spec:
+      nodeSelector:
+        kubernetes.io/os: windows
+      containers:
+        - name: powershell
+          image: mcr.microsoft.com/powershell:lts-nanoserver-1809
+          securityContext:
+            windowsOptions:
+              hostProcess: true
+              runAsUserName: "NT AUTHORITY\\SYSTEM"
+          command:
+            - C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe
+            - -command
+            - |
+              Get-CimInstance -Class CIM_LogicalDisk | Select-Object @{Name="Size(GB)";Expression={$_.size/1gb}}, @{Name="Free Space(GB)";Expression={$_.freespace/1gb}}, @{Name="Free (%)";Expression={"{0,6:P0}" -f(($_.freespace/1gb) / ($_.size/1gb))}}, DeviceID, DriveType | Where-Object DeviceID -EQ 'C:'
+              'GMT time: ' + $(Get-Date ([datetime]::UtcNow)) + '. Node name: ' + $env:computername
+              '##########'
+      hostNetwork: true
+      terminationGracePeriodSeconds: 0
+```
+
+```
+kubectl logs monitor-diskspace-r4qxx
+
+# Here is a sample output below.
+# Size(GB)       : 127.509761810303
+# Free Space(GB) : 95.2361755371094
+# Free (%)       :    75%
+# DeviceID       : C:
+# DriveType      : 3
+
+# GMT time: 06/20/2023 11:16:34. Node name: aksnpwin000001
+# ##########
+```
+
 The following information shows the disk space before the disk consumption:
 
 ```

@@ -70,7 +70,7 @@ powershell Get-CimInstance -Class CIM_LogicalDisk
 ```
 
 ```
-# Run in a PowerShell terminal:
+# Run in a PowerShell terminal (Credits: Abel Hu):
 Get-CimInstance -Class CIM_LogicalDisk | Select-Object @{Name="Size(GB)";Expression={$_.size/1gb}}, @{Name="Free Space(GB)";Expression={$_.freespace/1gb}}, @{Name="Free (%)";Expression={"{0,6:P0}" -f(($_.freespace/1gb) / ($_.size/1gb))}}, DeviceID, DriveType | Where-Object DeviceID -EQ 'C:'
 
 # Here is a sample output that includes 'Free Space(GB)'.
@@ -120,7 +120,7 @@ Path,CurrentFileCount,CurrentFileSize,FileCount,DirectoryCount,DirectorySize,Dir
 # To demonstrate a different directory, you can use the following example: C:\du\du.exe /accepteula -nobanner -l 1 -q -c c:\var\log\pods.
 ```
 
-Here's an hpc daemonset to monitor disk usage on every Windows node:
+Here's an hpc daemonset to monitor disk usage on every Windows node (Credits: Abel Hu):
 
 ```
 apiVersion: apps/v1

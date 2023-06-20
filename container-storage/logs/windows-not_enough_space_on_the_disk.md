@@ -14,6 +14,7 @@ rem type C:\WindowsAzure\Logs\WaAppAgent.log
 Here are commands to find available disk space.
 
 ```
+# Run in a cmd terminal:
 powershell Get-WmiObject -Class Win32_LogicalDisk -ComputerName localhost
 
 # Here is a sample output that includes 'FreeSpace'.
@@ -26,33 +27,58 @@ powershell Get-WmiObject -Class Win32_LogicalDisk -ComputerName localhost
 ```
 
 ```
+# Run in a cmd terminal:
 fsutil volume diskfree c:
 
-rem Here is a sample output that includes 'Total free bytes'.
-rem Total free bytes                :         -61,440 (279496122328931?)
-rem Total bytes                     : 136,912,564,224 (          127.5 GB)
-rem Total quota free bytes          :         -61,440 (279496122328931?)
-rem Unavailable pool bytes          :               0 (            0.0 KB)
-rem Quota unavailable pool bytes    :               0 (            0.0 KB)
-rem Used bytes                      : 136,891,854,848 (          127.5 GB)
-rem Total Reserved bytes            :      20,770,816 (           19.8 MB)
-rem Volume storage reserved bytes   :               0 (            0.0 KB)
-rem Available committed bytes       :               0 (            0.0 KB)
-rem Pool available bytes            :               0 (            0.0 KB)
+# Here is a sample output that includes 'Total free bytes'.
+# Total free bytes                :         -61,440 (279496122328931?)
+# Total bytes                     : 136,912,564,224 (          127.5 GB)
+# Total quota free bytes          :         -61,440 (279496122328931?)
+# Unavailable pool bytes          :               0 (            0.0 KB)
+# Quota unavailable pool bytes    :               0 (            0.0 KB)
+# Used bytes                      : 136,891,854,848 (          127.5 GB)
+# Total Reserved bytes            :      20,770,816 (           19.8 MB)
+# Volume storage reserved bytes   :               0 (            0.0 KB)
+# Available committed bytes       :               0 (            0.0 KB)
+# Pool available bytes            :               0 (            0.0 KB)
 ```
 
 ```
+# Run in a cmd terminal:
 dir
 
-rem Here is a sample output that includes 'bytes free'.
-rem  Volume in drive C is Windows
-rem  Volume Serial Number is 2CCA-295F
-rem  Directory of C:\
-rem 06/15/2023  01:34 PM    <DIR>          AzureData
-rem ...
-rem 06/15/2023  01:34 PM    <DIR>          WindowsAzure
-rem                3 File(s)        130,618 bytes
-rem               28 Dir(s)               0 bytes free
+# Here is a sample output that includes 'bytes free'.
+#  Volume in drive C is Windows
+#  Volume Serial Number is 2CCA-295F
+#  Directory of C:\
+# 06/15/2023  01:34 PM    <DIR>          AzureData
+# ...
+# 06/15/2023  01:34 PM    <DIR>          WindowsAzure
+#                3 File(s)        130,618 bytes
+#               28 Dir(s)               0 bytes free
+```
+
+```
+# Run in a cmd terminal:
+powershell Get-CimInstance -Class CIM_LogicalDisk
+
+# Here is a sample output that includes 'FreeSpace'.
+# DeviceID DriveType ProviderName VolumeName        Size         FreeSpace
+# -------- --------- ------------ ----------        ----         ---------
+# C:       3                      Windows           136912564224 404848640
+# D:       3                      Temporary Storage 17177767936  15081549824
+```
+
+```
+# Run in a PowerShell terminal:
+Get-CimInstance -Class CIM_LogicalDisk | Select-Object @{Name="Size(GB)";Expression={$_.size/1gb}}, @{Name="Free Space(GB)";Expression={$_.freespace/1gb}}, @{Name="Free (%)";Expression={"{0,6:P0}" -f(($_.freespace/1gb) / ($_.size/1gb))}}, DeviceID, DriveType | Where-Object DeviceID -EQ 'C:'
+
+# Here is a sample output that includes 'Free Space(GB)'.
+# Size(GB)       : 127.509761810303
+# Free Space(GB) : 0.000690460205078125
+# Free (%)       :     0%
+# DeviceID       : C:
+# DriveType      : 3
 ```
 
 Run the following command in the required folder or in C:\ to get the top space consumers. 

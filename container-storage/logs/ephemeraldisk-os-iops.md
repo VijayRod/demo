@@ -1,12 +1,18 @@
 Here are the commands to benchmark the available IOPS.
 
 ```
+# To benchmark the OS disk:
 kubectl exec -it fiopod -- fio --name=benchtest --size=800m --filename=/tmp/test --direct=1 --rw=write --ioengine=libaio --bs=4k --iodepth=16 --numjobs=1 --time_based --runtime=60
 
+# To benchmark the temporary storage disk:
+kubectl exec -it fiopod -- fio --name=benchtest --size=800m --filename=/mnt/test --direct=1 --rw=write --ioengine=libaio --bs=4k --iodepth=16 --numjobs=1 --time_based --runtime=60
+
+# To benchmark the attached volume:
 kubectl exec -it fiopod -- fio --name=benchtest --size=800m --filename=/volume/test --direct=1 --rw=write --ioengine=libaio --bs=4k --iodepth=16 --numjobs=1 --time_based --runtime=60
 ```
 
 ```
+# Create the storage class and the pod.
 cat << EOF | kubectl create -f -
 kind: StorageClass
 apiVersion: storage.k8s.io/v1

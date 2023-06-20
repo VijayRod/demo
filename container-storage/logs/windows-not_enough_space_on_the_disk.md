@@ -84,6 +84,7 @@ Get-CimInstance -Class CIM_LogicalDisk | Select-Object @{Name="Size(GB)";Express
 Run the following command in the required folder or in C:\ to get the top space consumers. 
 
 ```
+# Run in a cmd terminal:
 powershell -command "$fso = new-object -com Scripting.FileSystemObject; gci -Directory | select @{l='Size'; e={$fso.GetFolder($_.FullName).Size}},FullName | sort Size -Descending | ft @{l='Size [MB]'; e={'{0:N2}    ' -f ($_.Size / 1MB)}},FullName"
 
 # Here is a sample output below.

@@ -112,3 +112,6 @@ set dest="c:\windows2"
 xcopy /E /I /C /Y /H /J C:\Windows %dest%
 FOR /L %i IN (3,1,10) DO ( set dest2=%dest% && xcopy /E /I /C /Y /H /J /Q %dest2% c:\windows%i && echo c:\windows%i )
 ```
+
+Here is a some related link:
+- [/kubernetes/issues/103032](https://github.com/kubernetes/kubernetes/issues/103032).

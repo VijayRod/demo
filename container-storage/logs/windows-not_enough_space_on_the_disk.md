@@ -114,4 +114,4 @@ FOR /L %i IN (3,1,10) DO ( set dest2=%dest% && xcopy /E /I /C /Y /H /J /Q %dest2
 ```
 
 Here is a some related link:
-- [/kubernetes/issues/103032](https://github.com/kubernetes/kubernetes/issues/103032).
+- [kubernetes/issues/103032](https://github.com/kubernetes/kubernetes/issues/103032).

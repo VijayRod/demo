@@ -1,4 +1,4 @@
-Here are steps from https://github.com/kubernetes-sigs/blob-csi-driver/blob/master/docs/install-csi-driver-master.md to install the <u>open-source</u> Azure Blob Storage CSI driver.
+Here are steps from https://github.com/kubernetes-sigs/blob-csi-driver/blob/master/docs/install-csi-driver-master.md to install the <ins>open-source</ins> Azure Blob Storage CSI driver.
 
 ```
 # Replace the below with appropriate values.

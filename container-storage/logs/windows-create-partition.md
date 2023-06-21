@@ -51,7 +51,7 @@ DISKPART> exit
 Leaving DiskPart...
 ```
 
-Here are logs from the same Windows node. The Resize-OSDrive function can be viewed [here](https://github.com/Azure/aks-engine/blob/master/parts/k8s/windowsconfigfunc.ps1), and the Resize-Partition PowerShell command reference can be found [here](https://learn.microsoft.com/en-us/powershell/module/storage/resize-partition).
+Here are logs from the same Windows node. 
 
 ```
 # View the log entry for "Resize OS drive if possible".
@@ -69,7 +69,11 @@ C:\>type C:\AzureData\CustomDataSetupScript.ps1
 ...
     Write-Log "Resize os drive if possible"
     Resize-OSDrive
+```
 
+The Resize-OSDrive function can be viewed [here](https://github.com/Azure/aks-engine/blob/master/parts/k8s/windowsconfigfunc.ps1), and the Resize-Partition PowerShell command reference can be found [here](https://learn.microsoft.com/en-us/powershell/module/storage/resize-partition).
+
+```
 # View the below associated funtion in a browser - https://github.com/Azure/aks-engine/blob/master/parts/k8s/windowsconfigfunc.ps1
 
 ## Resize the system partition to the max available size. Azure can resize a managed disk, but the VM still needs to extend the partition boundary

@@ -4,7 +4,9 @@ Here are steps from https://github.com/kubernetes-sigs/blob-csi-driver/blob/mast
 # Replace the below with appropriate values.
 rgname=resourceGroupName
 clustername=aksblobpopen
+```
 
+```
 # Install the cluster. Optionally, run az aks show for an existing cluster.
 az aks create -g secureshack2 -n aksblobpopen
 

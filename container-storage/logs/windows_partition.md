@@ -70,8 +70,7 @@ C:\>type C:\AzureData\CustomDataSetupScript.ps1
     Write-Log "Resize os drive if possible"
     Resize-OSDrive
 
-# View the associated funtion in a browser.
-https://github.com/Azure/aks-engine/blob/master/parts/k8s/windowsconfigfunc.ps1
+# View the below associated funtion in a browser - https://github.com/Azure/aks-engine/blob/master/parts/k8s/windowsconfigfunc.ps1
 
 ## Resize the system partition to the max available size. Azure can resize a managed disk, but the VM still needs to extend the partition boundary
 function Resize-OSDrive

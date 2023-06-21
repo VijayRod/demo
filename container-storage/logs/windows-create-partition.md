@@ -1,4 +1,4 @@
-In my cluster with a Windows node pool, my OS disk has a capacity of 128 GB, with a Windows partition occupying 127 GB.
+In my cluster with a Windows node pool, my OS disk has a capacity of 128 GB, with a Windows partition occupying 127 GB. The partition is automatically created during node provisioning, utilizing the maximum available size.
 
 ```
 # Change to the cmd prompt.

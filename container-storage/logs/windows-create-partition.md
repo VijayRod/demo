@@ -57,6 +57,8 @@ Here are logs from the same Windows node.
 # View the log entry for "Resize OS drive if possible".
 C:\>type C:\AzureData\CustomDataSetupScript.log
 
+2023-06-20T09:24:05.6395144+00:00: WindowsCSEScriptsPackage is
+...
 2023-06-20T09:24:15.6593103+00:00: Apply telemetry data setting
 2023-06-20T09:24:15.6749374+00:00: Resize os drive if possible
 2023-06-20T09:25:20.3053956+00:00: Initialize data disks

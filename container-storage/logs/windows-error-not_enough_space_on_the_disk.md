@@ -183,15 +183,32 @@ Size         : 136912564224	// 128G
 VolumeName   : Windows
 ```
 
-Here is a sample cmd script to reproduce this issue. Please only run it in a test node/environment since low disk space in the node can result in system instability.
+Here is a sample script to reproduce this issue. Please only run it in a test node/environment since low disk space in the node can result in system instability.
 
 ```
-rem Run it after SSH'ing to the node.
+rem Run the below cmd script after SSH'ing to the node.
 set dest="c:\windows2"
 xcopy /E /I /C /Y /H /J C:\Windows %dest%
 FOR /L %i IN (3,1,10) DO ( set dest2=%dest% && xcopy /E /I /C /Y /H /J /Q %dest2% c:\windows%i && echo c:\windows%i )
 ```
 
+```
+# An alternative PowerShell script to generate large files on the OS disk of a Windows node. This script should be run through RDP, as running it through the debugger pod may lead to System.OutOfMemoryException errors. 
+# (Credits: Abel Hu)
+# https://github.com/kubernetes/kubernetes/issues/103032
+
+for($i=0; $i -lt 70; $i++) {
+ Write-Host "Create file $i"
+ $out = new-object byte[] 2000048576; (new-Object Random).NextBytes($out);[IO.File]::WriteAllBytes("c:\,ypowerfile51-$i.txt", $out)
+}
+
+# Here is a sample output below.
+# Create file 0
+# Create file 1
+# Create file 2
+# Create file 3
+# ...
+```
 Here are some related links:
 - [Azure/azure-diskinspect-service/diskinfo.md](https://github.com/Azure/azure-diskinspect-service/blob/master/docs/diskinfo.md). This link contains information on the disk inspection capability in the Azure Disk Inspect Service.
 - [kubernetes/issues/103032](https://github.com/kubernetes/kubernetes/issues/103032). The issue is related to insufficient disk space in the OS disk, but no alert is generated for the node's DiskPressure.

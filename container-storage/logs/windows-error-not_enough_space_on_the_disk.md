@@ -192,5 +192,6 @@ xcopy /E /I /C /Y /H /J C:\Windows %dest%
 FOR /L %i IN (3,1,10) DO ( set dest2=%dest% && xcopy /E /I /C /Y /H /J /Q %dest2% c:\windows%i && echo c:\windows%i )
 ```
 
-Here is a related link:
-- [kubernetes/issues/103032](https://github.com/kubernetes/kubernetes/issues/103032).
+Here are some related links:
+- [Azure/azure-diskinspect-service/diskinfo.md](https://github.com/Azure/azure-diskinspect-service/blob/master/docs/diskinfo.md). This link contains information on the disk inspection capability in the Azure Disk Inspect Service.
+- [kubernetes/issues/103032](https://github.com/kubernetes/kubernetes/issues/103032). The issue is related to insufficient disk space in the OS disk, but no alert is generated for the node's DiskPressure.

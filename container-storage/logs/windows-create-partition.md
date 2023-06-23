@@ -1,4 +1,6 @@
-In my cluster with a Windows node pool, my OS disk has a capacity of 128 GB, with a Windows partition occupying 127 GB. The partition is automatically created during node provisioning, utilizing the maximum available size.
+In my cluster with a Windows node pool, my OS disk has a capacity of 128 GB, with a Windows partition occupying 127 GB. The partition is automatically resized during node provisioning, utilizing the maximum available size.
+
+The resizing of the OSDisk during the provisioning of AKS Windows nodes is handled by the AKS Windows custom script extension, which utilizes the Resize-Partition PowerShell command mentioned below.
 
 ```
 # Change to the cmd prompt.
@@ -51,7 +53,7 @@ DISKPART> exit
 Leaving DiskPart...
 ```
 
-Here are logs from the same Windows node. The AKS Windows custom script extension handles the resizing of the osdisk during the provisioning of the AKS Windows nodes.
+Here are logs from the same Windows node. 
 
 ```
 # View the log entry for "Resize OS drive if possible".

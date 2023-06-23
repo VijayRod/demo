@@ -51,7 +51,7 @@ DISKPART> exit
 Leaving DiskPart...
 ```
 
-Here are logs from the same Windows node. 
+Here are logs from the same Windows node. The AKS Windows custom script extension handles the resizing of the osdisk during the provisioning of the AKS Windows nodes.
 
 ```
 # View the log entry for "Resize OS drive if possible".

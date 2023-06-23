@@ -193,7 +193,7 @@ FOR /L %i IN (3,1,10) DO ( set dest2=%dest% && xcopy /E /I /C /Y /H /J /Q %dest2
 ```
 
 ```
-# An alternative preferred PowerShell script to generate large files on the OS disk of a Windows node. This script should be run through RDP, as running it through the debugger pod may lead to System.OutOfMemoryException errors. 
+# An alternative preferred script in PowerShell to generate large files on the OS disk of a Windows node. This script should be run through RDP, as running it through the debugger pod may lead to System.OutOfMemoryException errors. 
 # (Credits: Abel Hu)
 # https://github.com/kubernetes/kubernetes/issues/103032
 

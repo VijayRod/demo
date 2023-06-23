@@ -5,13 +5,13 @@ These steps in https://learn.microsoft.com/en-us/azure/aks/learn/quick-windows-c
 WINDOWS_USERNAME=azureuser
 WINDOWS_PASSWORD=
 rgname=
-clustername=
+clustername=akswin
 ```
 
 ```
 # Create the cluster and the node pool.
 az aks create -g $rgname -n $clustername --windows-admin-username $WINDOWS_USERNAME --windows-admin-password $WINDOWS_PASSWORD --network-plugin azure
-az aks nodepool add -g $rgname --cluster-name $clustername --name npwin --os-type Windows #--node-count 1
+az aks nodepool add -g $rgname --cluster-name $clustername --name npwin --os-type Windows --mode user
 ```
 
 ```

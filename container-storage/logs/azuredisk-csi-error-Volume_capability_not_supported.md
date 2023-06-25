@@ -169,7 +169,7 @@ EOF
 ```
 
 ```
-# Display information about the created persistent volume claim and the pod (both will be in a pending state).
+# Display information about the created persistent volume claim and the pod.
 kubectl get po,pvc
 
 # Here is a sample output below.

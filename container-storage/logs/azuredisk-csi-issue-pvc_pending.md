@@ -1,0 +1,1 @@
+A persistent volume may remain in a `pending` state, for instance, as depicted in the [mentioned scenario](azuredisk-csi-error-Volume_capability_not_supported.md). For additional details, utilize the command `kubectl describe pvc`.

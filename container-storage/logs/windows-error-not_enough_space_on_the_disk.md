@@ -200,9 +200,9 @@ spec:
       terminationGracePeriodSeconds: 0
 ```
 
+```
 kubectl logs monitor-diskspace-r4qxx
 
-```
 # Here is a sample output below.
 # Size(GB)       : 127.509761810303
 # Free Space(GB) : 95.2361755371094

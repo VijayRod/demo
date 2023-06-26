@@ -139,10 +139,10 @@ spec:
         app: monitor-diskspace
     spec:
       nodeSelector:
-        kubernetes.io/os: windows
+        kubernetes.azure.com/os-sku: Windows2019
       containers:
         - name: powershell
-          image: mcr.microsoft.com/powershell:lts-nanoserver-1809
+          image: mcr.microsoft.com/windows/servercore:1809
           securityContext:
             windowsOptions:
               hostProcess: true

@@ -96,6 +96,7 @@ powershell -command "$fso = new-object -com Scripting.FileSystemObject; gci -Dir
 ```
 
 ```
+rem Run in a cmd terminal:
 curl https://download.sysinternals.com/files/DU.zip --output du.zip
 
 rem Here is a sample output below.
@@ -103,11 +104,13 @@ rem   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Curr
 rem                                  Dload  Upload   Total   Spent    Left  Speed
 rem 100  524k  100  524k    0     0  2316k      0 --:--:-- --:--:-- --:--:-- 2332k
 
+rem Run in a cmd terminal:
 powershell -command "Expand-Archive du.zip C:\du"
 
+rem Run in a cmd terminal:
 C:\du\du.exe /accepteula -nobanner -l 1 -q -c c:\
 
-# Here is a sample output below.
+rem Here is a sample output below.
 Path,CurrentFileCount,CurrentFileSize,FileCount,DirectoryCount,DirectorySize,DirectorySizeOnDisk
 "c:\Users",1,174,109,90,4904729,5898240
 "c:\var",0,0,42,59,21592,512000
@@ -115,9 +118,9 @@ Path,CurrentFileCount,CurrentFileSize,FileCount,DirectoryCount,DirectorySize,Dir
 "c:\windows1",10,851714,64553,16973,8975670313,9327292960
 "c:\windows10",10,851714,64553,16973,8975670313,9327292960
 
-# You can copy or save the above output as a text or CSV file. Open Excel, go to the "Data" tab, and select "From Text/CSV" to import the file. This selects "Delimited" as the file type, "Comma" as the delimiter, and selects the option for headers. "Load" the data into Excel and sort it by the "DirectorySize" column to identify the highest space consumer's Path values.
+rem You can copy or save the above output as a text or CSV file. Open Excel, go to the "Data" tab, and select "From Text/CSV" to import the file. This selects "Delimited" as the file type, "Comma" as the delimiter, and selects the option for headers. "Load" the data into Excel and sort it by the "DirectorySize" column to identify the highest space consumer's Path values.
 
-# To demonstrate a different directory, you can use the following example: C:\du\du.exe /accepteula -nobanner -l 1 -q -c c:\var\log\pods.
+rem To demonstrate a different directory, you can use the following example: C:\du\du.exe /accepteula -nobanner -l 1 -q -c c:\var\log\pods.
 ```
 
 Here are HPC daemonsets to monitor disk usage on every Windows 2022 and 2019 node (Credits: Abel Hu). It's expected for these pods to later be in CrashLoopBackOff since they only run the command once and then exit.
@@ -209,7 +212,6 @@ kubectl logs monitor-diskspace-r4qxx
 # Free (%)       :    75%
 # DeviceID       : C:
 # DriveType      : 3
-
 # GMT time: 06/20/2023 11:16:34. Node name: aksnpwin000001
 # ##########
 ```

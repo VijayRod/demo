@@ -120,23 +120,61 @@ Path,CurrentFileCount,CurrentFileSize,FileCount,DirectoryCount,DirectorySize,Dir
 # To demonstrate a different directory, you can use the following example: C:\du\du.exe /accepteula -nobanner -l 1 -q -c c:\var\log\pods.
 ```
 
-Here's an hpc daemonset to monitor disk usage on every Windows node (Credits: Abel Hu):
+Here are HPC daemonsets to monitor disk usage on every Windows 2022 and 2019 node (Credits: Abel Hu). It's expected for these pods to later be in CrashLoopBackOff since they only run the command once and then exit.
 
 ```
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
-  name: monitor-diskspace
+  name: monitor-diskspace-ws2022
   labels:
-    app: monitor-diskspace # privileged-daemonset
+    app: monitor-diskspace-ws2022 # privileged-daemonset
 spec:
   selector:
     matchLabels:
-      app: monitor-diskspace
+      app: monitor-diskspace-ws2022
   template:
     metadata:
       labels:
-        app: monitor-diskspace
+        app: monitor-diskspace-ws2022
+    spec:
+      nodeSelector:
+        kubernetes.azure.com/os-sku: Windows2022
+      containers:
+        - name: powershell
+          image: mcr.microsoft.com/windows/servercore:ltsc2022
+          securityContext:
+            windowsOptions:
+              hostProcess: true
+              runAsUserName: "NT AUTHORITY\\SYSTEM"
+          command:
+            - C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe
+            - -command
+            - |
+              Get-CimInstance -Class CIM_LogicalDisk | Select-Object @{Name="Size(GB)";Expression={$_.size/1gb}}, @{Name="Free Space(GB)";Expression={$_.freespace/1gb}}, @{Name="Free (%)";Expression={"{0,6:P0}" -f(($_.freespace/1gb) / ($_.size/1gb))}}, DeviceID, DriveType | Where-Object DeviceID -EQ 'C:'
+              'GMT time: ' + $(Get-Date ([datetime]::UtcNow)) + '. Node name: ' + $env:computername
+              '##########'
+          resources:
+            limits:
+              cpu: 0.3
+              memory: 200M              
+      hostNetwork: true
+      terminationGracePeriodSeconds: 0
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: monitor-diskspace-ws2019
+  labels:
+    app: monitor-diskspace-ws2019 # privileged-daemonset
+spec:
+  selector:
+    matchLabels:
+      app: monitor-diskspace-ws2019
+  template:
+    metadata:
+      labels:
+        app: monitor-diskspace-ws2019
     spec:
       nodeSelector:
         kubernetes.azure.com/os-sku: Windows2019
@@ -154,13 +192,17 @@ spec:
               Get-CimInstance -Class CIM_LogicalDisk | Select-Object @{Name="Size(GB)";Expression={$_.size/1gb}}, @{Name="Free Space(GB)";Expression={$_.freespace/1gb}}, @{Name="Free (%)";Expression={"{0,6:P0}" -f(($_.freespace/1gb) / ($_.size/1gb))}}, DeviceID, DriveType | Where-Object DeviceID -EQ 'C:'
               'GMT time: ' + $(Get-Date ([datetime]::UtcNow)) + '. Node name: ' + $env:computername
               '##########'
+          resources:
+            limits:
+              cpu: 0.3
+              memory: 200M              
       hostNetwork: true
       terminationGracePeriodSeconds: 0
 ```
 
-```
 kubectl logs monitor-diskspace-r4qxx
 
+```
 # Here is a sample output below.
 # Size(GB)       : 127.509761810303
 # Free Space(GB) : 95.2361755371094

@@ -1,7 +1,7 @@
 RCA: The error "ParentResourceNotFound" can occur when the specified storage account defined in the storage class doesn't exist or when the resourceGroup parameter and value are not specified in the storage class. To resolve this, ensure the storage account exists and include the resourceGroup parameter in the storage class with the appropriate value.
 
 ```
-# Create a custom storage class and a persistent volume claim.
+# Create a custom storage class and persistent volume claim.
 cat << EOF | kubectl create -f -
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
@@ -39,7 +39,7 @@ EOF
 ```
 
 ```
-# Display information about the persistent volume and the persistent volume claim (no pv in the output and pvc is in Pending state).
+# Display information about the persistent volume and persistent volume claim (no pv in the output and pvc is in Pending state).
 kubectl get pv,pvc
 
 # Here is a sample output below.
@@ -56,15 +56,15 @@ kubectl describe pvc private-azurefile-pvc
 ```
 
 ```
-# Cleanup
-k delete pvc private-azurefile-pvc
-k delete sc private-azurefile-csi
+# To clean up the resources.
+kubectl delete pvc private-azurefile-pvc
+kubectl delete sc private-azurefile-csi
 ```
 
 To resolve the issue, add the "resourceGroup" parameter in the storage class.
 
 ```
-# Create a custom storage class and a persistent volume claim.
+# Create a custom storage class and persistent volume claim.
 cat << EOF | kubectl create -f -
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
@@ -103,7 +103,7 @@ EOF
 ```
 
 ```
-# Display information about the persistent volume and the persistent volume claim.
+# Display information about the persistent volume and persistent volume claim.
 kubectl get pv,pvc
 
 # Here is a sample output below.

@@ -60,6 +60,7 @@ spec:
     - name: azure
       persistentVolumeClaim:
         claimName: pvc-azuredisk
+EOF
 ```
 
 ```

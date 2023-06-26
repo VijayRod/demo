@@ -204,7 +204,7 @@ spec:
 ```
 
 ```
-kubectl logs monitor-diskspace-r4qxx
+kubectl logs monitor-diskspace-ws2022-r4qxx
 
 # Here is a sample output below.
 # Size(GB)       : 127.509761810303

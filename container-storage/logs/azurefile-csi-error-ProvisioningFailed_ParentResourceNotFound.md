@@ -73,7 +73,7 @@ metadata:
 provisioner: file.csi.azure.com
 allowVolumeExpansion: true
 parameters:
-  resourceGroup: MC_secureshack2_aks_swedencentral
+  resourceGroup: resourceGroupName
   storageAccount: azprodstorage0626
   server: azprodstorage0626.file.core.windows.net 
 reclaimPolicy: Delete

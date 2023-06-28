@@ -255,4 +255,6 @@ for($i=0; $i -lt 70; $i++) {
 ```
 Here are some related links:
 - [Azure/azure-diskinspect-service/diskinfo.md](https://github.com/Azure/azure-diskinspect-service/blob/master/docs/diskinfo.md). This link contains information on the disk inspection capability in the Azure Disk Inspect Service.
-- [kubernetes/issues/103032](https://github.com/kubernetes/kubernetes/issues/103032). The issue is related to insufficient disk space in the OS disk, but no alert is generated for the node's DiskPressure.
+- [kubernetes/issues/103032](https://github.com/kubernetes/kubernetes/issues/103032): No enough disk space in the os disk but there is no alert in node's DiskPressure.
+- [kubernetes/issues/116020](https://github.com/kubernetes/kubernetes/issues/116020): [BUG] Windows disk usage getting reported larger than disk size and may prevent GC from running
+  - [microsoft/Windows-Containers/issues/358](https://github.com/microsoft/Windows-Containers/issues/358): Access is denied during removal of snapshots in containerd.

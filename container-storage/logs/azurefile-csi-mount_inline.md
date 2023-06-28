@@ -10,7 +10,7 @@ shareName=aksshare
 
 ```
 # Create a storage account.
-az storage account create -g $rgname -n $storageAccountName --kind StorageV2 --sku Standard_LRS --enable-large-file-share --output none
+az storage account create -g $rgname -n $storageAccountName --kind FileStorage --sku Premium_LRS --enable-large-file-share --output none
 
 # Retrieve the storage account key.
 key=$(az storage account keys list -g $rgname -n $storageAccountName --query [0].value -o tsv)

@@ -56,6 +56,14 @@ kubectl get po,pv,pvc
 ```
 
 ```
+# Execute the below command in the container.
+kubectl exec mypod -it -- mount | grep pvc
+
+# Here is a sample output below.
+# //fe531559d5f294407a15318.file.core.windows.net/pvc-57ef31f0-8234-419e-a997-313d5fb9bf9d on /mnt/azure type cifs (rw,relatime,vers=3.1.1,cache=strict,username=fe531559d5f294407a15318,uid=0,noforceuid,gid=0,noforcegid,addr=20.60.78.104,file_mode=0777,dir_mode=0777,soft,persistenthandles,nounix,serverino,mapposix,mfsymlinks,rsize=1048576,wsize=1048576,bsize=1048576,echo_interval=60,actimeo=30,closetimeo=1)
+```
+
+```
 # Get the node name.
 kubectl get po -owide
 

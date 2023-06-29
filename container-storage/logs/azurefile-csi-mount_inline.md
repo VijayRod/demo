@@ -108,5 +108,6 @@ root@aks-nodepool1-51397738-vmss000003:/# mount | grep mystorageacct
 ```
 # Cleanup.
 kubectl delete pod/mypod
+kubectl delete secret azure-secret
 az storage account delete -g $rgname -n $storageAccountName -y
 ```

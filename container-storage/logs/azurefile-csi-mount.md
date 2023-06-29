@@ -103,7 +103,7 @@ Jun 29 19:29:07 aks-nodepool1-51397738-vmss000004 kubelet[1620]: I0629 19:29:07.
 
 ```
 # To display information about the csi-azurefile located in the node where the pod is scheduled.
-kubectl get po -n kube-system -owide | grep csi-azurefile | grep vmss00004
+kubectl get po -n kube-system -owide | grep csi-azurefile | grep vmss000004
 
 # Here is a sample output below.
 # csi-azurefile-node-h72r5              3/3     Running   0          9h      10.224.0.4   aks-nodepool1-51397738-vmss000004   <none>           <none>

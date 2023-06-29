@@ -49,10 +49,10 @@ kubectl get po,pv,pvc
 # pod/mypod            1/1     Running   0          13s
 #
 # NAME                                                        CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                  STORAGECLASS   REASON   AGE
-# persistentvolume/pvc-57ef31f0-8234-419e-a997-313d5fb9bf9d   100Gi      RWX            Delete           Bound    default/my-azurefile   azurefile               11s
+# persistentvolume/pvc-a0be56a7-96f5-4c9d-b1b8-b234fa742ddf   100Gi      RWX            Delete           Bound    default/my-azurefile   azurefile               11s
 #
 # NAME                                 STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   AGE
-# persistentvolumeclaim/my-azurefile   Bound    pvc-57ef31f0-8234-419e-a997-313d5fb9bf9d   100Gi      RWX            azurefile      13s
+# persistentvolumeclaim/my-azurefile   Bound    pvc-a0be56a7-96f5-4c9d-b1b8-b234fa742ddf   100Gi      RWX            azurefile      13s
 ```
 
 ```
@@ -60,7 +60,7 @@ kubectl get po,pv,pvc
 kubectl exec mypod -it -- mount | grep pvc
 
 # Here is a sample output below.
-# //fe531559d5f294407a15318.file.core.windows.net/pvc-57ef31f0-8234-419e-a997-313d5fb9bf9d on /mnt/azure type cifs (rw,relatime,vers=3.1.1,cache=strict,username=fe531559d5f294407a15318,uid=0,noforceuid,gid=0,noforcegid,addr=20.60.78.104,file_mode=0777,dir_mode=0777,soft,persistenthandles,nounix,serverino,mapposix,mfsymlinks,rsize=1048576,wsize=1048576,bsize=1048576,echo_interval=60,actimeo=30,closetimeo=1)
+# //fe531559d5f294407a15318.file.core.windows.net/pvc-a0be56a7-96f5-4c9d-b1b8-b234fa742ddf on /mnt/azure type cifs (rw,relatime,vers=3.1.1,cache=strict,username=fe531559d5f294407a15318,uid=0,noforceuid,gid=0,noforcegid,addr=20.60.78.104,file_mode=0777,dir_mode=0777,soft,persistenthandles,nounix,serverino,mapposix,mfsymlinks,rsize=1048576,wsize=1048576,bsize=1048576,echo_interval=60,actimeo=30,closetimeo=1)
 ```
 
 ```
@@ -69,16 +69,16 @@ kubectl get po -owide
 
 # Here is a sample output below.
 # NAME             READY   STATUS    RESTARTS   AGE     IP            NODE                                NOMINATED NODE   READINESS GATES
-# mypod            1/1     Running   0          5m53s   10.244.0.12   aks-nodepool1-51397738-vmss000003   <none>           <none>
+# mypod            1/1     Running   0          5m53s   10.244.0.12   aks-nodepool1-51397738-vmss000004   <none>           <none>
 ```
 
 ```
 # ssh to the node and search for the pvc name. Run the following command on the node with the name of the pv.
-root@aks-nodepool1-51397738-vmss000003:/# mount | grep pvc-57ef31f0
+root@aks-nodepool1-51397738-vmss000004:/# mount | grep pvc-a0be56a7
 
 # Here is a sample output below.
-# //fe531559d5f294407a15318.file.core.windows.net/pvc-57ef31f0-8234-419e-a997-313d5fb9bf9d on /var/lib/kubelet/plugins/kubernetes.io/csi/file.csi.azure.com/7cdc2c9d9e9dd380782b6aba2f5c52fabe14d035bb0f197fe039d98b2eac718e/globalmount type cifs (rw,relatime,vers=3.1.1,cache=strict,username=fe531559d5f294407a15318,uid=0,noforceuid,gid=0,noforcegid,addr=20.60.78.104,file_mode=0777,dir_mode=0777,soft,persistenthandles,nounix,serverino,mapposix,mfsymlinks,rsize=1048576,wsize=1048576,bsize=1048576,echo_interval=60,actimeo=30,closetimeo=1)
-# //fe531559d5f294407a15318.file.core.windows.net/pvc-57ef31f0-8234-419e-a997-313d5fb9bf9d on /var/lib/kubelet/pods/340aafe5-cb01-4cce-9ef1-3d21dbb01494/volumes/kubernetes.io~csi/pvc-57ef31f0-8234-419e-a997-313d5fb9bf9d/mount type cifs (rw,relatime,vers=3.1.1,cache=strict,username=fe531559d5f294407a15318,uid=0,noforceuid,gid=0,noforcegid,addr=20.60.78.104,file_mode=0777,dir_mode=0777,soft,persistenthandles,nounix,serverino,mapposix,mfsymlinks,rsize=1048576,wsize=1048576,bsize=1048576,echo_interval=60,actimeo=30,closetimeo=1)
+# //fe531559d5f294407a15318.file.core.windows.net/pvc-a0be56a7-96f5-4c9d-b1b8-b234fa742ddf on /var/lib/kubelet/plugins/kubernetes.io/csi/file.csi.azure.com/06ab806af170755d9683d9ab14656e692502e907eaa632a1c279767918262a97/globalmount type cifs (rw,relatime,vers=3.1.1,cache=strict,username=fe531559d5f294407a15318,uid=0,noforceuid,gid=0,noforcegid,addr=20.60.78.104,file_mode=0777,dir_mode=0777,soft,persistenthandles,nounix,serverino,mapposix,mfsymlinks,rsize=1048576,wsize=1048576,bsize=1048576,echo_interval=60,actimeo=30,closetimeo=1)
+# //fe531559d5f294407a15318.file.core.windows.net/pvc-a0be56a7-96f5-4c9d-b1b8-b234fa742ddf on /var/lib/kubelet/pods/a9426f1c-2c39-450c-bf01-1b14251e48dd/volumes/kubernetes.io~csi/pvc-a0be56a7-96f5-4c9d-b1b8-b234fa742ddf/mount type cifs (rw,relatime,vers=3.1.1,cache=strict,username=fe531559d5f294407a15318,uid=0,noforceuid,gid=0,noforcegid,addr=20.60.78.104,file_mode=0777,dir_mode=0777,soft,persistenthandles,nounix,serverino,mapposix,mfsymlinks,rsize=1048576,wsize=1048576,bsize=1048576,echo_interval=60,actimeo=30,closetimeo=1)
 
 # In the above output:
 # - fe531559d5f294407a15318 is the name of the storage account in the default MC_ node resource group.
@@ -91,12 +91,37 @@ root@aks-nodepool1-51397738-vmss000003:/# mount | grep pvc-57ef31f0
 
 ```
 # View /var/log/syslog for the volume.
-cat /var/log/syslog | grep pvc-57ef31f0
-Jun 27 16:33:39 aks-nodepool1-51397738-vmss000003 kubelet[1758]: I0627 16:33:39.447353    1758 reconciler.go:357] "operationExecutor.VerifyControllerAttachedVolume started for volume \"pvc-57ef31f0-8234-419e-a997-313d5fb9bf9d\" (UniqueName: \"kubernetes.io/csi/file.csi.azure.com^mc_resourceGroupName#fe531559d5f294407a15318#pvc-57ef31f0-8234-419e-a997-313d5fb9bf9d###default\") pod \"mypod\" (UID: \"340aafe5-cb01-4cce-9ef1-3d21dbb01494\") " pod="default/mypod"
-Jun 27 16:33:39 aks-nodepool1-51397738-vmss000003 kubelet[1758]: I0627 16:33:39.548629    1758 reconciler.go:269] "operationExecutor.MountVolume started for volume \"pvc-57ef31f0-8234-419e-a997-313d5fb9bf9d\" (UniqueName: \"kubernetes.io/csi/file.csi.azure.com^mc_resourceGroupName#fe531559d5f294407a15318#pvc-57ef31f0-8234-419e-a997-313d5fb9bf9d###default\") pod \"mypod\" (UID: \"340aafe5-cb01-4cce-9ef1-3d21dbb01494\") " pod="default/mypod"
-Jun 27 16:33:39 aks-nodepool1-51397738-vmss000003 kernel: [12336.839270] CIFS: Attempting to mount \\fe531559d5f294407a15318.file.core.windows.net\pvc-57ef31f0-8234-419e-a997-313d5fb9bf9d
-Jun 27 16:33:39 aks-nodepool1-51397738-vmss000003 kubelet[1758]: I0627 16:33:39.675678    1758 operation_generator.go:658] "MountVolume.MountDevice succeeded for volume \"pvc-57ef31f0-8234-419e-a997-313d5fb9bf9d\" (UniqueName: \"kubernetes.io/csi/file.csi.azure.com^mc_resourceGroupName#fe531559d5f294407a15318#pvc-57ef31f0-8234-419e-a997-313d5fb9bf9d###default\") pod \"mypod\" (UID: \"340aafe5-cb01-4cce-9ef1-3d21dbb01494\") device mount path \"/var/lib/kubelet/plugins/kubernetes.io/csi/file.csi.azure.com/7cdc2c9d9e9dd380782b6aba2f5c52fabe14d035bb0f197fe039d98b2eac718e/globalmount\"" pod="default/mypod"
-Jun 27 16:33:39 aks-nodepool1-51397738-vmss000003 kubelet[1758]: I0627 16:33:39.685414    1758 operation_generator.go:730] "MountVolume.SetUp succeeded for volume \"pvc-57ef31f0-8234-419e-a997-313d5fb9bf9d\" (UniqueName: \"kubernetes.io/csi/file.csi.azure.com^mc_resourceGroupName#fe531559d5f294407a15318#pvc-57ef31f0-8234-419e-a997-313d5fb9bf9d###default\") pod \"mypod\" (UID: \"340aafe5-cb01-4cce-9ef1-3d21dbb01494\") " pod="default/mypod"
+cat /var/log/syslog | grep pvc-a0be56a7
+
+# Here is a sample output below.
+Jun 29 19:29:07 aks-nodepool1-51397738-vmss000004 kubelet[1620]: I0629 19:29:07.171131    1620 reconciler.go:357] "operationExecutor.VerifyControllerAttachedVolume started for volume \"pvc-a0be56a7-96f5-4c9d-b1b8-b234fa742ddf\" (UniqueName: \"kubernetes.io/csi/file.csi.azure.com^mc_secureshack2_aks_swedencentral#fe531559d5f294407a15318#pvc-a0be56a7-96f5-4c9d-b1b8-b234fa742ddf###default\") pod \"mypod\" (UID: \"a9426f1c-2c39-450c-bf01-1b14251e48dd\") " pod="default/mypod"
+Jun 29 19:29:07 aks-nodepool1-51397738-vmss000004 kubelet[1620]: I0629 19:29:07.272255    1620 reconciler.go:269] "operationExecutor.MountVolume started for volume \"pvc-a0be56a7-96f5-4c9d-b1b8-b234fa742ddf\" (UniqueName: \"kubernetes.io/csi/file.csi.azure.com^mc_secureshack2_aks_swedencentral#fe531559d5f294407a15318#pvc-a0be56a7-96f5-4c9d-b1b8-b234fa742ddf###default\") pod \"mypod\" (UID: \"a9426f1c-2c39-450c-bf01-1b14251e48dd\") " pod="default/mypod"
+Jun 29 19:29:07 aks-nodepool1-51397738-vmss000004 kernel: [35459.933436] CIFS: Attempting to mount \\fe531559d5f294407a15318.file.core.windows.net\pvc-a0be56a7-96f5-4c9d-b1b8-b234fa742ddf
+Jun 29 19:29:07 aks-nodepool1-51397738-vmss000004 kubelet[1620]: I0629 19:29:07.419761    1620 operation_generator.go:658] "MountVolume.MountDevice succeeded for volume \"pvc-a0be56a7-96f5-4c9d-b1b8-b234fa742ddf\" (UniqueName: \"kubernetes.io/csi/file.csi.azure.com^mc_secureshack2_aks_swedencentral#fe531559d5f294407a15318#pvc-a0be56a7-96f5-4c9d-b1b8-b234fa742ddf###default\") pod \"mypod\" (UID: \"a9426f1c-2c39-450c-bf01-1b14251e48dd\") device mount path \"/var/lib/kubelet/plugins/kubernetes.io/csi/file.csi.azure.com/06ab806af170755d9683d9ab14656e692502e907eaa632a1c279767918262a97/globalmount\"" pod="default/mypod"
+Jun 29 19:29:07 aks-nodepool1-51397738-vmss000004 kubelet[1620]: I0629 19:29:07.427158    1620 operation_generator.go:730] "MountVolume.SetUp succeeded for volume \"pvc-a0be56a7-96f5-4c9d-b1b8-b234fa742ddf\" (UniqueName: \"kubernetes.io/csi/file.csi.azure.com^mc_secureshack2_aks_swedencentral#fe531559d5f294407a15318#pvc-a0be56a7-96f5-4c9d-b1b8-b234fa742ddf###default\") pod \"mypod\" (UID: \"a9426f1c-2c39-450c-bf01-1b14251e48dd\") " pod="default/mypod"
+```
+
+```
+# To display information about the csi-azurefile located in the node where the pod is scheduled.
+kubectl get po -n kube-system -owide | grep csi-azurefile | grep vmss00000
+
+# Here is a sample output below.
+# csi-azurefile-node-h72r5              3/3     Running   0          9h      10.224.0.4   aks-nodepool1-51397738-vmss000004   <none>           <none>
+
+# To retrieve CSI driver logs.
+kubectl logs -n kube-system csi-azurefile-node-h72r5 -c azurefile
+
+# Here is a sample output below.
+I0629 19:29:07.278639       1 utils.go:76] GRPC call: /csi.v1.Node/NodeStageVolume
+I0629 19:29:07.278654       1 utils.go:77] GRPC request: {"staging_target_path":"/var/lib/kubelet/plugins/kubernetes.io/csi/file.csi.azure.com/06ab806af170755d9683d9ab14656e692502e907eaa632a1c279767918262a97/globalmount","volume_capability":{"AccessType":{"Mount":{"mount_flags":["mfsymlinks","actimeo=30","nosharesock"]}},"access_mode":{"mode":5}},"volume_context":{"csi.storage.k8s.io/pv/name":"pvc-a0be56a7-96f5-4c9d-b1b8-b234fa742ddf","csi.storage.k8s.io/pvc/name":"my-azurefile","csi.storage.k8s.io/pvc/namespace":"default","secretnamespace":"default","skuName":"Standard_LRS","storage.kubernetes.io/csiProvisionerIdentity":"1688031486058-8081-file.csi.azure.com"},"volume_id":"mc_secureshack2_aks_swedencentral#fe531559d5f294407a15318#pvc-a0be56a7-96f5-4c9d-b1b8-b234fa742ddf###default"}
+I0629 19:29:07.332618       1 nodeserver.go:302] cifsMountPath(/var/lib/kubelet/plugins/kubernetes.io/csi/file.csi.azure.com/06ab806af170755d9683d9ab14656e692502e907eaa632a1c279767918262a97/globalmount) fstype() volumeID(mc_secureshack2_aks_swedencentral#fe531559d5f294407a15318#pvc-a0be56a7-96f5-4c9d-b1b8-b234fa742ddf###default) context(map[csi.storage.k8s.io/pv/name:pvc-a0be56a7-96f5-4c9d-b1b8-b234fa742ddf csi.storage.k8s.io/pvc/name:my-azurefile csi.storage.k8s.io/pvc/namespace:default secretnamespace:default skuName:Standard_LRS storage.kubernetes.io/csiProvisionerIdentity:1688031486058-8081-file.csi.azure.com]) mountflags([mfsymlinks actimeo=30 nosharesock]) mountOptions([mfsymlinks actimeo=30 nosharesock file_mode=0777 dir_mode=0777]) volumeMountGroup()
+I0629 19:29:07.419358       1 nodeserver.go:332] volume(mc_secureshack2_aks_swedencentral#fe531559d5f294407a15318#pvc-a0be56a7-96f5-4c9d-b1b8-b234fa742ddf###default) mount //fe531559d5f294407a15318.file.core.windows.net/pvc-a0be56a7-96f5-4c9d-b1b8-b234fa742ddf on /var/lib/kubelet/plugins/kubernetes.io/csi/file.csi.azure.com/06ab806af170755d9683d9ab14656e692502e907eaa632a1c279767918262a97/globalmount succeeded
+I0629 19:29:07.419399       1 utils.go:83] GRPC response: {}
+I0629 19:29:07.423503       1 utils.go:76] GRPC call: /csi.v1.Node/NodePublishVolume
+I0629 19:29:07.423516       1 utils.go:77] GRPC request: {"staging_target_path":"/var/lib/kubelet/plugins/kubernetes.io/csi/file.csi.azure.com/06ab806af170755d9683d9ab14656e692502e907eaa632a1c279767918262a97/globalmount","target_path":"/var/lib/kubelet/pods/a9426f1c-2c39-450c-bf01-1b14251e48dd/volumes/kubernetes.io~csi/pvc-a0be56a7-96f5-4c9d-b1b8-b234fa742ddf/mount","volume_capability":{"AccessType":{"Mount":{"mount_flags":["mfsymlinks","actimeo=30","nosharesock"]}},"access_mode":{"mode":5}},"volume_context":{"csi.storage.k8s.io/ephemeral":"false","csi.storage.k8s.io/pod.name":"mypod","csi.storage.k8s.io/pod.namespace":"default","csi.storage.k8s.io/pod.uid":"a9426f1c-2c39-450c-bf01-1b14251e48dd","csi.storage.k8s.io/pv/name":"pvc-a0be56a7-96f5-4c9d-b1b8-b234fa742ddf","csi.storage.k8s.io/pvc/name":"my-azurefile","csi.storage.k8s.io/pvc/namespace":"default","csi.storage.k8s.io/serviceAccount.name":"default","secretnamespace":"default","skuName":"Standard_LRS","storage.kubernetes.io/csiProvisionerIdentity":"1688031486058-8081-file.csi.azure.com"},"volume_id":"mc_secureshack2_aks_swedencentral#fe531559d5f294407a15318#pvc-a0be56a7-96f5-4c9d-b1b8-b234fa742ddf###default"}
+I0629 19:29:07.423978       1 nodeserver.go:109] NodePublishVolume: mounting /var/lib/kubelet/plugins/kubernetes.io/csi/file.csi.azure.com/06ab806af170755d9683d9ab14656e692502e907eaa632a1c279767918262a97/globalmount at /var/lib/kubelet/pods/a9426f1c-2c39-450c-bf01-1b14251e48dd/volumes/kubernetes.io~csi/pvc-a0be56a7-96f5-4c9d-b1b8-b234fa742ddf/mount with mountOptions: [bind]
+I0629 19:29:07.426968       1 nodeserver.go:116] NodePublishVolume: mount /var/lib/kubelet/plugins/kubernetes.io/csi/file.csi.azure.com/06ab806af170755d9683d9ab14656e692502e907eaa632a1c279767918262a97/globalmount at /var/lib/kubelet/pods/a9426f1c-2c39-450c-bf01-1b14251e48dd/volumes/kubernetes.io~csi/pvc-a0be56a7-96f5-4c9d-b1b8-b234fa742ddf/mount successfully
+I0629 19:29:07.426983       1 utils.go:83] GRPC response: {}
 ```
 
 ```

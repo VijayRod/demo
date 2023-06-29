@@ -258,3 +258,4 @@ Here are some related links:
 - [kubernetes/issues/103032](https://github.com/kubernetes/kubernetes/issues/103032): No enough disk space in the os disk but there is no alert in node's DiskPressure.
 - [kubernetes/issues/116020](https://github.com/kubernetes/kubernetes/issues/116020): [BUG] Windows disk usage getting reported larger than disk size and may prevent GC from running
   - [microsoft/Windows-Containers/issues/358](https://github.com/microsoft/Windows-Containers/issues/358): Access is denied during removal of snapshots in containerd.
+  - [microsoft/Windows-Containers/issues/358#issuecomment-1612519629](https://github.com/microsoft/Windows-Containers/issues/358#issuecomment-1612519629): One AKS customer does not see full disk issue after upgrading their clusters (Windows node image: AKSWindows-2022-containerd-20348.1787.230614, Windows containerd: v1.6.21).

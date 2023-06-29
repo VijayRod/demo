@@ -1,4 +1,4 @@
-Here is an example of an Azure File mount.
+Here is an example of an Azure File mount using the azurefile-premium storage class. The storage class describe and the CSI driver logs show the storage account's skuName as Premium_LRS. On the other hand, for a mount with the azurefile storage class, the storage class describe and the CSI driver logs indicate the storage account's skuName as Standard_LRS.
 
 ```
 # Create the resources.
@@ -10,7 +10,7 @@ metadata:
 spec:
   accessModes:
     - ReadWriteMany
-  storageClassName: azurefile
+  storageClassName: azurefile-premium
   resources:
     requests:
       storage: 100Gi
@@ -113,8 +113,8 @@ kubectl logs -n kube-system csi-azurefile-node-h72r5 -c azurefile
 
 # Here is a sample output below.
 I0629 19:29:07.278639       1 utils.go:76] GRPC call: /csi.v1.Node/NodeStageVolume
-I0629 19:29:07.278654       1 utils.go:77] GRPC request: {"staging_target_path":"/var/lib/kubelet/plugins/kubernetes.io/csi/file.csi.azure.com/06ab806af170755d9683d9ab14656e692502e907eaa632a1c279767918262a97/globalmount","volume_capability":{"AccessType":{"Mount":{"mount_flags":["mfsymlinks","actimeo=30","nosharesock"]}},"access_mode":{"mode":5}},"volume_context":{"csi.storage.k8s.io/pv/name":"pvc-a0be56a7-96f5-4c9d-b1b8-b234fa742ddf","csi.storage.k8s.io/pvc/name":"my-azurefile","csi.storage.k8s.io/pvc/namespace":"default","secretnamespace":"default","skuName":"Standard_LRS","storage.kubernetes.io/csiProvisionerIdentity":"1688031486058-8081-file.csi.azure.com"},"volume_id":"mc_secureshack2_aks_swedencentral#fe531559d5f294407a15318#pvc-a0be56a7-96f5-4c9d-b1b8-b234fa742ddf###default"}
-I0629 19:29:07.332618       1 nodeserver.go:302] cifsMountPath(/var/lib/kubelet/plugins/kubernetes.io/csi/file.csi.azure.com/06ab806af170755d9683d9ab14656e692502e907eaa632a1c279767918262a97/globalmount) fstype() volumeID(mc_secureshack2_aks_swedencentral#fe531559d5f294407a15318#pvc-a0be56a7-96f5-4c9d-b1b8-b234fa742ddf###default) context(map[csi.storage.k8s.io/pv/name:pvc-a0be56a7-96f5-4c9d-b1b8-b234fa742ddf csi.storage.k8s.io/pvc/name:my-azurefile csi.storage.k8s.io/pvc/namespace:default secretnamespace:default skuName:Standard_LRS storage.kubernetes.io/csiProvisionerIdentity:1688031486058-8081-file.csi.azure.com]) mountflags([mfsymlinks actimeo=30 nosharesock]) mountOptions([mfsymlinks actimeo=30 nosharesock file_mode=0777 dir_mode=0777]) volumeMountGroup()
+I0629 19:29:07.278654       1 utils.go:77] GRPC request: {"staging_target_path":"/var/lib/kubelet/plugins/kubernetes.io/csi/file.csi.azure.com/06ab806af170755d9683d9ab14656e692502e907eaa632a1c279767918262a97/globalmount","volume_capability":{"AccessType":{"Mount":{"mount_flags":["mfsymlinks","actimeo=30","nosharesock"]}},"access_mode":{"mode":5}},"volume_context":{"csi.storage.k8s.io/pv/name":"pvc-a0be56a7-96f5-4c9d-b1b8-b234fa742ddf","csi.storage.k8s.io/pvc/name":"my-azurefile","csi.storage.k8s.io/pvc/namespace":"default","secretnamespace":"default","skuName":"Premium_LRS","storage.kubernetes.io/csiProvisionerIdentity":"1688031486058-8081-file.csi.azure.com"},"volume_id":"mc_secureshack2_aks_swedencentral#fe531559d5f294407a15318#pvc-a0be56a7-96f5-4c9d-b1b8-b234fa742ddf###default"}
+I0629 19:29:07.332618       1 nodeserver.go:302] cifsMountPath(/var/lib/kubelet/plugins/kubernetes.io/csi/file.csi.azure.com/06ab806af170755d9683d9ab14656e692502e907eaa632a1c279767918262a97/globalmount) fstype() volumeID(mc_secureshack2_aks_swedencentral#fe531559d5f294407a15318#pvc-a0be56a7-96f5-4c9d-b1b8-b234fa742ddf###default) context(map[csi.storage.k8s.io/pv/name:pvc-a0be56a7-96f5-4c9d-b1b8-b234fa742ddf csi.storage.k8s.io/pvc/name:my-azurefile csi.storage.k8s.io/pvc/namespace:default secretnamespace:default skuName:Premium_LRS storage.kubernetes.io/csiProvisionerIdentity:1688031486058-8081-file.csi.azure.com]) mountflags([mfsymlinks actimeo=30 nosharesock]) mountOptions([mfsymlinks actimeo=30 nosharesock file_mode=0777 dir_mode=0777]) volumeMountGroup()
 I0629 19:29:07.419358       1 nodeserver.go:332] volume(mc_secureshack2_aks_swedencentral#fe531559d5f294407a15318#pvc-a0be56a7-96f5-4c9d-b1b8-b234fa742ddf###default) mount //fe531559d5f294407a15318.file.core.windows.net/pvc-a0be56a7-96f5-4c9d-b1b8-b234fa742ddf on /var/lib/kubelet/plugins/kubernetes.io/csi/file.csi.azure.com/06ab806af170755d9683d9ab14656e692502e907eaa632a1c279767918262a97/globalmount succeeded
 I0629 19:29:07.419399       1 utils.go:83] GRPC response: {}
 I0629 19:29:07.423503       1 utils.go:76] GRPC call: /csi.v1.Node/NodePublishVolume

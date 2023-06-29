@@ -90,7 +90,7 @@ root@aks-nodepool1-51397738-vmss000004:/# mount | grep pvc-a0be56a7
 ```
 
 ```
-# View /var/log/syslog for the volume.
+# To view the node syslog for the volume.
 cat /var/log/syslog | grep pvc-a0be56a7
 
 # Here is a sample output below.

@@ -1,4 +1,4 @@
-Here is an example of an Azure File mount using the azurefile-premium storage class. The storage class describe and the CSI driver logs show the storage account's skuName as Premium_LRS. On the other hand, for a mount with the azurefile storage class, the storage class describe and the CSI driver logs indicate the storage account's skuName as Standard_LRS.
+Here is an example of an Azure File mount using the `azurefile-premium` storage class. The storage class describe and the CSI driver logs show the storage account's skuName as `Premium_LRS`. On the other hand, for a mount with the `azurefile` storage class, the storage class describe and the CSI driver logs indicate the storage account's skuName as `Standard_LRS`, with the same mount options as as the `azurefile-premium` storage class.
 
 ```
 # Create the resources.

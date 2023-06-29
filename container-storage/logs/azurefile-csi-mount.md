@@ -98,3 +98,9 @@ Jun 27 16:33:39 aks-nodepool1-51397738-vmss000003 kernel: [12336.839270] CIFS: A
 Jun 27 16:33:39 aks-nodepool1-51397738-vmss000003 kubelet[1758]: I0627 16:33:39.675678    1758 operation_generator.go:658] "MountVolume.MountDevice succeeded for volume \"pvc-57ef31f0-8234-419e-a997-313d5fb9bf9d\" (UniqueName: \"kubernetes.io/csi/file.csi.azure.com^mc_resourceGroupName#fe531559d5f294407a15318#pvc-57ef31f0-8234-419e-a997-313d5fb9bf9d###default\") pod \"mypod\" (UID: \"340aafe5-cb01-4cce-9ef1-3d21dbb01494\") device mount path \"/var/lib/kubelet/plugins/kubernetes.io/csi/file.csi.azure.com/7cdc2c9d9e9dd380782b6aba2f5c52fabe14d035bb0f197fe039d98b2eac718e/globalmount\"" pod="default/mypod"
 Jun 27 16:33:39 aks-nodepool1-51397738-vmss000003 kubelet[1758]: I0627 16:33:39.685414    1758 operation_generator.go:730] "MountVolume.SetUp succeeded for volume \"pvc-57ef31f0-8234-419e-a997-313d5fb9bf9d\" (UniqueName: \"kubernetes.io/csi/file.csi.azure.com^mc_resourceGroupName#fe531559d5f294407a15318#pvc-57ef31f0-8234-419e-a997-313d5fb9bf9d###default\") pod \"mypod\" (UID: \"340aafe5-cb01-4cce-9ef1-3d21dbb01494\") " pod="default/mypod"
 ```
+
+```
+# Cleanup.
+kubectl delete po mypod
+kubectl delete pvc my-azurefile
+```

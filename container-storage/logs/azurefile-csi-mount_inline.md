@@ -1,5 +1,5 @@
 This uses steps in 
-https://learn.microsoft.com/en-us/azure/aks/azure-csi-files-storage-provision#mount-file-share-as-an-inline-volume to use the Azure File CSI driver to mount an inline Azure File share as a volume in a pod. These are volumes that follow the lifecyle of the pod as indicated in https://kubernetes.io/blog/2022/08/29/csi-inline-volumes-ga/.
+https://learn.microsoft.com/en-us/azure/aks/azure-csi-files-storage-provision#mount-file-share-as-an-inline-volume to use the Azure File CSI driver to mount an inline Azure File share as a volume in a pod. Inline volumes follow the lifecyle of the pod as indicated in https://kubernetes.io/blog/2022/08/29/csi-inline-volumes-ga/.
 
 ```
 # Replace the below with appropriate values.
@@ -70,7 +70,7 @@ kubectl get po -owide
 
 # Here is a sample output below.
 # NAME                                                    READY   STATUS      RESTARTS   AGE     IP            NODE                                NOMINATED NODE   READINESS GATES
-# mypod                                                   1/1     Running     0          7m53s   10.244.0.13   aks-nodepool1-51397738-vmss000003   <none>           <none>
+# mypod                                                   1/1     Running     0          7m53s   10.244.0.13   aks-nodepool1-51397738-vmss000004   <none>           <none>
 ```
 
 ```
@@ -94,15 +94,40 @@ Volumes:
 ```
 
 ```
-# /var/log/syslog from the node.
-Jun 28 20:19:35 aks-nodepool1-51397738-vmss000003 kubelet[1758]: I0628 20:19:35.351636    1758 reconciler.go:357] "operationExecutor.VerifyControllerAttachedVolume started for volume \"azure\" (UniqueName: \"kubernetes.io/csi/349cbd5d-c4ed-4cb6-9a38-d282e6d0d3c5-azure\") pod \"mypod\" (UID: \"349cbd5d-c4ed-4cb6-9a38-d282e6d0d3c5\") " pod="default/mypod"
-Jun 28 20:19:35 aks-nodepool1-51397738-vmss000003 kubelet[1758]: I0628 20:19:35.452587    1758 reconciler.go:269] "operationExecutor.MountVolume started for volume \"azure\" (UniqueName: \"kubernetes.io/csi/349cbd5d-c4ed-4cb6-9a38-d282e6d0d3c5-azure\") pod \"mypod\" (UID: \"349cbd5d-c4ed-4cb6-9a38-d282e6d0d3c5\") " pod="default/mypod"
-Jun 28 20:19:35 aks-nodepool1-51397738-vmss000003 kernel: [112291.557092] CIFS: Attempting to mount \\mystorageacct8461.file.core.windows.net\aksshare
-Jun 28 20:19:35 aks-nodepool1-51397738-vmss000003 kubelet[1758]: I0628 20:19:35.581000    1758 operation_generator.go:730] "MountVolume.SetUp succeeded for volume \"azure\" (UniqueName: \"kubernetes.io/csi/349cbd5d-c4ed-4cb6-9a38-d282e6d0d3c5-azure\") pod \"mypod\" (UID: \"349cbd5d-c4ed-4cb6-9a38-d282e6d0d3c5\") " pod="default/mypod"
+# To view the node syslog for the volume.
+cat /var/log/syslog
+
+# Here is a sample output below.
+Jun 29 20:24:15 aks-nodepool1-51397738-vmss000004 kubelet[1620]: I0629 20:24:15.663214    1620 reconciler.go:357] "operationExecutor.VerifyControllerAttachedVolume started for volume \"azure\" (UniqueName: \"kubernetes.io/csi/1eed8fa0-86c4-4129-91de-bba88aee99ad-azure\") pod \"mypod\" (UID: \"1eed8fa0-86c4-4129-91de-bba88aee99ad\") " pod="default/mypod"
+Jun 29 20:24:15 aks-nodepool1-51397738-vmss000004 kubelet[1620]: I0629 20:24:15.763910    1620 reconciler.go:269] "operationExecutor.MountVolume started for volume \"azure\" (UniqueName: \"kubernetes.io/csi/1eed8fa0-86c4-4129-91de-bba88aee99ad-azure\") pod \"mypod\" (UID: \"1eed8fa0-86c4-4129-91de-bba88aee99ad\") " pod="default/mypod"
+Jun 29 20:24:15 aks-nodepool1-51397738-vmss000004 kernel: [38768.348501] CIFS: Attempting to mount \\mystorageacct19813.file.core.windows.net\aksshare
+Jun 29 20:24:15 aks-nodepool1-51397738-vmss000004 kubelet[1620]: I0629 20:24:15.911954    1620 operation_generator.go:730] "MountVolume.SetUp succeeded for volume \"azure\" (UniqueName: \"kubernetes.io/csi/1eed8fa0-86c4-4129-91de-bba88aee99ad-azure\") pod \"mypod\" (UID: \"1eed8fa0-86c4-4129-91de-bba88aee99ad\") " pod="default/mypod"
 
 # Mount output from the node for this volume.
 root@aks-nodepool1-51397738-vmss000003:/# mount | grep mystorageacct
-//mystorageacct8461.file.core.windows.net/aksshare on /var/lib/kubelet/pods/349cbd5d-c4ed-4cb6-9a38-d282e6d0d3c5/volumes/kubernetes.io~csi/azure/mount type cifs (rw,relatime,vers=3.1.1,cache=strict,username=mystorageacct8461,uid=0,noforceuid,gid=0,noforcegid,addr=20.60.78.104,file_mode=0777,dir_mode=0777,soft,persistenthandles,nounix,serverino,mapposix,mfsymlinks,rsize=1048576,wsize=1048576,bsize=1048576,echo_interval=60,actimeo=30,closetimeo=1)
+
+# Here is a sample output below.
+//mystorageacct19813.file.core.windows.net/aksshare on /var/lib/kubelet/pods/1eed8fa0-86c4-4129-91de-bba88aee99ad/volumes/kubernetes.io~csi/azure/mount type cifs (rw,relatime,vers=3.1.1,cache=strict,username=mystorageacct19813,uid=0,noforceuid,gid=0,noforcegid,addr=20.60.79.8,file_mode=0777,dir_mode=0777,soft,persistenthandles,nounix,serverino,mapposix,mfsymlinks,rsize=1048576,wsize=1048576,bsize=1048576,echo_interval=60,actimeo=30,closetimeo=1)
+```
+
+```
+# To display information about the csi-azurefile located in the node where the pod is scheduled.
+kubectl get po -n kube-system -owide | grep csi-azurefile | grep vmss000004
+
+# Here is a sample output below.
+# csi-azurefile-node-h72r5              3/3     Running   0          10h     10.224.0.4   aks-nodepool1-51397738-vmss000004   <none>           <none>
+
+# To retrieve CSI driver logs.
+kubectl logs -n kube-system csi-azurefile-node-h72r5 -c azurefile
+
+# Here is a sample output below.
+I0629 20:24:15.766892       1 utils.go:76] GRPC call: /csi.v1.Node/NodePublishVolume
+I0629 20:24:15.766906       1 utils.go:77] GRPC request: {"target_path":"/var/lib/kubelet/pods/1eed8fa0-86c4-4129-91de-bba88aee99ad/volumes/kubernetes.io~csi/azure/mount","volume_capability":{"AccessType":{"Mount":{}},"access_mode":{"mode":7}},"volume_context":{"csi.storage.k8s.io/ephemeral":"true","csi.storage.k8s.io/pod.name":"mypod","csi.storage.k8s.io/pod.namespace":"default","csi.storage.k8s.io/pod.uid":"1eed8fa0-86c4-4129-91de-bba88aee99ad","csi.storage.k8s.io/serviceAccount.name":"default","mountOptions":"dir_mode=0777,file_mode=0777,cache=strict,actimeo=30,nosharesock","secretName":"azure-secret","shareName":"aksshare"},"volume_id":"csi-3155cf52338ce63517fbaa609c86a7dc31d2cd0c97a784ef38a219719fd046e3"}
+I0629 20:24:15.767003       1 nodeserver.go:68] NodePublishVolume: ephemeral volume(csi-3155cf52338ce63517fbaa609c86a7dc31d2cd0c97a784ef38a219719fd046e3) mount on /var/lib/kubelet/pods/1eed8fa0-86c4-4129-91de-bba88aee99ad/volumes/kubernetes.io~csi/azure/mount, VolumeContext: map[csi.storage.k8s.io/ephemeral:true csi.storage.k8s.io/pod.name:mypod csi.storage.k8s.io/pod.namespace:default csi.storage.k8s.io/pod.uid:1eed8fa0-86c4-4129-91de-bba88aee99ad csi.storage.k8s.io/serviceAccount.name:default getaccountkeyfromsecret:true mountOptions:dir_mode=0777,file_mode=0777,cache=strict,actimeo=30,nosharesock secretName:azure-secret secretnamespace:default shareName:aksshare storageaccount:]
+W0629 20:24:15.767026       1 azurefile.go:601] parsing volumeID(csi-3155cf52338ce63517fbaa609c86a7dc31d2cd0c97a784ef38a219719fd046e3) return with error: error parsing volume id: "csi-3155cf52338ce63517fbaa609c86a7dc31d2cd0c97a784ef38a219719fd046e3", should at least contain two #
+I0629 20:24:15.841976       1 nodeserver.go:302] cifsMountPath(/var/lib/kubelet/pods/1eed8fa0-86c4-4129-91de-bba88aee99ad/volumes/kubernetes.io~csi/azure/mount) fstype() volumeID(csi-3155cf52338ce63517fbaa609c86a7dc31d2cd0c97a784ef38a219719fd046e3) context(map[csi.storage.k8s.io/ephemeral:true csi.storage.k8s.io/pod.name:mypod csi.storage.k8s.io/pod.namespace:default csi.storage.k8s.io/pod.uid:1eed8fa0-86c4-4129-91de-bba88aee99ad csi.storage.k8s.io/serviceAccount.name:default getaccountkeyfromsecret:true mountOptions:dir_mode=0777,file_mode=0777,cache=strict,actimeo=30,nosharesock secretName:azure-secret secretnamespace:default shareName:aksshare storageaccount:]) mountflags([]) mountOptions([actimeo=30 cache=strict dir_mode=0777 file_mode=0777 nosharesock mfsymlinks]) volumeMountGroup()
+I0629 20:24:15.911674       1 nodeserver.go:332] volume(csi-3155cf52338ce63517fbaa609c86a7dc31d2cd0c97a784ef38a219719fd046e3) mount //mystorageacct19813.file.core.windows.net/aksshare on /var/lib/kubelet/pods/1eed8fa0-86c4-4129-91de-bba88aee99ad/volumes/kubernetes.io~csi/azure/mount succeeded
+I0629 20:24:15.911698       1 utils.go:83] GRPC response: {}
 ```
 
 ```

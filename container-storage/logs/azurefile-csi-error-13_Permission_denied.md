@@ -1,4 +1,4 @@
-The "Permission denied" mount error is likely due to the secret not having the correct storage account name or key as indicated in https://github.com/Azure/AKS/issues/2383#issuecomment-859539446. To resolve this, you can delete and recreate the secret with the correct storage account name and key.
+The "Permission denied" mount error occurs due to incorrect storage account name or key in the secret. This issue has been discussed in the GitHub comment (https://github.com/Azure/AKS/issues/2383#issuecomment-859539446) and Microsoft troubleshooting documentation (https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/fail-to-mount-azure-file-share#mounterror13). To fix the problem, it is recommended to delete the existing secret and recreate it with the accurate storage account name and key to ensure proper access and mounting of the Azure file share.
 
 ```
 # Replace the below with appropriate values.
@@ -193,3 +193,7 @@ kubectl delete pv azurefile
 kubectl delete secret azure-secret
 az storage account delete -g $rgname -n $storageAccountName -y
 ```
+
+Here are some related links:
+- [AKS/issues/2383#issuecomment-859539446](https://github.com/Azure/AKS/issues/2383#issuecomment-859539446): it's most likely your secret does not have correct account name or key, would you remove that secret in namespace and then `kubectl create secret`
+- [troubleshoot/azure/azure-kubernetes/fail-to-mount-azure-file-share#mounterror13](https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/fail-to-mount-azure-file-share#mounterror13).

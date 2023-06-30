@@ -26,7 +26,7 @@ az storage share create -n $shareName --connection-string $AZURE_STORAGE_CONNECT
 # Create the kubernetes secret.
 kubectl create secret generic azure-secret --from-literal=azurestorageaccountname=$storageAccountName --from-literal=azurestorageaccountkey=$STORAGE_KEY
 
-# Create the kubernetes static persistent volume, persistent volume claim and pod.
+# Create the kubernetes static persistent volume, persistent volume claim, and pod.
 cat << EOF | kubectl apply -f -
 apiVersion: v1
 kind: PersistentVolume

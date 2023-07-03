@@ -64,14 +64,16 @@ kubectl get po -l app=smb-server
 # To display the SMB driver pods. The first pod has the label app=csi-smb-controller, and the remaining pods have the label app=csi-smb-node.
 k get po -n kube-system | grep csi-smb
 
-csi-smb-controller-57d6576c7b-qkgbt   3/3     Running   0          4h37m
-csi-smb-node-4z5wd                    3/3     Running   0          4h37m
-csi-smb-node-7b9tk                    3/3     Running   0          4h37m
-csi-smb-node-wpk24                    3/3     Running   0          4h37m
+# Here is a sample output below.
+# csi-smb-controller-57d6576c7b-qkgbt   3/3     Running   0          4h37m
+# csi-smb-node-4z5wd                    3/3     Running   0          4h37m
+# csi-smb-node-7b9tk                    3/3     Running   0          4h37m
+# csi-smb-node-wpk24                    3/3     Running   0          4h37m
 
 # To display the SMB driver daemonsets.
 kubectl get ds -n kube-system | grep csi-smb-node
 
+# Here is a sample output below.
 # NAME                         DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR              AGE     LABELS
 # csi-smb-node                 3         3         3       3            3           kubernetes.io/os=linux     4h36m
 # csi-smb-node-win             0         0         0       0            0           kubernetes.io/os=windows   4h36m

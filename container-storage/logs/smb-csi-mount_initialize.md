@@ -7,26 +7,26 @@ clustername=akssamba
 ```
 
 ```
-# Create the cluster and retrieve the credentials.
+# To create the cluster and retrieve the credentials.
 az aks create -g $rgname -n $clustername
 az aks get-credentials -g $rgname -n $clustername --overwrite-existing
 
-# Create the secret with the smb-server resources. 
+# To create the secret with the smb-server resources. 
 # https://github.com/kubernetes-csi/csi-driver-smb/tree/master/deploy/example/smb-provisioner
 kubectl create secret generic smbcreds --from-literal username=USERNAME --from-literal password="PASSWORD"
 kubectl create -f https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/deploy/example/smb-provisioner/smb-server-networkdisk.yaml
 
-# Install the SMB driver pods.
+# To install the SMB driver pods.
 # https://github.com/kubernetes-csi/csi-driver-smb/blob/master/docs/install-smb-csi-driver.md
 curl -skSL https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/deploy/install-driver.sh | bash -s master --
 
-# Create the storage class for the smb.csi.k8s.io provisioner.
+# To create the storage class for the smb.csi.k8s.io provisioner.
 # https://github.com/kubernetes-csi/csi-driver-smb/blob/master/deploy/example/e2e_usage.md
 kubectl create -f https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/deploy/example/storageclass-smb.yaml
 ```
 
 ```
-# Retrieve resources.
+# To retrieve resources.
 kubectl get sc smb
 kubectl get pvc | grep smbshare
 kubectl get po | grep smb-server
@@ -43,7 +43,7 @@ kubectl get po | grep smb-server
 ```
 
 ```
-# Retrieve logs from the SMB server pod.
+# To retrieve logs from the SMB server pod.
 kubectl logs -l app=smb-server
 
 # Here is a sample output below.
@@ -78,7 +78,7 @@ kubectl get ds -n kube-system | grep csi-smb-node
 ```
 
 ```
-# Cleanup.
+# To cleanup.
 kubectl delete svc smb-server
 kubectl delete deploy smb-server
 kubectl delete pvc pvc-networkdisk-smbshare

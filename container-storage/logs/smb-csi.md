@@ -49,7 +49,7 @@ TBD
 ```
 
 ```
-# To view the node syslog for the volume.
+# To view the syslog of the node hosting the pod.
 cat /var/log/syslog | grep smb
 
 # Here is a sample output below.

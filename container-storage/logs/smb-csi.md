@@ -57,6 +57,16 @@ TBD
 ```
 
 ```
+kubectl get po -o wide -n kube-system | grep csi-smb-node
+
+sudo mount | grep cifs
+
+create a storage account and run below in a node for a manual mount test.
+mkdir /tmp/test
+sudo mount -v -t cifs //smb-server.default.svc.cluster.local/share /tmp/test -o vers=3.0,username=stor0703,password=accountkey,dir_mode=0777,file_mode=0777,cache=strict,actimeo=30
+```
+
+```
 # Cleanup.
 kubectl delete statefulset statefulset-smb
 kubectl delete svc smb-server

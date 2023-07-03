@@ -20,7 +20,7 @@ kubectl get po | grep statefulset-smb
 ```
 
 ```
-# To execute into the container.
+# To display the pod mount after container exec.
 kubectl exec -it statefulset-smb-0 -- df -h | grep smb
 
 # Here is a sample output below.

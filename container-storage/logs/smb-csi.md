@@ -1,4 +1,4 @@
-Here are steps to create a Samba server with a StatefulSet in Linux using https://github.com/kubernetes-csi/csi-driver-smb/blob/master/deploy/example/e2e_usage.md. You can file any issues at https://github.com/kubernetes-csi/csi-driver-smb/issues. This is generally used with an on-prem SMB server.
+Here are steps to create a Samba server with a StatefulSet in Linux using https://github.com/kubernetes-csi/csi-driver-smb/blob/master/deploy/example/e2e_usage.md. You can file any issues at https://github.com/kubernetes-csi/csi-driver-smb/issues. This setup is generally used with an on-prem SMB server. For troubleshooting, you can try manually mounting on the node to check for errors using the steps provided in https://github.com/kubernetes-csi/csi-driver-smb/blob/master/docs/csi-debug.md#troubleshooting-connection-failure-on-agent-node.
 
 ```
 # Replace the below with appropriate values.

@@ -49,6 +49,14 @@ TBD
 ```
 
 ```
+# To view the node syslog for the volume.
+cat /var/log/syslog | grep smb
+
+# Here is a sample output below.
+TBD
+```
+
+```
 # Cleanup.
 kubectl delete statefulset statefulset-smb
 kubectl delete svc smb-server

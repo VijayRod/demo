@@ -111,6 +111,12 @@ NAME                          CPU(cores)   MEMORY(bytes)
 php-apache-5b56f9df94-gjj2g   1m           9Mi
 ```
 
+```
+# To cleanup.
+kubectl delete deploy php-apache
+kubectl delete svc php-apache
+```
+
 Here are some related links:
 - [aks/tutorial-kubernetes-scale?tabs=azure-cli#autoscale-pods](https://learn.microsoft.com/en-us/azure/aks/tutorial-kubernetes-scale?tabs=azure-cli#autoscale-pods)
 - [kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/#algorithm-details](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/#algorithm-details)

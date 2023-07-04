@@ -9,26 +9,26 @@ shareName=aksshare
 ```
 
 ```
-# Retrieve the node resource group name for the cluster.
+# To retrieve the node resource group name for the cluster.
 nodeResourceGroupName=$(az aks show --resource-group $rgname --name $clustername --query nodeResourceGroup -o tsv)
 
-# Create the storage account.
+# To create the storage account.
 az storage account create -g $nodeResourceGroupName -n $storageAccountName --sku Premium_LRS --kind FileStorage --enable-large-file-share --output none
 export AZURE_STORAGE_CONNECTION_STRING=$(az storage account show-connection-string -g $nodeResourceGroupName -n $storageAccountName -o tsv)
 STORAGE_KEY=$(az storage account keys list -g $nodeResourceGroupName --account-name $storageAccountName --query "[0].value" -o tsv)
 echo Storage account key: $STORAGE_KEY
 
-# Create the file share.
+# To create the file share.
 az storage share create -n $shareName --connection-string $AZURE_STORAGE_CONNECTION_STRING
 ```
 
 ```
-# Create the kubernetes secret.
+# To create the kubernetes secret.
 kubectl create secret generic azure-secret --from-literal=azurestorageaccountname=$storageAccountName --from-literal=azurestorageaccountkey=$STORAGE_KEY
 ```
 
 ```
-# Regenerate the access key for the storage account in this TEST environment.
+# To regenerate the access key for the storage account in this TEST environment.
 az storage account keys renew -g $nodeResourceGroupName -n $storageAccountName --key key1 -o none
 
 # Alternatively, you can recreate the storage account with the same name in this TEST environment, as doing so will results in new keys.
@@ -39,7 +39,7 @@ az storage account keys renew -g $nodeResourceGroupName -n $storageAccountName -
 ```
 
 ```
-# Create the kubernetes static persistent volume, persistent volume claim, and pod.
+# To create the kubernetes static persistent volume, persistent volume claim, and pod.
 cat << EOF | kubectl apply -f -
 apiVersion: v1
 kind: PersistentVolume
@@ -115,7 +115,7 @@ EOF
 ```
 
 ```
-# Display information about the resources.
+# To display information about the resources.
 kubectl get po,pv,pvc
 
 # Here is a sample output below. The pod is in the "ContainerCreating" state.
@@ -126,7 +126,7 @@ persistentvolume/azurefile   5Gi        RWX            Retain           Bound   
 NAME                              STATUS   VOLUME      CAPACITY   ACCESS MODES   STORAGECLASS        AGE
 persistentvolumeclaim/azurefile   Bound    azurefile   5Gi        RWX            azurefile-premium   12s
 
-# Describe the pod.
+# To describe the pod.
 kubectl describe po mypod
 
 # Here is a sample output below.
@@ -186,7 +186,7 @@ Refer to the mount.cifs(8) manual page (e.g. man mount.cifs) and kernel log mess
 ```
 
 ```
-# Cleanup.
+# To cleanup.
 kubectl delete pod/mypod
 kubectl delete pvc azurefile
 kubectl delete pv azurefile

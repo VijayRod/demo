@@ -11,3 +11,19 @@ iptables-save | grep dport | grep 445
 # To delete the rule.
 iptables -D OUTPUT -p tcp --dport 445 -j DROP
 ```
+
+The following commands are for a Windows node in a PowerShell prompt:
+
+```
+# To create a new firewall rule.
+New-NetFirewallRule -DisplayName "Block SMB port" -Direction Outbound -LocalPort 445 -Protocol TCP -Action Block
+
+# To display the firewall rule.
+Get-NetFirewallRule -DisplayName "Block SMB port"
+
+# To remove the firewall rule.
+Remove-NetFirewallRule -DisplayName "Block SMB port"
+
+# TBD for outbound port.
+Get-NetFirewallPortFilter | Where-Object -Property LocalPort -EQ 445
+```

@@ -113,6 +113,7 @@ php-apache-5b56f9df94-gjj2g   1m           9Mi
 
 ```
 # To cleanup.
+kubectl delete hpa php-apache
 kubectl delete deploy php-apache
 kubectl delete svc php-apache
 ```

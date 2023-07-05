@@ -88,3 +88,7 @@ kubectl delete sc smb
 kubectl delete secret smbcreds
 curl -skSL https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/deploy/uninstall-driver.sh | bash -s --
 ```
+
+Here are some related links:
+- [kubernetes-csi/csi-driver-smb/blob/master/known-issues](https://github.com/kubernetes-csi/csi-driver-smb/blob/master/known-issues.md) for known issues.
+- To check whether the SBM CSI driver is healthy, follow the steps outlined in [csi-debug.md#case2-volume-mountunmount-failed](https://github.com/kubernetes-csi/csi-driver-smb/blob/master/docs/csi-debug.md#case2-volume-mountunmount-failed).

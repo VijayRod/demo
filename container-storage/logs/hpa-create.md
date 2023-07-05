@@ -120,6 +120,5 @@ kubectl delete svc php-apache
 
 Here are some related links:
 - [aks/tutorial-kubernetes-scale?tabs=azure-cli#autoscale-pods](https://learn.microsoft.com/en-us/azure/aks/tutorial-kubernetes-scale?tabs=azure-cli#autoscale-pods)
-- [azure-kubernetes/identify-high-cpu-consuming-containers-aks](https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/identify-high-cpu-consuming-containers-aks?tabs=browser#step-1-identify-nodescontainers-with-high-cpu-usage)
 - [kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/#algorithm-details](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/#algorithm-details)
 - [kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale-walkthrough](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale-walkthrough/)

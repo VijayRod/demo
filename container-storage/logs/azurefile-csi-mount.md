@@ -125,7 +125,7 @@ I0629 19:29:07.426983       1 utils.go:83] GRPC response: {}
 ```
 
 ```
-# Cleanup.
+# To cleanup.
 kubectl delete po mypod
 kubectl delete pvc my-azurefile
 ```

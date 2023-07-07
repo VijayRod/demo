@@ -39,7 +39,7 @@ EOF
 ```
 
 ```
-# To clean up
+# To cleanup
 kubectl delete po fiopod
 kubectl delete pvc azurediskpvc
 ```

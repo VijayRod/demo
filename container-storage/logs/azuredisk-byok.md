@@ -3,9 +3,9 @@ The provided code snippet demonstrates the creation and configuration of Azure D
 ```
 # Replace the below with appropriate values.
 rgname=
-clustername=
-keyvaultName=
-keyvaultResourceGroupName=
+clustername=aksencrypt
+keyvaultName="kvencrypt$RANDOM"
+keyvaultResourceGroupName=$rgname
 keyName=ContosoFirstKey
 ```
 

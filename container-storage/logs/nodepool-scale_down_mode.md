@@ -52,7 +52,7 @@ Delete
 
 ```
 # To cleanup
-az aks nodepool delete -g $rgname --cluster-name $clustername -n $nodepoolname
+az aks nodepool delete -g $rgname --cluster-name $clustername -n $nodepoolname --no-wait
 ```
 
 https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/virtual-machine-scale-sets-faq#what-s-the-difference-between-deleting-a-vm-in-a-virtual-machine-scale-set-and-deallocating-the-vm--when-should-i-choose-one-over-the-other-

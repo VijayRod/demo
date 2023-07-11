@@ -1,7 +1,7 @@
 This creates a managed user identity.
 
 ```
-# Replace the below with appropriate values.
+# Replace the below with appropriate values
 rgname=
 identityName="myIdentity$RANDOM"
 ```
@@ -17,16 +17,16 @@ identityUri=$(az identity show -g $rgname --name $identityName --query id -otsv)
 The managed user identity can be used to create an AKS cluster as indicated in https://learn.microsoft.com/en-us/azure/aks/use-managed-identity.
 
 ```
-# To create an AKS cluster using the specified identity.
+# To create an AKS cluster using the specified identity
 clustername=aksmsiuser
 az aks create -g $rgname -n $clustername --enable-managed-identity --assign-identity $identityUri
 ```
 
 ```
-# To display the identity.
+# To display the identity
 az aks show -g $rgname -n $clustername --query identity
 
-# Here is a sample output below.
+# Here is a sample output below
 {
   "principalId": null,
   "tenantId": null,

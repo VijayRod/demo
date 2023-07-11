@@ -21,3 +21,21 @@ The managed user identity can be used to create an AKS cluster as indicated in h
 clustername=aksmsiuser
 az aks create -g $rgname -n $clustername --enable-managed-identity --assign-identity $identityUri
 ```
+
+```
+# To display the identity.
+az aks show -g $rgname -n $clustername --query identity
+
+# Here is a sample output below.
+{
+  "principalId": null,
+  "tenantId": null,
+  "type": "UserAssigned",
+  "userAssignedIdentities": {
+    "/subscriptions/dummys-1111-1111-1111-111111111111/resourcegroups/resourceGroupName/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myIdentity10733": {
+      "clientId": "dummyc-1111-1111-1111-111111111111",
+      "principalId": "dummyp-1111-1111-1111-111111111111"
+    }
+  }
+}
+```

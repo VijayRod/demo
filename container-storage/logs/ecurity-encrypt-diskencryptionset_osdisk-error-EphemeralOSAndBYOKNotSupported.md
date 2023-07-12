@@ -1,4 +1,4 @@
-The steps mentioned [here](ecurity-encrypt-diskencryptionset_osdisk.md) are used to create a cluster with an ephemeral OS disk. However, this process fails, and the following self-explanatory message is displayed:
+The steps mentioned [here](security-encrypt-diskencryptionset_osdisk.md) are used to create a cluster with an ephemeral OS disk. However, this process fails, and the following self-explanatory message is displayed:
 
 ```
 az aks create -g $rgname -n $clustername --node-osdisk-diskencryptionset-id $diskEncryptionSetId --node-osdisk-type Ephemeral

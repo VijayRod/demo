@@ -59,7 +59,7 @@ Behavior:
 # Sample watch output
 kubectl get hpa php-apache --watch
 
-# Here is a sample output below.
+# Here is a sample output below
 NAME         REFERENCE               TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
 php-apache   Deployment/php-apache   55%/50%    1         10        5          6m30s
 php-apache   Deployment/php-apache   0%/50%     1         10        5          7m

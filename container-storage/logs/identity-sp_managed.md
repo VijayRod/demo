@@ -10,7 +10,7 @@ identityName="myIdentity$RANDOM"
 # To create the managed user identity
 az identity create -g $rgname --name $identityName
 
-# To retrieve the properties of the identity
+# TBDc - To retrieve the properties of the identity
 identityClientId=$(az identity show -g $rgname -n $identityName --query clientId -otsv)
 identityUri=$(az identity show -g $rgname --name $identityName --query id -otsv)
 ```

@@ -10,4 +10,6 @@ az aks create -g $rgname -n $clustername --node-osdisk-diskencryptionset-id $dis
 # Message: BYOK and Ephemeral OS disk can not be combined in Azure. Disable ephemeral OS disk or disable BYOK.
 ```
 
-Additional information can be found at this link: [AKS/issues/2569](https://github.com/Azure/AKS/issues/2569).
+Additional information can be found at this link: [AKS/issues/2569](https://github.com/Azure/AKS/issues/2569)
+
+[aks/azure-disk-customer-managed-keys#register-customer-managed-key-preview-feature](https://learn.microsoft.com/en-us/azure/aks/azure-disk-customer-managed-keys#register-customer-managed-key-preview-feature)

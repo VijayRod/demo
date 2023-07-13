@@ -31,13 +31,14 @@ az aks pod-identity add --resource-group ${IDENTITY_RESOURCE_GROUP} --cluster-na
 ```
 
 ```
-# To deploy a sample application
+# To deploy a sample application. TBDc - This must be in the same namespace defined using "az aks pod-identity", else the output of "kubectl logs demo" includes a 404 with "no azure identity found for request clientID".
 az aks get-credentials -g $rgname -n $clustername --overwrite-existing
 cat << EOF | kubectl apply -f -
 apiVersion: v1
 kind: Pod
 metadata:
   name: demo
+  namespace: $POD_IDENTITY_NAMESPACE
   labels:
     aadpodidbinding: $POD_IDENTITY_NAME
 spec:

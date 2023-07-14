@@ -1,5 +1,7 @@
 TBDc
 
+coredns can be customized in AKS using the coredns-custom configmap.
+
 ```
 # To customize the coredns config
 cat << EOF | kubectl apply -f -
@@ -26,6 +28,12 @@ kubectl delete pod --namespace kube-system -l k8s-app=kube-dns
 kubectl get po -A -l k8s-app=kube-dns -owide
 kubectl describe cm -n kube-system coredns-custom
 kubectl logs -n kube-system -l k8s-app=kube-dns --timestamps --follow
+```
+
+```
+# To capture data for later analysis
+- coredns logs with timestamp, and with coredns pod and node name
+- Node /var/log/syslog files having events of above time.
 ```
 
 https://kubernetes.io/docs/tasks/administer-cluster/dns-custom-nameservers/

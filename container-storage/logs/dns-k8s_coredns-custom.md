@@ -38,9 +38,9 @@ kubectl logs -n kube-system -l k8s-app=kube-dns --timestamps --follow
 
 TBD
 
-https://kubernetes.io/docs/tasks/administer-cluster/dns-custom-nameservers/
-https://learn.microsoft.com/en-us/azure/aks/coredns-custom
-https://docs.digitalocean.com/products/kubernetes/how-to/customize-coredns/
-https://stackoverflow.com/questions/56675972/kubernetes-how-to-edit-coredns-corefile-configmap
-https://sysdig.com/blog/how-to-monitor-coredns/
-https://coredns.io/plugins/
+- https://kubernetes.io/docs/tasks/administer-cluster/dns-custom-nameservers/
+- https://learn.microsoft.com/en-us/azure/aks/coredns-custom
+- https://docs.digitalocean.com/products/kubernetes/how-to/customize-coredns/
+- https://stackoverflow.com/questions/56675972/kubernetes-how-to-edit-coredns-corefile-configmap
+- https://sysdig.com/blog/how-to-monitor-coredns/
+- https://coredns.io/plugins/

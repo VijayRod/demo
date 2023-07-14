@@ -23,7 +23,7 @@ kubectl delete pod --namespace kube-system -l k8s-app=kube-dns
 
 ```
 # Useful commands
-kubectl get po -A -l k8s-app=kube-dns
+kubectl get po -A -l k8s-app=kube-dns -owide
 kubectl describe cm -n kube-system coredns-custom
 kubectl logs -n kube-system -l k8s-app=kube-dns --timestamps --follow
 ```

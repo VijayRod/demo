@@ -77,3 +77,9 @@ assignmentScope="/subscriptions/$subId/resourceGroups/$diskEncryptionSet2Resourc
 
 az role assignment create --assignee $objectId --role "Contributor" --scope $assignmentScope
 ```
+
+```
+# To cleanup
+kubectl delete pvc azure-byok-disk
+kubectl delete sc byok
+```

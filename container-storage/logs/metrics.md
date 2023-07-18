@@ -4,6 +4,7 @@ Here are some related links for AKS:
 - [Essential metrics](https://learn.microsoft.com/en-us/azure/azure-monitor/essentials/metrics-supported#microsoftcontainerservicemanagedclusters) - Metrics supported for Microsoft Container Service Managed Clusters
 
 TBD 
+The metrics-server implements the Metrics API as indicated in https://kubernetes.io/docs/tasks/debug/debug-cluster/resource-metrics-pipeline/#metrics-api.
 ```
 kubectl get --raw /apis/metrics.k8s.io/v1beta1/namespaces/default/pods/nginx
 

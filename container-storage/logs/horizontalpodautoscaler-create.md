@@ -1,4 +1,4 @@
-This is an example of creating a Horizontal Pod Autoscaler. To utilize the autoscaler, all containers and pods for which the HPA is defined must have defined CPU requests and limits.
+This is an example of creating a Horizontal Pod Autoscaler (HPA). To utilize the autoscaler, all containers and pods for which the HPA is defined must have defined CPU requests and limits.
 
 ```
 # To run and expose php-apache server

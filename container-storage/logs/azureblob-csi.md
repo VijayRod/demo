@@ -7,14 +7,14 @@ clustername=aksblob
 ```
 
 ```
-# Install the cluster. Optionally, run az aks show for an existing cluster.
+# To install the cluster. Optionally, run az aks show for an existing cluster.
 az aks create -g secureshack2 -n aksblob
 
 # Here is a sample output below.
 #   "storageProfile": {
 #     "blobCsiDriver": null,
 
-# Enable the Azure blob CSI driver.
+# To enable the Azure blob CSI driver.
 az aks update --enable-blob-driver -g secureshack2 -n aks
 
 # Here is a sample output below.
@@ -23,6 +23,12 @@ az aks update --enable-blob-driver -g secureshack2 -n aks
 #   "storageProfile": {
 #     "blobCsiDriver": {
 #       "enabled": true
+
+# To check if it is enabled
+az aks show -g secureshack2 -n aks --query storageProfile.blobCsiDriver -otsv
+
+# Here is a sample output below.
+True
 ```
 
 ```

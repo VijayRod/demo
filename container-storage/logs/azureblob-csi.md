@@ -28,7 +28,7 @@ az aks update --enable-blob-driver -g secureshack2 -n aks
 az aks show -g secureshack2 -n aks --query storageProfile.blobCsiDriver -otsv
 
 # Here is a sample output below.
-True
+# True
 ```
 
 ```

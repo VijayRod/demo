@@ -1,0 +1,2 @@
+- https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/
+- https://spot.io/resources/kubernetes-autoscaling/kubernetes-daemonset-a-practical-guide/

@@ -6,6 +6,7 @@ rgname=
 clustername=aks
 storageAccountName="mystorageacct$RANDOM"
 shareName=aksshare
+
 # Retrieve the node resource group name for the cluster.
 nodeResourceGroupName=$(az aks show --resource-group $rgname --name $clustername --query nodeResourceGroup -o tsv)
 ```
@@ -107,7 +108,9 @@ kubectl exec -it fluentd-elasticsearch-srr5j -- ls /mnt/azure
 az storage file list --share-name $shareName -otable
 ```
 
+```
 # To cleanup
 kubectl delete ds fluentd-elasticsearch
 kubectl delete pvc azurefile
 kubectl delete pv azurefile
+```

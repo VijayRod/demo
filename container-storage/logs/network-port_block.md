@@ -27,3 +27,5 @@ Remove-NetFirewallRule -DisplayName "Block SMB port"
 # TBD for outbound port.
 Get-NetFirewallPortFilter | Where-Object -Property LocalPort -EQ 445
 ```
+
+TBD Or block with Network Security Group (NSG) or Firewall.

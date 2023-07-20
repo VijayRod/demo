@@ -25,7 +25,7 @@ az aks update --enable-blob-driver -g secureshack2 -n aks
 #       "enabled": true
 
 # To check if it is enabled
-az aks show -g secureshack2 -n aks --query storageProfile.blobCsiDriver -otsv
+az aks show -g $rgname -n $clustername --query storageProfile.blobCsiDriver -otsv
 
 # Here is a sample output below.
 # True

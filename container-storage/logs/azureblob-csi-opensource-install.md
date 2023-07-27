@@ -1,7 +1,7 @@
 Here are steps from https://github.com/kubernetes-sigs/blob-csi-driver/blob/master/docs/install-csi-driver-master.md to install the <ins>open-source</ins> Azure Blob Storage CSI driver. The support policy can be found [here](https://github.com/kubernetes-sigs/blob-csi-driver/blob/master/support.md).
 
 ```
-# Replace the below with appropriate values.
+# Replace the below with appropriate values
 rgname=resourceGroupName
 clustername=aksblobpopen
 ```

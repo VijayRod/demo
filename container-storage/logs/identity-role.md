@@ -6,9 +6,7 @@ assignmentResourceGroupName=
 objectId=
 subId=$(az account show --query id -otsv)
 assignmentScope="/subscriptions/$subId/resourceGroups/$assignmentResourceGroupName" ## An alternate scope is "/subscriptions/$subId".
-```
 
-```
 # To create a role assignment.
 az role assignment create --assignee $objectId --role "Contributor" --scope $assignmentScope
 
@@ -26,6 +24,7 @@ az role assignment list-changelogs	## The start/end time defaults to -1h and now
 az role assignment list-changelogs --end-time '2000-12-31T12:59:59Z' --start-time '2000-12-31T12:59:59Z'
 
 # To create a role assignment for a managed identity
+rgname=secureshack2
 rgresourceId="/subscriptions/$subId/resourceGroups/$rgname"
 identityPrincipalId=$(az identity create -g $rgname -n myHostIdentity --query principalId -otsv)
 sleep 30; az role assignment create --assignee-object-id $identityPrincipalId --role "Contributor" --scope $rgresourceId

@@ -21,7 +21,7 @@ az vm host create -g $rgname --host-group $hostgroupname --name $host2name --sku
 ```
 # To create an identity with contributor access to the resource group of the host group
 identityPrincipalId=$(az identity create -g $rgname -n myHostIdentity --query principalId -otsv)
-az role assignment create --assignee-object-id $identityPrincipalId --role "Contributor" --scope $rgresourceId
+sleep 30; az role assignment create --assignee-object-id $identityPrincipalId --role "Contributor" --scope $rgresourceId
 
 # To create a cluster
 identityId=$(az identity show -g $rgname -n myHostIdentity --query id -otsv)

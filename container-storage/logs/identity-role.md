@@ -25,6 +25,11 @@ az role assignment list --all --assignee $objectId
 az role assignment list-changelogs	## The start/end time defaults to -1h and now().
 az role assignment list-changelogs --end-time '2000-12-31T12:59:59Z' --start-time '2000-12-31T12:59:59Z'
 
+# To create a role assignment for a managed identity
+rgresourceId="/subscriptions/$subId/resourceGroups/$rgname"
+identityPrincipalId=$(az identity create -g $rgname -n myHostIdentity --query principalId -otsv)
+sleep 30; az role assignment create --assignee-object-id $identityPrincipalId --role "Contributor" --scope $rgresourceId
+
 # To create a role assignment for a kubelet managed identity in AKS.
 objectId=$(az aks show -g $rgname -n $clustername --query "identityProfile.kubeletidentity.objectId" -o tsv)
 assignmentResourceGroupName=$(az aks show -g $rgname --n $clustername  --query "nodeResourceGroup" -o tsv)

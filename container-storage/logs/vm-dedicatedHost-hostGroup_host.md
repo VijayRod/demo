@@ -34,9 +34,7 @@ az vm host create -g $rgname --host-group $hostgroupname --name $host2name --sku
   "type": "Microsoft.Compute/hostGroups/hosts",
   "virtualMachines": []
 }
-```
 
-```
 # az vm host get-instance-view -g $rgname --host-group $hostgroupname --name $host1name. This retrieves the resource Ids of the virtualMachines deployed to this dedicated host.
 {
   "autoReplaceOnFailure": true,

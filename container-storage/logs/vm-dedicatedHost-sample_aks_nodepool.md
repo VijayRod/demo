@@ -4,8 +4,8 @@ az aks nodepool add -g $rgname --cluster-name $clustername --name agentpool2 --n
 
 ```
 # az aks show -g $rgname -n $clustername --query agentPoolProfiles[1].hostGroupId
-"/subscriptions/8d99b0de-7ea1-4a2b-8fd0-c2ef9f25c5dc/resourceGroups/SECURESHACK2/providers/Microsoft.Compute/hostGroups/myHostGroup"
+"/subscriptions/dummys-1111-1111-1111-111111111111/resourceGroups/SECURESHACK2/providers/Microsoft.Compute/hostGroups/myHostGroup"
 
 # az aks nodepool show -g $rgname --cluster-name $clustername --name agentpool2 --query hostGroupId
-"/subscriptions/8d99b0de-7ea1-4a2b-8fd0-c2ef9f25c5dc/resourceGroups/SECURESHACK2/providers/Microsoft.Compute/hostGroups/myHostGroup"
+"/subscriptions/dummys-1111-1111-1111-111111111111/resourceGroups/SECURESHACK2/providers/Microsoft.Compute/hostGroups/myHostGroup"
 ```

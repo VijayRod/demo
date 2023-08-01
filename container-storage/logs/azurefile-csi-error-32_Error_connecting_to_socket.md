@@ -5,7 +5,7 @@ The mount failure with exit status 32 is due to connectivity issues while connec
 NAME             READY   STATUS              RESTARTS   AGE
 mypod            0/1     ContainerCreating   0          9m35s
 
-# kubectl describe pod for outbound traffice blocked on SMB port 445. The pod has been created with an Azure File ReadWriteMany mount using the default SMB protocol.
+# kubectl describe pod for outbound traffic is blocked on SMB port 445. The pod has been created with an Azure File ReadWriteMany mount using the default SMB protocol.
   Warning  FailedMount       5s                 kubelet            MountVolume.MountDevice failed for volume "pvc-ed4ca7d1-4e7d-4047-8d98-925e94fc32f2" : rpc error: code = Internal desc = volume(mc_secureshack2_aks_swedencentral#fe009272cfd2b4a3d8340d5#pvc-ed4ca7d1-4e7d-4047-8d98-925e94fc32f2###default) mount //fe009272cfd2b4a3d8340d5.file.core.windows.net/pvc-ed4ca7d1-4e7d-4047-8d98-925e94fc32f2 on /var/lib/kubelet/plugins/kubernetes.io/csi/file.csi.azure.com/1570d020929c850cbc0fe0a669931eca40991f0b426061ed9eedc50c998d925b/globalmount failed with mount failed: exit status 32
 Mounting command: mount
 Mounting arguments: -t cifs -o mfsymlinks,actimeo=30,nosharesock,file_mode=0777,dir_mode=0777,<masked> //fe009272cfd2b4a3d8340d5.file.core.windows.net/pvc-ed4ca7d1-4e7d-4047-8d98-925e94fc32f2 /var/lib/kubelet/plugins/kubernetes.io/csi/file.csi.azure.com/1570d020929c850cbc0fe0a669931eca40991f0b426061ed9eedc50c998d925b/globalmount

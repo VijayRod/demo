@@ -113,4 +113,10 @@ I0801 14:11:22.733282    4041 nodeserver.go:143] NodePublishVolume: volume mc_se
 I0801 14:11:22.733299    4041 utils.go:82] GRPC response: {}
 ```
 
+```
+# To cleanup
+kubectl delete po mypod
+kubectl delete pvc pvc-azureblob-fuse
+```
+
 - https://learn.microsoft.com/en-us/azure/aks/azure-csi-blob-storage-provision

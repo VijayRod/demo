@@ -12,3 +12,4 @@ error: failed to patch resources update to pod template Pod "nginx" is invalid: 
 ```
 
 - https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+- https://learn.microsoft.com/en-us/azure/aks/developer-best-practices-resource-management#define-pod-resource-requests-and-limits

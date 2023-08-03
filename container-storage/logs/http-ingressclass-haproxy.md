@@ -1,3 +1,5 @@
+The application data path is [client] --> [AKS iLB] --> [HAProxy in AKS] --> [App].
+
 ```
 # kubectl -n ingress-controller get all
 NAME                                  READY   STATUS    RESTARTS   AGE

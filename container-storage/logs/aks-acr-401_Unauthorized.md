@@ -59,4 +59,5 @@ Events:
   Warning  Failed     2s (x2 over 16s)  kubelet            Error: ErrImagePull
 ```
 
+- https://learn.microsoft.com/en-us/azure/container-registry/container-registry-faq#how-do-i-enable-anonymous-pull-access-
 - https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/cannot-pull-image-from-acr-to-aks-cluster#cause-1-401-unauthorized-error

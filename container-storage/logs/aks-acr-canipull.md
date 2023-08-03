@@ -1,0 +1,2 @@
+- https://github.com/Azure/aks-canipull
+- https://github.com/andyzhangx/demo/blob/master/aks/canipull/README.md - "deprecation: please use az aks check-acr (--node-name) command to throubleshoot ACR connection issue on specific AKS node"

@@ -49,4 +49,14 @@ metadata:
   uid: 74ccaddd-05fc-46ba-befe-0a2029b22401
 ```
 
+```
+# kubectl get svc echoserver. This has the ClusterIP for the sample pod.
+NAME         TYPE        CLUSTER-IP    EXTERNAL-IP   PORT(S)    AGE
+echoserver   ClusterIP   10.0.167.28   <none>        8080/TCP   3m45s
+
+# kubectl get ingress echoserver. This uses the haproxy class.
+NAME         CLASS     HOSTS              ADDRESS   PORTS     AGE
+echoserver   haproxy   echoserver.local             80, 443   2m55s
+```
+
 - https://haproxy-ingress.github.io/v0.14/docs/getting-started/

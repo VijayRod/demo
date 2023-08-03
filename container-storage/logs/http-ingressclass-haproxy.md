@@ -80,3 +80,4 @@ Events:       <none>
 ```
 
 - https://haproxy-ingress.github.io/v0.14/docs/getting-started/
+- https://kubernetes.io/docs/concepts/services-networking/ingress-controllers/#additional-controllers

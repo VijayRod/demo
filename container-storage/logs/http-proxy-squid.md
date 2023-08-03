@@ -8,5 +8,11 @@ http_access allow all
 sudo systemctl restart squid
 ```
 
+```
+sudo systemctl status squid
+
+netstat -tnlp | grep 3128
+```
+
 - http://www.squid-cache.org/Doc/config/
 - https://stackoverflow.com/questions/42901716/how-do-i-allow-access-to-all-requests-through-squid-proxy-server

@@ -36,7 +36,7 @@ az aks create -g $rgname -n $clustername --http-proxy-config /tmp/aks-proxy-conf
 {
   "effectiveNoProxy": [
     "konnectivity",
-    "aksproxy2-secureshack2-8d99b0-luq23deq.hcp.swedencentral.azmk8s.io",
+    "aksproxy2-secureshack2-111111-luq23deq.hcp.swedencentral.azmk8s.io",
     "10.224.0.0/12",
     "localhost",
     "127.0.0.1",

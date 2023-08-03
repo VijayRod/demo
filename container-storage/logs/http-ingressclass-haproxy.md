@@ -59,4 +59,22 @@ NAME         CLASS     HOSTS              ADDRESS   PORTS     AGE
 echoserver   haproxy   echoserver.local             80, 443   2m55s
 ```
 
+```
+# kubectl get ingressclass
+NAME      CONTROLLER                             PARAMETERS   AGE
+haproxy   haproxy-ingress.github.io/controller   <none>       24m
+
+# kubectl describe ingressclass
+Name:         haproxy
+Labels:       app.kubernetes.io/instance=haproxy-ingress
+              app.kubernetes.io/managed-by=Helm
+              app.kubernetes.io/name=haproxy-ingress
+              app.kubernetes.io/version=v0.14.4
+              helm.sh/chart=haproxy-ingress-0.14.4
+Annotations:  meta.helm.sh/release-name: haproxy-ingress
+              meta.helm.sh/release-namespace: ingress-controller
+Controller:   haproxy-ingress.github.io/controller
+Events:       <none>
+```
+
 - https://haproxy-ingress.github.io/v0.14/docs/getting-started/

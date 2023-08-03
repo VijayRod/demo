@@ -1,4 +1,4 @@
-The application data path is [client] --> [AKS iLB] --> [HAProxy in AKS] --> [App].
+The application data path is [client] --> [iLB in Azure] --> [HAProxy in AKS] --> [App].
 
 ```
 # kubectl -n ingress-controller get all

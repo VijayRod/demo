@@ -32,7 +32,7 @@ az aks create -g $rgname -n $clustername --http-proxy-config /tmp/aks-proxy-conf
 ```
 
 ```
-az aks show -g $rgname -n $clustername --query httpProxyConfig
+# az aks show -g $rgname -n $clustername --query httpProxyConfig
 {
   "effectiveNoProxy": [
     "konnectivity",

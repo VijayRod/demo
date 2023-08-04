@@ -12,6 +12,7 @@ az identity create -g $rgname --name $identityName
 
 # TBDc - To retrieve the properties of the identity
 identityClientId=$(az identity show -g $rgname -n $identityName --query clientId -otsv)
+identityPrincipalId=$(az identity show -g $rgname -n $identityName --query principalId -otsv)
 identityUri=$(az identity show -g $rgname --name $identityName --query id -otsv)
 ```
 

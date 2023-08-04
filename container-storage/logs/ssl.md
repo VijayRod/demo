@@ -1,0 +1,1 @@
+- https://www.sslshopper.com/ssl-checker.html

@@ -115,3 +115,5 @@ I0725 10:40:45.488642    4116 utils.go:82] GRPC response: {}
 kubectl delete po mypod
 kubectl delete pvc azure-blob-storage
 ```
+
+- https://github.com/Azure/AKS/tree/master/vhd-notes

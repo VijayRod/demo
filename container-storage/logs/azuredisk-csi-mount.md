@@ -118,3 +118,4 @@ kubectl delete pvc pvc-azuredisk
 
 - https://learn.microsoft.com/en-us/azure/aks/azure-csi-disk-storage-provision
 - https://learn.microsoft.com/en-us/azure/aks/azure-disk-csi
+- https://github.com/Azure/AKS/tree/master/vhd-notes

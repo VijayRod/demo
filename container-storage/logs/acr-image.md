@@ -33,6 +33,39 @@ az acr repository list --name $registry
 [
   "samples/ubuntu"
 ]
+
+# az acr repository show -n $registry --repository samples/ubuntu
+{
+  "changeableAttributes": {
+    "deleteEnabled": true,
+    "listEnabled": true,
+    "readEnabled": true,
+    "teleportEnabled": false,
+    "writeEnabled": true
+  },
+  "createdTime": "2023-07-27T02:11:58.4238974Z",
+  "imageName": "samples/ubuntu",
+  "lastUpdateTime": "2023-07-27T02:11:58.4938336Z",
+  "manifestCount": 1,
+  "registry": "imageshack.azurecr.io",
+  "tagCount": 1
+}
+
+# az acr repository show -n $registry --image samples/ubuntu
+{
+  "changeableAttributes": {
+    "deleteEnabled": true,
+    "listEnabled": true,
+    "readEnabled": true,
+    "writeEnabled": true
+  },
+  "createdTime": "2023-07-27T02:11:58.5316473Z",
+  "digest": "sha256:75399abc111a48bcabcfe40c8fa5d1d44fb99e078ab449338d08f06dad34127e",
+  "lastUpdateTime": "2023-07-27T02:11:58.5316473Z",
+  "name": "latest",
+  "quarantineState": "Passed",
+  "signed": false
+}
 ```
 
 ```

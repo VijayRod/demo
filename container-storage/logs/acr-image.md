@@ -74,3 +74,4 @@ az acr repository delete --name $registry --image samples/ubuntu -y
 ```
 
 - https://learn.microsoft.com/en-us/azure/container-registry/container-registry-get-started-docker-cli?tabs=azure-cli
+- https://learn.microsoft.com/en-us/azure/container-registry/container-registry-concepts

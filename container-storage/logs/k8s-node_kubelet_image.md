@@ -1,0 +1,2 @@
+- https://kubernetes.io/docs/concepts/containers/images/#serial-and-parallel-image-pulls
+- https://github.com/kubernetes/kubernetes/issues/108405

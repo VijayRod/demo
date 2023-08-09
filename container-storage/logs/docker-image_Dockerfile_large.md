@@ -1,4 +1,35 @@
-TBD since the below images eventually were smaller as seen in the crictl output.
+```
+# Dockerfile (Credits: Jacob Baek)
+FROM ubuntu:latest
+#RUN dd if=/dev/urandom of=/largeimage bs=1 count=0 seek=10G
+RUN dd if=/dev/urandom of=/largeimage bs=1G count=23
+RUN apt update
+RUN apt install nginx -y
+EXPOSE 80
+STOPSIGNAL SIGTERM
+CMD ["nginx", "-g", "daemon off;"]
+
+# To build, upload, and deploy an image
+registry=imageshack
+imagename=image23g
+docker build -t $imagename .
+docker tag $imagename $registry.azurecr.io/samples/$imagename
+az acr login --name $registry
+docker push $registry.azurecr.io/samples/$imagename
+kubectl run $imagename --image=$registry.azurecr.io/samples/$imagename
+
+# docker image list | grep $imagename
+REPOSITORY                               TAG       IMAGE ID       CREATED        SIZE
+imageshack.azurecr.io/samples/image23g   latest    e490bd696fe6   6 hours ago    24.9GB
+
+# crictl images | grep $imagename
+imageshack.azurecr.io/samples/image23g                                                latest   e490bd696fe6a       24.8GB
+
+/var/log/syslog
+Aug  9 14:41:11 aks-nodepool1-31040111-vmss000008 containerd[1520]: time="2023-08-09T14:41:11.281884785Z" level=info msg="Pulled image \"imageshack.azurecr.io/samples/image23g:latest\" with image id \"sha256:e490bd696fe6a58f3b43d0f6ef60da436f645ddc72adca268499fe7800f9d4ad\", repo tag \"imageshack.azurecr.io/samples/image23g:latest\", repo digest \"imageshack.azurecr.io/samples/image23g@sha256:44216f0658f4a847f6f0b520dc088807f1951aced8d417c97d83d7c83c01fce2\", size \"24787252196\" in 8m34.073429831s"
+```
+
+The result below did not produce a large image as observed in the `crictl` output, probably due to Docker push compression. For more information, please refer to: https://docs.docker.com/engine/reference/commandline/push/
 
 ```
 # Dockerfile.

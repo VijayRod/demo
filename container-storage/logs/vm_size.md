@@ -1,0 +1,1 @@
+- https://azure.microsoft.com/en-us/explore/global-infrastructure/products-by-region/

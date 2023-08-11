@@ -1,3 +1,5 @@
+The data path goes through the default protocol (SMB) for the storage class.
+
 ```
 # Create the resources.
 cat << EOF | kubectl create -f -

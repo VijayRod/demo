@@ -132,4 +132,3 @@ kubectl delete pvc my-azurefile
 
 - https://github.com/kubernetes-sigs/azurefile-csi-driver/blob/master/pkg/azurefile/azurefile.go
 - https://github.com/Azure/AKS/tree/master/vhd-notes
-- https://learn.microsoft.com/en-us/rest/api/storageservices/file-service-rest-api

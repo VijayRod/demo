@@ -158,3 +158,4 @@ errors.log  jmeter.log  quick_test.jmx  results.log
 ```
 
 - https://www.blazemeter.com/blog/jmeter-properties-customization
+- https://javadoc.io/static/org.apache.jmeter/ApacheJMeter_components/4.0/org/apache/jmeter/visualizers/ViewResultsFullVisualizer.html

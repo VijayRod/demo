@@ -27,7 +27,7 @@ az role assignment create --assignee $appId --role "Contributor" --scope /subscr
 # To view the service principal assignments
 az role assignment list --all --assignee $appId
 
-# To login with the service principal after role assignment
+# To login with the service principal after role assignment (this must be preceeded with an az role assignment create)
 az login --service-principal --username $appId --password $spPassword --tenant $tenantId
 az logout ## Then az login to the required account.
 
@@ -50,4 +50,5 @@ appId=$(jq -r ".appId" /tmp/auth.json)
 password=$(jq -r ".password" /tmp/auth.json)
 ```
 
-https://learn.microsoft.com/en-us/cli/azure/create-an-azure-service-principal-azure-cli
+- https://learn.microsoft.com/en-us/cli/azure/create-an-azure-service-principal-azure-cli
+- https://learn.microsoft.com/en-us/answers/questions/738782/no-subscription-found-for-function-during-azure-cl

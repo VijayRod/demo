@@ -1,3 +1,5 @@
+The JMX file is used to create a test plan.
+
 ```
 # To optionally create a working directory
 mkdir /tmp/jmeter; cd /tmp/jmeter
@@ -157,5 +159,6 @@ timeStamp,elapsed,label,responseCode,responseMessage,threadName,dataType,success
 errors.log  jmeter.log  quick_test.jmx  results.log
 ```
 
+- https://jmeter.apache.org/usermanual/get-started.html
 - https://www.blazemeter.com/blog/jmeter-properties-customization
 - https://javadoc.io/static/org.apache.jmeter/ApacheJMeter_components/4.0/org/apache/jmeter/visualizers/ViewResultsFullVisualizer.html

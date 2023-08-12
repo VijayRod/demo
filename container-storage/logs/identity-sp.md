@@ -41,4 +41,12 @@ az ad sp create-for-rbac --name $spName --scopes /subscriptions/$subId/resourceG
 az ad sp create-for-rbac --role Contributor --scopes /subscriptions/$subId
 ```
 
+```
+# Additional commands to retrieve from a JSON file
+subId=$(az account show --query id -otsv)
+az ad sp create-for-rbac --role Contributor --scopes /subscriptions/$subId -o json > /tmp/auth.json
+appId=$(jq -r ".appId" /tmp/auth.json)
+password=$(jq -r ".password" /tmp/auth.json)
+```
+
 https://learn.microsoft.com/en-us/cli/azure/create-an-azure-service-principal-azure-cli

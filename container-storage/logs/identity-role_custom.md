@@ -10,7 +10,7 @@ roleName=vijayrod
 az role definition list --custom-role-only -o table | grep $roleName
 
 # To create a file with the role definition. Replace the values in the below as required.
-subscriptionId=$(az account show --query id -otsv)
+subId=$(az account show --query id -otsv)
 cat > /tmp/mycustomrole.json <<EOF
 {
   "Name": "$roleName",
@@ -23,7 +23,7 @@ cat > /tmp/mycustomrole.json <<EOF
   "NotActions": [
   ],
   "AssignableScopes": [
-    "/subscriptions/$subscriptionId"
+    "/subscriptions/$subId"
   ]
 }
 EOF

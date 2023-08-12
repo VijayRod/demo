@@ -1,0 +1,2 @@
+- https://github.com/Azure-Samples/azure-load-testing-samples/tree/main/jmeter-basic-endpoint
+- https://github.com/microsoft/JMeter-AKS-LoadTest/blob/main/JMeterFiles/SampleTestPlan.jmx

@@ -1,0 +1,2 @@
+- https://learn.microsoft.com/en-us/azure/aks/manage-azure-rbac
+- https://github.com/Azure/AKS/issues/2283: Add RBAC actions for cluster start stop

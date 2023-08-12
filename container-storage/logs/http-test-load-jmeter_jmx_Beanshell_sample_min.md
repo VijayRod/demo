@@ -156,3 +156,5 @@ timeStamp,elapsed,label,responseCode,responseMessage,threadName,dataType,success
 # ls /tmp/jmeter
 errors.log  jmeter.log  quick_test.jmx  results.log
 ```
+
+- https://www.blazemeter.com/blog/jmeter-properties-customization

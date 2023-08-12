@@ -11,6 +11,7 @@ appId=$(az ad sp list --display-name $spName --query "[].appId" -o tsv)
 objectId=$(az ad sp list --display-name $spName --query "[].id" -o tsv)
 objectId=$(az ad sp show --id $appId --query "id" -o tsv)
 tenantId=$(az account show --query tenantId -otsv)
+echo $appId
 
 # To view properties of the service principal
 az ad sp list --display-name $spName

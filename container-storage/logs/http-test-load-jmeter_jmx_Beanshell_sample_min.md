@@ -147,6 +147,12 @@ timeStamp,elapsed,label,responseCode,responseMessage,threadName,dataType,success
 ```
 
 ```
+# cat /tmp/repro-502/jmeter/results.log | grep ,502,
+1691813852206,129,HTTP Request,502,Bad Gateway,Thread Group 1-15,text,false,,366,16755,20,20,http://23.97.247.104/,128,0,43
+
+# cat /tmp/repro-502/jmeter/results.log | grep ,502, | wc -l
+1
+
 # ls /tmp/jmeter
 errors.log  jmeter.log  quick_test.jmx  results.log
 ```

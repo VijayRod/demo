@@ -19,7 +19,7 @@ az ad sp list --show-mine -otable
 
 # To assign a built-in or custom role.
 subId=$(az account show --query id -otsv)
-az role assignment create --assignee $appId --role "Contributor" --scope /subscriptions/$subscriptionId
+az role assignment create --assignee $appId --role "Contributor" --scope /subscriptions/$subId
 
 # To view the service principal assignments.
 az role assignment list --all --assignee $appId

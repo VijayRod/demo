@@ -35,7 +35,8 @@ az ad sp delete --id $appId
 ```
 # Additional commands.
 az ad sp create-for-rbac --name $spName # Note the automatically generated password is displayed.
-az ad sp create-for-rbac --name $spName --scopes /subscriptions/$subscriptionId/resourceGroups/$resourceGroup
+az ad sp create-for-rbac --name $spName --scopes /subscriptions/$subId/resourceGroups/$rgname
+az ad sp create-for-rbac --role Contributor --scopes /subscriptions/$subId
 ```
 
 https://learn.microsoft.com/en-us/cli/azure/create-an-azure-service-principal-azure-cli

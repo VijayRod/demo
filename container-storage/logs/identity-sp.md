@@ -4,7 +4,10 @@
 # To create the service principal and retrieve its appId, password, and tenant.
 spName="mysp$RANDOM"
 spPassword=$(az ad sp create-for-rbac --name $spName --query password -o tsv)
-appId=$(az ad sp list --display-name $spName --query "[].appId" -o tsv)
+
+# To retrieve the values
+sleep 30
+appId=$(az ad sp list --display-name $spName --query "[].appId" -o tsv) ## objectId
 tenantId=$(az account show --query tenantId -otsv)
 
 # To view properties of the service principal.

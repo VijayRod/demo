@@ -38,7 +38,39 @@ summary +     29 in 00:00:03 =    9.9/s Avg:   247 Min:   110 Max:   354 Err:   
 summary =     30 in 00:00:03 =    9.2/s Avg:   248 Min:   110 Max:   354 Err:     2 (6.67%)
 Tidying up ...    @ 2023 Aug 11 23:05:33 UTC (1691795133399)
 ... end of run
+```
 
+```
+# jmeter -?
+    _    ____   _    ____ _   _ _____       _ __  __ _____ _____ _____ ____
+   / \  |  _ \ / \  / ___| | | | ____|     | |  \/  | ____|_   _| ____|  _ \
+  / _ \ | |_) / _ \| |   | |_| |  _|    _  | | |\/| |  _|   | | |  _| | |_) |
+ / ___ \|  __/ ___ \ |___|  _  | |___  | |_| | |  | | |___  | | | |___|  _ <
+/_/   \_\_| /_/   \_\____|_| |_|_____|  \___/|_|  |_|_____| |_| |_____|_| \_\ 5.6.2
+Copyright (c) 1999-2023 The Apache Software Foundation
+        --?
+                print command line options and exit
+        -h, --help
+                print usage information and exit
+...
+
+# jmeter -h
+    _    ____   _    ____ _   _ _____       _ __  __ _____ _____ _____ ____
+   / \  |  _ \ / \  / ___| | | | ____|     | |  \/  | ____|_   _| ____|  _ \
+  / _ \ | |_) / _ \| |   | |_| |  _|    _  | | |\/| |  _|   | | |  _| | |_) |
+ / ___ \|  __/ ___ \ |___|  _  | |___  | |_| | |  | | |___  | | | |___|  _ <
+/_/   \_\_| /_/   \_\____|_| |_|_____|  \___/|_|  |_|_____| |_| |_____|_| \_\ 5.6.2
+
+Copyright (c) 1999-2023 The Apache Software Foundation
+To list all command line options, open a command prompt and type:
+jmeter.bat(Windows)/jmeter.sh(Linux) -?                
+...
+
+# To run in GUI mode for test creation. The following opens an UI in WSL as well
+jmeter
+```
+
+```
 # To convert a Postman collection.json to collection.jmx
 jmeter -n -t collection.jmx
 ```

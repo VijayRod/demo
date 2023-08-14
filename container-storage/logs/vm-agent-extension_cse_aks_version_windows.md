@@ -9,4 +9,4 @@
 - https://github.com/Azure/AgentBaker/blob/official/v20230727/parts/windows/kuberneteswindowssetup.ps1#L220: This is where the WindowsCSEScriptsPackage is located.
   - For existing Windows node pools, a simple reimage won't suffice to update the WindowsCSEScriptsPackage value. Instead, you must either create a new agent pool or update the node image of the existing agent pools. Alternatively, you can confirm its functionality by creating a new cluster.
   - https://github.com/Azure/AgentBaker/pulls?q=bump+Windows+CSE
-- https://github.com/Azure/AKS/releases: "AKS Windows 2022 image has been updated to"
+- https://github.com/Azure/AKS/releases: This is an informational message stating "AKS Windows 2022 image has been updated to".

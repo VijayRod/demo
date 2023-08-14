@@ -6,6 +6,6 @@
 
 - https://github.com/Azure/AgentBaker/tree/master/staging/cse/windows: This repository contains a list of fixes for various versions of CSE (aks-windows-cse-scripts) in AKS Windows.
 - https://github.com/Azure/AgentBaker/tree/master/vhdbuilder/release-notes/AKSWindows
-- https://github.com/Azure/AgentBaker/blob/official/v20230727/parts/windows/kuberneteswindowssetup.ps1#L220: This is where the WindowsCSEScriptsPackage is located. You can create a new cluster to confirm its functionality. For existing Windows node pools, reimage is not sufficient: you need to either create a new agent pool or update the node image of the existing agent pools.
+- https://github.com/Azure/AgentBaker/blob/official/v20230727/parts/windows/kuberneteswindowssetup.ps1#L220: This is where the WindowsCSEScriptsPackage is located. You can create a new cluster to confirm its functionality. For existing Windows node pools, reimage is not sufficient to update the WindowsCSEScriptsPackage value: you need to either create a new agent pool or update the node image of the existing agent pools.
   - https://github.com/Azure/AgentBaker/pulls?q=bump+Windows+CSE
 - https://github.com/Azure/AKS/releases: "AKS Windows 2022 image has been updated to"

@@ -12,7 +12,7 @@ clustername=akswin
 # Create the cluster and the node pool.
 az group create -n $rgname -l swedencentral
 az aks create -g $rgname -n $clustername --windows-admin-username $WINDOWS_USERNAME --windows-admin-password $WINDOWS_PASSWORD --network-plugin azure
-az aks nodepool add -g $rgname --cluster-name $clustername --name npwin --os-type Windows --mode user
+az aks nodepool add -g $rgname --cluster-name $clustername --name npwin --os-type Windows --mode user # --os-sku Windows2019
 ```
 
 ```

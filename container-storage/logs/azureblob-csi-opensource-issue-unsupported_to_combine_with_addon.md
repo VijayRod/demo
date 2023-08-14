@@ -59,3 +59,5 @@ kubectl get po -n kube-system -owide | grep csi-blob
 # csi-blob-node-dwnft                   3/3     Running   0          29s     10.224.0.4   aks-nodepool1-37173752-vmss000000   <none>           <none>
 # csi-blob-node-lh22f                   3/3     Running   0          29s     10.224.0.6   aks-nodepool1-37173752-vmss000001   <none>           <none>
 ```
+
+- https://github.com/kubernetes-sigs/blob-csi-driver/blob/master/docs/install-csi-driver-master.md#clean-up-blob-csi-driver

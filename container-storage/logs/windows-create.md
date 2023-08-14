@@ -18,14 +18,6 @@ az aks nodepool add -g $rgname --cluster-name $clustername --name npwin --os-typ
 ```
 az aks get-credentials -g $rgname -n $clustername --overwrite-existing
 
-kubectl get no --selector kubernetes.io/os=windows
-
-# Here is a sample output below.
-# NAME             STATUS   ROLES   AGE   VERSION
-# aksnpwin000000   Ready    agent   29h   v1.25.6
-# aksnpwin000001   Ready    agent   29h   v1.25.6
-# aksnpwin000002   Ready    agent   29h   v1.25.6
-
 kubectl get no --selector kubernetes.io/os=windows -owide
 
 # Here is a sample output below.
@@ -33,6 +25,14 @@ kubectl get no --selector kubernetes.io/os=windows -owide
 # aksnpwin000000   Ready    agent   30h   v1.25.6   10.224.0.153   <none>        Windows Server 2022 Datacenter   10.0.20348.1726   containerd://1.6.21+azure
 # aksnpwin000001   Ready    agent   30h   v1.25.6   10.224.0.91    <none>        Windows Server 2022 Datacenter   10.0.20348.1726   containerd://1.6.21+azure
 # aksnpwin000002   Ready    agent   30h   v1.25.6   10.224.0.122   <none>        Windows Server 2022 Datacenter   10.0.20348.1726   containerd://1.6.21+azure
+
+kubectl get no --selector kubernetes.io/os=windows
+
+# Here is a sample output below.
+# NAME             STATUS   ROLES   AGE   VERSION
+# aksnpwin000000   Ready    agent   29h   v1.25.6
+# aksnpwin000001   Ready    agent   29h   v1.25.6
+# aksnpwin000002   Ready    agent   29h   v1.25.6
 ```
 
 ```

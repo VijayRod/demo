@@ -35,6 +35,11 @@ kubectl get no --selector kubernetes.io/os=windows -owide
 # aksnpwin000002   Ready    agent   30h   v1.25.6   10.224.0.122   <none>        Windows Server 2022 Datacenter   10.0.20348.1726   containerd://1.6.21+azure
 ```
 
+```
+# To cleanup
+az group delete -n $rgname -y --no-wait
+```
+
 Here are some related links:
 - [aks/node-access#create-the-ssh-connection-to-a-windows-node](https://learn.microsoft.com/en-us/azure/aks/node-access#create-the-ssh-connection-to-a-windows-node)
 - [aks/windows-faq](https://learn.microsoft.com/en-us/azure/aks/windows-faq)

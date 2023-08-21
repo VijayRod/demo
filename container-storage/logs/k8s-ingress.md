@@ -77,6 +77,13 @@ Rules:
 <!DOCTYPE html>
 ```
 
+```
+# To cleanup
+kubectl delete ingress minimal-ingress
+kubectl delete svc nginx
+kubectl delete po nginx
+```
+
 - https://kubernetes.io/docs/concepts/services-networking/ingress/
 - https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/connection-issues-application-hosted-aks-cluster
 - https://github.com/kubernetes/ingress-nginx/blob/main/docs/troubleshooting.md

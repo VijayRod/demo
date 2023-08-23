@@ -1,0 +1,2 @@
+- https://learn.microsoft.com/en-us/azure/aks/ingress-tls#use-tls-with-your-own-certificates-with-secrets-store-csi-driver
+- https://learn.microsoft.com/en-us/azure/aks/csi-secrets-store-nginx-tls

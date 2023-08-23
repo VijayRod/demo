@@ -62,6 +62,30 @@ privatezoneUri=$(az network private-dns zone show -g $rgname -n $privatezone --q
 ```
 
 ```
+vm=myvm
+subnetId=$(az network vnet subnet show -g $rgname --vnet-name $vnet -n $subnet --query id -otsv)
+az vm create -g $rgname -n $vm --image=Ubuntu2204 --subnet $subnetId
+ssh azureuser@4.225.162.71
+# azureuser@myvm:~$ dig private.contoso.com
+
+; <<>> DiG 9.11.3-1ubuntu1.18-Ubuntu <<>> private.contoso.com
+;; global options: +cmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 34018
+;; flags: qr rd ra; QUERY: 1, ANSWER: 0, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 65494
+;; QUESTION SECTION:
+;private.contoso.com.           IN      A
+
+;; Query time: 12 msec
+;; SERVER: 127.0.0.53#53(127.0.0.53)
+;; WHEN: Wed Aug 22 22:09:27 UTC 2023
+;; MSG SIZE  rcvd: 48
+```
+
+```
 # To cleanup
 # az network private-dns link vnet delete -g $rgname -n MyDNSLink -z private.contoso.com -y
 # az network private-dns zone delete -g $rgname -n private.contoso.com -y

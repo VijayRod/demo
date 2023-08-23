@@ -44,6 +44,16 @@ kubectl get certificate www
 ```
 
 ```
+# kubectl get clusterissuer selfsigned
+NAME         READY   AGE
+selfsigned   True    0s
+
+# kubectl get certificate www
+NAME   READY   SECRET    AGE
+www    True    www-tls   0s
+```
+
+```
 # To cleanup
 helm uninstall cert-manager --namespace cert-manager
 kubectl delete certificate www

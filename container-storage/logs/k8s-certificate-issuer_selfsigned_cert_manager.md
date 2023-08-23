@@ -49,5 +49,6 @@ helm uninstall cert-manager --namespace cert-manager
 kubectl delete certificate www
 kubectl delete clusterissuer selfsigned
 ```
-    
+
+- https://cert-manager.io/docs/troubleshooting/    
 - https://cert-manager.io/docs/tutorials/getting-started-aks-letsencrypt/

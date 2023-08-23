@@ -1,1 +1,2 @@
 - https://learn.microsoft.com/en-us/azure/aks/ingress-tls#install-cert-manager
+- https://cert-manager.io/docs/tutorials/getting-started-aks-letsencrypt/

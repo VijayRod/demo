@@ -1,0 +1,2 @@
+- https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/move-resources-overview
+- https://learn.microsoft.com/en-us/azure/resource-mover/overview

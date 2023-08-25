@@ -18,7 +18,7 @@ subnetId=$(az network vnet subnet show -g $rgname --vnet-name $vnet -n nodesubne
 # To create the virtual machine for the proxy
 az vm create -g $rgname -n $vmname --image UbuntuLTS --vnet-name $vnet --subnet proxysubnet
 ip=$(az vm show --show-details -g $rgname -n $vm --query publicIps --output tsv)
-# ssh azureuser@$ip # *****Install and configure squid*****.
+# ssh azureuser@$ip # *****Install and configure squid*****. This should be done before creating the cluster.
 ```
 
 ```

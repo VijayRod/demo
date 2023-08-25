@@ -2,17 +2,21 @@ TBD
 
 ```
 # Replace the below with appropriate values
-rgname=secureshack2
-clustername=aksproxy2
-vnet=myvnet2
-vmname=proxyvm2
+rgname=testshack
+loc=swedencentral
+clustername=aksproxy
+vnet=myvnet
+vmname=proxyvm
 ```
 
 ```
 # To create the two network subnets
+az group create -g $rgname -l $loc
 az network vnet create -g $rgname --name $vnet --address-prefixes 10.0.0.0/8 -o none 
-az network vnet subnet create -g $rgname --vnet-name $vnet --name akssubnet --address-prefixes 10.240.0.0/16 -o none 
+az network vnet subnet create -g $rgname --vnet-name $vnet --name nodesubnet --address-prefixes 10.240.0.0/16 -o none 
 az network vnet subnet create -g $rgname --vnet-name $vnet --name proxysubnet --address-prefixes 10.241.0.0/16 -o none
+subnetId=$(az network vnet subnet show -g $rgname --vnet-name $vnet -n nodesubnet --query id -otsv)
+az aks create -g $rgname -n $clustername --vnet-subnet-id $subnetId
 
 # To create the virtual machine for the proxy
 az vm create -g $rgname -n $vmname --image UbuntuLTS --vnet-name $vnet --subnet proxysubnet

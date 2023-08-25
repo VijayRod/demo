@@ -6,7 +6,7 @@ rgname=testshack
 loc=swedencentral
 clustername=aksproxy
 vnet=myvnet
-vmname=proxyvm
+vm=proxyvm
 
 # To create the two network subnets
 az group create -g $rgname -l $loc
@@ -16,7 +16,7 @@ az network vnet subnet create -g $rgname --vnet-name $vnet --name proxysubnet --
 subnetId=$(az network vnet subnet show -g $rgname --vnet-name $vnet -n nodesubnet --query id -otsv)
 
 # To create the virtual machine for the proxy
-az vm create -g $rgname -n $vmname --image UbuntuLTS --vnet-name $vnet --subnet proxysubnet
+az vm create -g $rgname -n $vm --image UbuntuLTS --vnet-name $vnet --subnet proxysubnet
 ip=$(az vm show --show-details -g $rgname -n $vm --query publicIps --output tsv)
 # ssh azureuser@$ip # *****Install and configure squid*****. This should be done before creating the cluster.
 ```

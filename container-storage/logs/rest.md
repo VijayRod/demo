@@ -1,0 +1,2 @@
+- https://learn.microsoft.com/en-us/rest/api/aks/
+- https://github.com/Azure/azure-rest-api-specs/blob/main/specification/containerservice/resource-manager/Microsoft.ContainerService/aks/readme.md

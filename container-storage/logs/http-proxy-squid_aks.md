@@ -25,8 +25,8 @@ ip=$(az vm show --show-details -g $rgname -n $vm --query publicIps --output tsv)
 # To create the cluster
 cat << EOF > /tmp/aks-proxy-config.json
 {
-  "httpProxy": "http://$vmname:3128/", 
-  "httpsProxy": "https://$vmname:3128/"
+  "httpProxy": "http://$vm:3128/", 
+  "httpsProxy": "https://$vm:3128/"
 }
 EOF
 cat /tmp/aks-proxy-config.json

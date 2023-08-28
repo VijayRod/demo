@@ -65,11 +65,6 @@ k8sazurev3hostnetworkingports.constraints.gatekeeper.sh/azurepolicy-k8sazurev3ho
 kubectl describe k8sazurev3hostnetworkingports.constraints.gatekeeper.sh/azurepolicy-k8sazurev3hostnetworkingports-4c4e07cda01a7867529e
 # kubectl describe constraints > /tmp/constraints.out
 
-Metadata:
-  Creation Timestamp:  2023-08-27T22:18:23Z
-  Generation:          1
-  Resource Version:    28886
-  UID:                 b762cc70-d6ae-4bc9-9e20-3d491e375f0a
 Spec:
   Enforcement Action:  dryrun
   Match:

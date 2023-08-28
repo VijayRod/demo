@@ -117,3 +117,4 @@ kubectl delete pvc azure-blob-storage
 ```
 
 - https://github.com/Azure/AKS/tree/master/vhd-notes
+- https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/mounting-azure-blob-storage-container-fail#cause1-for-blobfuse-error3

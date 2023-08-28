@@ -17,3 +17,4 @@ docker.io/library/nginx                                                         
 ```
 
 - https://github.com/containerd/containerd/blob/main/pkg/cri/server/image_pull.go
+- https://kubernetes.io/docs/concepts/containers/images/

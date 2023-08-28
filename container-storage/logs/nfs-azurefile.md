@@ -1,0 +1,2 @@
+- https://learn.microsoft.com/en-us/azure/storage/files/files-nfs-protocol
+- https://learn.microsoft.com/en-us/azure/storage/files/storage-files-networking-overview

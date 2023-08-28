@@ -47,13 +47,38 @@ kubectl logs -n kube-system -l app=azure-policy | tail
 kubectl logs -n gatekeeper-system -l gatekeeper.sh/operation=audit | tail
 
 kubectl logs -n gatekeeper-system -l gatekeeper.sh/operation=webhook | tail
+```
 
+```
 kubectl get constrainttemplates | grep k8sazure
 
 kubectl describe constrainttemplates k8sazurev1blockdefault | grep azure-policy-definition-id
 
 Annotations:  azure-policy-definition-id-1: /providers/Microsoft.Authorization/policyDefinitions/9f061a12-e40d-4183-a00e-171812443373
 
+kubectl get constraints | grep k8sazurev3hostnetworkingports
+NAME         ENFORCEMENT-ACTION   TOTAL-VIOLATIONS
+k8sazurev3hostnetworkingports.constraints.gatekeeper.sh/azurepolicy-k8sazurev3hostnetworkingports-4c4e07cda01a7867529e   dryrun               1
+k8sazurev3hostnetworkingports.constraints.gatekeeper.sh/azurepolicy-k8sazurev3hostnetworkingports-b5bc9122579d45b0c57b   dryrun               1
+
+kubectl describe k8sazurev3hostnetworkingports.constraints.gatekeeper.sh/azurepolicy-k8sazurev3hostnetworkingports-4c4e07cda01a7867529e
+
+Status:
+  Audit Timestamp:  2023-08-27T22:45:05Z
+  ...
+  Total Violations:  1
+  Violations:
+    Enforcement Action:  dryrun
+    Group:
+    Kind:                Pod
+    Message:             The specified hostNetwork and hostPort are not allowed, pod: nginx2, container: nginx2. Allowed values: {"allowHostNetwork": false, "excludedContainers": [], "excludedImages": [], "maxPort": 0, "minPort": 0}
+    Name:                nginx2
+    Namespace:           default
+    Version:             v1
+Events:                  <none>
+```
+
+```
 az group delete -n $rgname -y --no-wait
 ```
 

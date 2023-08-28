@@ -9,9 +9,11 @@ NFS
 
 NFSv3
 - The NFS 3.0 protocol uses ports 111 and 2048.
+  - https://learn.microsoft.com/en-us/azure/storage/blobs/network-file-system-protocol-support: The NFS 3.0 protocol uses ports 111 and 2048.
 
 NFSv4
 - The NFSv4.1 service listens on port 2049 only and does not require portmap (port 111) to operate.
+  - https://learn.microsoft.com/en-us/azure/storage/files/storage-files-how-to-mount-nfs-shares: Currently, only NFS version 4.1 is supported. Open port 2049
 - https://community.netapp.com/t5/Tech-ONTAP-Blogs/NFSv3-and-NFSv4-What-s-the-difference/ba-p/441316
 
 Other

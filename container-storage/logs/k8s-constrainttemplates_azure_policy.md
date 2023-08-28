@@ -108,5 +108,5 @@ az group delete -n $rgname -y --no-wait
 - https://learn.microsoft.com/en-us/azure/aks/use-azure-policy
 - https://learn.microsoft.com/en-us/azure/governance/policy/concepts/effects
 - https://learn.microsoft.com/en-us/azure/governance/policy/concepts/policy-for-kubernetes
-- https://learn.microsoft.com/en-us/azure/governance/policy/how-to/get-compliance-data#on-demand-evaluation-scan---azure-cli: az policy state trigger-scan -g rg
+- https://learn.microsoft.com/en-us/azure/governance/policy/how-to/get-compliance-data#on-demand-evaluation-scan---azure-cli: az policy state trigger-scan -g $rg
 - https://learn.microsoft.com/en-us/azure/governance/policy/troubleshoot/general#scenario-evaluation-details-arent-up-to-date: ~The assignment takes 5-15 minutes to take effect.

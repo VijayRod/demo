@@ -63,6 +63,7 @@ k8sazurev3hostnetworkingports.constraints.gatekeeper.sh/azurepolicy-k8sazurev3ho
 k8sazurev3hostnetworkingports.constraints.gatekeeper.sh/azurepolicy-k8sazurev3hostnetworkingports-b5bc9122579d45b0c57b   dryrun               1
 
 kubectl describe k8sazurev3hostnetworkingports.constraints.gatekeeper.sh/azurepolicy-k8sazurev3hostnetworkingports-4c4e07cda01a7867529e
+# kubectl describe constraints > /tmp/constraints.out
 
 Metadata:
   Creation Timestamp:  2023-08-27T22:18:23Z

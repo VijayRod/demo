@@ -13,3 +13,8 @@ NFSv3
 - https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/mounting-azure-blob-storage-container-fail#cause1-for-blobfuse-error3
 - https://www.ibm.com/docs/en/storage-scale/5.1.0?topic=firewall-recommendations-protocol-access#d789583e46
 - https://www.ibm.com/docs/en/zos/2.1.0?topic=introduction-nfs-version-3-version-4-tcpip-protocols
+
+Azure
+- https://learn.microsoft.com/en-us/azure/storage/common/nfs-comparison
+- https://learn.microsoft.com/en-us/azure/storage/files/files-nfs-protocol
+- https://learn.microsoft.com/en-us/azure/storage/files/storage-files-networking-overview

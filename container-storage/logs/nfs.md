@@ -11,6 +11,7 @@ NFSv3
 - The NFS 3.0 protocol uses ports 111 and 2048.
 
 NFSv4
+- The NFSv4.1 service listens on port 2049 only and does not require portmap (port 111) to operate.
 - https://community.netapp.com/t5/Tech-ONTAP-Blogs/NFSv3-and-NFSv4-What-s-the-difference/ba-p/441316
 
 Other

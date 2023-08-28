@@ -28,6 +28,7 @@ To resolve this, add the following lines and remove actimeo if present. Afterwar
 ```
 
 - https://learn.microsoft.com/en-us/azure/azure-netapp-files/performance-linux-mount-options
+- https://learn.microsoft.com/en-us/troubleshoot/azure/azure-storage/files-troubleshoot-performance?#slowperformance
 - https://blogs.sap.com/2015/11/20/performance-impact-of-disabling-nfs-attribute-caching/
 - https://linux.die.net/man/5/nfs
 - https://linux.die.net/man/8/mount.cifs

@@ -103,7 +103,9 @@ Events:                  <none>
 az group delete -n $rgname -y --no-wait
 ```
 
+- https://github.com/Azure/azure-policy/tree/master/built-in-policies/policyDefinitions/Azure%20Government/Kubernetes
 - https://learn.microsoft.com/en-us/azure/aks/policy-reference
 - https://learn.microsoft.com/en-us/azure/aks/use-azure-policy
+- https://learn.microsoft.com/en-us/azure/governance/policy/concepts/effects
 - https://learn.microsoft.com/en-us/azure/governance/policy/concepts/policy-for-kubernetes
-- https://github.com/Azure/azure-policy/tree/master/built-in-policies/policyDefinitions/Azure%20Government/Kubernetes
+- https://learn.microsoft.com/en-us/azure/governance/policy/troubleshoot/general#scenario-evaluation-details-arent-up-to-date: ~The assignment takes 5-15 minutes to take effect.

@@ -21,3 +21,5 @@ EOF
 # kubectl exec -it nginx -- curl apiproxy.default.svc.cluster.local | grep DOC
 <!DOCTYPE html>
 ```
+
+- https://kubernetes.io/docs/concepts/services-networking/service/#externalname

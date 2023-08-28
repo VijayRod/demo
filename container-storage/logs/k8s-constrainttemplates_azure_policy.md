@@ -53,19 +53,20 @@ kubectl logs -n gatekeeper-system -l gatekeeper.sh/operation=webhook | tail
 kubectl get constrainttemplates | grep k8sazure
 
 kubectl describe constrainttemplates k8sazurev1blockdefault | grep azure-policy-definition-id
+# kubectl describe k8sazurev1blockdefault | grep azure-policy-definition-id
 
 Annotations:  azure-policy-definition-id-1: /providers/Microsoft.Authorization/policyDefinitions/9f061a12-e40d-4183-a00e-171812443373
 
 kubectl get constraints | grep k8sazurev3hostnetworkingports
-## kubectl get k8sazurev3hostnetworkingports
+## OR kubectl get k8sazurev3hostnetworkingports
 
 NAME         ENFORCEMENT-ACTION   TOTAL-VIOLATIONS
 k8sazurev3hostnetworkingports.constraints.gatekeeper.sh/azurepolicy-k8sazurev3hostnetworkingports-4c4e07cda01a7867529e   dryrun               1
 k8sazurev3hostnetworkingports.constraints.gatekeeper.sh/azurepolicy-k8sazurev3hostnetworkingports-b5bc9122579d45b0c57b   dryrun               1
 
 kubectl describe k8sazurev3hostnetworkingports.constraints.gatekeeper.sh/azurepolicy-k8sazurev3hostnetworkingports-4c4e07cda01a7867529e
-## kubectl describe k8sazurev3hostnetworkingports
-## kubectl describe constraints > /tmp/constraints.out
+## OR kubectl describe k8sazurev3hostnetworkingports
+## OR kubectl describe constraints > /tmp/constraints.out
 
 Spec:
   Enforcement Action:  dryrun

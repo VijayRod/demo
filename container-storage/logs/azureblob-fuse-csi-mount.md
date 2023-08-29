@@ -121,3 +121,4 @@ kubectl delete pvc pvc-azureblob-fuse
 
 - https://learn.microsoft.com/en-us/azure/aks/azure-csi-blob-storage-provision
 - https://github.com/Azure/AKS/tree/master/vhd-notes
+- https://github.com/Azure/azure-storage-fuse

@@ -57,7 +57,10 @@ Rules:
               /(.*)       nginx:80 (10.244.0.37:80)
 ```              
 
-```           
+```
+# curl 20.240.181.142 -I
+HTTP/1.1 200 OK
+         
 # curl 20.240.181.142 | grep DOC
 <!DOCTYPE html>
 <html>

@@ -237,3 +237,7 @@ Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists fo
 Events:                      <none>
 
 ```
+
+- https://learn.microsoft.com/en-us/azure/aks/csi-secrets-store-driver
+- https://secrets-store-csi-driver.sigs.k8s.io/known-limitations
+- https://github.com/kubernetes-sigs/secrets-store-csi-driver/issues

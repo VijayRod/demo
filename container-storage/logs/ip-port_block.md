@@ -12,6 +12,14 @@ iptables-save | grep dport | grep 445
 iptables -D OUTPUT -p tcp --dport 445 -j DROP
 ```
 
+```
+# TBD for randomly dropping 10% of incoming packets
+iptables -s 123.456.78.90/32 -A INPUT -m statistic --mode random --probability 0.1 -j DROP
+OR iptables -s 123.456.78.90/32 -p tcp -m tcp -A INPUT -m statistic --mode random --probability 0.1 -j DROP
+```
+
+- https://www.linode.com/docs/guides/control-network-traffic-with-iptables/#block-traffic-by-port
+   
 The following commands are for a Windows node in a PowerShell prompt:
 
 ```

@@ -61,11 +61,3 @@ spec:
 EOF
 ```
 
-Here are some related links:
-- [AKS/issues/1373](https://github.com/Azure/AKS/issues/1373)
-- [virtual-machines/disks-benchmarks#fio](https://learn.microsoft.com/en-us/azure/virtual-machines/disks-benchmarks#fio)
-- [virtual-machines/disks-performance](https://learn.microsoft.com/en-us/azure/virtual-machines/disks-performance)
-- [virtual-machines/disks-types#premium-ssd-size](https://learn.microsoft.com/en-us/azure/virtual-machines/disks-types#premium-ssd-size)
-- [virtual-machines/disks-types#standard-ssd-size](https://learn.microsoft.com/en-us/azure/virtual-machines/disks-types#standard-ssd-size)
-- [virtual-machines/dv2-dsv2-series](https://learn.microsoft.com/en-us/azure/virtual-machines/dv2-dsv2-series)
-- [stian.tech/disk-performance-on-aks-part-1](https://stian.tech/disk-performance-on-aks-part-1/).

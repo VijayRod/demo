@@ -24,5 +24,5 @@ root@aks-nodepool1-40777476-vmss000000:/# blobfuse
 blobfuse: command not found
 ```
 
-- https://github.com/kubernetes-sigs/blob-csi-driver/tree/master#install-driver-on-a-kubernetes-cluster: kubectl patch daemonset csi-blob-node -n kube-system -p '{"spec":{"template":{"spec":{"initContainers":[{"env":[{"name":"INSTALL_BLOBFUSE2","value":"true"},{"name":"BLOBFUSE2_VERSION","value":"2.0.5"}],"name":"install-blobfuse-proxy"}]}}}}'
+- https://github.com/kubernetes-sigs/blob-csi-driver/tree/master#install-driver-on-a-kubernetes-cluster: kubectl patch daemonset csi-blob-node -n kube-system -p '{"spec":{"template":{"spec":{"initContainers":[{"env":[{"name":"INSTALL_BLOBFUSE2","value":"true"},{"name":"BLOBFUSE2_VERSION","value":"2.0.5"}],"name":"install-blobfuse-proxy"}]}}}}' (Pods get terminated and replaced by new ones)
 - https://github.com/Azure/AKS/blob/master/vhd-notes/aks-ubuntu/AKSUbuntu-2204/202308.16.0.txt: blobfuse2/jammy,now 2.0.5 amd64 [installed]

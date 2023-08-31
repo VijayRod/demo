@@ -12,3 +12,4 @@ az vm disk attach -g $rg --vm-name vm --name $diskId
 
 - https://learn.microsoft.com/en-us/azure/virtual-machines/windows/attach-managed-disk-portal
 - https://learn.microsoft.com/en-us/azure/virtual-machines/linux/add-disk?tabs=ubuntu
+- https://learn.microsoft.com/en-us/azure/virtual-machines/disks-types

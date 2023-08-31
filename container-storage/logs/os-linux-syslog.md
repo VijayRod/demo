@@ -9,3 +9,5 @@ kubectl get --raw "/api/v1/nodes/aks-nodepool1-51397738-vmss000004/proxy/logs/sy
 kubectl get --raw "/api/v1/nodes/aks-nodepool1-51397738-vmss000004/proxy/logs/syslog.1"|grep kubelet
 kubectl get --raw "/api/v1/nodes/aks-nodepool1-51397738-vmss000004/proxy/logs/azure/custom-script/handler.log"
 ```
+
+- https://learn.microsoft.com/en-us/azure/aks/kubelet-logs

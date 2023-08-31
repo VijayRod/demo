@@ -1,0 +1,4 @@
+- https://kubernetes.io/docs/concepts/storage/storage-classes/
+- https://learn.microsoft.com/en-us/azure/aks/azure-csi-disk-storage-provision#built-in-storage-classes
+- https://learn.microsoft.com/en-us/azure/aks/azure-csi-files-storage-provision#create-a-storage-class
+- https://learn.microsoft.com/en-us/azure/aks/concepts-storage#storage-classes

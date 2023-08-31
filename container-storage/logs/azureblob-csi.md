@@ -1,21 +1,21 @@
 Here are steps from https://learn.microsoft.com/en-us/azure/aks/azure-blob-csi to install this driver.
       
 ```
-# Replace the below with appropriate values.
-rgname=resourceGroupName
-clustername=aksblob
+rg=rgblob
+az group create -g $rg -l swedencentral
+az aks create -g $rg -n aks --enable-blob-driver
 ```
 
 ```
 # To install the cluster. Optionally, run az aks show for an existing cluster.
-az aks create -g secureshack2 -n aksblob
+az aks create -g $rg -n aks
 
 # Here is a sample output below.
 #   "storageProfile": {
 #     "blobCsiDriver": null,
 
 # To enable the Azure blob CSI driver.
-az aks update --enable-blob-driver -g secureshack2 -n aks
+az aks update --enable-blob-driver -g $rg -n aks
 
 # Here is a sample output below.
 # Please make sure there is no open-source Blob CSI driver installed before enabling. (y/N): y
@@ -25,7 +25,7 @@ az aks update --enable-blob-driver -g secureshack2 -n aks
 #       "enabled": true
 
 # To check if it is enabled
-az aks show -g $rgname -n $clustername --query storageProfile.blobCsiDriver -otsv
+az aks show -g $rg -n aks --query storageProfile.blobCsiDriver -otsv
 
 # Here is a sample output below.
 # True
@@ -33,7 +33,7 @@ az aks show -g $rgname -n $clustername --query storageProfile.blobCsiDriver -ots
 
 ```
 # To get credentials for running commands further below.
-az aks get-credentials -g secureshack2 -n aksblob
+az aks get-credentials -g $rg -n aks
 
 # To retrieve related pods.
 kubectl get po -n kube-system -owide | grep csi-blob

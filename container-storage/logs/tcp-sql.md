@@ -1,0 +1,1 @@
+- https://www.connectionstrings.com/sql-server/

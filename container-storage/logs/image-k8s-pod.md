@@ -1,0 +1,2 @@
+- https://kubernetes.io/docs/concepts/containers/images/
+- https://kubernetes.io/docs/tasks/access-application-cluster/list-all-running-container-images/

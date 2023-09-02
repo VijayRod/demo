@@ -130,7 +130,3 @@ kubectl delete po mypod
 kubectl delete pvc my-azurefile
 ```
 
-- https://github.com/kubernetes-sigs/azurefile-csi-driver/blob/master/pkg/azurefile/azurefile.go
-- https://github.com/Azure/AKS/tree/master/vhd-notes
-- https://github.com/kubernetes-sigs/azurefile-csi-driver/blob/master/docs/csi-debug.md
-- https://learn.microsoft.com/en-us/azure/aks/azure-files-csi

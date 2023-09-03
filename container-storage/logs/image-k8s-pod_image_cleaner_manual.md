@@ -1,0 +1,1 @@
+- https://learn.microsoft.com/en-us/azure/aks/image-cleaner#manually-remove-images-using-image-cleaner

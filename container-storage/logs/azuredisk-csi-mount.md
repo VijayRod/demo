@@ -39,3 +39,4 @@ EOF
 ```
 
 - https://learn.microsoft.com/en-us/azure/aks/azure-disk-csi
+- https://learn.microsoft.com/en-us/azure/aks/concepts-storage#azure-disk

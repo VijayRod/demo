@@ -1,0 +1,3 @@
+- https://docs.tigera.io/calico/latest/getting-started/kubernetes/managed-public-cloud/aks
+- https://github.com/projectcalico/calico
+- https://learn.microsoft.com/en-us/azure/aks/use-network-policies#differences-between-azure-network-policy-manager-and-calico-network-policy-and-their-capabilities

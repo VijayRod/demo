@@ -1,0 +1,2 @@
+- https://www.gnu.org/software/bash/manual/bash.html
+- https://www.gnu.org/software/coreutils/manual/coreutils.html

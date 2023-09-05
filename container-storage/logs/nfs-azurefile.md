@@ -3,3 +3,4 @@
 - https://learn.microsoft.com/en-us/troubleshoot/azure/azure-storage/files-troubleshoot-linux-nfs
 - https://learn.microsoft.com/en-us/azure/storage/files/storage-files-how-to-mount-nfs-shares
 - https://learn.microsoft.com/en-us/azure/storage/files/nfs-nconnect-performance
+- https://learn.microsoft.com/en-us/azure/aks/concepts-storage#azure-files

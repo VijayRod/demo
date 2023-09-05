@@ -19,3 +19,4 @@ total 15
 - https://github.com/Azure/AKS/tree/master/vhd-notes
 - https://github.com/kubernetes-sigs/azurefile-csi-driver/blob/master/docs/csi-debug.md
 - https://learn.microsoft.com/en-us/azure/aks/azure-files-csi
+- https://learn.microsoft.com/en-us/azure/aks/concepts-storage#azure-files

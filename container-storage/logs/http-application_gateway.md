@@ -3,6 +3,7 @@
 Hello World from host myVM1!
 
 # az network application-gateway show-backend-health -g myResourceGroupAG -n myAppGateway
+# az network application-gateway show-backend-health -g myResourceGroupAG -n myAppGateway | grep health\"
 {
   "backendAddressPools": [
     {

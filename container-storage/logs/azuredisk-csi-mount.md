@@ -21,7 +21,7 @@ metadata:
   name: fiopod
 spec:
   nodeSelector:
-    kubernetes.azure.com/agentpool: d4s3
+    kubernetes.azure.com/agentpool: nodepool1
   volumes:
     - name: azuredisk
       persistentVolumeClaim:
@@ -36,7 +36,12 @@ spec:
         - mountPath: "/volume"
           name: azuredisk
 EOF
+kubectl get po,pv,pvc
 ```
 
+```
+kubectl delete po fiopod
+kubectl delete pvc pvc-azuredisk 
+```
 - https://learn.microsoft.com/en-us/azure/aks/azure-disk-csi
 - https://learn.microsoft.com/en-us/azure/aks/concepts-storage#azure-disk

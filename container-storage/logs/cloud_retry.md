@@ -1,0 +1,2 @@
+- https://learn.microsoft.com/en-us/azure/architecture/best-practices/retry-service-specific
+- https://learn.microsoft.com/en-us/azure/architecture/best-practices/transient-faults

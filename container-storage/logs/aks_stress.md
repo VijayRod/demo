@@ -11,3 +11,19 @@ do
   ((i++))
 done
 ```
+
+```
+TBD
+rg=rg
+az group create -n $rg -l swedencentral
+az aks create -g $rg -n aks
+echo $(az aks show -g $rg -n aks --query fqdn -otsv)
+az aks get-credentials -g $rg -n aks --overwrite-existing
+foo=$(kubectl get no | grep Ready | head -1| awk '{print $1}')
+kubectl node-shell $foo
+```
+
+```
+TBD
+time kubectl get ns > null
+```

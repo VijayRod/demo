@@ -1,0 +1,3 @@
+- https://learn.microsoft.com/en-us/azure/aks/cluster-configuration#custom-resource-group-name
+- https://learn.microsoft.com/en-us/azure/aks/concepts-clusters-workloads#node-resource-group
+- https://learn.microsoft.com/en-us/azure/aks/faq#why-are-two-resource-groups-created-with-aks

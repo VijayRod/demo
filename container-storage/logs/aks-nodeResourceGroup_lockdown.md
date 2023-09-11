@@ -1,0 +1,2 @@
+- https://azure.microsoft.com/en-us/updates/public-preview-node-resource-group-nrg-lockdown/
+- https://learn.microsoft.com/en-us/azure/aks/cluster-configuration#fully-managed-resource-group

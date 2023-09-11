@@ -1,0 +1,2 @@
+- https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/201
+- https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/async-operations

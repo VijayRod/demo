@@ -38,10 +38,10 @@ spec:
       persistentVolumeClaim:
         claimName: pvc-azureblob-fuse
 EOF
+kubectl get po,pv,pvc
 ```
 
 ```
-# kubectl get po,pv,pvc
 NAME        READY   STATUS    RESTARTS   AGE
 pod/mypod   1/1     Running   0          13s
 NAME                                                        CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                        STORAGECLASS             REASON   AGE
@@ -81,6 +81,9 @@ Aug  1 14:11:22 aks-nodepool1-14487815-vmss00000T kubelet[1616]: I0801 14:11:22.
 ```
 
 ```
+# kubectl describe pv | grep VolumeH
+    VolumeHandle:      mc_rg_aks_swedencentral#fusea5e2a60b1f5b42c08bb#pvc-19fb3f5e-af96-4f42-bc39-daf0d62d2447##default#
+
 # kubectl get po -n kube-system -owide | grep csi-blob | grep vmss00000t
 csi-blob-node-hzzxc                   3/3     Running   0          24m     10.224.0.6    aks-nodepool1-14487815-vmss00000t   <none>           <none>
 

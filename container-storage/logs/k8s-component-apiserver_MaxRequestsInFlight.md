@@ -1,0 +1,10 @@
+- https://aws.github.io/aws-eks-best-practices/scalability/docs/control-plane/
+- https://cloud.redhat.com/blog/surviving-the-api-storm-with-api-priority-fairness
+- https://github.com/kubernetes/community/blob/master/sig-scalability/configs-and-limits/faq.md: ~ Some requests can have a much greater impact than others, potentially overloading the API server even before reaching the in-flight limits.
+- https://github.com/kubernetes/enhancements/tree/master/keps/sig-api-machinery/1040-priority-and-fairness
+- https://github.com/kubernetes/kubernetes/blob/master/staging/src/k8s.io/apiserver/pkg/server/options/server_run_options.go
+- https://github.com/kubernetes/kubernetes/blob/master/test/kubemark/resources/start-kubemark-master.sh
+- https://kubernetes.io/docs/concepts/cluster-administration/flow-control/
+- TBD https://kubernetes.io/docs/reference/access-authn-authz/admission-controllers/#eventratelimit
+- https://kubernetes.io/docs/reference/command-line-tools-reference/kube-apiserver/: --max-mutating-requests-inflight int     Default: 200, --max-requests-inflight int     Default: 400
+- https://learn.microsoft.com/en-us/azure/aks/free-standard-pricing-tiers

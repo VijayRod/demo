@@ -2,6 +2,8 @@
 # To create the resources with the YAML links
 kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/azuredisk-csi-driver/master/deploy/example/pvc-azuredisk-csi.yaml
 kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/azuredisk-csi-driver/master/deploy/example/nginx-pod-azuredisk.yaml
+sleep 30
+kubectl get po,pv,pvc
 
 # Alternatively, use the following YAML to create the resources
 cat << EOF | kubectl create -f -
@@ -39,10 +41,11 @@ spec:
       persistentVolumeClaim:
         claimName: pvc-azuredisk
 EOF
+sleep 30
+kubectl get po,pv,pvc
 ```
 
 ```
-# kubectl get po,pv,pvc
 NAME                  READY   STATUS    RESTARTS   AGE
 pod/nginx-azuredisk   1/1     Running   0          64s
 NAME                                                        CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                   STORAGECLASS   REASON   AGE
@@ -69,6 +72,14 @@ Filesystem                Size      Used Available Use% Mounted on
 /dev/sdc on /var/lib/kubelet/pods/3e3fc466-5db0-499a-b678-0c6a80d58f38/volumes/kubernetes.io~csi/pvc-0e88eb2c-7b6d-4acf-a3ae-567c6628632e/mount type ext4 (rw,relatime)
 
 # /var/log/syslog
+Jul 26 10:36:11 aks-nodepool1-51397738-vmss00000O kernel: [  777.616148] scsi 1:0:0:0: Direct-Access     Msft     Virtual Disk     1.0  PQ: 0 ANSI: 5
+Jul 26 10:36:11 aks-nodepool1-51397738-vmss00000O kernel: [  777.619894] sd 1:0:0:0: Attached scsi generic sg3 type 0
+Jul 26 10:36:11 aks-nodepool1-51397738-vmss00000O kernel: [  777.620383] sd 1:0:0:0: [sdc] 20971520 512-byte logical blocks: (10.7 GB/10.0 GiB)
+Jul 26 10:36:11 aks-nodepool1-51397738-vmss00000O kernel: [  777.620385] sd 1:0:0:0: [sdc] 4096-byte physical blocks
+Jul 26 10:36:11 aks-nodepool1-51397738-vmss00000O kernel: [  777.620488] sd 1:0:0:0: [sdc] Write Protect is off
+Jul 26 10:36:11 aks-nodepool1-51397738-vmss00000O kernel: [  777.620491] sd 1:0:0:0: [sdc] Mode Sense: 0f 00 10 00
+Jul 26 10:36:11 aks-nodepool1-51397738-vmss00000O kernel: [  777.620600] sd 1:0:0:0: [sdc] Write cache: disabled, read cache: enabled, supports DPO and FUA
+Jul 26 10:36:11 aks-nodepool1-51397738-vmss00000O kernel: [  777.649739] sd 1:0:0:0: [sdc] Attached SCSI disk
 Jul 26 10:36:16 aks-nodepool1-51397738-vmss00000O kubelet[1701]: I0726 10:36:16.723974    1701 reconciler.go:357] "operationExecutor.VerifyControllerAttachedVolume started for volume \"pvc-0e88eb2c-7b6d-4acf-a3ae-567c6628632e\" (UniqueName: \"kubernetes.io/csi/disk.csi.azure.com^/subscriptions/dummys-1111-1111-1111-111111111111/resourceGroups/mc_secureshack2_aks_swedencentral/providers/Microsoft.Compute/disks/pvc-0e88eb2c-7b6d-4acf-a3ae-567c6628632e\") pod \"nginx-azuredisk\" (UID: \"3e3fc466-5db0-499a-b678-0c6a80d58f38\") " pod="default/nginx-azuredisk"
 Jul 26 10:36:16 aks-nodepool1-51397738-vmss00000O kubelet[1701]: I0726 10:36:16.732320    1701 operation_generator.go:1582] "Controller attach succeeded for volume \"pvc-0e88eb2c-7b6d-4acf-a3ae-567c6628632e\" (UniqueName: \"kubernetes.io/csi/disk.csi.azure.com^/subscriptions/dummys-1111-1111-1111-111111111111/resourceGroups/mc_secureshack2_aks_swedencentral/providers/Microsoft.Compute/disks/pvc-0e88eb2c-7b6d-4acf-a3ae-567c6628632e\") pod \"nginx-azuredisk\" (UID: \"3e3fc466-5db0-499a-b678-0c6a80d58f38\") device path: \"\"" pod="default/nginx-azuredisk"
 Jul 26 10:36:16 aks-nodepool1-51397738-vmss00000O kubelet[1701]: I0726 10:36:16.824901    1701 reconciler.go:269] "operationExecutor.MountVolume started for volume \"pvc-0e88eb2c-7b6d-4acf-a3ae-567c6628632e\" (UniqueName: \"kubernetes.io/csi/disk.csi.azure.com^/subscriptions/dummys-1111-1111-1111-111111111111/resourceGroups/mc_secureshack2_aks_swedencentral/providers/Microsoft.Compute/disks/pvc-0e88eb2c-7b6d-4acf-a3ae-567c6628632e\") pod \"nginx-azuredisk\" (UID: \"3e3fc466-5db0-499a-b678-0c6a80d58f38\") " pod="default/nginx-azuredisk"
@@ -119,3 +130,4 @@ kubectl delete pvc pvc-azuredisk
 - https://learn.microsoft.com/en-us/azure/aks/azure-csi-disk-storage-provision
 - https://learn.microsoft.com/en-us/azure/aks/azure-disk-csi
 - https://github.com/Azure/AKS/tree/master/vhd-notes
+- https://learn.microsoft.com/en-us/azure/virtual-machines/disks-shared: VMs in the cluster can read or write to their attached disk based on the reservation chosen by the clustered application using SCSI Persistent Reservations (SCSI PR).

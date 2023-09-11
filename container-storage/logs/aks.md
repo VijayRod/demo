@@ -1,7 +1,7 @@
 ```
 rg=rg
-az group create -n $rg -l swedencentral
-az aks create -g $rg -n aks # -s Standard_B2ms -c 1
+az group create -n $rg -l $loc
+az aks create -g $rg -n aks -s Standard_B2ms -c 1
 az aks get-credentials -g $rg -n aks --overwrite-existing
 
 az aks nodepool add -g $rg --cluster-name aks -n npmar # --os-sku Mariner

@@ -26,5 +26,10 @@ kubectl logs nginx | tail # Client IP
 <clientIpRedacted> - - [12/Sep/2023:12:11:44 +0000] "HEAD / HTTP/1.1" 200 0 "-" "curl/7.68.0" "-"
 ```
 
+```
+kubectl delete svc nginx
+kubectl delete po nginx
+```
+
 - https://kubernetes.io/docs/tasks/access-application-cluster/create-external-load-balancer/#preserving-the-client-source-ip
 - https://kubernetes.io/docs/tutorials/services/source-ip/#source-ip-for-services-with-typeloadbalancer

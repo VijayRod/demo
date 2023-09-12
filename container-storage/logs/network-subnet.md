@@ -13,3 +13,7 @@ az network vnet create -g $rgname -n $vnet --address-prefix 10.2.0.0/16 --subnet
 # To retrieve the subnet Id
 subnetId=$(az network vnet subnet show -g $rgname --vnet-name $vnet -n $akssubnet --query id -otsv)
 ```
+
+```
+az vm create -g $rg -n vm --image Ubuntu2204 --subnet $subnetId --admin-username azureuser --public-ip-sku Standard
+```

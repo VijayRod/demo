@@ -1,1 +1,3 @@
 - https://github.com/Azure/AKS/blob/master/examples/cgroups/revert-cgroup-v1.yaml
+- https://kubernetes.io/docs/concepts/architecture/cgroups/
+- https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/aks-increased-memory-usage-cgroup-v2

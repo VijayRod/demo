@@ -1,6 +1,6 @@
 ```
 # Replace the below with appropriate values
-rgname=testshack2
+rgname=rgvm
 loc=swedencentral
 vm=myVM
 image=debian
@@ -10,6 +10,7 @@ user=azureuser
 az group create -n $rgname --location $loc
 az vm create -g $rgname -n $vm --image $image \
   --admin-username $user --public-ip-sku Standard
+az vm open-port --port 22 -g $rgname -n $vm # ssh
 ip=$(az vm show --show-details -g $rgname -n $vm --query publicIps --output tsv)
 az vm run-command invoke -g $rgname -n $vm \
    --command-id RunShellScript --scripts "sudo apt-get update && sudo apt-get install -y nginx" --no-wait

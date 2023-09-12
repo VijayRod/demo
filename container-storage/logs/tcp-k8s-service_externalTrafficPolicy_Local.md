@@ -1,0 +1,2 @@
+- https://kubernetes.io/docs/reference/networking/virtual-ips/#external-traffic-policy
+- https://github.com/kubernetes/kubernetes/issues/51255#issuecomment-346967750

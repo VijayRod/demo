@@ -63,3 +63,4 @@ kubectl delete ns ingress-basic; kubectl delete ingressclass nginx
 - https://artifacthub.io/packages/helm/ingress-nginx/ingress-nginx
 - https://kubernetes.github.io/ingress-nginx/
 - https://github.com/kubernetes/ingress-nginx/releases: registry.k8s.io/ingress-nginx/controller
+- https://docs.nginx.com/nginx-ingress-controller/troubleshooting/troubleshoot-common/

@@ -40,3 +40,5 @@ Hello World from host myVM1!
 ```
 
 - https://learn.microsoft.com/en-us/azure/application-gateway/quick-create-cli
+- https://learn.microsoft.com/en-us/azure/application-gateway/application-gateway-faq
+- https://learn.microsoft.com/en-us/azure/application-gateway/application-gateway-backend-health-troubleshooting

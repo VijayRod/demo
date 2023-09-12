@@ -1,6 +1,20 @@
 The Ingress resource must be in the same namespace as the backend service. Once it is created, it will have the external IP of the Ingress controller.
 
 ```
+rg=rgingress
+az group create -n $rg -l $loc
+az aks create -g $rg -n aks -s Standard_B2ms -c 1
+az aks get-credentials -g $rg -n aks --overwrite-existing
+
+# https://learn.microsoft.com/en-us/azure/aks/ingress-basic?tabs=azure-cli#basic-configuration
+NAMESPACE=ingress-basic
+helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+helm repo update
+helm install ingress-nginx ingress-nginx/ingress-nginx \
+  --create-namespace \
+  --namespace $NAMESPACE \
+  --set controller.service.annotations."service\.beta\.kubernetes\.io/azure-load-balancer-health-probe-request-path"=/healthz
+
 kubectl run nginx --image=nginx
 kubectl expose po nginx --port=80
 
@@ -32,6 +46,7 @@ spec:
             port:
               number: 80
 EOF
+kubectl get ingress
 ```
 
 ```

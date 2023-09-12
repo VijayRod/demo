@@ -28,6 +28,11 @@ root@aks-default-24553791-vmss000002:/# tcpdump port 31805
 23:34:31.245904 IP 168.63.129.16.61387 > aks-default-24553791-vmss000002.internal.cloudapp.net.31805: Flags [.], ack 228, win 49150, length 0
 ```
 
+```
+kubectl delete svc nginx
+kubectl delete po nginx
+```
+
 - https://kubernetes.io/docs/tasks/access-application-cluster/create-external-load-balancer/#external-load-balancer-providers
 - https://kubernetes.io/docs/tasks/access-application-cluster/create-external-load-balancer/#preserving-the-client-source-ip: service.spec.healthCheckNodePort
 - https://kubernetes.io/docs/tutorials/services/source-ip/#source-ip-for-services-with-type-loadbalancer

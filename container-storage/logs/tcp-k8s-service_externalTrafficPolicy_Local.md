@@ -1,2 +1,4 @@
 - https://kubernetes.io/docs/reference/networking/virtual-ips/#external-traffic-policy
 - https://github.com/kubernetes/kubernetes/issues/51255#issuecomment-346967750
+- https://github.com/nginxinc/kubernetes-ingress/issues/1199#issuecomment-712944309
+- https://github.com/nginxinc/kubernetes-ingress/issues/1199#issuecomment-713187084

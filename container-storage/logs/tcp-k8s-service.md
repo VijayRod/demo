@@ -1,0 +1,7 @@
+- https://kubernetes.io/docs/concepts/services-networking/
+  - https://kubernetes.io/docs/concepts/services-networking/service/
+  - https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/
+- https://kubernetes.io/docs/reference/networking/service-protocols/
+- https://kubernetes.io/docs/tasks/access-application-cluster/access-cluster-services/
+- https://kubernetes.io/docs/tutorials/kubernetes-basics/expose/expose-intro/
+- https://kubernetes.io/docs/tutorials/services/connect-applications-service/

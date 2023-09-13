@@ -1,0 +1,2 @@
+- https://learn.microsoft.com/en-us/azure/load-balancer/load-balancer-troubleshoot
+- https://learn.microsoft.com/en-us/azure/load-balancer/load-balancer-standard-diagnostics

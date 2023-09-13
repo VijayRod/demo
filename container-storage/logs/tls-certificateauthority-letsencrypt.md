@@ -1,0 +1,2 @@
+- https://letsencrypt.org/docs
+- https://letsencrypt.org/docs/challenge-types/

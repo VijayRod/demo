@@ -1,0 +1,1 @@
+- https://learn.microsoft.com/en-us/azure/application-gateway/application-gateway-troubleshooting-502

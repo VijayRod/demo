@@ -36,3 +36,8 @@ kubectl delete po nginx
 - https://kubernetes.io/docs/tasks/access-application-cluster/create-external-load-balancer/#external-load-balancer-providers
 - https://kubernetes.io/docs/tasks/access-application-cluster/create-external-load-balancer/#preserving-the-client-source-ip: service.spec.healthCheckNodePort
 - https://kubernetes.io/docs/tutorials/services/source-ip/#source-ip-for-services-with-type-loadbalancer
+<br>
+
+- https://learn.microsoft.com/en-us/azure/load-balancer/load-balancer-custom-probe-overview
+- https://learn.microsoft.com/en-us/azure/load-balancer/load-balancer-standard-diagnostics#are-the-backend-instances-for-my-load-balancer-responding-to-probes
+- https://learn.microsoft.com/en-us/azure/load-balancer/load-balancer-standard-diagnostics: health probe

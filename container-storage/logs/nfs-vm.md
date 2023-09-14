@@ -112,3 +112,5 @@ listening on eth0, link-type EN10MB (Ethernet), capture size 262144 bytes
 ```
 
 - https://www.kali.org/tools/nfs-utils/
+- https://learn.microsoft.com/en-us/azure/storage/files/storage-files-quick-create-use-linux?tabs=azure-portal#create-an-nfs-share
+- https://learn.microsoft.com/en-us/azure/storage/files/storage-files-networking-endpoints#create-a-private-endpoint

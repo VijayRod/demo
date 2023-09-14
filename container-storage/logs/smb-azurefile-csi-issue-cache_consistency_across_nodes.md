@@ -8,7 +8,7 @@ storageAccountName="mystorageacct$RANDOM"
 shareName=aksshare
 
 # Retrieve the node resource group name for the cluster.
-nodeResourceGroupName=$(az aks show --resource-group $rgname --name $clustername --query nodeResourceGroup -o tsv)
+noderg=$(az aks show --resource-group $rgname --name $clustername --query nodeResourceGroup -o tsv)
 ```
 
 ```
@@ -32,7 +32,7 @@ spec:
     readOnly: false
     volumeHandle: id123456  # make sure this volumeid is unique for every identical share in the cluster
     volumeAttributes:
-      resourceGroup: $nodeResourceGroupName  # optional, only set this when storage account is not in the same resource group as node
+      resourceGroup: $noderg  # optional, only set this when storage account is not in the same resource group as node
       shareName: $shareName
     nodeStageSecretRef:
       name: azure-secret

@@ -50,4 +50,10 @@ EOF
 kubectl get po,pv,pvc,sc
 ```
 
+```
+kubectl delete po fiopod
+kubectl delete pvc pvc-azurefile-nfs
+kubectl delete sc azurefile-csi-nfs
+```
+
 - https://learn.microsoft.com/en-us/azure/aks/azure-files-csi#create-nfs-file-share-storage-class

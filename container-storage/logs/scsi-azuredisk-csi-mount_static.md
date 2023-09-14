@@ -1,7 +1,7 @@
 ```
-nodeResourceGroupName=$(az aks show -g $rg -n aks --query nodeResourceGroup -o tsv)
+noderg=$(az aks show -g $rg -n aks --query nodeResourceGroup -o tsv)
 
-diskUri=$(az disk create -g $nodeResourceGroupName -n myAKSDisk --size-gb 20 --query id --output tsv)
+diskUri=$(az disk create -g $noderg -n myAKSDisk --size-gb 20 --query id --output tsv)
 
 cat << EOF | kubectl create -f -
 apiVersion: v1

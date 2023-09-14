@@ -23,3 +23,4 @@ total 15
 - https://github.com/kubernetes-sigs/azurefile-csi-driver/tree/master/deploy/example
 - https://kubernetes.io/docs/concepts/storage/persistent-volumes/#mount-options
 - https://github.com/kubernetes/examples/blob/master/staging/volumes/azure_file/README.md
+- https://learn.microsoft.com/en-us/azure/aks/concepts-storage#azure-files

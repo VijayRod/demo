@@ -38,8 +38,8 @@ az aks show -g $rgname -n $clustername --query diskEncryptionSetId -otsv
 
 ```
 # This is an optional vmss command. Replace the name of the VM Scale Set and the instance ID in the following command.
-nodeResourceGroupName=$(az aks show -g $rgname -n $clustername --query nodeResourceGroup -otsv)
-az vmss show -g $nodeResourceGroupName -n aks-nodepool1-18780979-vmss --instance-id 0 --query storageProfile.osDisk.managedDisk.diskEncryptionSet
+noderg=$(az aks show -g $rgname -n $clustername --query nodeResourceGroup -otsv)
+az vmss show -g $noderg -n aks-nodepool1-18780979-vmss --instance-id 0 --query storageProfile.osDisk.managedDisk.diskEncryptionSet
 
 # Here is a sample output below.
 # {

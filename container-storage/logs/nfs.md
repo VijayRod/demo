@@ -12,6 +12,8 @@ NFS
 - https://www.howtouselinux.com/post/understanding-portmap-with-examples
 - https://www.ibm.com/docs/en/storage-scale/5.1.0?topic=firewall-recommendations-protocol-access#d789583e46
 - https://www.ibm.com/docs/en/zos/2.1.0?topic=introduction-nfs-version-3-version-4-tcpip-protocols
+- https://learn.microsoft.com/en-us/azure/storage/files/files-nfs-protocol
+- https://learn.microsoft.com/en-us/azure/storage/files/nfs-performance
 
 NFSv3
 - The NFS 3.0 protocol uses ports 111 and 2048.

@@ -1,0 +1,2 @@
+- https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+- https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/failure-setting-azure-disk-mount-options-uid-gid

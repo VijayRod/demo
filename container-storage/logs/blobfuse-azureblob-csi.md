@@ -50,3 +50,4 @@ kubectl get po -n kube-system csi-blob-node-wvn8q -oyaml | grep image: | grep bl
 - https://github.com/kubernetes-sigs/blob-csi-driver/blob/master/pkg/blob/nodeserver.go
 - https://github.com/Azure/AKS/tree/master/vhd-notes
 - https://learn.microsoft.com/en-us/azure/aks/concepts-storage#azure-blob-storage
+- https://learn.microsoft.com/en-us/azure/aks/azure-blob-csi

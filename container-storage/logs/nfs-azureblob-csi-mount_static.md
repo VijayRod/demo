@@ -2,7 +2,7 @@
 # Replace the below with appropriate values.
 rgname=secureshack2
 clustername=aksblob
-nodeResourceGroupName=$(az aks show --resource-group $rgname --name $clustername --query nodeResourceGroup -o tsv)
+noderg=$(az aks show --resource-group $rgname --name $clustername --query nodeResourceGroup -o tsv)
 volumeHandle="vid$RANDOM"
 storageAccountName="mystor$RANDOM"
 containerName="c$RANDOM"
@@ -35,7 +35,7 @@ spec:
     # character `#` is reserved for internal use and cannot be used in volumehandle
     volumeHandle: $volumeHandle
     volumeAttributes:
-      resourceGroup: $nodeResourceGroupName
+      resourceGroup: $noderg
       storageAccount: $storageAccountName
       containerName: $containerName
       protocol: nfs

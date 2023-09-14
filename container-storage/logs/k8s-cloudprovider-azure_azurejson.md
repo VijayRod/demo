@@ -7,7 +7,7 @@ root@aks-nodepool1-16663898-vmss000001:/# cat /etc/kubernetes/azure.json
     "aadClientId": "msi",
 ...
 
-kubectl exec -it -n kube-system csi-azuredisk-node-grlf2 -c azuredisk -- cat /etc/kubernetes/azure.json # "type c:\k\azure.json" in a Windows node
+kubectl exec -it -n kube-system csi-azuredisk-node-grlf2 -c azuredisk -- cat /etc/kubernetes/azure.json # On Windows, use "type c:\k\azure.json"
 {
     "cloud": "AzurePublicCloud",
 ...

@@ -30,7 +30,7 @@ az aks update --enable-blob-driver -g $rg -n aks
 
 ```
 # To get credentials for running commands further below.
-az aks get-credentials -g $rg -n aks
+az aks get-credentials -g $rg -n aks --overwrite-existing
 
 # To retrieve related pods.
 kubectl get po -n kube-system -owide | grep csi-blob

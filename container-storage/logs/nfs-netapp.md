@@ -1,2 +1,3 @@
 - https://learn.microsoft.com/en-us/azure/aks/concepts-storage#azure-netapp-files
 - https://learn.microsoft.com/en-us/azure/aks/azure-netapp-files
+- https://learn.microsoft.com/en-us/azure/aks/azure-netapp-files-nfs

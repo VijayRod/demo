@@ -14,8 +14,8 @@ az vmss create -g $rgname -n vmssfd1 --image UbuntuLTS --platform-fault-domain-c
 clustername=aksfd
 az aks create -g $rgname -n $clustername
 
-nodeResourceGroupName=$(az aks show -g $rgname -n $clustername  --query nodeResourceGroup -o tsv)
-az vmss show -g $nodeResourceGroupName -n aks-nodepool1-25097321-vmss --query platformFaultDomainCount ## 1
+noderg=$(az aks show -g $rgname -n $clustername  --query nodeResourceGroup -o tsv)
+az vmss show -g $noderg -n aks-nodepool1-25097321-vmss --query platformFaultDomainCount ## 1
 ```
 
 ```

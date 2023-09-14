@@ -10,12 +10,12 @@ shareName=aksshare
 
 ```
 # To retrieve the node resource group name for the cluster.
-nodeResourceGroupName=$(az aks show --resource-group $rgname --name $clustername --query nodeResourceGroup -o tsv)
+noderg=$(az aks show --resource-group $rgname --name $clustername --query nodeResourceGroup -o tsv)
 
 # To create the storage account.
-az storage account create -g $nodeResourceGroupName -n $storageAccountName --sku Premium_LRS --kind FileStorage --enable-large-file-share --output none
-export AZURE_STORAGE_CONNECTION_STRING=$(az storage account show-connection-string -g $nodeResourceGroupName -n $storageAccountName -o tsv)
-STORAGE_KEY=$(az storage account keys list -g $nodeResourceGroupName --account-name $storageAccountName --query "[0].value" -o tsv)
+az storage account create -g $noderg -n $storageAccountName --sku Premium_LRS --kind FileStorage --enable-large-file-share --output none
+export AZURE_STORAGE_CONNECTION_STRING=$(az storage account show-connection-string -g $noderg -n $storageAccountName -o tsv)
+STORAGE_KEY=$(az storage account keys list -g $noderg --account-name $storageAccountName --query "[0].value" -o tsv)
 echo Storage account key: $STORAGE_KEY
 
 # To create the file share.
@@ -29,12 +29,12 @@ kubectl create secret generic azure-secret --from-literal=azurestorageaccountnam
 
 ```
 # To regenerate the access key for the storage account in this TEST environment.
-az storage account keys renew -g $nodeResourceGroupName -n $storageAccountName --key key1 -o none
+az storage account keys renew -g $noderg -n $storageAccountName --key key1 -o none
 
 # Alternatively, you can recreate the storage account with the same name in this TEST environment, as doing so will results in new keys.
 # az storage account delete -g $rgname -n $storageAccountName -y
-# az storage account create -g $nodeResourceGroupName -n $storageAccountName --sku Premium_LRS --kind FileStorage --enable-large-file-share --output none
-# export AZURE_STORAGE_CONNECTION_STRING=$(az storage account show-connection-string -g $nodeResourceGroupName -n $storageAccountName -o tsv)
+# az storage account create -g $noderg -n $storageAccountName --sku Premium_LRS --kind FileStorage --enable-large-file-share --output none
+# export AZURE_STORAGE_CONNECTION_STRING=$(az storage account show-connection-string -g $noderg -n $storageAccountName -o tsv)
 # az storage share create -n $shareName --connection-string $AZURE_STORAGE_CONNECTION_STRING
 ```
 
@@ -59,7 +59,7 @@ spec:
     readOnly: false
     volumeHandle: id123456  # make sure this volumeid is unique for every identical share in the cluster
     volumeAttributes:
-      resourceGroup: $nodeResourceGroupName  # optional, only set this when storage account is not in the same resource group as node
+      resourceGroup: $noderg  # optional, only set this when storage account is not in the same resource group as node
       shareName: $shareName
     nodeStageSecretRef:
       name: azure-secret

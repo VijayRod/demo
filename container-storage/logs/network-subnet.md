@@ -1,6 +1,6 @@
 ```
 # Replace the below with appropriate values
-vnet=myvnet
+vnet=vnet
 akssubnet=akssubnet
 
 # To create a virtual network with a subnet

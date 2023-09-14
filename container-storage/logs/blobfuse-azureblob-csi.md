@@ -4,10 +4,13 @@ Here are steps from https://learn.microsoft.com/en-us/azure/aks/azure-blob-csi t
 rg=rgblob
 az group create -g $rg -l swedencentral
 az aks create -g $rg -n aks --enable-blob-driver
+
+az aks show -g $rg -n aks --query storageProfile.blobCsiDriver -otsv
+True
 ```
 
 ```
-# To install the cluster. Optionally, run az aks show for an existing cluster.
+# Alternate installation
 az aks create -g $rg -n aks
 
 # Here is a sample output below.
@@ -23,12 +26,6 @@ az aks update --enable-blob-driver -g $rg -n aks
 #   "storageProfile": {
 #     "blobCsiDriver": {
 #       "enabled": true
-
-# To check if it is enabled
-az aks show -g $rg -n aks --query storageProfile.blobCsiDriver -otsv
-
-# Here is a sample output below.
-# True
 ```
 
 ```

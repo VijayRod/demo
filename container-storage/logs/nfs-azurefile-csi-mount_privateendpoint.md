@@ -18,3 +18,4 @@ az network private-dns link vnet create -g $rg -v vnet -n dnslink -z privatelink
 - https://learn.microsoft.com/en-us/azure/aks/azure-files-csi#use-a-persistent-volume-with-private-azure-files-storage-private-endpoint
 - https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/fail-to-mount-azure-file-share: If the storage account is configured privately with a private link, endpoint, or DNS zone, the hostname will be <storage-account-name>.privatelink.file.core.windows.net.
 - TBD https://medium.com/cooking-with-azure/nfsv4-with-azure-files-and-azure-kubernetes-service-141ee8258fd2
+- https://learn.microsoft.com/en-us/azure/storage/files/storage-files-networking-endpoints?tabs=azure-cli#create-a-private-endpoint

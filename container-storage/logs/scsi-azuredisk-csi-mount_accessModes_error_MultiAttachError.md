@@ -1,0 +1,3 @@
+- https://github.com/andyzhangx/demo/blob/master/issues/azuredisk-issues.md#25-multi-attach-error: Volume is already used by pod(s)
+- https://github.com/kubernetes/kubernetes/blob/36e40fb850293076b415ae3d376f5f81dc897105/pkg/controller/volume/attachdetach/reconciler/reconciler.go#L300
+- https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/fail-to-mount-azure-disk-volume#error3: Volume is already used by pod. An Azure disk can be mounted only as ReadWriteOnce, which makes it available to one node in AKS.

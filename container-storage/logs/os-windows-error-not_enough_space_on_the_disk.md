@@ -72,6 +72,7 @@ powershell Get-CimInstance -Class CIM_LogicalDisk
 ```
 # Run in a PowerShell terminal (Credits: Abel Hu):
 Get-CimInstance -Class CIM_LogicalDisk | Select-Object @{Name="Size(GB)";Expression={$_.size/1gb}}, @{Name="Free Space(GB)";Expression={$_.freespace/1gb}}, @{Name="Free (%)";Expression={"{0,6:P0}" -f(($_.freespace/1gb) / ($_.size/1gb))}}, DeviceID, DriveType | Where-Object DeviceID -EQ 'C:'
+# Or Where-Object DriveType -EQ '3'
 
 # Here is a sample output that includes 'Free Space(GB)'.
 # Size(GB)       : 127.509761810303
@@ -86,6 +87,7 @@ Run the following command in the required folder or in C:\ to get the top space 
 ```
 # Run in a cmd terminal:
 powershell -command "$fso = new-object -com Scripting.FileSystemObject; gci -Directory | select @{l='Size'; e={$fso.GetFolder($_.FullName).Size}},FullName | sort Size -Descending | ft @{l='Size [MB]'; e={'{0:N2}    ' -f ($_.Size / 1MB)}},FullName"
+# Or TBD $RootDir = 'C:\'; Get-ChildItem -Path $RootDir -Directory | ForEach-Object -Process {$ChildFolders = Get-ChildItem $.FullName -Recurse -Force | Measure-Object -property Length -sum | Select-Object Sum; Write-Host $.FullName" | $($ChildFolders.sum / 1GB) GB"}
 
 # Here is a sample output below.
 # Size [MB]    FullName
@@ -252,6 +254,14 @@ for($i=0; $i -lt 70; $i++) {
 # Create file 2
 # Create file 3
 # ...
+```
+
+```
+kubectl logs # Delete the pod to remove its associated log
+
+TBD crictl rmi -prune # Remove unused container images
+Deleted: mcr.microsoft.com/azure-policy/policy-kubernetes-addon-prod:1.0.1
+Deleted: mcr.microsoft.com/oss/kubernetes/azure-cloud-node-manager:v1.25.12
 ```
 Here are some related links:
 - [Azure/azure-diskinspect-service/diskinfo.md](https://github.com/Azure/azure-diskinspect-service/blob/master/docs/diskinfo.md). This link contains information on the disk inspection capability in the Azure Disk Inspect Service.

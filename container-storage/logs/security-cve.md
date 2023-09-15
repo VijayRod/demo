@@ -1,3 +1,4 @@
 - https://www.cve.org/CVERecord?id=CVE-2023-24540
 - https://nvd.nist.gov/vuln/detail/CVE-2023-24540
 - https://www.cve.org/ResourcesSupport/FAQs: The U.S. National Vulnerability Database (NVD) provides fix and other information for records on the CVE List.
+- https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2023-24540

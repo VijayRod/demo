@@ -1,0 +1,2 @@
+- https://wiki.archlinux.org/title/Ext4
+- https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/could-not-change-permissions-azure-files: For the ext3 or ext4 disk type, there's a lost+found directory after the disk is formatted.

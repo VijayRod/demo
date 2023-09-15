@@ -1,0 +1,2 @@
+- https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/could-not-change-permissions-azure-files
+- https://kubernetes.io/docs/concepts/storage/volumes/#using-subpath

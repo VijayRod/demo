@@ -1,0 +1,3 @@
+- https://learn.microsoft.com/en-us/azure/aks/azure-disk-csi#azure-disk-csi-driver-features
+- https://github.com/kubernetes-sigs/azuredisk-csi-driver#features
+- https://github.com/kubernetes-sigs/azuredisk-csi-driver/blob/master/docs/design-v2.md

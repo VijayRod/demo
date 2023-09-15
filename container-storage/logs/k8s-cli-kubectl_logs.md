@@ -4,6 +4,11 @@ kubectl run nginx --image=nginx
 # kubectl logs nginx | tail
 2023/08/14 19:37:07 [notice] 1#1: start worker process 29
 2023/08/14 19:37:07 [notice] 1#1: start worker process 30
+
+kubectl logs nginx --tail=10 # Show the last 10 lines of logs
+kubectl logs nginx --timestamps=true
+kubectl logs nginx --since=1h
+kubectl logs nginx --previous # Show previous container logs if the pod still exists
 ```
 
 ```

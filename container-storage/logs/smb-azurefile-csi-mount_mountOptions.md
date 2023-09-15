@@ -1,0 +1,3 @@
+- https://learn.microsoft.com/en-us/azure/aks/azure-files-csi: The default value for fileMode and dirMode is 0777 for Kubernetes mounted file shares.
+- https://learn.microsoft.com/en-us/azure/aks/azure-csi-files-storage-provision#mount-options
+- https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/mountoptions-settings-azure-files

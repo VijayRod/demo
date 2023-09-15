@@ -1,0 +1,4 @@
+- https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/could-not-change-permissions-azure-files: When this (CIFS) protocol is in use, the file and directory permissions can't be changed after the files and directories are mounted.
+- https://learn.microsoft.com/en-us/windows/win32/fileio/microsoft-smb-protocol-and-cifs-protocol-overview: The Common Internet File System (CIFS) Protocol is a dialect of SMB.
+- https://wiki.archlinux.org/title/Samba
+- https://man.archlinux.org/man/mount.cifs.8

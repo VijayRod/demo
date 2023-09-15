@@ -1,0 +1,9 @@
+```
+bpftrace -V
+```
+
+- https://github.com/Azure/AKS/blob/2023-09-10/vhd-notes/aks-ubuntu/AKSUbuntu-2204/202309.06.0.txt: bpftrace. bcc-tools
+- https://ebpf.io/labs/
+- https://www.lizrice.com/
+- https://www.youtube.com/watch?v=TJgxjVTZtfw: Tutorial: Getting Started with eBPF - Liz Rice, Isovalent
+- https://www.brendangregg.com/BPF/bpftrace-cheat-sheet.html

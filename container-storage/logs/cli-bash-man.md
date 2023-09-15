@@ -1,0 +1,2 @@
+- https://man.archlinux.org/
+- https://linux.die.net/man

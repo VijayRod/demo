@@ -1,0 +1,2 @@
+- https://man.archlinux.org/man/core/logrotate/logrotate.8.en
+- https://linuxconfig.org/logrotate

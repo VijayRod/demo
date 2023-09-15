@@ -11,3 +11,4 @@ kubectl get --raw "/api/v1/nodes/aks-nodepool1-51397738-vmss000004/proxy/logs/az
 ```
 
 - https://learn.microsoft.com/en-us/azure/aks/kubelet-logs
+- https://kubernetes.io/docs/concepts/cluster-administration/system-logs/

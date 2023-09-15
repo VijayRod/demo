@@ -1,2 +1,2 @@
-- https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#configure-volume-permission-and-ownership-change-policy-for-pods
+- https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#configure-volume-permission-and-ownership-change-policy-for-pods: For large volumes, checking and changing ownership and permissions can take a lot of time, slowing Pod startup.
 - https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/fail-to-mount-azure-disk-volume#error5: ApplyFSGroup failed for vol. To resolve this error, we recommend that you set fsGroupChangePolicy: "OnRootMismatch" in the securityContext of a Deployment, a StatefulSet or a pod.

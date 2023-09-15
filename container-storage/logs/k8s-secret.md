@@ -26,3 +26,7 @@ bXl1c2VybmFtZQ==
 ```
 
 - https://kubernetes.io/docs/tasks/configmap-secret/managing-secret-using-kubectl/
+- https://kubernetes.io/docs/concepts/configuration/secret/#editing-a-secret
+<br>
+
+- https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/file-share-mount-failures-azure-files: Manually update the azurestorageaccountkey field in an Azure file secret...

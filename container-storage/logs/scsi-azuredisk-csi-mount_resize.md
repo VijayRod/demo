@@ -44,3 +44,4 @@ AllowVolumeExpansion:  True
 - https://learn.microsoft.com/en-us/azure/aks/azure-csi-disk-storage-provision#built-in-storage-classes: It's not supported to reduce the size of a PVC (to prevent data loss)...
 - https://learn.microsoft.com/en-us/azure/aks/azure-disk-csi#resize-a-persistent-volume-without-downtime
 - https://learn.microsoft.com/en-us/azure/azure-arc/data/resize-persistent-volume-claim
+- https://learn.microsoft.com/en-us/troubleshoot/azure/virtual-machines/downsize-data-disk-without-losing-data

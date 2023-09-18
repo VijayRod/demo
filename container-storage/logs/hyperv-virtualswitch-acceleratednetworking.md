@@ -1,0 +1,2 @@
+- https://learn.microsoft.com/en-us/azure/virtual-network/accelerated-networking-overview
+- https://azure.microsoft.com/en-us/blog/maximize-your-vm-s-performance-with-accelerated-networking-now-generally-available-for-both-windows-and-linux/

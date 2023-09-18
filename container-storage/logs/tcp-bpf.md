@@ -7,3 +7,4 @@ bpftrace -V
 - https://www.lizrice.com/
 - https://www.youtube.com/watch?v=TJgxjVTZtfw: Tutorial: Getting Started with eBPF - Liz Rice, Isovalent
 - https://www.brendangregg.com/BPF/bpftrace-cheat-sheet.html
+- https://manpages.debian.org/testing/bpfcc-tools/index.html

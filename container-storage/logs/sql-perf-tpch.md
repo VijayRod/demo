@@ -1,0 +1,1 @@
+- https://gigaom.com/reprint/sql-transaction-processing-and-analytic-performance-price-performance-testing-22-585-microsoft/

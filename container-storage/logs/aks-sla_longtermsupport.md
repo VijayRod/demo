@@ -1,0 +1,7 @@
+- https://github.com/aks-lts
+- https://github.com/kubernetes/community/tree/master/archive/wg-lts
+- https://techcommunity.microsoft.com/t5/apps-on-azure-blog/azure-kubernetes-upgrades-and-long-term-support/ba-p/3782789
+- https://learn.microsoft.com/en-us/azure/aks/supported-kubernetes-versions?tabs=azure-cli#long-term-support-lts
+- https://azure.microsoft.com/en-us/pricing/details/kubernetes-service/: Long Term Support
+- https://azure.microsoft.com/en-us/updates/generally-available-long-term-support-version-in-aks/
+- https://learn.microsoft.com/en-us/cli/azure/aks?view=azure-cli-latest: AKSLongTermSupport

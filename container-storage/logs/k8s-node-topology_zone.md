@@ -1,16 +1,16 @@
 ```
 # Replace the below with appropriate values.
-rgname=
-clustername=akszone
+rg=rgzone
+clustername=aks
 ```
 
 ```
 # To create a cluster
-az aks create -g $rgname -n $clustername --zones 1 2
+az aks create -g $rg -n $clustername --zones 1 2
 ```
 
 ```
-# az aks show -g $rgname -n $clustername --query agentPoolProfiles[0].availabilityZones
+# az aks show -g $r -n $clustername --query agentPoolProfiles[0].availabilityZones
 [
   "1",
   "2"
@@ -29,12 +29,12 @@ Name:               aks-nodepool1-29870350-vmss000002
                     
 - https://learn.microsoft.com/en-us/azure/aks/availability-zones
 - https://learn.microsoft.com/en-us/azure/aks/free-standard-pricing-tiers#uptime-sla-terms-and-conditions
-
+- https://kubernetes.io/docs/setup/best-practices/multiple-zones/
+<br>
 - https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview
   - https://learn.microsoft.com/en-us/azure/reliability/availability-zones-service-support#azure-regions-with-availability-zone-support
-
+<br>
 - https://learn.microsoft.com/en-us/azure/virtual-machines/availability
-	
-	
+<br>	
 - https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/virtual-machine-scale-sets-use-availability-zones
 

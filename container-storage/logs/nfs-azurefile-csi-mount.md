@@ -73,3 +73,4 @@ kubectl delete sc azurefile-csi-nfs
 - https://learn.microsoft.com/en-us/azure/aks/azure-files-csi#nfs-file-shares
 - https://learn.microsoft.com/en-us/azure/aks/concepts-storage#azure-files
 - https://cloud-provider-azure.sigs.k8s.io/faq/known-issues/azurefile/
+- https://learn.microsoft.com/en-us/troubleshoot/azure/azure-storage/files-troubleshoot

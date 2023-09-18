@@ -1,1 +1,3 @@
-- 
+- https://azure.microsoft.com/en-us/updates/preview-azure-boost/
+- https://techcommunity.microsoft.com/t5/azure-infrastructure-blog/introducing-microsoft-azure-boost-preview/ba-p/3876742: made possible by a critical component, the Microsoft Azure Network Adapter (MANA)
+- https://learn.microsoft.com/en-us/azure/virtual-network/accelerated-networking-mana-overview

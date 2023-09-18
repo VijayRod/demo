@@ -4,7 +4,8 @@ az group create -n $rg -l $loc
 az aks create -g $rg -n aks -s $vmsize -c 1
 az aks get-credentials -g $rg -n aks --overwrite-existing
 
-az aks nodepool add -g $rg --cluster-name aks -n npmar # --os-sku Mariner
+az aks nodepool add -g $rg --cluster-name aks -n npmar -s $vmsize # --os-sku Mariner
+az aks nodepool delete -g $rg --cluster-name aks -n np2 --no-wait
 ```
 
 - https://learn.microsoft.com/en-us/azure/aks/

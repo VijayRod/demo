@@ -1,0 +1,1 @@
+- https://github.com/Azure/AKS/issues/118#issuecomment-708257760: kubectl delete sc default && kubectl apply -f default.yaml

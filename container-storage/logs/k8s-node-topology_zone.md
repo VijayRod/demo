@@ -31,10 +31,13 @@ Name:               aks-nodepool1-29870350-vmss000002
 - https://learn.microsoft.com/en-us/azure/aks/free-standard-pricing-tiers#uptime-sla-terms-and-conditions
 - https://kubernetes.io/docs/setup/best-practices/multiple-zones/
 <br>
+
 - https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview
   - https://learn.microsoft.com/en-us/azure/reliability/availability-zones-service-support#azure-regions-with-availability-zone-support
 <br>
+
 - https://learn.microsoft.com/en-us/azure/virtual-machines/availability
-<br>	
+<br>
+
 - https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/virtual-machine-scale-sets-use-availability-zones
 

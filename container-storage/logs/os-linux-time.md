@@ -1,0 +1,3 @@
+- https://wiki.archlinux.org/title/System_time#top-page
+- https://yaml.org/type/timestamp.html
+- https://www.w3.org/TR/NOTE-datetime

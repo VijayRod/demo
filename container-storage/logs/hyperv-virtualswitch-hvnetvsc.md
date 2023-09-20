@@ -1,0 +1,4 @@
+- https://learn.microsoft.com/en-us/troubleshoot/azure/virtual-machines/linux-hyperv-issue: When a Hyper-V child partition is started and the guest operating system is running, the virtualization stack starts the Network Virtual Service Client (NetVSC).
+- https://learn.microsoft.com/en-us/azure/virtual-network/accelerated-networking-how-it-works: When a virtual machine (VM) is created in Azure, a synthetic network interface is created for each virtual NIC in its configuration. The synthetic interface is a VMbus device and uses the netvsc driver. Network packets that use this synthetic interface flow through the virtual switch in the Azure host and onto the datacenter's physical network.
+- https://www.kernel.org/doc/html/latest/networking/device_drivers/ethernet/microsoft/netvsc.html
+- https://learn.microsoft.com/en-us/troubleshoot/azure/virtual-machines/linux-hyperv-issue

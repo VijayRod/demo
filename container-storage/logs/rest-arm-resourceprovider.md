@@ -1,0 +1,2 @@
+- https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/resource-providers-and-types
+- https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/deployment-models: SRP: Storage Resource Provider, CRP: Compute Resource Provider, NRP: Network Resource Provider

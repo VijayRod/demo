@@ -8,3 +8,4 @@ bpftrace -V
 - https://www.youtube.com/watch?v=TJgxjVTZtfw: Tutorial: Getting Started with eBPF - Liz Rice, Isovalent
 - https://www.brendangregg.com/BPF/bpftrace-cheat-sheet.html
 - https://manpages.debian.org/testing/bpfcc-tools/index.html
+- https://github.com/Azure-Samples/azure-files-samples/tree/master/SMBDiagnostics: trace-cifsbpf (eBPF script)

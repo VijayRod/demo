@@ -1,0 +1,4 @@
+- https://docs.docker.com/storage/containerd/: containerd, the industry-standard container runtime, uses snapshotters instead of the classic storage drivers for storing image and container data.
+- https://github.com/containerd/stargz-snapshotter
+- https://github.com/microsoft/Windows-Containers/issues/358: C:\\ProgramData\\containerd\\root\\io.containerd.snapshotter.v1.windows\\snapshots\\
+- https://medium.com/nttlabs/startup-containers-in-lightning-speed-with-lazy-image-distribution-on-containerd-243d94522361

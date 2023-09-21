@@ -45,3 +45,4 @@ AllowVolumeExpansion:  True
 - https://learn.microsoft.com/en-us/azure/aks/azure-disk-csi#resize-a-persistent-volume-without-downtime
 - https://learn.microsoft.com/en-us/azure/azure-arc/data/resize-persistent-volume-claim
 - https://learn.microsoft.com/en-us/troubleshoot/azure/virtual-machines/downsize-data-disk-without-losing-data
+- https://learn.microsoft.com/en-us/azure/virtual-machines/faq-for-disks: Can I shrink or downsize my managed disks? No.

@@ -1,0 +1,1 @@
+- https://learn.microsoft.com/en-us/azure/role-based-access-control/role-definitions#notactions: The NotActions permission specifies the control plane actions that are subtracted or excluded from the allowed Actions that have a wildcard (*). 

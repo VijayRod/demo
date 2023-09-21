@@ -1,0 +1,6 @@
+- https://github.com/Azure/azure-container-networking
+- https://learn.microsoft.com/en-us/azure/aks/azure-cni-overview
+- https://learn.microsoft.com/en-us/azure/aks/concepts-network#azure-cni-advanced-networking
+- https://learn.microsoft.com/en-us/azure/aks/configure-azure-cni
+- https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/azure-subscription-service-limits#azure-kubernetes-service-limits: Maximum pods per node: with Azure Container Networking Interface
+- https://learn.microsoft.com/en-us/azure/virtual-network/container-networking-overview

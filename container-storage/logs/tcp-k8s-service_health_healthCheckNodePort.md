@@ -47,3 +47,4 @@ kubectl delete po nginx
 - https://learn.microsoft.com/en-us/azure/load-balancer/load-balancer-custom-probe-overview
 - https://learn.microsoft.com/en-us/azure/load-balancer/load-balancer-standard-diagnostics#are-the-backend-instances-for-my-load-balancer-responding-to-probes
 - https://learn.microsoft.com/en-us/azure/load-balancer/load-balancer-standard-diagnostics: health probe
+- https://learn.microsoft.com/en-us/azure/virtual-network/what-is-ip-address-168-63-129-16: Enables health probes from Azure Load Balancer to determine the health state of VMs.

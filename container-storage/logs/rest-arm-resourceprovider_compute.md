@@ -1,0 +1,2 @@
+- https://learn.microsoft.com/en-us/azure/architecture/guide/technology-choices/compute-decision-tree
+- https://techcommunity.microsoft.com/t5/azure-paas-blog/how-custom-resource-provider-achieve-async-deployment/ba-p/3067963

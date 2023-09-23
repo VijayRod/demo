@@ -85,10 +85,14 @@ EOF
 fio /tmp/fio.conf
 ```
 
+- https://cloud.google.com/compute/docs/disks/benchmarking-pd-performance
+- https://docs.oracle.com/en-us/iaas/Content/Block/References/samplefiocommandslinux.htm
+- https://fio.readthedocs.io/en/latest/fio_doc.html
 - https://github.com/Azure/AKS/issues/1373
 - https://learn.microsoft.com/en-us/azure/virtual-machines/disks-benchmarks#fio
 - https://learn.microsoft.com/en-us/azure/virtual-machines/disks-performance
 - https://learn.microsoft.com/en-us/azure/virtual-machines/disks-types#premium-ssd-size
 - https://learn.microsoft.com/en-us/azure/virtual-machines/disks-types#standard-ssd-size
 - https://learn.microsoft.com/en-us/azure/virtual-machines/dv2-dsv2-series
+- https://microsoft.github.io/VirtualClient/docs/workloads/fio/fio-profiles/
 - https://stian.tech/disk-performance-on-aks-part-1/

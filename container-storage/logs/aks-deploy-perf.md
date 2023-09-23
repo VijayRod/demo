@@ -23,7 +23,3 @@ foo=$(kubectl get no | grep Ready | head -1| awk '{print $1}')
 kubectl node-shell $foo
 ```
 
-```
-TBD
-time kubectl get ns > null
-```

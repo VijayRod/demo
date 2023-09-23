@@ -1,0 +1,1 @@
+- https://packaging.python.org/en/latest/discussions/pip-vs-easy-install/: easy_install, now deprecated

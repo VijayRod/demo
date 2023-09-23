@@ -1,6 +1,48 @@
 The mount failure with exit status 32 is due to connectivity issues while connecting to the socket. To resolve this, check the outbound traffic to the appropriate port from the node or pod. For pods created with Azure Files, the default protocol is SMB, so the port to be checked is 445.
 
 ```
+# Create the resources
+cat << EOF | kubectl create -f -
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: my-azurefile
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: azurefile-premium
+  resources:
+    requests:
+      storage: 100Gi
+---
+kind: Pod
+apiVersion: v1
+metadata:
+  name: mypod
+spec:
+  nodeSelector:
+    kubernetes.io/hostname: aks-nodepool1-16524978-vmss000005
+  containers:
+  - name: mypod
+    image: nginx
+    resources:
+      requests:
+        cpu: 100m
+        memory: 128Mi
+      limits:
+        cpu: 250m
+        memory: 256Mi
+    volumeMounts:
+    - mountPath: "/mnt/azure"
+      name: volume
+  volumes:
+  - name: volume
+    persistentVolumeClaim:
+      claimName: my-azurefile
+EOF
+```
+
+```
 # kubectl get po
 NAME             READY   STATUS              RESTARTS   AGE
 mypod            0/1     ContainerCreating   0          9m35s
@@ -41,3 +83,15 @@ Refer to the mount.cifs(8) manual page (e.g. man mount.cifs) and kernel log mess
 Trying 20.60.79.8...
 telnet: Unable to connect to remote host: Connection timed out
 ```
+
+```
+# kubectl describe po in cluster version 1.26
+  Warning  FailedMount  3s    kubelet            MountVolume.MountDevice failed for volume "pvc-cec99d1b-a098-4785-8574-2e30a3acf254" : rpc error: code = Internal desc = volume(mc_rg_aks_swedencentral#mystorageacct21395#pvc-cec99d1b-a098-4785-8574-2e30a3acf254###default) mount //mystorageacct21395.file.core.windows.net/pvc-cec99d1b-a098-4785-8574-2e30a3acf254 on /var/lib/kubelet/plugins/kubernetes.io/csi/file.csi.azure.com/321f4ab61a5b3c8f1d8249412d8d6d1d76000ff56a412914af3c5b7710f2baf7/globalmount failed with mount failed: exit status 32
+Mounting command: mount
+Mounting arguments: -t cifs -o mfsymlinks,actimeo=30,nosharesock,file_mode=0777,dir_mode=0777,<masked> //mystorageacct21395.file.core.windows.net/pvc-cec99d1b-a098-4785-8574-2e30a3acf254 /var/lib/kubelet/plugins/kubernetes.io/csi/file.csi.azure.com/321f4ab61a5b3c8f1d8249412d8d6d1d76000ff56a412914af3c5b7710f2baf7/globalmount
+Output: mount error(115): Operation in progress
+Refer to the mount.cifs(8) manual page (e.g. man mount.cifs) and kernel log messages (dmesg)
+Please refer to http://aka.ms/filemounterror for possible causes and solutions for mount errors.
+```
+
+- https://github.com/kubernetes-sigs/azurefile-csi-driver/pull/1179/files

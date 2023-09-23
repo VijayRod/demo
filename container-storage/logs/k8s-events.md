@@ -5,4 +5,5 @@ By default, events are retained for [1 hour](https://github.com/kubernetes/kuber
 kubectl get events --watch --field-selector involvedObject.kind=Pod
 ```
 
-https://stackoverflow.com/questions/68797633/how-to-kubectl-get-event-of-node-not-pod
+- https://stackoverflow.com/questions/68797633/how-to-kubectl-get-event-of-node-not-pod
+- https://kubernetes.io/docs/reference/kubernetes-api/cluster-resources/event-v1/

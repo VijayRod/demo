@@ -4,11 +4,11 @@ kubectl expose po nginx --port=80 --type=LoadBalancer
 kubectl patch svc nginx -p '{"spec":{"externalTrafficPolicy":"Local"}}' # Changing externalTrafficPolicy from 'cluster' (default)
 kubectl get svc nginx
 kubectl describe svc nginx | grep External
+# kubectl delete svc nginx; kubectl delete po nginx
 ```
 
 ```
-kubectl delete svc nginx
-kubectl delete po nginx
+kubectl patch svc -n ingress-basic ingress-nginx-controller -p '{"spec":{"externalTrafficPolicy":"Local"}}'
 ```
 
 - https://kubernetes.io/docs/reference/networking/virtual-ips/#external-traffic-policy

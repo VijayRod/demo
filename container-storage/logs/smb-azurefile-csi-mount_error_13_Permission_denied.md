@@ -194,6 +194,17 @@ kubectl delete secret azure-secret
 az storage account delete -g $rgname -n $storageAccountName -y
 ```
 
-Here are some related links:
 - [AKS/issues/2383#issuecomment-859539446](https://github.com/Azure/AKS/issues/2383#issuecomment-859539446): it's most likely your secret does not have correct account name or key, would you remove that secret in namespace and then `kubectl create secret`
 - [troubleshoot/azure/azure-kubernetes/fail-to-mount-azure-file-share#mounterror13](https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/fail-to-mount-azure-file-share#mounterror13).
+
+```
+# kubectl describe po in cluster version 1.26
+  Warning  FailedMount  12s (x6 over 28s)  kubelet            MountVolume.MountDevice failed for volume "azurefile" : rpc error: code = Internal desc = volume(id123456) mount //mystorageacct3649.file.core.windows.net/aksshare on /var/lib/kubelet/plugins/kubernetes.io/csi/file.csi.azure.com/723ea299bae600c45c947090f00a881076794e75f5ff18cc4ae794a6091cc0ca/globalmount failed with mount failed: exit status 32
+Mounting command: mount
+Mounting arguments: -t cifs -o dir_mode=0777,file_mode=0777,uid=0,gid=0,mfsymlinks,cache=strict,nosharesock,nobrl,actimeo=30,<masked> //mystorageacct3649.file.core.windows.net/aksshare /var/lib/kubelet/plugins/kubernetes.io/csi/file.csi.azure.com/723ea299bae600c45c947090f00a881076794e75f5ff18cc4ae794a6091cc0ca/globalmount
+Output: mount error(13): Permission denied
+Refer to the mount.cifs(8) manual page (e.g. man mount.cifs) and kernel log messages (dmesg)
+Please refer to http://aka.ms/filemounterror for possible causes and solutions for mount errors.
+```
+
+- https://github.com/kubernetes-sigs/azurefile-csi-driver/pull/1179/files

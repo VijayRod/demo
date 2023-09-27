@@ -1,0 +1,3 @@
+- https://azure.microsoft.com/en-us/updates/general-availability-azure-tags-support-in-aks/
+- https://learn.microsoft.com/en-us/azure/aks/use-tags
+- https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/tag-resources

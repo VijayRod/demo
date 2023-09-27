@@ -93,8 +93,8 @@ date
   IO depths    : 1=0.1%, 2=0.1%, 4=0.1%, 8=0.1%, 16=100.0%, 32=0.0%, >=64=0.0%
 
 ## w/s represents the IOPS, w_await represents the latency in milliseconds for write requests, and aqu-sz represents the queue depth.
-root@aks-nodepool1-88846437-vmss000000:/# iostat -dxctm 1 /dev/sdb | tee -a /tmp/iostat.out
-root@aks-nodepool1-88846437-vmss000000:/# cat /tmp/iostat.out
+root@aks-nodepool1-88846437-vmss000000:/# iostat -dxctm 1 /dev/sdb | tee -a /tmp/iostat_file
+root@aks-nodepool1-88846437-vmss000000:/# cat /tmp/iostat_file
 Linux 5.15.0-1041-azure (aks-nodepool1-88846437-vmss000000)     09/25/23        _x86_64_        (4 CPU)
 09/24/23 13:00:39
 avg-cpu:  %user   %nice %system %iowait  %steal   %idle

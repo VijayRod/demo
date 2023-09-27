@@ -15,6 +15,15 @@ cat $file
 ```
 
 ```
+# https://kubernetes.io/docs/reference/using-api/health-checks/
+fqdn=redacted.hcp.swedencentral.azmk8s.io
+kubectl create sa k8sadmin
+token=$(kubectl create token k8sadmin)
+while true; do date -u; curl --connect-timeout 10 --show-error -sk --header "Authorization: Bearer $token" "https://$fqdn" > /dev/null; sleep 1; done
+# kubectl delete sa k8sadmin
+```
+
+```
 time kubectl get ns > null
 curl -ikv https://$fqdn
 ```

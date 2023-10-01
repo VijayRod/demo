@@ -1,0 +1,4 @@
+- https://github.com/Azure/AKS/releases: AKS Windows 2022 image has been updated to...
+- https://github.com/Azure/AgentBaker/pull/3613, sample
+- https://github.com/Azure/AgentBaker/tree/master/vhdbuilder/release-notes/AKSWindows
+- https://releases.aks.azure.com/

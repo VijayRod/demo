@@ -1,0 +1,1 @@
+- https://github.com/andyzhangx/demo/tree/master/debug#q-how-to-change-log-level-in-k8s-cluster

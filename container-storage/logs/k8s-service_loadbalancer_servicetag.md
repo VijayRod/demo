@@ -28,3 +28,4 @@ az network nsg rule list -g $noderg --nsg-name aks-agentpool-37790187-nsg -otabl
 ```
 
 - https://learn.microsoft.com/en-us/azure/aks/load-balancer-standard#customizations-via-kubernetes-annotations: service.beta.kubernetes.io/azure-allowed-service-tags
+- https://cloud-provider-azure.sigs.k8s.io/topics/loadbalancer/#loadbalancer-annotations: When loadBalancerSourceRanges have been set on service spec, service.beta.kubernetes.io/azure-allowed-service-tags won’t work because of DROP iptables rules from kube-proxy. The CIDRs from service tags should be merged into loadBalancerSourceRanges to make it work.

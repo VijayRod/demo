@@ -1,0 +1,3 @@
+- https://learn.microsoft.com/en-us/windows/release-health/status-windows-server-2022
+- https://support.microsoft.com/en-us/topic/windows-server-2022-update-history-e1caa597-00c5-4ab9-9f3e-8212fe80b2ee, the left pane has the release date and build for each
+- https://www.howtogeek.com/398226/now-windows-10-has-c-b-and-d-updates.-what-is-microsoft-smoking/

@@ -7,6 +7,6 @@ tcpdump -r /tmp/capture_file.pcap # Read the pcap file
 tcpdump port 443 -w /tmp/capture_file.pcap
 tcpdump port 443 -r /tmp/capture_file.pcap # Read the pcap file
 
-ls /tmp/capture_file
+ls /tmp/capture_file*
 # rm /tmp/capture_file
 ```

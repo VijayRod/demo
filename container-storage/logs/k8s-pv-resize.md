@@ -47,7 +47,7 @@ AllowVolumeExpansion:  True
 - https://learn.microsoft.com/en-us/troubleshoot/azure/virtual-machines/downsize-data-disk-without-losing-data
 - https://learn.microsoft.com/en-us/azure/virtual-machines/faq-for-disks: Can I shrink or downsize my managed disks? No.
 - https://kubernetes.io/docs/concepts/storage/persistent-volumes/#recovering-from-failure-when-expanding-volumes
-- https://github.com/kubernetes/kubernetes/issues/68427: ~earlier could only resize azure disk when it's in "unattached" state i.e. before dynamic resize
-- https://github.com/kubernetes-sigs/azuredisk-csi-driver/issues/273: ~earlier could only resize azure disk when it's in "unattached" state i.e. before dynamic resize
+- https://github.com/kubernetes/kubernetes/issues/68427: ~ earlier could only resize azure disk when it's in "unattached" state i.e. before dynamic resize
+- https://github.com/kubernetes-sigs/azuredisk-csi-driver/issues/273: ~ (earlier) could only resize azure disk when it's in "unattached" state i.e. before dynamic resize
 - https://azure.microsoft.com/en-us/updates/live-resize-of-azure-disk-storage-in-public-preview/
 - https://github.com/kubernetes-sigs/azuredisk-csi-driver/blob/master/docs/known-issues/sizegrow.md

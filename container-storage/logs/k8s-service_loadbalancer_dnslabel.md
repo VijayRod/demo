@@ -34,3 +34,4 @@ az network public-ip show -g $noderg -n kubernetes-a651ffd11644f4e478971339715d4
 
 - https://learn.microsoft.com/en-us/azure/aks/static-ip: Set a public-facing DNS label to the service using the service.beta.kubernetes.io/azure-dns-label-name service annotation...
 - https://learn.microsoft.com/en-us/azure/aks/load-balancer-standard#customizations-via-kubernetes-annotations: service.beta.kubernetes.io/azure-dns-label-name
+- https://cloud-provider-azure.sigs.k8s.io/topics/loadbalancer/#loadbalancer-annotations

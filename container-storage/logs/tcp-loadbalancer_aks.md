@@ -1,0 +1,2 @@
+- https://cloud-provider-azure.sigs.k8s.io/topics/loadbalancer/
+- https://learn.microsoft.com/en-us/azure/aks/load-balancer-standard

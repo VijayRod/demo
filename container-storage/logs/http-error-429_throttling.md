@@ -1,0 +1,4 @@
+- https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/request-limits-and-throttling: When you reach the limit, you receive the HTTP status code 429 Too many requests
+- https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/429-too-many-requests-errors
+- https://learn.microsoft.com/en-us/troubleshoot/azure/virtual-machines/troubleshooting-throttling-errors
+- https://techcommunity.microsoft.com/t5/azure-compute-blog/introducing-new-compute-throttling-policies/ba-p/3908366

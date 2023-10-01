@@ -1,1 +1,2 @@
 - https://learn.microsoft.com/en-us/troubleshoot/azure/azure-storage/data-protection-backup-recovery
+- https://learn.microsoft.com/en-us/azure/backup/backup-azure-troubleshoot-blob-backup

@@ -1,0 +1,2 @@
+- https://learn.microsoft.com/en-us/azure/backup/disk-backup-troubleshoot
+- https://learn.microsoft.com/en-us/troubleshoot/azure/azure-storage/data-protection-backup-recovery#scenario-6-disk-recovery

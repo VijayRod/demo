@@ -1,0 +1,1 @@
+- https://azure.microsoft.com/en-us/blog/azure-spring-cloud-a-fully-managed-service-for-spring-boot-apps-is-now-generally-available/

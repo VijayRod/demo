@@ -1,0 +1,2 @@
+- https://learn.microsoft.com/en-us/azure/azure-monitor/logs/api/errors
+- https://learn.microsoft.com/en-us/azure/azure-monitor/logs/api/response-format

@@ -56,3 +56,7 @@ kubectl get apiservice v1beta1.external.metrics.k8s.io -o "jsonpath={.status}"
     
 - https://learn.microsoft.com/en-us/azure/aks/keda-about
 - https://github.com/search?q=repo%3AAzure%2FAKS%20keda&type=code
+- https://github.com/Azure/AKS/issues/3816: KEDA Addon
+- https://keda.sh/docs/latest/concepts/
+- https://keda.sh/docs/troubleshooting/
+- https://learn.microsoft.com/en-us/azure/aks/keda-about#architecture

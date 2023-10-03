@@ -1,0 +1,2 @@
+- https://fluxcd.io/flux/cheatsheets/troubleshooting/
+- https://fluxcd.io/flux/components/

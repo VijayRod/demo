@@ -1,0 +1,5 @@
+- https://github.com/Azure/AKS/issues/3816
+- https://keda.sh/docs/latest/concepts/
+- https://keda.sh/docs/scalers/
+- https://keda.sh/docs/troubleshooting/
+- https://learn.microsoft.com/en-us/azure/aks/keda-about#architecture

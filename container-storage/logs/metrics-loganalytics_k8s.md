@@ -21,8 +21,14 @@ az aks enable-addons -a monitoring -g $rgname -n $clustername
   "enabled": true,
   "identity": null
 }
+
+clusterUri=$(az aks show -g $rg -n aks --query id -otsv)
+az monitor diagnostic-settings list --resource $clusterUri
+# az monitor diagnostic-settings list --resource-type Microsoft.ContainerService/managedClusters --resource a --resource-group $rg
 ```
 
 - https://learn.microsoft.com/en-us/azure/azure-monitor/containers/container-insights-overview
   - https://learn.microsoft.com/en-us/azure/azure-monitor/containers/container-insights-onboard
     - https://learn.microsoft.com/en-us/azure/azure-monitor/containers/container-insights-enable-aks?tabs=azure-cli
+- https://learn.microsoft.com/en-us/azure/aks/monitor-aks-reference
+- https://learn.microsoft.com/en-us/azure/azure-monitor/containers/monitor-kubernetes

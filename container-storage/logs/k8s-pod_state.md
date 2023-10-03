@@ -1,1 +1,3 @@
 - https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#pod-phase
+- https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#podstatus-v1-core: PodCondition. ContainerStatus
+- https://learn.microsoft.com/en-us/azure/aks/start-stop-cluster?tabs=azure-cli: a pod's age will continue to be calculated from its original creation time

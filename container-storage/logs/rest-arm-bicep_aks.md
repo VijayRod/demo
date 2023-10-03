@@ -32,3 +32,6 @@ resource aksCluster 'Microsoft.ContainerService/managedClusters@2023-07-01' = {
   }
 }
 ```
+
+- https://learn.microsoft.com/en-us/azure/aks/learn/quick-kubernetes-deploy-bicep?tabs=azure-cli
+- https://learn.microsoft.com/en-us/azure/templates/microsoft.containerservice/managedclusters?pivots=deployment-language-bicep

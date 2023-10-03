@@ -74,6 +74,7 @@ providers.notification.toolkit.fluxcd.io         2023-09-01T19:05:25Z
 receivers.notification.toolkit.fluxcd.io         2023-09-01T19:05:25Z
 
 az k8s-configuration flux delete -g $rg -c aks -t managedClusters --name cluster-config -y
+````
 
 - https://fluxcd.io/flux/installation/bootstrap/azure-devops/
 - https://github.com/Azure/arc-k8s-demo
@@ -82,4 +83,3 @@ az k8s-configuration flux delete -g $rg -c aks -t managedClusters --name cluster
 - https://learn.microsoft.com/en-us/azure/azure-arc/kubernetes/conceptual-gitops-flux2
 - https://learn.microsoft.com/en-us/azure/azure-arc/kubernetes/extensions-release#flux-gitops
 - https://learn.microsoft.com/en-us/azure/azure-arc/kubernetes/tutorial-use-gitops-flux2?tabs=azure-cli
-```

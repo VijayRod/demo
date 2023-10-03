@@ -1,0 +1,1 @@
+- https://fluxcd.io/flux/components/kustomize/

@@ -1,0 +1,3 @@
+- https://docs.brew.sh/Installation
+- https://docs.brew.sh/Manpage#commands
+- https://docs.brew.sh/Homebrew-on-Linux

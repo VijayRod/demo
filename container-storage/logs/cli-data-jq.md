@@ -1,0 +1,2 @@
+- https://github.com/jqlang/jq
+- https://github.com/jqlang/jq/wiki

@@ -39,3 +39,4 @@ az aks update -g $rgname -n $clustername --disable-keda
 ```
     
 - https://learn.microsoft.com/en-us/azure/aks/keda-about
+- https://github.com/search?q=repo%3AAzure%2FAKS%20keda&type=code

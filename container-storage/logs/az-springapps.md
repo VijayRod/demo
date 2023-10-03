@@ -1,0 +1,1 @@
+- https://learn.microsoft.com/en-us/azure/spring-apps/overview: Azure Spring Apps makes it easy to deploy Spring Boot applications to Azure without any code changes.

@@ -42,3 +42,4 @@ Hello World from host myVM1!
 - https://learn.microsoft.com/en-us/azure/application-gateway/quick-create-cli
 - https://learn.microsoft.com/en-us/azure/application-gateway/application-gateway-faq
 - https://learn.microsoft.com/en-us/azure/application-gateway/application-gateway-backend-health-troubleshooting
+- https://learn.microsoft.com/en-us/azure/architecture/web-apps/spring-apps/guides/spring-cloud-reverse-proxy: a common reverse proxy service like Azure Application Gateway

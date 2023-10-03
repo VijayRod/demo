@@ -34,3 +34,4 @@ I0812 03:46:21.141503       1 controller.go:152] Completed last event loop run i
 - https://learn.microsoft.com/en-us/azure/application-gateway/ingress-controller-expose-service-over-http-https
 - https://learn.microsoft.com/en-us/azure/application-gateway/ingress-controller-install-new
 - https://azure.github.io/application-gateway-kubernetes-ingress/troubleshootings/
+- https://kubernetes.io/docs/concepts/services-networking/ingress-controllers/: AKS Application Gateway Ingress Controller is an ingress controller that configures the Azure Application Gateway.

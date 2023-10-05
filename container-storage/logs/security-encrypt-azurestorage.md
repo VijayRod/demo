@@ -1,0 +1,1 @@
+- https://learn.microsoft.com/en-us/azure/storage/common/storage-service-encryption

@@ -3,10 +3,13 @@ rg=rg
 az group create -n $rg -l swedencentral
 az aks create -g $rg -n aks
 az aks get-credentials -g $rg -n aks --overwrite-existing
+
+kubectl delete po nginx-azurefile
+kubectl delete pvc pvc-azurefile
 kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/azurefile-csi-driver/master/deploy/example/pvc-azurefile-csi.yaml
 kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/azurefile-csi-driver/master/deploy/example/nginx-pod-azurefile.yaml
 
-kubectl get po nginx-azurefile
+kubectl get po nginx-azurefile -owide
 kubectl get pvc pvc-azurefile
 kubectl get pv
 

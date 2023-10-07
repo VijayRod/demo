@@ -1,0 +1,1 @@
+- https://github.com/microsoft/SDN/blob/master/Kubernetes/windows/debug/collectlogs.ps1

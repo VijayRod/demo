@@ -2,3 +2,4 @@
 - https://github.com/Azure/AgentBaker/pull/3613, sample
 - https://github.com/Azure/AgentBaker/tree/master/vhdbuilder/release-notes/AKSWindows
 - https://releases.aks.azure.com/
+- https://github.com/microsoft/SDN/tree/master/Kubernetes/windows/debug: *.ps1

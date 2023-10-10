@@ -3,6 +3,7 @@ kubectl delete svc nginx
 kubectl delete po nginx 
 kubectl run nginx --image=nginx
 kubectl expose po nginx --port=80 --type=LoadBalancer
+sleep 20
 kubectl describe svc nginx | grep External # External Traffic Policy:  Cluster
 kubectl get svc nginx
 kubectl get po -owide

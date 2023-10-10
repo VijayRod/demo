@@ -1,0 +1,2 @@
+- https://learn.microsoft.com/en-us/azure/dns/dns-zones-records#dns-zones
+- https://www.cloudflare.com/learning/dns/glossary/dns-zone/

@@ -1,1 +1,2 @@
 - https://wizardzines.com/zines/dns/
+- https://www.cloudflare.com/learning/dns/what-is-dns/

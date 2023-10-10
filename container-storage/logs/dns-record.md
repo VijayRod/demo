@@ -1,0 +1,1 @@
+- https://learn.microsoft.com/en-us/azure/dns/dns-zones-records#dns-records

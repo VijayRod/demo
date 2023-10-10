@@ -1,0 +1,1 @@
+- https://coredns.io/plugins/forward/

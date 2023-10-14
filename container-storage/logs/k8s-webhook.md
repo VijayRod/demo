@@ -1,0 +1,4 @@
+- https://kubernetes.io/docs/reference/access-authn-authz/admission-controllers/
+- https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/
+- https://learn.microsoft.com/en-us/azure/aks/faq: admission controllers
+- https://learn.microsoft.com/en-us/azure/architecture/operator-guides/aks/aks-triage-controllers

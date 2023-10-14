@@ -1,0 +1,1 @@
+- https://learn.microsoft.com/en-us/azure/cost-management-billing/manage/cancel-azure-subscription#delete-subscriptions: The Delete subscription option isn't available until at least 15 minutes after you cancel your subscription.

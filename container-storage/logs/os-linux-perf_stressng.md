@@ -1,0 +1,2 @@
+- https://github.com/ColinIanKing/stress-ng#debian-packages-for-ubuntu: stress-ng (stress next generation)
+- https://wiki.ubuntu.com/Kernel/Reference/stress-ng

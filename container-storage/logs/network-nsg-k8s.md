@@ -1,0 +1,1 @@
+- https://learn.microsoft.com/en-us/azure/aks/azure-cni-overview#prerequisites: AKS doesn't apply Network Security Groups (NSGs) to its subnet and doesn't modify any of the NSGs associated with that subnet. If you provide your own subnet and add NSGs associated with that subnet, you must ensure the security rules in the NSGs allow traffic within the node CIDR range.

@@ -1,0 +1,1 @@
+- https://azure.microsoft.com/en-us/updates/aci-ga/: The uptime SLA is 99.9% for any container group.

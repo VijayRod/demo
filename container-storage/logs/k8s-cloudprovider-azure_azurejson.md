@@ -1,3 +1,5 @@
+
+
 ```
 root@aks-nodepool1-16663898-vmss000001:/# cat /etc/kubernetes/azure.json
 {
@@ -11,6 +13,9 @@ kubectl exec -it -n kube-system csi-azuredisk-node-grlf2 -c azuredisk -- cat /et
 {
     "cloud": "AzurePublicCloud",
 ...
+
+noderg=$(az aks show -g $rg -n aks --query nodeResourceGroup -o tsv)  
+az vmss run-command invoke -g $noderg -n aks-agentpool-39272355-vmss --command-id RunShellScript --instance-id 4 --scripts "cat /etc/kubernetes/azure.json"
 ```
 
 - https://cloud-provider-azure.sigs.k8s.io/install/configs/: This doc describes cloud provider config file...

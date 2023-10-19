@@ -1,4 +1,7 @@
 ```
+rg=rg
+az group create -n $rg -l $loc
+
 az dataprotection backup-vault create --resource-group $rg --vault-name vault --type SystemAssigned --storage-settings datastore-type="VaultStore" type="LocallyRedundant"
 az dataprotection backup-policy get-default-policy-template --datasource-type AzureKubernetesService > /tmp/akspolicy.json
 # cat /tmp/akspolicy.json
@@ -8,10 +11,9 @@ storage="backups$RANDOM$RANDOM"
 az storage account create -g $rg --name $storage --sku Standard_LRS
 az storage container create --name backups --account-name $storage --auth-mode login
 
-rg=rg
-az group create -n $rg -l $loc
 az aks create -g $rg -n aks -s $vmsize -c 1
 az aks get-credentials -g $rg -n aks --overwrite-existing
+kubectl run nginx --image=nginx
 
 subId=$(az account show --query id -otsv)
 az k8s-extension create -g $rg --cluster-name aks -n azure-aks-backup --extension-type microsoft.dataprotection.kubernetes --scope cluster --cluster-type managedClusters --release-train stable --configuration-settings blobContainer=backups storageAccount=$storage storageAccountResourceGroup=$rg storageAccountSubscriptionId=$subId
@@ -36,7 +38,7 @@ dataprotection-microsoft-kubernetes-agent-8446d5458b-2fcr8   2/2     Running   0
 ```
 
 ```
-TBD
+TBD (Use the portal to backup)
 
 az role assignment create --assignee-object-id $(az k8s-extension show --name azure-aks-backup -g $rg --cluster-name aks --cluster-type managedClusters --query aksAssignedIdentity.principalId --output tsv) --role 'Storage Account Contributor' --scope /subscriptions/$subId/resourceGroups/$rg/providers/Microsoft.Storage/storageAccounts/$storage
 az aks trustedaccess rolebinding create -g $rg --cluster-name aks --name backuprolebinding --roles Microsoft.DataProtection/backupVaults/backup-operator --source-resource-id /subscriptions/$subId/resourceGroups/$rg/providers/Microsoft.DataProtection/BackupVaults/vault

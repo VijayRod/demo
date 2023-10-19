@@ -1,4 +1,5 @@
 ```
+# TBD (Use the portal to restore, for example, after deleting any created deployments, pods, or other resources)
 az k8s-extension show --name azure-aks-backup --cluster-type managedClusters -g $rg --cluster-name aks -otable
 az role assignment list --all --assignee  $(az k8s-extension show --name azure-aks-backup -g $rg --cluster-name aks --cluster-type managedClusters --query aksAssignedIdentity.principalId --output tsv)
 az role assignment create --assignee-object-id $(az k8s-extension show --name azure-aks-backup -g $rg --cluster-name aks --cluster-type managedClusters --query aksAssignedIdentity.principalId --output tsv) --role 'Storage Account Contributor'  --scope /subscriptions/$subId/resourceGroups/$rg/providers/Microsoft.Storage/storageAccounts/$storage

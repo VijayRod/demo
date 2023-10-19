@@ -1,3 +1,5 @@
+Network flow: Client -> Application Gateway -> Load Balancer (Kubernetes service exposed port 8080) -> VM Scale Set (Scale Set public IP is the LB frontend IP)
+
 ```
 kubectl delete svc nginx
 kubectl delete po nginx

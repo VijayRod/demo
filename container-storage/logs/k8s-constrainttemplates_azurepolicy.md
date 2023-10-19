@@ -1,7 +1,6 @@
 ```
-rgname=testshack4
-loc=swedencentral
-clustername=akspolicy
+rgname=rgpolicy
+clustername=aks
 
 az group create -n $rgname -l $loc
 az aks create -g $rgname -n $clustername -a azure-policy
@@ -29,24 +28,39 @@ azure-policy-webhook-bfd8f6c95-prqdb   1/1     Running   0          2m40s
 
 kubectl get all -n gatekeeper-system
 
-NAME                                         READY   STATUS    RESTARTS   AGE
-pod/gatekeeper-audit-7f4f64b7b-8g26t         1/1     Running   0          2m56s
-pod/gatekeeper-controller-85fb94bd96-5k697   1/1     Running   0          2m56s
-pod/gatekeeper-controller-85fb94bd96-9h9gv   1/1     Running   0          2m56s
-NAME                                 TYPE        CLUSTER-IP    EXTERNAL-IP   PORT(S)   AGE
-service/gatekeeper-webhook-service   ClusterIP   10.0.35.249   <none>        443/TCP   3m15s
-NAME                                    READY   UP-TO-DATE   AVAILABLE   AGE
-deployment.apps/gatekeeper-audit        1/1     1            1           3m15s
-deployment.apps/gatekeeper-controller   2/2     2            2           3m14s
-NAME                                               DESIRED   CURRENT   READY   AGE
-replicaset.apps/gatekeeper-audit-7f4f64b7b         1         1         1       2m57s
-replicaset.apps/gatekeeper-controller-85fb94bd96   2         2         2       2m57s
+NAME                                         READY   STATUS    RESTARTS   AGE     LABELS
+pod/gatekeeper-audit-7f4f64b7b-jw9qm         1/1     Running   0          2m36s   control-plane=audit-controller,gatekeeper.sh/operation=audit,gatekeeper.sh/system=yes,kubernetes.azure.com/managedby=aks,pod-template-hash=7f4f64b7b
+pod/gatekeeper-controller-85fb94bd96-5ss5r   1/1     Running   0          2m36s   control-plane=controller-manager,gatekeeper.sh/operation=webhook,gatekeeper.sh/system=yes,kubernetes.azure.com/managedby=aks,pod-template-hash=85fb94bd96
+pod/gatekeeper-controller-85fb94bd96-knr7h   1/1     Running   0          2m36s   control-plane=controller-manager,gatekeeper.sh/operation=webhook,gatekeeper.sh/system=yes,kubernetes.azure.com/managedby=aks,pod-template-hash=85fb94bd96
+NAME                                 TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)   AGE     LABELS
+service/gatekeeper-webhook-service   ClusterIP   10.0.215.162   <none>        443/TCP   2m36s   addonmanager.kubernetes.io/mode=Reconcile,gatekeeper.sh/system=yes
+NAME                                    READY   UP-TO-DATE   AVAILABLE   AGE     LABELS
+deployment.apps/gatekeeper-audit        1/1     1            1           2m36s   addonmanager.kubernetes.io/mode=Reconcile,control-plane=controller-manager,gatekeeper.sh/operation=audit,gatekeeper.sh/system=yes,kubernetes.azure.com/managedby=aks
+deployment.apps/gatekeeper-controller   2/2     2            2           2m36s   addonmanager.kubernetes.io/mode=Reconcile,control-plane=controller-manager,gatekeeper.sh/operation=webhook,gatekeeper.sh/system=yes,kubernetes.azure.com/managedby=aks
+NAME                                               DESIRED   CURRENT   READY   AGE     LABELS
+replicaset.apps/gatekeeper-audit-7f4f64b7b         1         1         1       2m36s   control-plane=audit-controller,gatekeeper.sh/operation=audit,gatekeeper.sh/system=yes,kubernetes.azure.com/managedby=aks,pod-template-hash=7f4f64b7b
+replicaset.apps/gatekeeper-controller-85fb94bd96   2         2         2       2m36s   control-plane=controller-manager,gatekeeper.sh/operation=webhook,gatekeeper.sh/system=yes,kubernetes.azure.com/managedby=aks,pod-template-hash=85fb94bd96
 
 kubectl logs -n kube-system -l app=azure-policy | tail
+{"level":"info","ts":"2023-10-19T13:02:31.950652885Z","msg":"Schedule running","log-id":"5290a684-6-393","method":"github.com/Azure/azure-policy-kubernetes/pkg/scheduler.(*Scheduler).wrapFunction.func1","schedule-name":"sync-config-setup"}
+{"level":"info","ts":"2023-10-19T13:02:32.209703597Z","msg":"Config file unchanged","log-id":"5290a684-6-394","method":"github.com/Azure/azure-policy-kubernetes/pkg/gatekeeper/confighandler.(*Client).update"}
 
 kubectl logs -n gatekeeper-system -l gatekeeper.sh/operation=audit | tail
+{"level":"info","ts":1697720537.369357,"logger":"controller","msg":"handling constraint update","process":"constraint_controller","instance":{"apiVersion":"constraints.gatekeeper.sh/v1beta1","kind":"K8sAzureV2ContainerAllowedImages","name":"azurepolicy-k8sazurev2containerallowedimag-e8257f540e4209db2eb6"}}
+{"level":"info","ts":1697720537.420827,"logger":"controller","msg":"handling constraint update","process":"constraint_controller","instance":{"apiVersion":"constraints.gatekeeper.sh/v1beta1","kind":"K8sAzureV3AllowedUsersGroups","name":"azurepolicy-k8sazurev3allowedusersgroups-74e00d596c80b8d0aa19"}}
+...
 
 kubectl logs -n gatekeeper-system -l gatekeeper.sh/operation=webhook | tail
+{"level":"info","ts":1697720241.6568787,"logger":"setup","msg":"setting up upgrade"}
+{"level":"info","ts":1697720241.6573098,"logger":"setup","msg":"setting up metrics"}
+{"level":"info","ts":1697720241.6573927,"logger":"controller","msg":"Starting Upgrade Manager","metaKind":"upgrade"}
+{"level":"info","ts":1697720241.657528,"logger":"metrics","msg":"Starting metrics runner"}
+{"level":"info","ts":1697720241.7332528,"msg":"Starting workers","controller":"config-controller","worker count":1}
+{"level":"info","ts":1697720241.7344706,"msg":"Starting workers","controller":"constrainttemplate-controller","worker count":1}
+{"level":"info","ts":1697720244.133506,"logger":"readiness-tracker","msg":"readiness satisfied, no further collection"}
+{"level":"info","ts":1697720245.2798822,"logger":"controller","msg":"resource","metaKind":"upgrade","kind":"ConstraintTemplate","group":"templates.gatekeeper.sh","version":"v1alpha1"}
+{"level":"info","ts":1697720245.3084674,"logger":"controller","msg":"resource count","metaKind":"upgrade","count":0}
+{"level":"info","ts":1697720253.764551,"logger":"controller","msg":"disabling readiness stats","kind":"Config"}
 ```
 
 ```

@@ -1,6 +1,7 @@
 ```
 kubectl get po -A --show-labels
 kubectl get po -A -l k8s-app=kube-dns
+kubectl get all -n kube-system --show-labels
 
 # Retrieve the name
 kubectl get pods --no-headers -o custom-columns=":metadata.name" # nginx

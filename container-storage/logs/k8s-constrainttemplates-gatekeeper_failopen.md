@@ -1,0 +1,2 @@
+- https://learn.microsoft.com/en-us/azure/governance/policy/troubleshoot/general#scenario-kubernetes-resource-gets-created-during-connectivity-failure-despite-deny-policy-being-assigned: In the event of a Kubernetes cluster connectivity failure, evaluation for newly created or updated resources may be bypassed due to Gatekeeper's fail-open behavior.
+- https://open-policy-agent.github.io/gatekeeper/website/docs/failing-closed/#considerations

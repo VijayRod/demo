@@ -1,0 +1,7 @@
+- https://learn.microsoft.com/en-us/azure/virtual-network/virtual-networks-name-resolution-for-vms-and-role-instances?tabs=redhat#specify-dns-servers: If you change the DNS settings for a virtual network or virtual machine that is already deployed, for the new DNS settings to take effect, you must perform a DHCP lease renewal on all affected VMs in the virtual network. For VMs running the Windows OS, you can do this by typing ipconfig /renew directly in the VM. (Restarting the Azure VMs and resources would also work.)
+- https://learn.microsoft.com/en-us/azure/virtual-network/virtual-networks-faq#name-resolution-dns: If you change your DNS server list, you need to perform a DHCP lease renewal on all affected VMs in the virtual network...
+- https://github.com/MicrosoftDocs/azure-docs/issues/19779: "If you change the DNS settings for a virtual network or virtual machine that is already deployed, you need to restart each affected VM for the changes to take effect."
+- https://github.com/MicrosoftDocs/azure-docs/issues/68652: Release/Renew in Linux distributions Is little bit tricky as you might lose current SSH connection. So, here are the commands that should be run on the same line to avoid this issue. 
+sudo dhclient -r && sudo dhclient 
+Also, if you have more than one interface then use the below command to choose the right interface for renewal,
+sudo dhclient -r eth0 && sudo dhclient eth0 

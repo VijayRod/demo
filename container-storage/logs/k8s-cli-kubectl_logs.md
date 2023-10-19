@@ -7,8 +7,11 @@ kubectl run nginx --image=nginx
 
 kubectl logs nginx --tail=10 # Show the last 10 lines of logs
 kubectl logs nginx --timestamps=true
-kubectl logs nginx --since=1h
+kubectl logs nginx --since=1h # 30s 10m
 kubectl logs nginx --previous # Show previous container logs if the pod still exists
+kubectl logs nginx -c nginx
+kubectl logs nginx -f # follow/stream
+kubectl attach nginx
 ```
 
 ```
@@ -44,3 +47,4 @@ CONTAINER           IMAGE               CREATED             STATE               
 - https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#logs
 - https://github.com/kubernetes/kubernetes/blob/master/staging/src/k8s.io/kubectl/pkg/cmd/logs/logs.go
 - https://stackoverflow.com/questions/47915287/where-are-kubernetes-pods-logfiles
+- https://kubernetes.io/docs/reference/kubectl/cheatsheet/#interacting-with-running-pods: kubectl logs

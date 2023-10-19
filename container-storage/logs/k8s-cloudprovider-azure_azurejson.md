@@ -1,4 +1,5 @@
 
+Unlike a managed identity, the JSON file for a cluster created with a service principal includes the aadClientSecret, so make sure the secret is not shared.
 
 ```
 root@aks-nodepool1-16663898-vmss000001:/# cat /etc/kubernetes/azure.json
@@ -7,6 +8,7 @@ root@aks-nodepool1-16663898-vmss000001:/# cat /etc/kubernetes/azure.json
     "tenantId": "redactt-1111-1111-1111-111111111111",
     "subscriptionId": "redacts-1111-1111-1111-111111111111",
     "aadClientId": "msi",
+    "aadClientSecret": "msi",
 ...
 
 kubectl exec -it -n kube-system csi-azuredisk-node-grlf2 -c azuredisk -- cat /etc/kubernetes/azure.json # On Windows, use "type c:\k\azure.json"

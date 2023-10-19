@@ -1,0 +1,5 @@
+- https://github.com/linkerd/linkerd2
+- https://learn.microsoft.com/en-us/azure/aks/servicemesh-about: Linkerd
+- https://learn.microsoft.com/en-us/shows/azure-friday/60-seconds-to-a-linkerd-service-mesh-on-aks
+- https://linkerd.io/2/tasks
+- https://linkerd.io/getting-started/

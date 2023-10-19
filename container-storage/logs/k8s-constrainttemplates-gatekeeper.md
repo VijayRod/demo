@@ -41,3 +41,5 @@ providers.externaldata.gatekeeper.sh                 2023-10-03T20:29:13Z
 ```
 
 - https://open-policy-agent.github.io/gatekeeper/website/docs/install
+- https://open-policy-agent.github.io/gatekeeper/website/docs/debug
+- https://learn.microsoft.com/en-us/azure/architecture/aws-professional/eks-to-aks/governance#gatekeeper

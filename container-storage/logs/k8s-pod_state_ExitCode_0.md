@@ -1,0 +1,2 @@
+- https://www.datree.io/resources/kubernetes-error-codes-crashloopbackoff: an exit status of “0” means that the container exited normally
+- https://stackoverflow.com/questions/61836061/pod-terminated-with-reason-error-and-exit-code-1: exit code 0 means completed

@@ -19,3 +19,7 @@ az acr delete -g $rg -n $acr -y
 ```
 
 - https://learn.microsoft.com/en-us/azure/container-registry/container-registry-health-error-reference
+- https://learn.microsoft.com/en-us/azure/container-registry/container-registry-check-health
+- https://learn.microsoft.com/en-us/rest/api/containerregistry/
+- https://docs.microsoft.com/en-us/rest/api/containerregistry/registries/checknameavailability
+- https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/resource-name-rules#microsoftcontainerregistry

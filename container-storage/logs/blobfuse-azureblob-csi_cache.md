@@ -1,0 +1,1 @@
+- https://github.com/Azure/azure-storage-fuse: --disable-writeback-cache=true: Disallow libfuse to buffer write requests if you must strictly open files in O_WRONLY or O_APPEND mode (--disable-writeback-cache=true for improved file listing latency)

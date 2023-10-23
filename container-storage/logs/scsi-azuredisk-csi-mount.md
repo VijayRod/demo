@@ -133,3 +133,4 @@ kubectl delete pvc pvc-azuredisk
 - https://learn.microsoft.com/en-us/azure/virtual-machines/disks-shared: VMs in the cluster can read or write to their attached disk based on the reservation chosen by the clustered application using SCSI Persistent Reservations (SCSI PR).
 - https://learn.microsoft.com/en-us/azure/aks/concepts-storage#azure-disk
 - https://cloud-provider-azure.sigs.k8s.io/faq/known-issues/azuredisk/
+- https://github.com/andyzhangx/demo/blob/master/linux/azuredisk/azuredisk-attachment-debugging.md#3-log-on-agent-node-and-check-device-info

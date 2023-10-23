@@ -1,0 +1,1 @@
+- https://github.com/andyzhangx/demo/blob/master/issues/azuredisk-issues.md#18-detach-azure-disk-make-vm-run-into-a-limbo-state: fix this issue by retry update VM if detach disk partially fail. az vmss update-instances -g <RESOURCE_GROUP_NAME> --name <VMSS_NAME> --instance-id <ID(number)>

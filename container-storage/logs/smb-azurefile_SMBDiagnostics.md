@@ -18,4 +18,12 @@ ls ./output
 # cifs_diag.txt  cifs_dmesg  cifs_trace  os_details.txt
 ```
 
+```
+./smbclientlogs.sh start CaptureNetwork # Now repro the issue. Use Ctrl+C to stop the script
+./smbclientlogs.sh stop # TBD
+ls output.zip
+ls ./output
+# cifs_diag.txt  cifs_dmesg  cifs_trace  cifs_traffic.pcap  os_details.txt
+```
+
 - https://github.com/Azure-Samples/azure-files-samples/tree/master/SMBDiagnostics

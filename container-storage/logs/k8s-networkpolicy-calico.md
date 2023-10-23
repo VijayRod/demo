@@ -29,7 +29,17 @@ replicaset.apps/calico-kube-controllers-74cbcf688c   1         1         1      
 replicaset.apps/calico-typha-7cb9cff6c4              1         1         1       3h32m   app.kubernetes.io/name=calico-typha,k8s-app=calico-typha,pod-template-hash=7cb9cff6c4
 ```
 
+```
+# Calico pods will be unavailable for a few seconds until they are automatically recreated
+kubectl delete deploy -n calico-system calico-kube-controllers
+kubectl delete deploy -n calico-system calico-typha
+kubectl delete ds -n calico-system calico-node
+kubectl delete ds -n calico-system calico-windows-upgrade
+```
+
 - https://docs.tigera.io/calico/latest/getting-started/kubernetes/managed-public-cloud/aks
 - https://github.com/projectcalico/calico
 - https://learn.microsoft.com/en-us/azure/aks/use-network-policies#differences-between-azure-network-policy-manager-and-calico-network-policy-and-their-capabilities
 - https://www.tigera.io/tigera-products/calico/: Calico Open Source offers a choice of data planes, including a pure Linux eBPF data plane
+- https://azure.microsoft.com/en-us/blog/integrating-azure-cni-and-calico-a-technical-deep-dive/
+- https://techcommunity.microsoft.com/t5/azure-developer-community-blog/7-security-best-practices-for-managing-containerized-workloads/ba-p/3786506

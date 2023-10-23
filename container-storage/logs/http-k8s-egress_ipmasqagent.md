@@ -4,3 +4,4 @@
 - https://cloud.google.com/kubernetes-engine/docs/concepts/ip-masquerade-agent
 - https://github.com/kubernetes-sigs/ip-masq-agent
 - https://learn.microsoft.com/en-us/azure/aks/azure-cni-overlay: azure-ip-masq-agent
+- https://stevegriffith.nyc/posts/aks-cni-calico-ipmasq/

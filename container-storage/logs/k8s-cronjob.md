@@ -62,3 +62,4 @@ Hello from the Kubernetes cluster
 - https://kubernetes.io/blog/2021/04/09/kubernetes-release-1.21-cronjob-ga/
 - https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/: If the .spec.startingDeadlineSeconds field is set (not null), the CronJob controller measures the time between when a job is expected to be created and now. If the difference is higher than that limit, it will skip this execution.
 - https://kubernetes.io/docs/tasks/job/automated-tasks-with-cron-jobs/
+- https://kubernetes.io/docs/concepts/workloads/controllers/job/: If you want to run a Job (either a single task, or several in parallel) on a schedule, see CronJob.

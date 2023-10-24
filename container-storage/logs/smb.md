@@ -2,3 +2,4 @@
 - https://stackoverflow.com/questions/tagged/SMB
 - https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-smb/f210069c-7086-4dc2-885e-861d837df688: [MS-SMB]: Server Message Block (SMB) Protocol
 - https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-smb2/5606ad47-5ee0-437a-817e-70c366052962: [MS-SMB2]: Server Message Block (SMB) Protocol Versions 2 and 3
+- https://github.com/TalAloni/SMBLibrary/tree/master

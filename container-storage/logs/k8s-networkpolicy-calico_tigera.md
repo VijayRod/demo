@@ -3,3 +3,5 @@
 - https://www.tigera.io/learn/guides/cloud-native-security/CNAPP/
 - https://github.com/tigera/operator/releases: Included Calico versions
 - https://github.com/Azure/AKS/issues/3394#issuecomment-1405385197: Tigera-Operator (is bumped to 1.28 in AKS 1.25,) which deploys calico (3.24.0)
+- https://github.com/tigera/operator/blob/master/main.go
+- https://github.com/tigera/operator/blob/master/README.md

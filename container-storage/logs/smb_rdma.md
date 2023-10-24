@@ -1,0 +1,1 @@
+- https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-smbd/1ca5f4ae-e5b1-493d-b87d-f4464325e6e3: [MS-SMBD]: SMB2 Remote Direct Memory Access (RDMA) Transport Protocol

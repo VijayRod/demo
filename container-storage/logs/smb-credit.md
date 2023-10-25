@@ -4,3 +4,4 @@
 - https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-smb2/2e366edb-b006-47e7-aa94-ef6f71043ced: 3.3.1.2 Algorithm for the Granting of Credits
 - https://community.netapp.com/t5/Network-and-Storage-Protocols/How-does-SMB-Credits-actually-work-on-ONTAP/m-p/153113: I see that similar option was available in SMB_1 as well (max sessions per tcp connection) and in SMB_2, the word 'credit' is coined...
 - https://learn.microsoft.com/en-us/windows-server/administration/performance-tuning/role/file-server/smb-file-server#tuning-parameters-for-smb-file-servers: credit
+- https://github.com/multipath-tcp/mptcp/blob/mptcp_v0.96/fs/cifs/transport.c: wait_for_free_credits

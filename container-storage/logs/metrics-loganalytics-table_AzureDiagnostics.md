@@ -2,6 +2,7 @@
 AzureDiagnostics
 | where TimeGenerated>ago(1d)
 | summarize count() by Category,_ResourceId
+| where count_>1000000
 | order by count_ desc
 
 AzureDiagnostics

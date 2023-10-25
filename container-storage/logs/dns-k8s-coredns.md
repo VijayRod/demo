@@ -1,3 +1,5 @@
+- https://kubernetes.io/docs/tasks/access-application-cluster/configure-dns-cluster/: CoreDNS is recommended and is installed by default with kubeadm
 - https://kubernetes.io/docs/tasks/administer-cluster/dns-debugging-resolution/
 - https://coredns.io/plugins/
 - https://www.tkng.io/dns/
+- - https://github.com/kubernetes/dns: repository for Kubernetes DNS(kube-dns and nodelocaldns)

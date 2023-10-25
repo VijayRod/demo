@@ -5,3 +5,7 @@
 - https://github.com/TalAloni/SMBLibrary/tree/master
 - https://learn.microsoft.com/en-us/windows-server/storage/file-server/troubleshoot/troubleshooting-smb
 - https://learn.microsoft.com/en-us/windows-server/storage/file-server/troubleshoot/smb-known-issues
+<br>
+
+- https://github.com/torvalds/linux/tree/master/fs/smb
+- https://github.com/multipath-tcp/mptcp/blob/mptcp_v0.96/fs/cifs

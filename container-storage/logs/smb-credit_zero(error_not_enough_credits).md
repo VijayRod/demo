@@ -1,0 +1,2 @@
+- https://github.com/TalAloni/SMBLibrary/issues/42: Is there a proper way to handle Not Enough Credits as a client?
+- https://stackoverflow.com/questions/44299856/what-happens-when-a-client-reaches-zero-credits-in-smb2

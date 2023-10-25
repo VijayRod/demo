@@ -2,4 +2,4 @@
 - https://kubernetes.io/docs/tasks/administer-cluster/dns-debugging-resolution/
 - https://coredns.io/plugins/
 - https://www.tkng.io/dns/
-- - https://github.com/kubernetes/dns: repository for Kubernetes DNS(kube-dns and nodelocaldns)
+- https://github.com/kubernetes/dns: repository for Kubernetes DNS(kube-dns and nodelocaldns)

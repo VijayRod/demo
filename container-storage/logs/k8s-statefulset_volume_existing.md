@@ -1,0 +1,1 @@
+- https://github.com/Azure/AKS/issues/3169#issuecomment-1234108587: example about how to use existing volumes in statefulset

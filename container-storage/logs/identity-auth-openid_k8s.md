@@ -85,3 +85,7 @@ kubectl logs quick-start
 kubectl delete po quick-start
 kubectl delete sa ${SERVICE_ACCOUNT_NAME} -n ${SERVICE_ACCOUNT_NAMESPACE}
 ```
+
+- https://learn.microsoft.com/en-us/azure/aks/learn/tutorial-kubernetes-workload-identity
+- https://azure.microsoft.com/en-us/updates/aksmanaged-azure-active-directory-support-is-now-generally-available
+- https://learn.microsoft.com/en-us/azure/aks/managed-azure-ad

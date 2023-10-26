@@ -1,0 +1,1 @@
+- https://learn.microsoft.com/en-us/azure/azure-monitor/containers/container-insights-cost-config?tabs=create-CLI: az aks enable-addons -a monitoring --data-collection-settings dataCollectionSettings.json

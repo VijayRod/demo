@@ -17,3 +17,4 @@ ContainerLogV2
 
 - https://learn.microsoft.com/en-us/azure/azure-monitor/reference/tables/containerlogv2
 - https://learn.microsoft.com/en-us/azure/azure-monitor/containers/container-insights-logging-v2?tabs=configure-portal
+- https://learn.microsoft.com/en-us/azure/azure-monitor/containers/container-insights-v2-migration

@@ -1,0 +1,1 @@
+- https://learn.microsoft.com/en-us/azure/azure-monitor/essentials/private-link-data-ingestion

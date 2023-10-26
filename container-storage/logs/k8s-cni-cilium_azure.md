@@ -10,6 +10,19 @@ az aks show -g $rg -n aks --query networkProfile.networkDataplane # cilium
 az aks show -g $rg -n aks --query networkProfile.networkPlugin # azure
 az aks show -g $rg -n aks --query networkProfile.networkPluginMode # overlay
 az aks show -g $rg -n aks --query networkProfile.networkPolicy # cilium
+
+kubectl get po -n kube-system --show-labels
+NAME                                  READY   STATUS    RESTARTS   AGE     LABELS
+cilium-l7dhk                          1/1     Running   0          3m39s   controller-revision-hash=6c49c64c6f,k8s-app=cilium,kubernetes.azure.com/ebpf-dataplane=cilium,pod-template-generation=1
+cilium-operator-8cff7865b-g96jk       1/1     Running   0          3m39s   io.cilium/app=operator,kubernetes.azure.com/ebpf-dataplane=cilium,name=cilium-operator,pod-template-hash=8cff7865b
+
+kubectl get all -n kube-system -l kubernetes.azure.com/ebpf-dataplane=cilium
+NAME                                  READY   STATUS    RESTARTS   AGE
+pod/cilium-l7dhk                      1/1     Running   0          5m6s
+pod/cilium-operator-8cff7865b-g96jk   1/1     Running   0          5m6s
+
+NAME                                        DESIRED   CURRENT   READY   AGE
+replicaset.apps/cilium-operator-8cff7865b   1         1         1       5m6s
 ```
 
 - https://techcommunity.microsoft.com/t5/azure-networking-blog/azure-cni-powered-by-cilium-for-azure-kubernetes-service-aks/ba-p/3662341: Cilium eBPF

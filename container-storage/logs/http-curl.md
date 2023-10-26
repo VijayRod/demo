@@ -13,6 +13,12 @@ Date: Mon, 02 Oct 2023 22:51:19 GMT
 Expires: Wed, 01 Nov 2023 22:51:19 GMT
 Cache-Control: public, max-age=2592000
 Server: gws
+
+time curl -I google.com
+...
+real    0m0.199s
+user    0m0.019s
+sys     0m0.010s
 ```
 
 - https://curl.se/docs/manual.html

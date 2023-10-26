@@ -17,7 +17,19 @@ ContainerLog
 | where ContainerID in (ids2)
 | where TimeGenerated==date_before_issue or TimeGenerated==date_during_issue
 | project TimeGenerated,ContainerID,_BilledSize
-| order by ContainerID asc 
+| order by ContainerID asc
+
+KubePodInventory
+| distinct ContainerID, Namespace
+| join
+(
+    ContainerLog
+)
+on ContainerID
+| summarize count() by bin(TimeGenerated, 2h), Namespace
+| sort by  Namespace asc, TimeGenerated asc
 ```
 
 - https://learn.microsoft.com/en-us/azure/azure-monitor/reference/tables/containerlog
+- https://learn.microsoft.com/en-us/azure/azure-monitor/containers/container-insights-agent-config#data-collection-settings: [log_collection_settings.stdout] exclude_namespaces =
+- https://learn.microsoft.com/en-us/azure/azure-monitor/containers/container-insights-v2-migration

@@ -10,5 +10,6 @@ az resource show -g $rg -n myAzureMonitor --resource-type "Microsoft.Monitor/acc
 https://myazuremonitor-d3dp.eastus.prometheus.monitor.azure.com
 ```
 
+- https://kubernetes.io/docs/concepts/cluster-administration/system-metrics/: Kubernetes components emit metrics in Prometheus format
 - https://learn.microsoft.com/en-Us/azure/azure-monitor/essentials/prometheus-metrics-overview
 - https://prometheus.io/docs/introduction/overview/

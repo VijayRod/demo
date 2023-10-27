@@ -1,0 +1,2 @@
+- https://learn.microsoft.com/en-us/azure/aks/node-problem-detector
+- https://github.com/kubernetes/node-problem-detector

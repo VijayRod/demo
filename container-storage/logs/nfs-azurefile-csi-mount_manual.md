@@ -36,7 +36,8 @@ listening on eth0, link-type EN10MB (Ethernet), snapshot length 262144 bytes
 20:48:21.175232 IP aks-nodepool1-37919900-vmss000000.internal.cloudapp.net.950 > 20.60.79.8.nfs: Flags [.], ack 1, win 502, options [nop,nop,TS val 1091040520 ecr 2847102204], length 0
 20:48:21.176182 IP aks-nodepool1-37919900-vmss000000.internal.cloudapp.net.950 > 20.60.79.8.nfs: Flags [P.], seq 1:45, ack 1, win 502, options [nop,nop,TS val 1091040521 ecr 2847102204], length 44: NFS request xid 2700744278 40 null
 20:48:21.176832 IP 20.60.79.8.nfs > aks-nodepool1-37919900-vmss000000.internal.cloudapp.net.950: Flags [P.], seq 1:29, ack 45, win 16384, options [nop,nop,TS val 2847102206 ecr 1091040521], length 28: NFS reply xid 2700744278 reply ok 24 null
-...
+```
 
 - https://github.com/kubernetes-sigs/azurefile-csi-driver/blob/master/docs/csi-debug.md#smb: NFS
 - https://www.systutorials.com/how-to-set-up-and-configure-nfs-server-and-clients/: NFS debugging tips
+- https://linux.die.net/man/5/nfs

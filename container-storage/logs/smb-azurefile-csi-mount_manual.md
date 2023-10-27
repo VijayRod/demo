@@ -9,3 +9,4 @@ umount /tmp/test
 ```
 
 - https://github.com/kubernetes-sigs/azurefile-csi-driver/blob/master/docs/csi-debug.md#smb
+- https://linux.die.net/man/8/mount.cifs

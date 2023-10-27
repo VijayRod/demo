@@ -15,3 +15,4 @@ az aks nodepool delete -g $rg --cluster-name aks -n np2 --no-wait
 - https://learn.microsoft.com/en-us/azure/architecture/guide/multitenant/service/aks
 - https://learn.microsoft.com/en-us/rest/api/aks/managed-clusters/create-or-update?tabs=HTTP#examples
 - https://learn.microsoft.com/en-us/training/paths/aks-cluster-architecture/
+- https://cloudacademy.com/course/introduction-to-aks-954/course-introduction/

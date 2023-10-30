@@ -1,0 +1,3 @@
+- https://jwt.io/
+- https://datatracker.ietf.org/doc/html/rfc7519: JSON Web Token (JWT)
+- https://www.freecodecamp.org/news/how-to-sign-and-validate-json-web-tokens/: The header segment is base 64 URL encoded

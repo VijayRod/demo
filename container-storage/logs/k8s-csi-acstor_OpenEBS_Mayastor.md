@@ -1,0 +1,3 @@
+- https://github.com/openebs/mayastor
+- https://mayastor.gitbook.io/introduction/
+- https://openebs.io/docs/concepts/mayastor: Mayastor is a progressive sub-project of the CNCF (Cloud Native Computing Foundation) Open Source initiative OpenEBS.

@@ -1,0 +1,1 @@
+- https://auth0.com/docs/secure/tokens/id-tokens: As with other JWTs, you should follow token usage best practices when using and storing ID tokens.

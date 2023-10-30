@@ -2,7 +2,7 @@ This uses steps in https://learn.microsoft.com/en-us/azure/aks/learn/tutorial-ku
 
 ```
 # To export environmental variables
-export RESOURCE_GROUP=
+export RESOURCE_GROUP=$rg
 export LOCATION="westcentralus" # "For az identity federated-credential create" error "(MethodNotAllowed) The request format was unexpected : Support for federated identity credentials not enabled", refer https://learn.microsoft.com/en-us/azure/active-directory/workload-identities/workload-identity-federation-considerations#unsupported-regions-user-assigned-managed-identities
 export SERVICE_ACCOUNT_NAMESPACE="default"
 export SERVICE_ACCOUNT_NAME="workload-identity-sa"
@@ -72,8 +72,30 @@ EOF
 ```
 
 ```
+az aks show -g $rg -n akswork --query oidcIssuerProfile
+The behavior of this command has been altered by the following extension: aks-preview
+{
+  "enabled": true,
+  "issuerUrl": "https://westcentralus.oic.prod-aks.azure.com/redactt-1111-1111-1111-111111111111/redacti-1111-1111-1111-111111111111/"
+}
+
+az aks show -g $rg -n akswork --query securityProfile.workloadIdentity
+The behavior of this command has been altered by the following extension: aks-preview
+{
+  "enabled": true
+}
+
 # To check whether all properties are injected properly with the webhook
 kubectl describe pod quick-start
+    Environment:
+      KEYVAULT_URL:                https://azwi-kv-work15212.vault.azure.net/
+      SECRET_NAME:                 my-secret
+      AZURE_CLIENT_ID:             redacti-1111-1111-1111-111111111111
+      AZURE_TENANT_ID:             redactt-1111-1111-1111-111111111111
+      AZURE_FEDERATED_TOKEN_FILE:  /var/run/secrets/azure/tokens/azure-identity-token
+      AZURE_AUTHORITY_HOST:        https://login.microsoftonline.com/
+    Mounts:
+      /var/run/secrets/azure/tokens from azure-identity-token (ro)
 
 # To verify the pod can get a token and access the secret from the Key Vault
 # Sample output - I1013 22:49:29.872708       1 main.go:30] "successfully got secret" secret="Hello!"
@@ -87,3 +109,4 @@ kubectl delete sa ${SERVICE_ACCOUNT_NAME} -n ${SERVICE_ACCOUNT_NAMESPACE}
 ```
 
 - https://learn.microsoft.com/en-us/azure/aks/learn/tutorial-kubernetes-workload-identity
+- https://azure.github.io/azure-workload-identity/docs/installation/managed-clusters.html

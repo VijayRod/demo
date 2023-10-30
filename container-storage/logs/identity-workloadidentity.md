@@ -1,2 +1,3 @@
 - https://learn.microsoft.com/en-us/azure/active-directory/workload-identities/workload-identities-overview: A workload identity is an identity you assign to a software workload (such as an application, service, script, or container) to authenticate and access other services and resources. 
 - https://learn.microsoft.com/en-us/azure/active-directory/workload-identities/workload-identity-federation: You can only use managed identities, however, for software workloads running in Azure. For a software workload running outside of Azure...
+- https://learn.microsoft.com/en-us/entra/workload-id/workload-identity-federation: validates the external token against the OpenID Connect (OIDC) issuer URL

@@ -1,0 +1,2 @@
+- https://learn.microsoft.com/en-us/azure/storage/container-storage/container-storage-introduction
+- https://github.com/Azure-Samples/azure-container-storage-samples

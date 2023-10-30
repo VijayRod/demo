@@ -1,0 +1,2 @@
+- https://auth0.com/docs/secure/tokens/access-tokens: JSON Web Token (JWT) access tokens conform to the JWT standard
+- https://auth0.com/docs/authenticate/login/oidc-conformant-authentication/oidc-adoption-access-tokens: all APIs should be secured with access tokens instead of ID tokens

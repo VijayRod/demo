@@ -1,0 +1,2 @@
+- https://openid.net/developers/how-connect-works/: The OP responds with an Identity Token and usually an Access Token
+- https://developer.okta.com/blog/2017/07/25/oidc-primer-part-1: OIDC has both access tokens and ID tokens. An ID token must be JSON web token (JWT). the specification dictates the token format

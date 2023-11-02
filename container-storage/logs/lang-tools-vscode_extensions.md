@@ -1,0 +1,1 @@
+- azurepolicy: https://learn.microsoft.com/en-us/azure/governance/policy/how-to/extension-for-vscode

@@ -1,0 +1,2 @@
+- https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/azure-subscription-service-limits#azure-policy-limits
+- https://learn.microsoft.com/en-us/azure/governance/policy/concepts/definition-structure#policy-rule-limits

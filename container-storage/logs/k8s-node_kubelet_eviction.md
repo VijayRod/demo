@@ -1,0 +1,1 @@
+- https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/

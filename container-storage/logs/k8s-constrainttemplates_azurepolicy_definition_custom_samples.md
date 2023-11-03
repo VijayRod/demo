@@ -1,0 +1,4 @@
+- https://learn.microsoft.com/en-us/azure/governance/policy/samples/
+- https://github.com/Azure/azure-policy/tree/master/samples/KubernetesService
+- https://techcommunity.microsoft.com/t5/azure-governance-and-management/azure-policy-for-kubernetes-releases-support-for-custom-policy/ba-p/2699466
+- https://learn.microsoft.com/en-us/azure/governance/policy/tutorials/create-custom-policy-definition

@@ -1,0 +1,1 @@
+- https://learn.microsoft.com/en-in/azure/governance/policy/how-to/determine-non-compliance#aks-resource-provider-mode-compliance-reasons

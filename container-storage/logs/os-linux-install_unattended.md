@@ -32,3 +32,4 @@ tail /var/log/dpkg.log
 - https://askubuntu.com/questions/916722/how-to-verify-that-unattended-upgrades-are-enabled
 - https://learn.microsoft.com/en-us/azure/aks/auto-upgrade-cluster
 - https://learn.microsoft.com/en-us/azure/aks/concepts-vulnerability-management#linux-nodes
+- https://unix.stackexchange.com/questions/331840/where-to-find-logs-information-about-unattended-upgrades-apt: /var/log/unattended-upgrades/unattended-upgrades.log

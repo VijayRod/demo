@@ -1,0 +1,1 @@
+- https://learn.microsoft.com/en-us/azure/role-based-access-control/conditions-role-assignments-cli

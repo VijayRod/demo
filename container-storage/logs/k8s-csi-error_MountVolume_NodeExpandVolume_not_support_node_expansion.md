@@ -1,0 +1,1 @@
+- https://github.com/kubernetes-sigs/azurefile-csi-driver/issues/573: MountVolume.NodeExpandVolume failed : Expander.NodeExpand found CSI plugin kubernetes.io/csi/file.csi.azure.com to not support node expansion. you should resize pvc instead of pv

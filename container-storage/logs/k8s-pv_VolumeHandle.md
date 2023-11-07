@@ -15,3 +15,4 @@ I0914 10:36:55.796684       1 utils.go:78] GRPC request: {"publish_context":{"LU
 - https://kubernetes.io/docs/concepts/storage/volumes/: volumeHandle: A string value...
 - https://kubernetes.io/docs/concepts/storage/persistent-volumes/: VolumeHandle:      44830fa8-79b4-406b-8b58-621ba25353fd
 - https://kubernetes.io/blog/2019/01/15/container-storage-interface-ga/: volumeHandle: existingVolumeName
+- https://github.com/kubernetes-sigs/azurefile-csi-driver/blob/master/pkg/azurefile/azurefile.go: get file share info according to volume id

@@ -8,7 +8,8 @@ subId=$(az account show --query id -otsv)
 assignmentScope="/subscriptions/$subId/resourceGroups/$assignmentResourceGroupName" ## An alternate scope is "/subscriptions/$subId".
 
 # To create a role assignment.
-az role assignment create --assignee $objectId --role "Contributor" --scope $assignmentScope
+az role assignment create --role "Contributor" --assignee $objectId --scope $assignmentScope
+az role assignment create --role "Owner" --scope $id --assignee $email # Scope can be a specific resource URI such as that of an AKS cluster
 
 # To list a role assignment.
 az role assignment list --assignee $objectId --scope $assignmentScope

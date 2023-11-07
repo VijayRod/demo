@@ -1,0 +1,2 @@
+- https://access.redhat.com/documentation/en-us/openshift_container_platform/ (Product Documentation)
+- https://learn.microsoft.com/en-us/azure/openshift/intro-openshift

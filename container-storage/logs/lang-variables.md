@@ -1,0 +1,4 @@
+- https://www.brainstobytes.com/writing-good-variable-names/
+- https://www.rithmschool.com/good-ideas-for-better-variable-names/
+- https://spin.atomicobject.com/2017/11/01/good-variable-names/
+- https://variablenames.com/

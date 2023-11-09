@@ -7,3 +7,4 @@ az aks get-upgrades -g $rg -n aks -otable
 - https://learn.microsoft.com/en-us/azure/aks/release-tracker
 - https://learn.microsoft.com/en-us/azure/aks/supported-kubernetes-versions
 - https://releases.aks.azure.com/
+- https://kubernetes.io/releases/

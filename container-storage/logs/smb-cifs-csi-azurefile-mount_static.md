@@ -2,31 +2,22 @@ This follows the steps in the link https://learn.microsoft.com/en-us/azure/aks/a
 
 ```
 # Replace the below with appropriate values.
-rgname=
-clustername=aks
-storageAccountName="mystorageacct$RANDOM"
-shareName=aksshare
-```
+rg=rg
+storage="mystorageacct$RANDOM"
+share=aksshare
+az group create -n $rg -l $loc
+az aks create -g $rg -n aks -s $vmsize -c 1
+az aks get-credentials -g $rg -n aks --overwrite-existing
 
-```
-# Retrieve the node resource group name for the cluster.
-noderg=$(az aks show --resource-group $rgname --name $clustername --query nodeResourceGroup -o tsv)
+noderg=$(az aks show -g $rg -n aks --query nodeResourceGroup -o tsv)
+az storage account create -g $noderg -n $storage --sku Premium_LRS --kind FileStorage --enable-large-file-share --output none
+export AZURE_STORAGE_CONNECTION_STRING=$(az storage account show-connection-string -g $noderg -n $storage -o tsv)
+key=$(az storage account keys list -g $noderg --account-name $storage --query "[0].value" -o tsv)
+echo Storage account key: $key
+az storage share create -n $share --connection-string $AZURE_STORAGE_CONNECTION_STRING
 
-# Create the storage account.
-az storage account create -g $noderg -n $storageAccountName --sku Premium_LRS --kind FileStorage --enable-large-file-share --output none
-export AZURE_STORAGE_CONNECTION_STRING=$(az storage account show-connection-string -g $noderg -n $storageAccountName -o tsv)
-STORAGE_KEY=$(az storage account keys list -g $noderg --account-name $storageAccountName --query "[0].value" -o tsv)
-echo Storage account key: $STORAGE_KEY
+kubectl create secret generic azure-secret --from-literal=azurestorageaccountname=$storage --from-literal=azurestorageaccountkey=$key
 
-# Create the file share.
-az storage share create -n $shareName --connection-string $AZURE_STORAGE_CONNECTION_STRING
-```
-
-```
-# Create the kubernetes secret.
-kubectl create secret generic azure-secret --from-literal=azurestorageaccountname=$storageAccountName --from-literal=azurestorageaccountkey=$STORAGE_KEY
-
-# Create the kubernetes static persistent volume, persistent volume claim, and pod.
 cat << EOF | kubectl apply -f -
 apiVersion: v1
 kind: PersistentVolume
@@ -47,7 +38,7 @@ spec:
     volumeHandle: id123456  # make sure this volumeid is unique for every identical share in the cluster
     volumeAttributes:
       resourceGroup: $noderg  # optional, only set this when storage account is not in the same resource group as node
-      shareName: $shareName
+      shareName: $share
     nodeStageSecretRef:
       name: azure-secret
       namespace: default

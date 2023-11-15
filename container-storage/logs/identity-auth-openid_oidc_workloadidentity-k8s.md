@@ -31,6 +31,14 @@ azure-wi-webhook-controller-manager-6bbb89cc55   2         2         2       34m
 kubectl get mutatingwebhookconfigurations -l azure-workload-identity.io/system=true
 NAME                                              WEBHOOKS   AGE
 azure-wi-webhook-mutating-webhook-configuration   1          35m
+
+kubectl get deploy -n kube-system -l azure-workload-identity.io/system=true
+NAME                                  READY   UP-TO-DATE   AVAILABLE   AGE
+azure-wi-webhook-controller-manager   2/2     2            2           5m20s
+
+kubectl get ep -n kube-system -l azure-workload-identity.io/system=true
+NAME                               ENDPOINTS                         AGE
+azure-wi-webhook-webhook-service   10.244.0.8:9443,10.244.0.9:9443   6m32s
 ```
 
 - https://learn.microsoft.com/en-us/azure/aks/workload-identity-overview?tabs=dotnet

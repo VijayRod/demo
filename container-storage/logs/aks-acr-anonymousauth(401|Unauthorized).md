@@ -61,3 +61,6 @@ Events:
 
 - https://learn.microsoft.com/en-us/azure/container-registry/container-registry-faq#how-do-i-enable-anonymous-pull-access-
 - https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/cannot-pull-image-from-acr-to-aks-cluster#cause-1-401-unauthorized-error
+- https://docs.datadoghq.com/security/default_rules/cis-kubernetes-1.5.1-4.2.1/: API server anonymous-auth argument is set to false. Kubelet server. /kubelet.service.d/10-kubeadm.conf on each worker node. --anonymous-auth=false
+- https://github.com/Azure/AKS/blob/master/examples/kubelet/enable-anonymous-auth-for-non-rbac.yaml
+- https://kubernetes.io/docs/reference/config-api/kubelet-config.v1beta1/: Kubelet's server. Defaults: anonymous

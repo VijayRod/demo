@@ -1,1 +1,3 @@
 - https://azure.microsoft.com/en-us/explore/global-infrastructure/products-by-region/
+- https://aka.ms/aks/vm-size-selector
+- https://azure.microsoft.com/en-us/pricing/vm-selector/

@@ -1,0 +1,3 @@
+- https://learn.microsoft.com/en-us/connectors/connector-reference/: The sub pages have limits and details for each connector
+- https://learn.microsoft.com/en-us/connectors/: Power Platform and Azure Logic Apps connectors documentation
+- https://learn.microsoft.com/en-us/azure/connectors/introduction

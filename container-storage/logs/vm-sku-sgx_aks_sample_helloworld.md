@@ -1,0 +1,1 @@
+- https://learn.microsoft.com/en-us/azure/confidential-computing/confidential-enclave-nodes-aks-get-started#deploy-hello-world-from-an-isolated-enclave-application-

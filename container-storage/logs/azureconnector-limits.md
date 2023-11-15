@@ -1,0 +1,2 @@
+- https://learn.microsoft.com/en-us/connectors/custom-connectors/faq
+- https://learn.microsoft.com/en-us/connectors/connector-reference/: The sub pages have limits and details for each connector

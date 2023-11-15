@@ -1,15 +1,29 @@
 This uses steps from https://learn.microsoft.com/en-us/azure/aks/use-azure-ad-pod-identity.
 
 ```
+rg=rgident
+az group create -n $rg -l $loc
+az aks create -g $rg -n aks --enable-pod-identity --network-plugin azure -s $vmsize -c 1
+# az aks update -g $rg -n aks --enable-pod-identity
+az aks get-credentials -g $rg -n aks --overwrite-existing
+
+az aks show -g $rg -n aks --query podIdentityProfile
+{
+  "allowNetworkPluginKubenet": false,
+  "enabled": true,
+  "userAssignedIdentities": null,
+  "userAssignedIdentityExceptions": null
+}
+```
+
+```
 # Replace the below with appropriate values
-rgname=
+rgname=$rg
 clustername=akskube
 export IDENTITY_RESOURCE_GROUP=$rgname
 export IDENTITY_NAME="application-identity"
 export SUBSCRIPTION_ID=$(az account show --query id -otsv)
-```
 
-```
 # To create an identity
 az identity create --resource-group ${IDENTITY_RESOURCE_GROUP} --name ${IDENTITY_NAME}
 export IDENTITY_CLIENT_ID="$(az identity show -g ${IDENTITY_RESOURCE_GROUP} -n ${IDENTITY_NAME} --query clientId -otsv)"

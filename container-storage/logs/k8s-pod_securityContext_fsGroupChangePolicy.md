@@ -115,3 +115,4 @@ kubectl logs -n kube-system -l app=csi-azurefile-node -c azurefile | tail
 - https://kubernetes.io/blog/2022/12/23/kubernetes-12-06-fsgroup-on-mount/
 - https://stackoverflow.com/questions/68079774/write-permissions-on-volume-mount-with-security-context-fsgroup-option
 - https://stackoverflow.com/questions/69805813/fsgroup-vs-supplementalgroups
+- https://github.com/kubernetes/kubernetes/blob/master/pkg/volume/volume_linux.go: SetVolumeOwnership. klog.Warningf("Setting volume ownership for %s and fsGroup set. If the volume has a lot of files then setting volume ownership could be slow, see https://github.com/kubernetes/kubernetes/issues/69699", dir)

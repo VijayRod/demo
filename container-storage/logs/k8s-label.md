@@ -18,4 +18,4 @@ sleep 20
 kubectl get po
 ```
 
-https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
+- https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/: "Valid label value"

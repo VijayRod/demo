@@ -27,18 +27,30 @@ No resources found in aks-istio-egress namespace.
 kubectl get all -n aks-istio-ingress
 No resources found in aks-istio-ingress namespace.
 
-k get all -n aks-istio-system
-NAME                                  READY   STATUS    RESTARTS   AGE
-pod/istiod-asm-1-17-cdb49b9bd-84sqk   1/1     Running   0          4m39s
-pod/istiod-asm-1-17-cdb49b9bd-hst9n   1/1     Running   0          4m54s
-NAME                      TYPE        CLUSTER-IP    EXTERNAL-IP   PORT(S)                                 AGE
-service/istiod-asm-1-17   ClusterIP   10.0.232.12   <none>        15010/TCP,15012/TCP,443/TCP,15014/TCP   4m54s
-NAME                              READY   UP-TO-DATE   AVAILABLE   AGE
-deployment.apps/istiod-asm-1-17   2/2     2            2           4m55s
-NAME                                        DESIRED   CURRENT   READY   AGE
-replicaset.apps/istiod-asm-1-17-cdb49b9bd   2         2         2       4m55s
-NAME                                                  REFERENCE                    TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
-horizontalpodautoscaler.autoscaling/istiod-asm-1-17   Deployment/istiod-asm-1-17   0%/80%    2         5         2          4m55s
+kubectl get all -n aks-istio-system --show-labels
+NAME                                   READY   STATUS    RESTARTS   AGE     LABELS
+pod/istiod-asm-1-17-67d689bdf8-bzz7z   1/1     Running   0          7m38s   app=istiod,install.operator.istio.io/owning-resource=unknown,istio.io/rev=asm-1-17,istio=istiod,kubernetes.azure.com/managedby=aks,operator.istio.io/component=Pilot,pod-template-hash=67d689bdf8,sidecar.istio.io/inject=false
+pod/istiod-asm-1-17-67d689bdf8-kf874   1/1     Running   0          7m23s   app=istiod,install.operator.istio.io/owning-resource=unknown,istio.io/rev=asm-1-17,istio=istiod,kubernetes.azure.com/managedby=aks,operator.istio.io/component=Pilot,pod-template-hash=67d689bdf8,sidecar.istio.io/inject=false
+
+NAME                      TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)                                 AGE     LABELS
+service/istiod-asm-1-17   ClusterIP   10.0.4.163   <none>        15010/TCP,15012/TCP,443/TCP,15014/TCP   7m38s   app.kubernetes.io/managed-by=Helm,app=istiod,helm.toolkit.fluxcd.io/name=azure-service-mesh-istio-discovery-helmrelease,helm.toolkit.fluxcd.io/namespace=6554954d660fc400012c5a60,install.operator.istio.io/owning-resource=unknown,istio.io/rev=asm-1-17,istio=pilot,operator.istio.io/component=Pilot,release=azure-service-mesh-istio-discovery
+
+NAME                              READY   UP-TO-DATE   AVAILABLE   AGE     LABELS
+deployment.apps/istiod-asm-1-17   2/2     2            2           7m39s   app.kubernetes.io/managed-by=Helm,app=istiod,helm.toolkit.fluxcd.io/name=azure-service-mesh-istio-discovery-helmrelease,helm.toolkit.fluxcd.io/namespace=6554954d660fc400012c5a60,install.operator.istio.io/owning-resource=unknown,istio.io/rev=asm-1-17,istio=pilot,kubernetes.azure.com/managedby=aks,operator.istio.io/component=Pilot,release=azure-service-mesh-istio-discovery
+
+NAME                                         DESIRED   CURRENT   READY   AGE     LABELS
+replicaset.apps/istiod-asm-1-17-67d689bdf8   2         2         2       7m39s   app=istiod,install.operator.istio.io/owning-resource=unknown,istio.io/rev=asm-1-17,istio=istiod,kubernetes.azure.com/managedby=aks,operator.istio.io/component=Pilot,pod-template-hash=67d689bdf8,sidecar.istio.io/inject=false
+
+NAME                                                  REFERENCE                    TARGETS   MINPODS   MAXPODS   REPLICAS   AGE     LABELS
+horizontalpodautoscaler.autoscaling/istiod-asm-1-17   Deployment/istiod-asm-1-17   0%/80%    2         5         2          7m39s   app.kubernetes.io/managed-by=Helm,app=istiod,helm.toolkit.fluxcd.io/name=azure-service-mesh-istio-discovery-helmrelease,helm.toolkit.fluxcd.io/namespace=6554954d660fc400012c5a60,install.operator.istio.io/owning-resource=unknown,istio.io/rev=asm-1-17,operator.istio.io/component=Pilot,release=azure-service-mesh-istio-discovery
+
+kubectl describe po -n aks-istio-system -l app=istiod
+Image:         mcr.microsoft.com/oss/istio/pilot:1.17.8-distroless
+
+kubectl logs -n aks-istio-system -l app=istiod
+2023-11-15T19:02:27.360324Z     info    validationController    validatingwebhookconfiguration istio-validator-asm-1-17-aks-istio-system (failurePolicy=Fail, resourceVersion=6023) is up-to-date. No change required.
+2023-11-15T19:02:39.721883Z     info    rootcertrotator Jitter complete, start rotator.
+2023-11-15T19:03:33.559241Z     info    validationController    validatingwebhookconfiguration istio-validator-asm-1-17-aks-istio-system (failurePolicy=Fail, resourceVersion=6325) is up-to-date. No change required.
 ```
 
 - https://kubernetes.io/blog/2017/05/managing-microservices-with-istio-service-mesh/

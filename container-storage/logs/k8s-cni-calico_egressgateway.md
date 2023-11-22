@@ -1,0 +1,1 @@
+- https://docs.tigera.io/calico-cloud/networking/egress/: Egress gateways

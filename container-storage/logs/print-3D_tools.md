@@ -1,0 +1,4 @@
+- https://www.tinkercad.com/
+- https://www.vectary.com/
+- https://openscad.org/: Offline
+- https://www.blender.org/: Offline. Free and Open Source

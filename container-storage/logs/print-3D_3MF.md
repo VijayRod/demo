@@ -1,0 +1,2 @@
+- https://www.linkedin.com/advice/0/how-can-you-use-3d-printing-standards-protocols-skills-3d-printing: 3MF (3D Manufacturing Format)
+- https://www.pwg.org/3d/: Printer Working Group. 3D Manufacturing File Format (3MF): 3MF offers a compact XML format with physical dimensions, named materials, and shared vertices. 3MF is supported by major CAD and slicer software and is a required file format for the IPP 3D Printing Extensions.

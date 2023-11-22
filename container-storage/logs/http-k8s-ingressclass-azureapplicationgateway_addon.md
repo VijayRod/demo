@@ -1,4 +1,12 @@
 ```
+rg=rg
+az group create -n $rg -l $loc
+az aks create -g $rg -n aks -s $vmsize -c 1 --network-plugin azure -a ingress-appgw --appgw-name myApplicationGateway --appgw-subnet-cidr "10.225.0.0/16"
+az aks get-credentials -g $rg -n aks --overwrite-existing
+az aks show -g $rg -n aks --query addonProfiles.ingressApplicationGateway
+```
+
+```
 az aks show -n myCluster -g myResourceGroup --query addonProfiles.ingressApplicationGateway
 The behavior of this command has been altered by the following extension: aks-preview
 {
@@ -31,6 +39,8 @@ Name:             ingress-appgw-deployment-b888bf865-bdwzp
 
 # kubectl logs -n kube-system -l app=ingress-appgw
 I0812 04:06:44.743596       1 reflector.go:381] pkg/mod/k8s.io/client-go@v0.21.2/tools/cache/reflector.go:167: forcing resync
+
+kubectl get cm -n kube-system -l app=ingress-appgw
 ```
 
 - https://learn.microsoft.com/en-us/azure/application-gateway/ingress-controller-overview

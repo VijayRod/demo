@@ -1,6 +1,11 @@
 ```
 # Blocks node communication, including kubelet on TCP 10250.
 
+rg=rg
+az group create -n $rg -l $loc
+az aks create -g $rg -n aks -s $vmsize -c 1
+az aks get-credentials -g $rg -n aks --overwrite-existing
+
 kubectl delete po nginx
 kubectl run nginx --image=nginx --overrides='{"spec": { "nodeSelector": {"kubernetes.io/hostname": "aks-nodepool1-40004829-vmss000000"}}}'
 sleep 10

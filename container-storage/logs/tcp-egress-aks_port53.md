@@ -1,6 +1,12 @@
 ```
 # Blocks node communication, including DNS traffic on UDP/TCP port 53.
 
+rg=rg
+az group create -n $rg -l $loc
+az aks create -g $rg -n aks -s $vmsize -c 1
+az aks get-credentials -g $rg -n aks --overwrite-existing
+kubectl get no
+
 root@aks-nodepool1-40004829-vmss000003:/# nslookup google.com
 ;; communications error to 168.63.129.16#53: timed out
 ;; communications error to 168.63.129.16#53: timed out

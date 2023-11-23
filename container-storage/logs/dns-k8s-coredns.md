@@ -3,3 +3,4 @@
 - https://coredns.io/plugins/
 - https://www.tkng.io/dns/
 - https://github.com/kubernetes/dns: repository for Kubernetes DNS(kube-dns and nodelocaldns)
+- https://github.com/kubernetes/kubernetes/blob/v1.24.9/cluster/addons/dns/coredns/coredns.yaml.base

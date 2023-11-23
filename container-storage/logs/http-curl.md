@@ -19,6 +19,12 @@ time curl -I google.com
 real    0m0.199s
 user    0m0.019s
 sys     0m0.010s
+
+curl -kvv https://google.com
+```
+
+```
+kubectl exec -it nginx -- /bin/bash # curl google.com -I
 ```
 
 - https://curl.se/docs/manual.html

@@ -6,7 +6,7 @@ kubectl exec -it nginx -- /bin/bash
 root@nginx:/# curl -kvv google.com
 # root@nginx:/# nslookup google.com
 
-# Test curl operation from a node in each subnet rather than using test pods.
+# Test curl operation from a node in each subnet besides using test pods.
 # If timeouts persist, create temporary Ubuntu VMs in each subnet. Perform curl test from new VMs to identify issues in Kubernetes/AKS setup (e.g., CNI, nodepool) or VNET configuration within subnets.
 # root@aks-nodepool1-40004829-vmss000006:/# nslookup google.com
 Server:         172.30.48.1

@@ -11,10 +11,16 @@ TBD az aks browse --resource-group aks-dev-rg --name aks-dev # https://127.0.0.1
 ```
 
 ```
-az aks disable-addons -g $rg -n aks -a kube-dashboard
+az aks disable-addons -g $rg -n aks -a kube-dashboard # Run on a cluster with Kubernetes version >= 1.19.0 and without the kube-dashboard add-on
 The behavior of this command has been altered by the following extension: aks-preview
 {
   "aadProfile": null,
+  "addonProfiles": {
+    "kubeDashboard": {
+      "config": null,
+      "enabled": false,
+      "identity": null
+    }
 ```
 
 - https://github.com/azure-deprecation/dashboard/issues/121: AKS dashboard add-on will be removed from Kubernetes 1.19+

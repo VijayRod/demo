@@ -66,3 +66,4 @@ TimeGenerated [UTC]	Namespace	Name	Reason	Message
 ```
 
 - https://learn.microsoft.com/en-us/azure/azure-monitor/reference/tables/kubeevents
+- https://learn.microsoft.com/en-us/azure/azure-monitor/containers/container-insights-log-query#kubernetes-events: By default, Normal event types aren't collected, so you won't see them when you query the KubeEvents table unless the collect_all_kube_events ConfigMap setting is enabled.

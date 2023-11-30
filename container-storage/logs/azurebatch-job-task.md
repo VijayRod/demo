@@ -23,4 +23,10 @@ CommandLine                                         CreationTime                
 --------------------------------------------------  --------------------------------  -----------------  --------------------------------  ---------------  -------  --------------------------------  -----------------------------------------------------------------
 /bin/bash -c 'printenv | grep AZ_BATCH; sleep 90s'  2023-11-27T19:54:09.247160+00:00  0x8DBEF6117C15D35  2023-11-27T19:54:09.247160+00:00  1                active   2023-11-27T19:54:09.247160+00:00  https://batch.swedencentral.batch.azure.com/jobs/job1/tasks/task1
 /bin/bash -c 'printenv | grep AZ_BATCH; sleep 90s'  2023-11-27T19:54:10.007125+00:00  0x8DBEF6118355359  2023-11-27T19:54:10.007125+00:00  1                active   2023-11-27T19:54:10.007125+00:00  https://batch.swedencentral.batch.azure.com/jobs/job1/tasks/task2
+...
+
+az batch task show --job-id job1 --task-id task1 # https://batch.swedencentral.batch.azure.com/jobs/job1/tasks/task1
 ```
+
+- https://learn.microsoft.com/en-us/azure/batch/quick-create-cli#create-job-tasks
+- https://learn.microsoft.com/en-us/azure/batch/quick-create-cli#view-task-status

@@ -1,0 +1,1 @@
+- https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/custom-template/

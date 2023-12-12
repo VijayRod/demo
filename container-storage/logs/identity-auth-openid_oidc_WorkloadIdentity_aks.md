@@ -85,6 +85,20 @@ The behavior of this command has been altered by the following extension: aks-pr
   "enabled": true
 }
 
+kubectl get all -n kube-system -l azure-workload-identity.io/system=true
+NAME                                                       READY   STATUS    RESTARTS   AGE
+pod/azure-wi-webhook-controller-manager-59959b4d95-k87hm   1/1     Running   0          100s
+pod/azure-wi-webhook-controller-manager-59959b4d95-pk24m   1/1     Running   0          100s
+
+NAME                                       TYPE        CLUSTER-IP    EXTERNAL-IP   PORT(S)   AGE
+service/azure-wi-webhook-webhook-service   ClusterIP   10.0.45.159   <none>        443/TCP   100s
+
+NAME                                                  READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/azure-wi-webhook-controller-manager   2/2     2            2           101s
+
+NAME                                                             DESIRED   CURRENT   READY   AGE
+replicaset.apps/azure-wi-webhook-controller-manager-59959b4d95   2         2         2       101s
+
 # To check whether all properties are injected properly with the webhook
 kubectl describe pod quick-start
     Environment:

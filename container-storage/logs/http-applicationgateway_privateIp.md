@@ -1,0 +1,1 @@
+- https://learn.microsoft.com/en-us/azure/application-gateway/configuration-infrastructure: Application Gateway uses one private IP address per instance, plus another private IP address if a private frontend IP is configured.

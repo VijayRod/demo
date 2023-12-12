@@ -52,6 +52,8 @@ kubectl get apiservice v1beta1.external.metrics.k8s.io -o "jsonpath={.status}"
     reason: Passed
     status: "True"
     type: Available
+
+kubectl rollout restart deployment keda-operator -n kube-system
 ```
     
 - https://learn.microsoft.com/en-us/azure/aks/keda-about

@@ -1,1 +1,2 @@
 - https://go.dev/ref/mod
+- https://www.w3schools.com/go/index.php

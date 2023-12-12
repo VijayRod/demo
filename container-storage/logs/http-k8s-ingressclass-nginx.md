@@ -1,4 +1,9 @@
 ```
+rg=rgingress
+az group create -n $rg -l $loc
+az aks create -g $rg -n aks -s $vmsize -c 1
+az aks get-credentials -g $rg -n aks --overwrite-existing
+
 # To create a basic nginx ingress controller without customizing the defaults
 NAMESPACE=ingress-basic
 helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx

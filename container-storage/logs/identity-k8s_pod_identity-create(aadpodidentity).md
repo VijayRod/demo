@@ -121,3 +121,6 @@ successfully acquired a token using the MSI, msiEndpoint(http://169.254.169.254/
 successfully acquired a token, userAssignedID MSI, msiEndpoint(http://169.254.169.254/metadata/identity/oauth2/token) clientID(xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx)
 successfully made GET on instance metadata
 ```
+
+- https://github.com/Azure/aad-pod-identity
+- https://learn.microsoft.com/en-us/azure/aks/use-azure-ad-pod-identity

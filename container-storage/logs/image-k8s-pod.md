@@ -26,3 +26,4 @@ kubectl create deploy hostnames --image=registry.k8s.io/serve_hostname # From an
 
 - https://kubernetes.io/docs/concepts/containers/images/
 - https://kubernetes.io/docs/tasks/access-application-cluster/list-all-running-container-images/
+- https://stackoverflow.com/questions/62847331/is-it-possible-to-install-curl-into-busybox-in-kubernetes-pod: The short answer, is you cannot.

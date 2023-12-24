@@ -21,6 +21,7 @@ user    0m0.019s
 sys     0m0.010s
 
 curl -kvv https://google.com
+curl https://$fqdn -k --trace-time --trace /tmp/curl.log # cat /tmp/curl.log
 ```
 
 ```
@@ -28,3 +29,5 @@ kubectl exec -it nginx -- /bin/bash # curl google.com -I
 ```
 
 - https://curl.se/docs/manual.html
+- https://everything.curl.dev/usingcurl/verbose
+- TBD https://unix.stackexchange.com/questions/497706/does-curl-v-show-the-complete-http-request-including-the-body

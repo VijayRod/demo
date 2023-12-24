@@ -9,3 +9,5 @@ bpftrace -V
 - https://www.brendangregg.com/BPF/bpftrace-cheat-sheet.html
 - https://manpages.debian.org/testing/bpfcc-tools/index.html
 - https://github.com/Azure-Samples/azure-files-samples/tree/master/SMBDiagnostics: trace-cifsbpf (eBPF script)
+- https://www.brendangregg.com/ebpf.html
+- https://github.com/cloudflare/ebpf_exporter?tab=readme-ov-file#reading-material

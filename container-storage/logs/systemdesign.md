@@ -1,0 +1,2 @@
+- https://github.com/donnemartin/system-design-primer/blob/master/README.md
+- https://www.educative.io/courses/grokking-modern-system-design-interview-for-engineers-managers

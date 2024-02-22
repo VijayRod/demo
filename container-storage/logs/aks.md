@@ -8,6 +8,11 @@ az aks nodepool add -g $rg --cluster-name aks -n npmar -s $vmsize # --os-sku Mar
 az aks nodepool delete -g $rg --cluster-name aks -n np2 --no-wait
 ```
 
+```
+az aks create -g $rg -n akseph -s $vmsize -c 1 --node-osdisk-type Ephemeral -s Standard_DS3_v2
+az aks create -g $rg -n aksgen -s $vmsize -c 1 -s Standard_D4s_v5 # Also non-ephemeral
+```
+
 - https://github.com/Azure/azure-rest-api-specs/blob/main/specification/containerservice/resource-manager/Microsoft.ContainerService/aks/stable/2023-02-01/managedClusters.json
 - https://github.com/andyzhangx/demo/blob/master/debug/README.md
 - https://github.com/feiskyer/kubernetes-handbook/blob/master/README.md

@@ -11,10 +11,17 @@
 - More
 
 ## AKS KAITO (AI toolchain operator) add-on 
+- https://azure.microsoft.com/fr-fr/updates/public-preview-kubernetes-ai-toolchain-operator-kaito-addon-for-aks/
 - https://learn.microsoft.com/en-us/azure/aks/ai-toolchain-operator
+- https://github.com/Azure/kaito
 
 ## AI Conversational Diagnostics in the Azure portal
 - https://techcommunity.microsoft.com/t5/apps-on-azure-blog/announcing-conversational-diagnostics-preview-on-azure/ba-p/4087092
+
+## Reduce large image pull time with Artifact Streaming
+- https://learn.microsoft.com/en-us/azure/aks/artifact-streaming
+- https://github.com/Azure/AKS/issues/3928
+- https://github.com/containerd/overlaybd
 
 ## Multi-instance GPU (MIG) aka GPU partitioning
 - https://learn.microsoft.com/en-us/azure/aks/gpu-multi-instance?tabs=azure-cli

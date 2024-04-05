@@ -131,6 +131,7 @@ kubectl describe po workspace-falcon-7b-instruct-7d757d9588-78zxm | grep Image:
 You can check out how to use the AI models that Kaito hosts by default on this link: https://github.com/Azure/kaito#usage. If you want to add a new model to the Kaito repo, follow these steps: https://github.com/Azure/kaito/blob/main/docs/How-to-add-new-models.md. Kaito lets you [host large model images in the public](https://github.com/Azure/kaito) MCR from Microsoft if the license allows.
 
 - https://learn.microsoft.com/en-us/azure/aks/ai-toolchain-operator#deploy-a-default-hosted-ai-model
+- https://github.com/Azure/kaito/blob/main/docs/How-to-add-new-models.md#step-3-push-model-image-to-mcr
 
 ## Initial state
 

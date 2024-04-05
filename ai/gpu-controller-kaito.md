@@ -10,7 +10,7 @@ If you want to deploy AI/ML models like falcon and llama2 on a Kubernetes cluste
 - Workspace and machine resources
 - More
 
-## Controllers
+## Workspace and machine controllers
 
 Kaito makes two controllers. One is a `workspace` controller, which makes a workspace resource for each AI model we host. The other is a `gpu-provisioner` controller, which creates GPU nodes for the model.
 

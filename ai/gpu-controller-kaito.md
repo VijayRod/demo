@@ -8,7 +8,7 @@ If you want to deploy AI/ML models like falcon and llama2 on a Kubernetes cluste
 
 - Workspace and machine controllers
 - How the AI model affects the workspace and machine resources
-- Kaito model repository
+- Kaito model images in a public repo
 - More
 
 ## Workspace and machine controllers
@@ -25,9 +25,9 @@ Kaito makes two controllers. One is a `workspace` controller, which makes a work
 - https://github.com/Azure/kaito/blob/main/charts/kaito/workspace/README.md
 - https://github.com/Azure/gpu-provisioner/tree/main/charts/gpu-provisioner
 
-## How the AI model affects the workspace and machine resources
+## How the AI model spec affects the workspace and machine resources
 
-Here's what happens: the `workspace` controller looks at the AI model spec you send and sees if it needs to make any worker nodes that fit the workspace resource spec. Then it sets up a service and a deployment/statefulset for the AI inference model. The `gpu-provisioner` controller is in charge of creating the worker nodes.
+Here's what happens: the `workspace` controller looks at the AI model spec (yaml) you send and sees if it needs to make any worker nodes that fit the workspace resource spec. Then it sets up a service and a deployment/statefulset for the AI inference model. The `gpu-provisioner` controller is in charge of creating the worker nodes.
 
 ```
 kubectl apply -f https://raw.githubusercontent.com/Azure/kaito/main/examples/inference/kaito_workspace_falcon_7b-instruct.yaml
@@ -126,7 +126,7 @@ kubectl describe po workspace-falcon-7b-instruct-7d757d9588-78zxm | grep Image:
 
 - https://learn.microsoft.com/en-us/azure/aks/ai-toolchain-operator#deploy-a-default-hosted-ai-model
 
-## Kaito model repository
+## Kaito model images in a public repo
 
 You can check out how to use the AI models that Kaito hosts by default on [this](https://github.com/Azure/kaito#usage) link. 
 

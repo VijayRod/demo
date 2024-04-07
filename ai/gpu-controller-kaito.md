@@ -27,7 +27,7 @@ Kaito makes two controllers. One is a `workspace` controller, which makes a work
 
 ## How the AI model spec affects the workspace and machine resources
 
-Here's what happens: the `workspace` controller looks at the AI model spec (yaml) you send and sees if it needs to make any worker nodes that fit the workspace resource spec. Then it sets up a service and a deployment/statefulset for the AI inference model. The `gpu-provisioner` controller is in charge of creating the worker nodes.
+Here's what happens: the `workspace` controller looks at the AI model spec (`workspace` yaml) you send and sees if it needs to make any worker nodes that fit the workspace resource spec. Then it sets up a service and a deployment/statefulset for the AI inference model. The `gpu-provisioner` controller is in charge of creating the worker nodes.
 
 ```
 kubectl apply -f https://raw.githubusercontent.com/Azure/kaito/main/examples/inference/kaito_workspace_falcon_7b-instruct.yaml

@@ -211,6 +211,26 @@ I0405 19:15:16.795202       1 workspace_controller.go:457] "An inference workloa
 I0405 19:15:17.795958       1 resources.go:71] "deployment status is ready" deployment="workspace-falcon-7b-instruct"
 ```
 
+## Resources
+
+```
+kubectl api-resources | grep -e kaito -e karp
+NAME                                SHORTNAMES          APIVERSION                             NAMESPACED   KIND
+workspaces                          wk,wks              kaito.sh/v1alpha1                      true         Workspace
+machines                                                karpenter.sh/v1alpha5                  false        Machine
+
+kubectl get deployment -n kube-system | grep kaito
+kaito-gpu-provisioner   1/1     1            1           79s
+kaito-workspace         1/1     1            1           79s
+
+kubectl get ds -n kube-system | grep kaito # before we create a workspace i.e. before the GPU worker nodes are created
+NAME                                   DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR   AGE
+kaito-nvidia-device-plugin-daemonset   0         0         0       0            0           <none>          79s
+
+kubectl get workspace,machine # before we create a workspace
+No resources found
+```
+
 ## Cleanup
 
 ```
@@ -240,26 +260,6 @@ kubectl logs -n kube-system kaito-gpu-provisioner-774556d85c-2npps | tail
 {"level":"INFO","time":"2024-04-05T19:17:12.377Z","logger":"controller.termination","message":"deleted node","node":"aks-wsb42f9cb5f-41071934-vmss000000"}
 {"level":"INFO","time":"2024-04-05T19:17:12.378Z","logger":"controller","message":"deleteAgentPool","agentpool":"wsb42f9cb5f"}
 {"level":"INFO","time":"2024-04-05T19:17:13.227Z","logger":"controller.machine.termination","message":"deleted machine","machine":"wsb42f9cb5f","node":"aks-wsb42f9cb5f-41071934-vmss000000","provisioner":"default","provider-id":"azure:///subscriptions/8d99b0de-7ea1-4a2b-8fd0-c2ef9f25c5dc/resourceGroups/mc_rgai_aks_eastus/providers/Microsoft.Compute/virtualMachineScaleSets/aks-wsb42f9cb5f-41071934-vmss/virtualMachines/0"}
-```
-
-## Resources
-
-```
-kubectl api-resources | grep -e kaito -e karp
-NAME                                SHORTNAMES          APIVERSION                             NAMESPACED   KIND
-workspaces                          wk,wks              kaito.sh/v1alpha1                      true         Workspace
-machines                                                karpenter.sh/v1alpha5                  false        Machine
-
-kubectl get deployment -n kube-system | grep kaito
-kaito-gpu-provisioner   1/1     1            1           79s
-kaito-workspace         1/1     1            1           79s
-
-kubectl get ds -n kube-system | grep kaito
-NAME                                   DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR   AGE
-kaito-nvidia-device-plugin-daemonset   0         0         0       0            0           <none>          79s
-
-kubectl get workspace,machine
-No resources found
 ```
 
 ## References

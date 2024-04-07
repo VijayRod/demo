@@ -7,7 +7,7 @@ If you want to deploy AI/ML models like falcon and llama2 on a Kubernetes cluste
 ## Table of Contents
 
 - Workspace and machine controllers
-- How the AI model affects the workspace and machine resources
+- How the AI model spec affects the workspace and machine resources
 - Kaito model images in a public repo
 - More
 

@@ -38,7 +38,7 @@ We need a better scheduler for our Kubernetes clusters. It should place PODs or 
 
 Some things you can do:
 - Node pools - We can group nodes with different GPUs using node pools and manage them better that way.
-- Node proximity - Maybe the cloud providers can take care of the node topology and put them in close proximity.
+- Node proximity - Maybe the cloud providers can take care of the node topology and put them in close proximity, like using proximty settings for the worker node topology.
 - [Dynamic Resource Allocation {Kubernetes v1.27 [alpha]}](https://kubernetes.io/docs/concepts/scheduling-eviction/dynamic-resource-allocation/) - This feature lets us create mini-GPUs (MIGs) on the fly as we need them.
 
 ## Workloads personas

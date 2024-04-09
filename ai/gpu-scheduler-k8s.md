@@ -37,8 +37,8 @@ We need a better scheduler for our Kubernetes clusters. It should place PODs or 
 - Topology awareness within a node. The scheduler should know the layout of the nodes, the resources inside them, and which ones are free at any time.
 
 Some things you can do:
-- We can group nodes with different GPUs using node pools and manage them better that way.
-- Maybe the cloud providers can take care of the node topology and put them in close proximity.
+- Node pools - We can group nodes with different GPUs using node pools and manage them better that way.
+- Node proximity - Maybe the cloud providers can take care of the node topology and put them in close proximity.
 - [Dynamic Resource Allocation {Kubernetes v1.27 [alpha]}](https://kubernetes.io/docs/concepts/scheduling-eviction/dynamic-resource-allocation/) - This feature lets us create mini-GPUs (MIGs) on the fly as we need them.
 
 ## Workloads personas

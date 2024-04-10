@@ -45,6 +45,9 @@ With MIG, you have to choose some GPU devices that are pre-partitioned, but DRA 
 ## AI Conversational Diagnostics in the Azure portal
 Want to chat with OpenAI and fix your AKS clusters? Try Conversational Diagnostics. It's a cool feature that lets you have a friendly chat and get the right solutions, docs, and diagnostics for your cluster problems.
 - https://techcommunity.microsoft.com/t5/apps-on-azure-blog/announcing-conversational-diagnostics-preview-on-azure/ba-p/4087092
+
+## Copilot in the Azure portal
+With Azure, you can do amazing things. And [Microsoft Copilot for Azure](https://learn.microsoft.com/en-us/azure/copilot/overview) is here to help. It's an AI tool that guides you through Azure
     
 ## NVIDIA device plugin operator
 With the NVIDIA GPU Operator, you don't have to worry about installing and updating all the NVIDIA stuff you need for GPU provisioning, like drivers, NVIDIA device plugin for Kubernetes, and container runtime. The GPU Operator takes care of it for you, so you can skip the manual installation of the device plugin.
@@ -55,7 +58,7 @@ With the NVIDIA GPU Operator, you don't have to worry about installing and updat
 - https://techcommunity.microsoft.com/t5/azure-high-performance-computing/running-gpu-accelerated-workloads-with-nvidia-gpu-operator-on/ba-p/4061318
 
 ### Use the AKS GPU image
-With AKS, you get an AKS image that already has the NVIDIA device plugin for Kubernetes installed.
+With AKS, you get an AKS image that already has the NVIDIA device plugin for Kubernetes installed. You can only use the AKS GPU image with Ubuntu 18.04.
 - https://learn.microsoft.com/en-us/azure/aks/gpu-cluster?tabs=add-ubuntu-gpu-node-pool#use-the-aks-gpu-image-preview
 
 ## GPU-optimized VM/VMSS sizes in Azure

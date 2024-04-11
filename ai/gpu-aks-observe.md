@@ -1,4 +1,4 @@
-![AKS observe](https://www.microsoft.com/en-gb/industry/blog/wp-content/uploads/sites/22/2020/06/AzureThumb.jpg)
+![AKS observe](https://learn.microsoft.com/en-us/azure/media/index/kubernetes-services.svg)
 
 ## Table of Contents
 

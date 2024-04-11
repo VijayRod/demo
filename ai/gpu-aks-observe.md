@@ -1,4 +1,4 @@
-![AKS observe](https://learn.microsoft.com/en-us/azure/media/index/kubernetes-services.svg)
+<img src="https://learn.microsoft.com/en-us/azure/media/index/kubernetes-services.svg" width="100"/>
 
 ## Table of Contents
 

@@ -1,3 +1,4 @@
+![AKS observe](https://www.microsoft.com/en-gb/industry/blog/wp-content/uploads/sites/22/2020/06/AzureThumb.jpg)
 
 ## Table of Contents
 

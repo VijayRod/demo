@@ -69,9 +69,14 @@ With AKS, you get an AKS image that already has the NVIDIA device plugin for Kub
 - https://techcommunity.microsoft.com/t5/containers/windows-gpus-for-aks/ba-p/4089292
 
 ## Monitor GPUs
+Kubernetes upstream stopped using kubelet to get GPU metrics and switched to vendor GPU drivers instead. Container insights can work with GPU drivers like NVIDIA.
+- https://kubernetes.io/blog/2020/12/16/third-party-device-metrics-reaches-ga/#nvidia-gpu-metrics-deprecated: The DisableAcceleratorMetrics feature (introduced in 1.19) is graduating to beta and will be enabled by default (With Kubernetes 1.20)
+- https://learn.microsoft.com/en-us/azure/azure-monitor/containers/container-insights-gpu-monitoring: Kubernetes is deprecating GPU metrics that are being reported by the kubelet, for Kubernetes version 1.20+. Container insights supports monitoring GPU clusters from the following GPU vendors.
+- https://learn.microsoft.com/en-us/azure/aks/gpu-cluster#use-container-insights-to-monitor-gpu-usage
 - https://learn.microsoft.com/en-us/azure/aks/gpu-cluster?tabs=add-ubuntu-gpu-node-pool#confirm-that-gpus-are-schedulable
 
 ## More
+- How to schedule GPUs with Kubernetes - https://kubernetes.io/docs/tasks/manage-gpus/scheduling-gpus/
 - Azure AI Studio - https://ai.azure.com/ ([link2](https://azure.microsoft.com/en-us/products/ai-studio))
 - Azure OpenAI service - https://azure.microsoft.com/en-us/products/ai-services/openai-service
 - AKS and Azure Machine Learning - https://learn.microsoft.com/en-us/azure/aks/gpu-cluster?tabs=add-ubuntu-gpu-node-pool#next-steps

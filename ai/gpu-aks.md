@@ -82,3 +82,4 @@ Kubernetes upstream stopped using kubelet to get GPU metrics and switched to ven
 - AKS and Azure Machine Learning - https://learn.microsoft.com/en-us/azure/aks/gpu-cluster?tabs=add-ubuntu-gpu-node-pool#next-steps
 - New tools in Azure AI - https://azure.microsoft.com/en-us/blog/announcing-new-tools-in-azure-ai-to-help-you-build-more-secure-and-trustworthy-generative-ai-applications/
 - Empowering cloud-native development and AI innovation - https://cloudblogs.microsoft.com/opensource/2024/03/18/see-how-azure-is-empowering-cloud-native-development-and-ai-innovation-with-kubernetes-at-kubecon-europe-2024/
+- How K8s and ML got better over time - https://github.com/ronaldpetty/timeline/blob/main/k8s_ml_history.md

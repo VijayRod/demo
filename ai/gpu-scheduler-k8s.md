@@ -2,6 +2,9 @@
 
 ## Scheduling AI workloads on K8s
 
+<i>Update - We're thinking of turning this article into a CNCF whitepaper, with input and comments from the community. 
+Here are the links - [Longer version](https://docs.google.com/document/d/1KNmTKwI_cRXZ0KVBqdBhkO1EuS4PhLIUvT16Y2a5erU/edit#heading=h.l5opvu2gvmzq), [Issue#126](https://github.com/cncf/tag-runtime/issues/126), CNCF updates ([26 April](https://tag-runtime.cncf.io/wgs/cnaiwg/news/26_april_2024/#3-cnai-group-initiatives--activities), [10 May](https://tag-runtime.cncf.io/wgs/cnaiwg/news/05_10_may_2024/#key-developments), [25 May](https://tag-runtime.cncf.io/wgs/cnaiwg/news/20_25_may_2024/)).</i>
+
 ## Table of Contents
 
 - What's different about AI workloads

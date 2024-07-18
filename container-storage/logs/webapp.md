@@ -1,13 +1,12 @@
 ```
-rgname=testshack
+rgname=rg-webapp # repro-webapp, testshack
 loc=swedencentral
 plan=MyPlan
 app="MyWebApp$RANDOM"
 
 az group create -g $rgname -l $loc
 
-az appservice plan create -g $rgname -n $plan
-# az appservice plan create -g $rgname -n $plan --sku P1V3
+az appservice plan create -g $rgname -n $plan # --sku FREE # F1 / FREE, D1 (Shared), B1-B3, P1V3
 planId=$(az appservice plan show -g $rgname -n $plan --query id -o tsv)
 
 az webapp create -g $rgname -n $app -p $plan

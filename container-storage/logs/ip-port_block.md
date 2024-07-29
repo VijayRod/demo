@@ -19,6 +19,15 @@ OR iptables -s 123.456.78.90/32 -p tcp -m tcp -A INPUT -m statistic --mode rando
 ```
 
 - https://www.linode.com/docs/guides/control-network-traffic-with-iptables/#block-traffic-by-port
+
+```
+# tbd with firewalld
+apt install firewalld
+firewall-cmd --add-port=10250/tcp --permanent
+firewall-cmd --reload
+firewall-cmd --list-all  # you should see that port `10250` is updated
+https://stackoverflow.com/questions/58268197/kubernetes-dial-tcp-myip10250-connect-no-route-to-host
+```
    
 The following commands are for a Windows node in a PowerShell prompt:
 

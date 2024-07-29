@@ -9,3 +9,6 @@ az vmss run-command invoke -g $noderg -n aks-nodepool1-14945448-vmss000001 --com
 
 # Tbd One mitigation strategy is to allow a few minutes for the remediator to take action.
 ```
+
+- https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/connectivity/tunnel-connectivity-issues
+- https://kubernetes.io/docs/reference/networking/ports-and-protocols/#node

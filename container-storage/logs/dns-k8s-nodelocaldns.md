@@ -9,6 +9,11 @@
 - https://github.com/kubernetes/enhancements/blob/master/keps/sig-network/1024-nodelocal-cache-dns/README.md
 <br>
 
+- https://github.com/Azure/AKS/issues/1326#issuecomment-712579803
+- https://github.com/curtdept/aks_nodelocaldns/blob/main/nodelocaldns.yaml
+- https://github.com/Azure/AKS/issues/1492
+<br>
+
 - TBD https://deckhouse.io/documentation/v1/modules/350-node-local-dns/
 - TBD https://www.sobyte.net/post/2021-11/use-nodelocal-dns-cache/
 - TBD https://cloud.yandex.com/en/docs/managed-kubernetes/tutorials/node-local-dns

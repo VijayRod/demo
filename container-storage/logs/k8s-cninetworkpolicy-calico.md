@@ -53,6 +53,31 @@ kubectl describe po -n tigera-operator | grep Image:
 ```
 
 ```
+kubectl get no # single node
+kubectl get po -A -owide | grep -E '^cal|^tigera|^demo'
+
+calico-system     calico-kube-controllers-8484fb4dc7-bc9bl   1/1     Running   0          14h
+calico-system     calico-node-tvvdh                          1/1     Running   0          14h
+calico-system     calico-typha-7f985859c5-frmxh              1/1     Running   0          14h
+tigera-operator   tigera-operator-84cbbc54bd-fl4rr           1/1     Running   0          14h
+
+az aks nodepool scale -g rgcal --cluster-name aks -n nodepool1 -c 3 # multiple nodes
+kubectl get po -A -owide | grep -E 'cal|tigera'
+
+calico-system     calico-kube-controllers-8484fb4dc7-bc9bl   1/1     Running   0          14h     10.224.0.11   aks-nodepool1-49463138-vmss000000   <none>           <none>
+calico-system     calico-node-82nl6                          1/1     Running   0          3m38s   10.224.0.33   aks-nodepool1-49463138-vmss000002   <none>           <none>
+calico-system     calico-node-bg4rf                          1/1     Running   0          4m      10.224.0.62   aks-nodepool1-49463138-vmss000001   <none>           <none>
+calico-system     calico-node-tvvdh                          1/1     Running   0          14h     10.224.0.4    aks-nodepool1-49463138-vmss000000   <none>           <none>
+calico-system     calico-typha-7f985859c5-dt2z7              1/1     Running   0          3m32s   10.224.0.62   aks-nodepool1-49463138-vmss000001   <none>           <none>
+calico-system     calico-typha-7f985859c5-frmxh              1/1     Running   0          14h     10.224.0.4    aks-nodepool1-49463138-vmss000000   <none>           <none>
+tigera-operator   tigera-operator-84cbbc54bd-fl4rr           1/1     Running   0          14h     10.224.0.4    aks-nodepool1-49463138-vmss000000   <none>           <none>
+```
+
+```
+iptables-save | grep cal # This shows that most entries are consistent across all nodes
+```
+
+```
 # Calico pods will be unavailable for a few seconds until they are automatically recreated
 kubectl delete deploy -n calico-system calico-kube-controllers
 kubectl delete deploy -n calico-system calico-typha

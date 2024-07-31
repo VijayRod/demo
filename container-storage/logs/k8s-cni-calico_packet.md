@@ -1,1 +1,4 @@
 - https://www.tkng.io/cni/calico/
+- https://docs.tigera.io/calico/latest/reference/architecture/data-path
+- https://www.tigera.io/blog/kubernetes-networking-with-calico/
+- https://docs.tigera.io/calico/latest/reference/faq#why-does-my-container-have-a-route-to-16925411

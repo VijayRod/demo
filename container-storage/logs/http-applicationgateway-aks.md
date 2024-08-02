@@ -1,0 +1,2 @@
+- https://learn.microsoft.com/en-us/azure/application-gateway/ingress-controller-overview
+- https://learn.microsoft.com/en-us/samples/azure/azure-quickstart-templates/aks-application-gateway-ingress-controller/

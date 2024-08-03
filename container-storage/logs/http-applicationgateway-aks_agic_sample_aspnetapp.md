@@ -120,4 +120,10 @@ subnetResourceUri=$(az network application-gateway show -g $noderg -n myApplicat
 az network vnet subnet show --ids $subnetResourceUri --query addressPrefix -otsv # 10.225.0.0/16, which includes 10.225.0.4
 ```
 
+```
+kubectl delete ing aspnetapp
+kubectl delete svc aspnetapp
+kubectl delete po aspnetapp
+```
+
 - https://learn.microsoft.com/en-us/azure/application-gateway/tutorial-ingress-controller-add-on-new#deploy-a-sample-application-by-using-agic

@@ -1,0 +1,3 @@
+- https://kubernetes.io/blog/2021/04/22/evolving-kubernetes-networking-with-the-gateway-api/
+- https://gateway-api.sigs.k8s.io/
+- https://techcommunity.microsoft.com/t5/apps-on-azure-blog/application-gateway-for-containers-vs-application-gateway/ba-p/3914901: One of the key differences between AGIC and Application Gateway for Containers is native support for the Kubernetes Gateway API.

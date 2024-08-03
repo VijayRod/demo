@@ -11,7 +11,9 @@ tcpdump -w - # to write binary data to stdout
 - https://man.archlinux.org/man/tcpdump.1
 <br>
 
+Frequently Asked Questions
 - tbd https://linuxconfig.org/how-to-use-tcpdump-command-on-linux
 - https://superuser.com/questions/1455476/what-does-tcp-packet-p-flag-means-in-tcpdumps-output
 - https://stackoverflow.com/questions/25603831/how-can-i-have-tcpdump-write-to-file-and-standard-output-the-appropriate-data
 - https://superuser.com/questions/273489/how-do-i-make-tcpdump-to-write-to-file-for-each-packet-it-captures
+- https://stackoverflow.com/questions/19808483/tcpdump-resolve-ip-and-skip-resolving-ports

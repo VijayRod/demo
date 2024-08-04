@@ -27,13 +27,14 @@ helm install alb-controller oci://mcr.microsoft.com/application-lb/charts/alb-co
 
 az aks get-credentials -g $rg -n aks --overwrite-existing
 kubectl get pods -n azure-alb-system
+# kubectl logs -n azure-alb-system -l app=alb-controller
 kubectl get gatewayclass azure-alb-external -o yaml | grep message # status.conditions.message
 ```
 
 ```
-alb-controller-7f78465797-cfhtw             1/1     Running   0          65s
-alb-controller-7f78465797-qzb8j             1/1     Running   0          65s
-alb-controller-bootstrap-7cc55b5d6d-tb586   1/1     Running   0          65s
+alb-controller-7f78465797-cfhtw             1/1     Running   0          65s   app=alb-controller,azure.workload.identity/use=true,pod-template-hash=7f78465797
+alb-controller-7f78465797-qzb8j             1/1     Running   0          65s   app=alb-controller,azure.workload.identity/use=true,pod-template-hash=7f78465797
+alb-controller-bootstrap-7cc55b5d6d-tb586   1/1     Running   0          65s   app=alb-controller-bootstrap,pod-template-hash=7cc55b5d6d
     message: Valid GatewayClass
 ```
 

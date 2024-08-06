@@ -1,3 +1,5 @@
+Make sure it's an Azure CNI cluster.
+
 ```
 curl --insecure https://faeqexa4e6e7h9c0.fz20.alb.azure.com/
 no healthy upstream

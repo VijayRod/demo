@@ -1,7 +1,7 @@
 ```
 rg=rgagc
 az group create -n $rg -l westus # $loc
-az aks create -g $rg -n aks -s $vmsize --enable-oidc-issuer --enable-workload-identity
+az aks create -g $rg -n aks -s $vmsize --network-plugin azure --enable-oidc-issuer --enable-workload-identity
 
 RESOURCE_GROUP=$rg
 AKS_NAME='aks'
@@ -22,13 +22,13 @@ sleep 60
 
 HELM_NAMESPACE='default'
 CONTROLLER_NAMESPACE='azure-alb-system'
-az aks get-credentials --resource-group $RESOURCE_GROUP --name $AKS_NAME
+az aks get-credentials --resource-group $RESOURCE_GROUP --name $AKS_NAME --overwrite-existing
 helm install alb-controller oci://mcr.microsoft.com/application-lb/charts/alb-controller --namespace $HELM_NAMESPACE --version 1.0.2 --set albController.namespace=$CONTROLLER_NAMESPACE --set albController.podIdentity.clientID=$(az identity show -g $RESOURCE_GROUP -n azure-alb-identity --query clientId -o tsv)
 
 az aks get-credentials -g $rg -n aks --overwrite-existing
 kubectl get pods -n azure-alb-system
 # kubectl logs -n azure-alb-system -l app=alb-controller
-kubectl get gatewayclass azure-alb-external -o yaml | grep message # status.conditions.message
+kubectl get gatewayclass azure-alb-external -o yaml -w # | grep message # status.conditions.message
 ```
 
 ```
@@ -77,7 +77,7 @@ spec:
   - $ALB_SUBNET_ID
 EOF
 
-kubectl get applicationloadbalancer alb-test -n alb-test-infra -o yaml | grep "reason: Ready"
+kubectl get applicationloadbalancer alb-test -n alb-test-infra -o yaml -w # | grep "reason: Ready"
 ```
 
 ```

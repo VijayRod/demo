@@ -83,6 +83,8 @@ curl --insecure https://$fqdn/ # Hello World!
 ```
 
 ```
+# Outputs
+
 kubectl get all -n test-infra -owide
 NAME                            READY   STATUS    RESTARTS   AGE   IP           NODE
 NOMINATED NODE   READINESS GATES
@@ -110,6 +112,8 @@ kubectl get backendtlspolicy -n test-infra -oyaml | grep port -i
 ```
 
 ```
+# Debug
+
 kubectl get svc -n test-infra mtls-app -ojsonpath='{.spec.clusterIP}' # 10.0.155.163
 kubectl get svc -n test-infra mtls-app -ojsonpath='{.spec.ports[0].port}' # 443
 kubectl exec -it nginx -- curl https://10.0.155.163 -k # Hello World!
@@ -127,12 +131,15 @@ kubectl get HealthCheckPolicy -n test-infra # no rows
 ```
 
 ```
+# Cleanup
 kubectl delete po -n test-infra -l app=mtls-app
 kubectl delete po -n azure-alb-system -l app=alb-controller
 kubectl delete ns test-infra
 ```
 
 ```
+# Health probes output
+
 kubectl get po -A -owide | grep -E 'alb|test'
 azure-alb-system   alb-controller-686895c84-nswh2                       1/1     Running   0          30m     10.224.0.10   aks-nodepool1-22105430-vmss000002   <none>           <none>
 azure-alb-system   alb-controller-686895c84-wcrnj                       1/1     Running   0          30m     10.224.0.73   aks-nodepool1-22105430-vmss000000   <none>           <none>

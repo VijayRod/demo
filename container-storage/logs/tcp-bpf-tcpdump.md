@@ -2,6 +2,11 @@
 tcpdump host 1.1.1.1 # Source or destination
 tcpdump port 443
 tcpdump -w - # to write binary data to stdout
+man tcpdump
+
+# Use tcpdump to exclude traffic from specific IP addresses
+tcpdump -f "not net 168.63.129.16/32" # Alternatively, you can use tcpdump -f "! net 168.63.129.16/32"
+tcpdump -f "host 10.224.0.69 and not net 168.63.129.16/32 and not net 169.254.169.254/32"
 ```
 
 - https://danielmiessler.com/p/tcpdump

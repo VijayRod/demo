@@ -1,4 +1,4 @@
-tbd no healthy upstream
+
 
 ```
 rg=rgagc
@@ -78,7 +78,8 @@ EOF
 kubectl get backendtlspolicy -n test-infra mtls-app-tls-policy -o yaml -w # message: Valid BackendTLSPolicy
 
 fqdn=$(kubectl get gateway gateway-01 -n test-infra -o jsonpath='{.status.addresses[0].value}') # faeqexa4e6e7h9c0.fz20.alb.azure.com
-curl --insecure https://$fqdn/ # no healthy upstream
+curl --insecure https://$fqdn/ # Hello World!
+# curl https://$fqdn/ -kI # HTTP/2 200 server: Microsoft-Azure-Application-LB/AGC
 ```
 
 ```
@@ -95,50 +96,19 @@ NAME                                  DESIRED   CURRENT   READY   AGE   CONTAINE
 replicaset.apps/mtls-app-8446bfdb6c   2         2         2       14h   mtls-app     nginx:1.23.2   app=mtls-app,pod-template-hash=8446bfdb6c
 
 kubectl logs -n test-infra app=mtls-app
-```
 
-```
 kubectl describe po -n test-infra mtls-app-8446bfdb6c-c49pb | grep port -i
     Port:           8443/TCP
     Host Port:      0/TCP
 kubectl run nginx --image=nginx
-kubectl exec -it nginx -- curl https://10.244.2.5:8443 -I
-curl: (60) SSL certificate problem: unable to get local issuer certificate
-kubectl exec -it nginx -- curl https://10.0.155.163:443 -I
-curl: (60) SSL certificate problem: unable to get local issuer certificate
+kubectl exec -it nginx -- curl https://10.244.2.5:8443 -kI # HTTP/1.1 200 OK Server: nginx/1.23.2
+kubectl exec -it nginx -- curl https://10.0.155.163:443 -kI # HTTP/1.1 200 OK Server: nginx/1.23.2
+
+kubectl get HealthCheckPolicy -n test-infra # No resources found in test-infra namespace.
 
 kubectl get backendtlspolicy -n test-infra -oyaml | grep port -i
       ports:
       - port: 443
-```      
-
-```
-tbd
-kubectl delete HealthCheckPolicy -n test-infra gateway-health-check-policy
-kubectl apply -f - <<EOF
-apiVersion: alb.networking.azure.io/v1
-kind: HealthCheckPolicy
-metadata:
-  name: gateway-health-check-policy
-  namespace: test-infra
-spec:
-  targetRef:
-    group: ""
-    kind: Service
-    name: mtls-app
-    namespace: test-infra
-  default:
-    interval: 5s
-    timeout: 3s
-    healthyThreshold: 1
-    unhealthyThreshold: 1
-    http:
-      path: /
-      match:
-        statusCodes: 
-        - start: 200
-          end: 299
-EOF
 ```
 
 - https://learn.microsoft.com/en-us/azure/application-gateway/for-containers/how-to-backend-mtls-gateway-api?tabs=alb-managed

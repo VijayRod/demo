@@ -6,7 +6,8 @@ man tcpdump
 
 # Use tcpdump to exclude traffic from specific IP addresses
 tcpdump -f "not net 168.63.129.16/32" # Alternatively, you can use tcpdump -f "! net 168.63.129.16/32"
-tcpdump -f "host 10.224.0.69 and not net 168.63.129.16/32 and not net 169.254.169.254/32"
+tcpdump -f "not net 168.63.129.16/32 and not net 169.254.169.254/32"
+tcpdump -f "host 10.224.0.69 and not net 168.63.129.16/32 and not net 10.255.0.0/16"
 ```
 
 - https://danielmiessler.com/p/tcpdump

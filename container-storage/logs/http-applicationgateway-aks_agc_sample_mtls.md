@@ -138,7 +138,7 @@ kubectl delete ns test-infra
 ```
 
 ```
-# Health probes output
+# Health probes
 
 kubectl get po -A -owide | grep -E 'alb|test'
 azure-alb-system   alb-controller-686895c84-nswh2                       1/1     Running   0          30m     10.224.0.10   aks-nodepool1-22105430-vmss000002   <none>           <none>

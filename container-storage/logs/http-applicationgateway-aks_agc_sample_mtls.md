@@ -95,8 +95,6 @@ deployment.apps/mtls-app   2/2     2            2           14h   mtls-app     n
 NAME                                  DESIRED   CURRENT   READY   AGE   CONTAINERS   IMAGES         SELECTOR
 replicaset.apps/mtls-app-8446bfdb6c   2         2         2       14h   mtls-app     nginx:1.23.2   app=mtls-app,pod-template-hash=8446bfdb6c
 
-kubectl logs -n test-infra app=mtls-app
-
 kubectl describe po -n test-infra mtls-app-8446bfdb6c-c49pb | grep port -i
     Port:           8443/TCP
     Host Port:      0/TCP
@@ -109,6 +107,59 @@ kubectl get HealthCheckPolicy -n test-infra # No resources found in test-infra n
 kubectl get backendtlspolicy -n test-infra -oyaml | grep port -i
       ports:
       - port: 443
+```
+
+```
+kubectl get svc -n test-infra mtls-app -ojsonpath='{.spec.clusterIP}' # 10.0.155.163
+kubectl get svc -n test-infra mtls-app -ojsonpath='{.spec.ports[0].port}' # 443
+kubectl exec -it nginx -- curl https://10.0.155.163 -k # Hello World!
+
+kubectl get gateway -A -o yaml -ojsonpath='{.items[0].status}'
+kubectl get httproute -A -o yaml -ojsonpath='{.items[0].status}'
+kubectl get applicationloadbalancer -A -o yaml -ojsonpath='{.items[0].status}'
+kubectl get backendtlspolicy -A -o yaml -ojsonpath='{.items[0].status}'
+
+kubectl logs -n azure-alb-system -l app=alb-controller
+
+kubectl get no -owide
+kubectl get po -n test-infra -owide
+kubectl get HealthCheckPolicy -n test-infra # no rows
+```
+
+```
+kubectl delete po -n test-infra -l app=mtls-app
+kubectl delete po -n azure-alb-system -l app=alb-controller
+kubectl delete ns test-infra
+```
+
+```
+kubectl get po -A -owide | grep -E 'alb|test'
+azure-alb-system   alb-controller-686895c84-nswh2                       1/1     Running   0          30m     10.224.0.10   aks-nodepool1-22105430-vmss000002   <none>           <none>
+azure-alb-system   alb-controller-686895c84-wcrnj                       1/1     Running   0          30m     10.224.0.73   aks-nodepool1-22105430-vmss000000   <none>           <none>
+azure-alb-system   alb-controller-bootstrap-7cc55b5d6d-m7wfm            1/1     Running   0          30m     10.224.0.6    aks-nodepool1-22105430-vmss000002   <none>           <none>
+test-infra         mtls-app-8446bfdb6c-7krvv                            1/1     Running   0          15m     10.224.0.25   aks-nodepool1-22105430-vmss000002   <none>           <none>
+test-infra         mtls-app-8446bfdb6c-p4bbg                            1/1     Running   0          15m     10.224.0.71   aks-nodepool1-22105430-vmss000000   <none>           <none>
+
+root@aks-nodepool1-22105430-vmss000000:/# tcpdump host 10.224.0.71
+
+18:02:34.997269 IP 10.225.0.4.47789 > 10.224.0.71.8443: Flags [P.], seq 380093306:380093418, ack 2937599036, win 63, options [nop,nop,TS val 2587064154 ecr 3376795172], length 112
+18:02:34.997430 IP 10.224.0.71.8443 > 10.225.0.4.47789: Flags [P.], seq 1:204, ack 112, win 509, options [nop,nop,TS val 3376800175 ecr 2587064154], length 203
+18:02:34.998205 IP 10.225.0.4.47789 > 10.224.0.71.8443: Flags [.], ack 204, win 63, options [nop,nop,TS val 2587064155 ecr 3376800175], length 0
+
+18:02:35.497632 IP 10.225.0.5.52783 > 10.224.0.71.8443: Flags [P.], seq 398968490:398968602, ack 1506581331, win 63, options [nop,nop,TS val 4243417713 ecr 2732720613], length 112
+18:02:35.497870 IP 10.224.0.71.8443 > 10.225.0.5.52783: Flags [P.], seq 1:204, ack 112, win 509, options [nop,nop,TS val 2732725616 ecr 4243417713], length 203
+18:02:35.498378 IP 10.225.0.5.52783 > 10.224.0.71.8443: Flags [.], ack 204, win 63, options [nop,nop,TS val 4243417714 ecr 2732725616], length 0
+
+18:02:39.997954 IP 10.225.0.4.47789 > 10.224.0.71.8443: Flags [P.], seq 112:224, ack 204, win 63, options [nop,nop,TS val 2587069155 ecr 3376800175], length 112
+18:02:39.998108 IP 10.224.0.71.8443 > 10.225.0.4.47789: Flags [P.], seq 204:407, ack 224, win 509, options [nop,nop,TS val 3376805176 ecr 2587069155], length 203
+18:02:39.999008 IP 10.225.0.4.47789 > 10.224.0.71.8443: Flags [.], ack 407, win 63, options [nop,nop,TS val 2587069155 ecr 3376805176], length 0
+
+18:02:40.502275 IP 10.225.0.5.52783 > 10.224.0.71.8443: Flags [P.], seq 112:224, ack 204, win 63, options [nop,nop,TS val 4243422717 ecr 2732725616], length 112
+18:02:40.502520 IP 10.224.0.71.8443 > 10.225.0.5.52783: Flags [P.], seq 204:407, ack 224, win 509, options [nop,nop,TS val 2732730621 ecr 4243422717], length 203
+18:02:40.503471 IP 10.225.0.5.52783 > 10.224.0.71.8443: Flags [.], ack 407, win 63, options [nop,nop,TS val 4243422719 ecr 2732730621], length 0
+
+noderg=$(az aks show -g $rg -n aks --query nodeResourceGroup -o tsv)
+az network vnet subnet show -g $noderg --vnet-name aks-vnet-64451649 -n subnet-alb --query addressPrefix -otsv # 10.225.0.0/24
 ```
 
 - https://learn.microsoft.com/en-us/azure/application-gateway/for-containers/how-to-backend-mtls-gateway-api?tabs=alb-managed

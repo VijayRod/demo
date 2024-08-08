@@ -1,7 +1,7 @@
 ```
 tcpdump
 tcpdump -w - # to write binary data to stdout
-tcpdump --list-interfaces # ip a # tcpdump -i eth0
+tcpdump --list-interfaces # ip a # tcpdump -i eth0 # tcpdump -i any
 tcpdump – version
 man tcpdump
 

@@ -1,0 +1,8 @@
+- https://www.digicert.com/what-is-ssl-tls-and-https
+- https://www.cloudflare.com/en-in/learning/ssl/what-is-https/
+- https://datatracker.ietf.org/doc/html/rfc5246
+- https://wiki.wireshark.org/TLS
+- https://manpages.ubuntu.com/manpages/bionic/man1/mitmdump.1.html
+- https://unix.stackexchange.com/questions/103037/what-tool-can-i-use-to-sniff-http-https-traffic
+- tbd https://www.hostzealot.com/blog/how-to/ssl-handshake-capture-with-tcpdump
+- tbd https://www.baeldung.com/linux/tcpdump-capture-ssl-handshake

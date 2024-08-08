@@ -134,6 +134,7 @@ kubectl get HealthCheckPolicy -n test-infra # no rows
 # Cleanup
 kubectl delete po -n test-infra -l app=mtls-app
 kubectl delete po -n azure-alb-system -l app=alb-controller
+kubectl get po -A -owide | grep -E 'alb|test'
 kubectl delete ns test-infra
 ```
 

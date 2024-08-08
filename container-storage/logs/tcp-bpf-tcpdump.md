@@ -47,7 +47,34 @@ tcpdump 'not net 168.63.129.16 and not net 169.254.169.254 and not port 10250 an
 ```
 tcpdump tcp port http # tcpdump port 80 # tcpdump port http
 tcpdump tcp port https
+tcpdump tcp dst port 80 # tcpdump 'tcp dst port 80'
+tcpdump tcp dst port 80 -A # Displays the HTTP request/response in ASCII format.
+```
+
+```
+curl google.com
+tcpdump 'tcp dst port 80 and tcp[((tcp[12:1] & 0xf0) >> 2):4] = 0x47455420' # Here 0x47455420 depicts the ASCII value of  characters  'G' 'E' 'T' ' '
+# tcpdump -A 'tcp[((tcp[12:1] & 0xf0) >> 2):4] = 0x47455420'
+# tcpdump -A 'tcp[((tcp[12:1] & 0xf0) >> 2):4] = 0x47455420 and not net 168.63.129.16 and not net 169.254.169.254 and not port 10250'
+23:02:09.004064 IP 1.2.3.4.49878 > mad07s25-in-f14.1e100.net.http: Flags [P.], seq 3472752388:3472752462, ack 1346174452, win 502, options [nop,nop,TS val 89192113 ecr 1101230501], length 74: HTTP: GET / HTTP/1.1
+
+curl google.com
+tcpdump 'tcp[((tcp[12:1] & 0xf0) >> 2):4] = 0x48545450' # 0x48545450 represents the ASCII value of 'H' 'T' 'T' 'P' this is to capture the HTTP response
+23:00:21.662418 IP mad41s11-in-f14.1e100.net.http > 1.2.3.4.42180: Flags [P.], seq 1942071783:1942072556, ack 3228441095, win 256, options [nop,nop,TS val 1187180250 ecr 1887773435], length 773: HTTP: HTTP/1.1 301 Moved Permanently
+
+curl google.com
+tcpdump 'tcp dst port 80 or tcp dst port 443 and tcp[((tcp[12:1] & 0xf0) >> 2):4] = 0x47455420 or tcp[((tcp[12:1] & 0xf0) >> 2):4] = 0x48545450'
+23:09:02.975303 IP 1.2.3.4.36630 > mad41s13-in-f14.1e100.net.http: Flags [P.], seq 2710103797:2710103871, ack 980434831, win 502, options [nop,nop,TS val 574057378 ecr 3641890559], length 74: HTTP: GET / HTTP/1.1
+23:09:03.018202 IP mad41s13-in-f14.1e100.net.http > 1.2.3.4.36630: Flags [P.], seq 1:774, ack 74, win 256, options [nop,nop,TS val 3641890603 ecr 574057378], length 773: HTTP: HTTP/1.1 301 Moved Permanently
+
+curl google.com -I
+tcpdump 'tcp[((tcp[12:1] & 0xf0) >> 2):4] = 0x48454144' # HEAD
+23:44:18.889621 IP 1.2.3.4.45238 > mad07s23-in-f14.1e100.net.http: Flags [P.], seq 3735714866:3735714941, ack 774239603, win 502, options [nop,nop,TS val 214544517 ecr 1619348354], length 75: HTTP: HEAD / HTTP/1.1
 ```
 
 - https://security.stackexchange.com/questions/121011/wireshark-tcp-filter-tcptcp121-0xf0-24
+- https://onlinetools.com/hex/convert-hex-to-ascii?input=0x47455420 # GET 
+- https://onlinetools.com/hex/convert-ascii-to-hex?input=GET  # 47455420. Remember to deselect 'Add 0x Hex Prefix' and 'Add Extra Spacing'. Also, don't forget to manually add a space after typing GET to match the 4 bytes requirement.
+- tbd https://www.rapidtables.com/code/text/ascii-table.html
+- tbd https://www.middlewareinventory.com/blog/tcpdump-capture-http-get-post-requests-apache-weblogic-websphere/
 <br>

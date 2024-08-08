@@ -1,0 +1,2 @@
+- https://www.netresec.com/?page=PolarProxy
+- https://discourse.mitmproxy.org/t/save-traffic-in-pcap-file-or-best-way-to-log-post-data/177/4: You can use PolarProxy (another free TLS proxy) if you wanna save the decrypted TLS traffic in a PCAP file.

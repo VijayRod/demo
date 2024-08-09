@@ -10,6 +10,9 @@ kubectl run -it --rm aks-ssh --image=debian:stable # apt-get update -y && apt-ge
 kubectl run pause --image=registry.k8s.io/pause:3.1 --restart=Never
 ```
 
+- https://kubernetes.io/docs/concepts/containers/images/
+- https://kubernetes.io/docs/tasks/access-application-cluster/list-all-running-container-images/
+
 ```
 # busybox
 kubectl run busybox --image=busybox --command -it --rm -- wget https://www.example.com
@@ -35,6 +38,3 @@ apt update && apt install dnsutils -y
 ```
 kubectl create deploy hostnames --image=registry.k8s.io/serve_hostname # From another pod, use curl $hostnamesPodIp:9376
 ```
-
-- https://kubernetes.io/docs/concepts/containers/images/
-- https://kubernetes.io/docs/tasks/access-application-cluster/list-all-running-container-images/

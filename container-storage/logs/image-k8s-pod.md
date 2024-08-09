@@ -11,6 +11,7 @@ kubectl run pause --image=registry.k8s.io/pause:3.1 --restart=Never
 ```
 
 ```
+# busybox
 kubectl run busybox --image=busybox --command -it --rm -- wget https://www.example.com
 kubectl run busybox --image=busybox --command -it --rm -- wget https://www.example.com
 kubectl run -it --rm --restart=Never busybox --image=busybox sh
@@ -21,6 +22,7 @@ kubectl run -it --rm nginx --image=nginx -- curl -I https://openai.com
 - https://stackoverflow.com/questions/62847331/is-it-possible-to-install-curl-into-busybox-in-kubernetes-pod: The short answer, is you cannot.
 
 ```
+# dnsutils
 kubectl run dnsutils --image=registry.k8s.io/e2e-test-images/jessie-dnsutils:1.3 --command -- sh -c 'sleep infinity' # kubectl apply -f https://k8s.io/examples/admin/dns/dnsutils.yaml
 kubectl exec -it dnsutils -- /bin/bash
 

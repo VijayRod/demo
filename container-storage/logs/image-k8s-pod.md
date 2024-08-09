@@ -1,7 +1,14 @@
 ```
-kubectl delete po --all # -A
-sleep 10; kubectl get po # -A
+kubectl delete po --all
+sleep 10; kubectl get po
 
+kubectl delete po --all -A
+sleep 10; kubectl get po -A
+```
+
+
+```
+# all
 kubectl run nginx --image=nginx
 kubectl exec -it nginx -- /bin/bash # curl google.com -I # apt-get update
 kubectl run busybox --image=busybox --command -- sh -c 'sleep 1d' # https://busybox.net/about.html

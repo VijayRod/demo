@@ -1,5 +1,6 @@
 - https://www.digicert.com/what-is-ssl-tls-and-https
 - https://www.cloudflare.com/en-in/learning/ssl/what-is-https/
+- https://www.cloudflare.com/en-in/learning/ssl/what-happens-in-a-tls-handshake/
 - https://datatracker.ietf.org/doc/html/rfc5246
 - https://wiki.wireshark.org/TLS
 - https://manpages.ubuntu.com/manpages/bionic/man1/mitmdump.1.html

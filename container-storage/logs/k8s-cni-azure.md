@@ -75,6 +75,30 @@ aks-nodepool1-59385832-vmss000000:/# cat /var/run/azure-vnet-ipam.json
                                                         },
 ```
 
+```
+kubectl delete svc nginx
+kubectl expose po nginx --port=8080
+kubectl get svc nginx
+nginx   ClusterIP   10.0.48.181   <none>        8080/TCP   4s
+# No related entries in the azure-vnet.json, azure-vnet-ipam.json, 10-azure.conflist files.
+
+kubectl delete svc nginx
+kubectl expose po nginx --port=8080 --type=NodePort
+kubectl get svc nginx
+nginx   NodePort   10.0.205.154   <none>        8080:30117/TCP   0s
+# No related entries in the azure-vnet.json, azure-vnet-ipam.json, 10-azure.conflist files.
+
+kubectl delete svc nginx
+kubectl expose po nginx --port=8080 --type=LoadBalancer
+kubectl get svc nginx
+nginx   LoadBalancer   10.0.30.15   74.241.215.95   8080:31350/TCP   14s
+# No related entries in the azure-vnet.json, azure-vnet-ipam.json, 10-azure.conflist files.
+
+kubectl get no -owide
+aks-nodepool1-59385832-vmss000000   Ready    <none>   11h   v1.29.7   10.224.0.4    <none>        Ubuntu 22.04.4 LTS   5.15.0-1070-azure   containerd://1.7.20-1
+# No related entries in the azure-vnet.json, azure-vnet-ipam.json, 10-azure.conflist files.
+```
+
 - https://github.com/Azure/azure-container-networking
 - https://learn.microsoft.com/en-us/azure/aks/azure-cni-overview
 - https://learn.microsoft.com/en-us/azure/aks/concepts-network#azure-cni-advanced-networking

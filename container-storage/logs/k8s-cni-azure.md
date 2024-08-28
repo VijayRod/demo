@@ -6,6 +6,7 @@ cat /etc/cni/net.d/10-azure.conflist
 ```
 
 ```
+aks-nodepool1-59385832-vmss000000:/# cat /etc/cni/net.d/10-azure.conflist
 {
    "cniVersion":"0.3.0",
    "name":"azure",

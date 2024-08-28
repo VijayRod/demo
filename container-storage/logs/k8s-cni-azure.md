@@ -164,6 +164,11 @@ aks-nodepool1-59385832-vmss000000:/# crictl pods nginx
 POD ID              CREATED             STATE               NAME                                  NAMESPACE  ATTEMPT             RUNTIME
 ee86fb8be6198       13 hours ago        Ready               nginx                                 default  0                   (default)
 
+# https://learn.microsoft.com/en-us/azure/virtual-network/virtual-networks-faq#are-there-any-restrictions-on-using-ip-addresses-within-these-subnets: .1: Reserved by Azure for the default gateway.
+# https://learn.microsoft.com/en-us/azure/virtual-network/virtual-networks-faq#can-i-ping-a-default-gateway-in-a-virtual-network: No.
+az network vnet subnet show -g MC_rg_akscni_swedencentral --vnet-name aks-vnet-92427521 -n aks-subnet --query addressPrefix -otsv # 10.224.0.0/16
+az network vnet show -g MC_rg_akscni_swedencentral -n aks-vnet-92427521 --query addressSpace.addressPrefixes[0] -otsv # 10.224.0.0/12
+
 # tail /var/log/azure-vnet.log -f
 aks-nodepool1-59385832-vmss000000:/# cat /var/log/azure-vnet.log | grep nginx
 2024/08/28 09:46:32 [11185] CNI_COMMAND environment variable set to ADD

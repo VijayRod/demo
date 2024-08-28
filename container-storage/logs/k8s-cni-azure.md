@@ -160,6 +160,10 @@ Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
 168.63.129.16   10.224.0.1      255.255.255.255 UGH   100    0        0 eth0
 169.254.169.254 10.224.0.1      255.255.255.255 UGH   100    0        0 eth0
 
+aks-nodepool1-59385832-vmss000000:/# crictl pods nginx
+POD ID              CREATED             STATE               NAME                                  NAMESPACE  ATTEMPT             RUNTIME
+ee86fb8be6198       13 hours ago        Ready               nginx                                 default  0                   (default)
+
 # tail /var/log/azure-vnet.log -f
 aks-nodepool1-59385832-vmss000000:/# cat /var/log/azure-vnet.log | grep nginx
 2024/08/28 09:46:32 [11185] CNI_COMMAND environment variable set to ADD

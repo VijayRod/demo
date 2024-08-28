@@ -112,6 +112,18 @@ aks-nodepool1-59385832-vmss000000:/# ps aux
 root       11303  0.0  0.0  11404  7580 ?        Ss   09:46   0:00 nginx: master process nginx -g daemon off;
 systemd+   11338  0.0  0.0  11868  2880 ?        S    09:46   0:00 nginx: worker process
 systemd+   11339  0.0  0.0  11868  2880 ?        S    09:46   0:00 nginx: worker process
+
+aks-nodepool1-59385832-vmss000000:/# cat /var/log/syslog | grep ee86fb8b
+Aug 28 09:46:32 aks-nodepool1-59385832-vmss000000 systemd[1]: Started libcontainer container ee86fb8be61987b83e1da1338b09fc0a83dcd12f9754455e668b16dc98f20f48.
+Aug 28 09:46:32 aks-nodepool1-59385832-vmss000000 containerd[2707]: time="2024-08-28T09:46:32.480291720Z" level=info msg="RunPodSandbox for &PodSandboxMetadata{Name:nginx,Uid:51a5ca8e-4e46-451b-bbac-525543a80861,Namespace:default,Attempt:0,} returns sandbox id \"ee86fb8be61987b83e1da1338b09fc0a83dcd12f9754455e668b16dc98f20f48\""
+Aug 28 09:46:33 aks-nodepool1-59385832-vmss000000 kubelet[2955]: I0828 09:46:33.422286    2955 kubelet.go:2455] "SyncLoop (PLEG): event for pod" pod="default/nginx" event={"ID":"51a5ca8e-4e46-451b-bbac-525543a80861","Type":"ContainerStarted","Data":"ee86fb8be61987b83e1da1338b09fc0a83dcd12f9754455e668b16dc98f20f48"}
+Aug 28 09:46:33 aks-nodepool1-59385832-vmss000000 containerd[2707]: time="2024-08-28T09:46:33.498392207Z" level=info msg="CreateContainer within sandbox \"ee86fb8be61987b83e1da1338b09fc0a83dcd12f9754455e668b16dc98f20f48\" for container &ContainerMetadata{Name:nginx,Attempt:0,}"
+Aug 28 09:46:33 aks-nodepool1-59385832-vmss000000 containerd[2707]: time="2024-08-28T09:46:33.527441738Z" level=info msg="CreateContainer within sandbox \"ee86fb8be61987b83e1da1338b09fc0a83dcd12f9754455e668b16dc98f20f48\" for &ContainerMetadata{Name:nginx,Attempt:0,} returns container id \"82d037df98acb953a319e50419b1da7079d9ba9159c6d25e58b79db8d86e4e2c\""
+
+aks-nodepool1-59385832-vmss000000:/# cat /var/log/pods/default_nginx_51a5ca8e-4e46-451b-bbac-525543a80861/nginx/0.log
+2024-08-28T09:46:33.571288084Z stdout F /docker-entrypoint.sh: /docker-entrypoint.d/ is not empty, will attempt to perform configuration
+# kubectl logs nginx --timestamps=true
+2024-08-28T09:46:33.571288084Z /docker-entrypoint.sh: /docker-entrypoint.d/ is not empty, will attempt to perform configuration
 ```
 
 ```

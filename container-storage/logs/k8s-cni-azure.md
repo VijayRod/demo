@@ -122,6 +122,8 @@ Aug 28 09:46:33 aks-nodepool1-59385832-vmss000000 containerd[2707]: time="2024-0
 
 aks-nodepool1-59385832-vmss000000:/# cat /var/log/pods/default_nginx_51a5ca8e-4e46-451b-bbac-525543a80861/nginx/0.log
 2024-08-28T09:46:33.571288084Z stdout F /docker-entrypoint.sh: /docker-entrypoint.d/ is not empty, will attempt to perform configuration
+aks-nodepool1-59385832-vmss000000:/# cat /var/log/containers/nginx_default_nginx-82d037df98acb953a319e50419b1da7079d9ba9159c6d25e58b79db8d86e4e2c.log
+2024-08-28T09:46:33.571288084Z stdout F /docker-entrypoint.sh: /docker-entrypoint.d/ is not empty, will attempt to perform configuration
 # kubectl logs nginx --timestamps=true
 2024-08-28T09:46:33.571288084Z /docker-entrypoint.sh: /docker-entrypoint.d/ is not empty, will attempt to perform configuration
 ```

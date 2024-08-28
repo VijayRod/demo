@@ -264,7 +264,7 @@ kubectl delete svc nginx
 kubectl expose po nginx --port=8080
 kubectl get svc nginx
 nginx   ClusterIP   10.0.48.181   <none>        8080/TCP   4s
-# No related entries in the azure-vnet.json, azure-vnet-ipam.json, 10-azure.conflist files.
+# No related entries in the azure-vnet.json, azure-vnet-ipam.json, 10-azure.conflist files. None in azure-vnet.log and azure-vnet-ipam.log too.
 
 kubectl delete svc nginx
 kubectl expose po nginx --port=8080 --type=NodePort

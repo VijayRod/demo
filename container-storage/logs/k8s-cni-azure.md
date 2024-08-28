@@ -99,6 +99,19 @@ aks-nodepool1-59385832-vmss000000:/# cat /var/run/azure-vnet-ipam.json
                                                                 "Addr": "10.224.0.24",
                                                                 "InUse": true
                                                         },
+
+aks-nodepool1-59385832-vmss000000:/# ip netns | grep 0a376d016a78
+cni-1770aa7f-262a-c2ad-1c19-0a376d016a78 (id: 2)
+aks-nodepool1-59385832-vmss000000:/# ip netns pids cni-1770aa7f-262a-c2ad-1c19-0a376d016a78
+11255
+11303
+11338
+11339
+aks-nodepool1-59385832-vmss000000:/# ps aux
+65535      11255  0.0  0.0    972     4 ?        Ss   09:46   0:00 /pause
+root       11303  0.0  0.0  11404  7580 ?        Ss   09:46   0:00 nginx: master process nginx -g daemon off;
+systemd+   11338  0.0  0.0  11868  2880 ?        S    09:46   0:00 nginx: worker process
+systemd+   11339  0.0  0.0  11868  2880 ?        S    09:46   0:00 nginx: worker process
 ```
 
 ```

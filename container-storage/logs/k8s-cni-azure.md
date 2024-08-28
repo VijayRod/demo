@@ -114,10 +114,38 @@ aks-nodepool1-59385832-vmss000000:/# ip netns pids cni-1770aa7f-262a-c2ad-1c19-0
 11338
 11339
 aks-nodepool1-59385832-vmss000000:/# ps aux
+USER         PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
 65535      11255  0.0  0.0    972     4 ?        Ss   09:46   0:00 /pause
 root       11303  0.0  0.0  11404  7580 ?        Ss   09:46   0:00 nginx: master process nginx -g daemon off;
 systemd+   11338  0.0  0.0  11868  2880 ?        S    09:46   0:00 nginx: worker process
 systemd+   11339  0.0  0.0  11868  2880 ?        S    09:46   0:00 nginx: worker process
+aks-nodepool1-59385832-vmss000000:/# nsenter -t 11303 -n ip addr
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host
+       valid_lft forever preferred_lft forever
+23: eth0@if24: <BROADCAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default qlen 1000
+    link/ether ba:60:99:6a:a1:83 brd ff:ff:ff:ff:ff:ff link-netnsid 0
+    inet 10.224.0.24/16 scope global eth0
+       valid_lft forever preferred_lft forever
+    inet6 fe80::b860:99ff:fe6a:a183/64 scope link
+       valid_lft forever preferred_lft forever
+aks-nodepool1-59385832-vmss000000:/# nsenter -t 11338 -n ip addr
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host
+       valid_lft forever preferred_lft forever
+23: eth0@if24: <BROADCAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default qlen 1000
+    link/ether ba:60:99:6a:a1:83 brd ff:ff:ff:ff:ff:ff link-netnsid 0
+    inet 10.224.0.24/16 scope global eth0
+       valid_lft forever preferred_lft forever
+    inet6 fe80::b860:99ff:fe6a:a183/64 scope link
+       valid_lft forever preferred_lft forever
+aks-nodepool1-59385832-vmss000000:/# apt update && install bridge-utils -y
 
 aks-nodepool1-59385832-vmss000000:/# cat /var/log/syslog | grep ee86fb8b
 Aug 28 09:46:32 aks-nodepool1-59385832-vmss000000 systemd[1]: Started libcontainer container ee86fb8be61987b83e1da1338b09fc0a83dcd12f9754455e668b16dc98f20f48.

@@ -100,6 +100,12 @@ aks-nodepool1-59385832-vmss000000:/# cat /var/run/azure-vnet-ipam.json
                                                                 "InUse": true
                                                         },
 
+aks-nodepool1-59385832-vmss000000:/# ip addr
+24: azvc440f455693@if23: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default qlen 1000
+    link/ether aa:aa:aa:aa:aa:aa brd ff:ff:ff:ff:ff:ff link-netns cni-1770aa7f-262a-c2ad-1c19-0a376d016a78
+    inet6 fe80::a8aa:aaff:feaa:aaaa/64 scope link
+       valid_lft forever preferred_lft forever
+
 aks-nodepool1-59385832-vmss000000:/# ip netns | grep 0a376d016a78
 cni-1770aa7f-262a-c2ad-1c19-0a376d016a78 (id: 2)
 aks-nodepool1-59385832-vmss000000:/# ip netns pids cni-1770aa7f-262a-c2ad-1c19-0a376d016a78
@@ -158,3 +164,4 @@ aks-nodepool1-59385832-vmss000000   Ready    <none>   11h   v1.29.7   10.224.0.4
 - https://learn.microsoft.com/en-us/azure/aks/configure-azure-cni
 - https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/azure-subscription-service-limits#azure-kubernetes-service-limits: Maximum pods per node: with Azure Container Networking Interface
 - https://learn.microsoft.com/en-us/azure/virtual-network/container-networking-overview
+- https://stevegriffith.nyc/posts/aks-networking-part2/

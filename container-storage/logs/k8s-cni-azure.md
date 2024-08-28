@@ -285,6 +285,16 @@ nginx   LoadBalancer   10.0.30.15   74.241.215.95   8080:31350/TCP   14s
 kubectl get no -owide
 aks-nodepool1-59385832-vmss000000   Ready    <none>   11h   v1.29.7   10.224.0.4    <none>        Ubuntu 22.04.4 LTS   5.15.0-1070-azure   containerd://1.7.20-1
 # No related entries in the azure-vnet.json, azure-vnet-ipam.json, 10-azure.conflist files.
+
+# kubectl get no -owide
+aks-nodepool1-59385832-vmss000000   Ready    <none>   12h   v1.29.7   10.224.0.4    <none>        Ubuntu 22.04.4 LTS   5.15.0-1070-azure   containerd://1.7.20-1
+# kubectl get po -n kube-system -owide | grep 0.4
+azure-ip-masq-agent-m7wjf             1/1     Running   0          12h   10.224.0.4    aks-nodepool1-59385832-vmss000000   <none>           <none>
+cloud-node-manager-lnjkj              1/1     Running   0          12h   10.224.0.4    aks-nodepool1-59385832-vmss000000   <none>           <none>
+csi-azuredisk-node-r59p5              3/3     Running   0          12h   10.224.0.4    aks-nodepool1-59385832-vmss000000   <none>           <none>
+csi-azurefile-node-hwb24              3/3     Running   0          12h   10.224.0.4    aks-nodepool1-59385832-vmss000000   <none>           <none>
+kube-proxy-qdfmq                      1/1     Running   0          12h   10.224.0.4    aks-nodepool1-59385832-vmss000000   <none>           <none>
+# No related entries in the azure-vnet.json, azure-vnet-ipam.json, 10-azure.conflist files.
 ```
 
 - https://github.com/Azure/azure-container-networking

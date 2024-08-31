@@ -95,6 +95,18 @@ https://www.azurespeed.com/api/ipAddress?ipOrDomain=20.60.79.4
 {"serviceTagId":"AzureCloud.swedencentral","ipAddress":"20.60.79.4","ipAddressPrefix":"20.60.78.0/23","region":"swedencentral","regionId":"76","systemService":"","networkFeatures":"API NSG"},
 {"serviceTagId":"AzureCloud","ipAddress":"20.60.79.4","ipAddressPrefix":"20.60.78.0/23","region":"","regionId":"0","systemService":"","networkFeatures":"API NSG"}]
 
+az network vnet show -g MC_rg_aksblob_swedencentral -n aks-vnet-25847871 --query subnets[0].serviceEndpoints
+[
+  {
+    "locations": [
+      "swedencentral",
+      "swedensouth"
+    ],
+    "provisioningState": "Succeeded",
+    "service": "Microsoft.Storage"
+  }
+]
+
 wireshark tcp.port==2048
 wireshark ip.addr==20.60.79.4
 783	20.60.79.4	10.224.0.4	RPC	66	Continuation

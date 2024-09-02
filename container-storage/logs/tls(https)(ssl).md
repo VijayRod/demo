@@ -98,6 +98,10 @@ wireshark ssl.handshake
 ```
 
 - https://www.digicert.com/what-is-ssl-tls-and-https
+- https://www.ssl.com/article/ssl-tls-handshake-ensuring-secure-online-interactions/
+- https://developer.mozilla.org/en-US/docs/Web/Security/Transport_Layer_Security
+- https://www.okta.com/identity-101/ssl-handshake/
+- tbd https://auth0.com/blog/the-tls-handshake-explained/
 - https://www.cloudflare.com/en-in/learning/ssl/what-is-https/
 - https://www.cloudflare.com/en-in/learning/ssl/what-happens-in-a-tls-handshake/
 - https://datatracker.ietf.org/doc/html/rfc5246

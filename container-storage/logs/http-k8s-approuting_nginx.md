@@ -1,0 +1,348 @@
+```
+rg=rg
+az group create -n $rg -l $loc
+az aks create -g $rg -s $vmsize -n aksapproute --enable-app-routing
+az aks get-credentials -g $rg -n aksapproute --overwrite-existing
+```
+
+- https://learn.microsoft.com/en-us/azure/aks/app-routing
+
+```
+kubectl get all -n app-routing-system --show-labels
+NAME                         READY   STATUS    RESTARTS   AGE     LABELS
+pod/nginx-7cd7f56848-7gxz6   1/1     Running   0          3m22s   app.kubernetes.io/component=ingress-controller,app.kubernetes.io/managed-by=aks-app-routing-operator,app=nginx,pod-template-hash=7cd7f56848
+pod/nginx-7cd7f56848-fcvv7   1/1     Running   0          3m7s    app.kubernetes.io/component=ingress-controller,app.kubernetes.io/managed-by=aks-app-routing-operator,app=nginx,pod-template-hash=7cd7f56848
+NAME            TYPE           CLUSTER-IP   EXTERNAL-IP     PORT(S)                                      AGE     LABELS
+service/nginx   LoadBalancer   10.0.45.15   74.241.234.56   80:31507/TCP,443:31149/TCP,10254:32578/TCP   3m22s   app.kubernetes.io/component=ingress-controller,app.kubernetes.io/managed-by=aks-app-routing-operator,app.kubernetes.io/name=nginx
+NAME                    READY   UP-TO-DATE   AVAILABLE   AGE     LABELS
+deployment.apps/nginx   2/2     2            2           3m22s   app.kubernetes.io/component=ingress-controller,app.kubernetes.io/managed-by=aks-app-routing-operator,app.kubernetes.io/name=nginx
+NAME                               DESIRED   CURRENT   READY   AGE     LABELS
+replicaset.apps/nginx-7cd7f56848   2         2         2       3m22s   app.kubernetes.io/component=ingress-controller,app.kubernetes.io/managed-by=aks-app-routing-operator,app=nginx,pod-template-hash=7cd7f56848
+NAME                                        REFERENCE          TARGETS   MINPODS   MAXPODS   REPLICAS   AGE     LABELS
+horizontalpodautoscaler.autoscaling/nginx   Deployment/nginx   0%/80%    2         100       2          3m23s   app.kubernetes.io/component=ingress-controller,app.kubernetes.io/managed-by=aks-app-routing-operator,app.kubernetes.io/name=nginx
+
+kubectl logs -n app-routing-system -l app=nginx
+I0902 18:19:22.817080       7 nginx.go:271] "Starting NGINX Ingress controller"
+I0902 18:19:22.823417       7 event.go:377] Event(v1.ObjectReference{Kind:"ConfigMap", Namespace:"app-routing-system", Name:"nginx", UID:"b7c58f7d-c840-449e-a023-148feb78bc4b", APIVersion:"v1", ResourceVersion:"842", FieldPath:""}): type: 'Normal' reason: 'CREATE' ConfigMap app-routing-system/nginx
+I0902 18:19:24.019111       7 nginx.go:317] "Starting NGINX process"
+I0902 18:19:24.019279       7 leaderelection.go:250] attempting to acquire leader lease app-routing-system/nginx...
+I0902 18:19:24.019595       7 controller.go:193] "Configuration changes detected, backend reload required"
+I0902 18:19:24.048664       7 controller.go:213] "Backend successfully reloaded"
+I0902 18:19:24.048863       7 controller.go:224] "Initial sync, sleeping for 1 second"
+I0902 18:19:24.049100       7 event.go:377] Event(v1.ObjectReference{Kind:"Pod", Namespace:"app-routing-system", Name:"nginx-7cd7f56848-fcvv7", UID:"d1f3d035-a5d2-4792-a90e-871c26177ae5", APIVersion:"v1", ResourceVersion:"1169", FieldPath:""}): type: 'Normal' reason: 'RELOAD' NGINX reload triggered due to a change in configuration
+I0902 18:19:24.049395       7 leaderelection.go:260] successfully acquired lease app-routing-system/nginx
+I0902 18:19:24.049516       7 status.go:85] "New leader elected" identity="nginx-7cd7f56848-fcvv7"
+
+kubectl delete deploy aks-helloworld -n hello-web-app-routing
+kubectl delete deploy nginx -n app-routing-system
+kubectl delete ns hello-web-app-routing
+kubectl create namespace hello-web-app-routing
+cat << EOF | kubectl create -f -
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: aks-helloworld  
+  namespace: hello-web-app-routing
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: aks-helloworld
+  template:
+    metadata:
+      labels:
+        app: aks-helloworld
+    spec:
+      containers:
+      - name: aks-helloworld
+        image: mcr.microsoft.com/azuredocs/aks-helloworld:v1
+        ports:
+        - containerPort: 80
+        env:
+        - name: TITLE
+          value: "Welcome to Azure Kubernetes Service (AKS)"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: aks-helloworld
+  namespace: hello-web-app-routing
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+  selector:
+    app: aks-helloworld
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: aks-helloworld
+  namespace: hello-web-app-routing
+spec:
+  ingressClassName: webapprouting.kubernetes.azure.com
+  rules:
+  - host: myapp.contoso.com # Update as required
+    http:
+      paths:
+      - backend:
+          service:
+            name: aks-helloworld
+            port:
+              number: 80
+        path: /
+        pathType: Prefix
+EOF
+
+kubectl get ing -A
+NAMESPACE               NAME             CLASS                                HOSTS               ADDRESS         PORTS   AGE
+hello-web-app-routing   aks-helloworld   webapprouting.kubernetes.azure.com   myapp.contoso.com   74.241.234.56   80      110s
+
+kubectl get svc -A
+NAMESPACE               NAME             TYPE           CLUSTER-IP     EXTERNAL-IP     PORT(S)                AGE
+app-routing-system      nginx            LoadBalancer   10.0.45.15     74.241.234.56   80:31507/TCP,443:31149/TCP,10254:32578/TCP   25m
+hello-web-app-routing   aks-helloworld   ClusterIP      10.0.19.188    <none>          80/TCP
+
+kubectl logs -n app-routing-system -l app=nginx
+I0902 18:35:14.694841       7 store.go:440] "Found valid IngressClass" ingress="hello-web-app-routing/aks-helloworld" ingressclass="webapprouting.kubernetes.azure.com"
+I0902 18:35:14.695205       7 event.go:377] Event(v1.ObjectReference{Kind:"Ingress", Namespace:"hello-web-app-routing", Name:"aks-helloworld", UID:"ade51d5c-999a-4f70-b537-5c8970bd303c", APIVersion:"networking.k8s.io/v1", ResourceVersion:"5518", FieldPath:""}): type: 'Normal' reason: 'Sync' Scheduled for sync
+I0902 18:35:17.835113       7 controller.go:193] "Configuration changes detected, backend reload required"
+I0902 18:35:17.893724       7 controller.go:213] "Backend successfully reloaded"
+I0902 18:35:17.894233       7 event.go:377] Event(v1.ObjectReference{Kind:"Pod", Namespace:"app-routing-system", Name:"nginx-7cd7f56848-fcvv7", UID:"d1f3d035-a5d2-4792-a90e-871c26177ae5", APIVersion:"v1", ResourceVersion:"1169", FieldPath:""}): type: 'Normal' reason: 'RELOAD' NGINX reload triggered due to a change in configuration
+I0902 18:35:24.059111       7 status.go:304] "updating Ingress status" namespace="hello-web-app-routing" ingress="aks-helloworld" currentValue=null newValue=[{"ip":"74.241.234.56"}]
+I0902 18:35:24.064382       7 event.go:377] Event(v1.ObjectReference{Kind:"Ingress", Namespace:"hello-web-app-routing", Name:"aks-helloworld", UID:"ade51d5c-999a-4f70-b537-5c8970bd303c", APIVersion:"networking.k8s.io/v1", ResourceVersion:"5571", FieldPath:""}): type: 'Normal' reason: 'Sync' Scheduled for sync
+
+curl -H 'Host: myapp.contoso.com' https://74.241.234.56 -kI
+HTTP/2 200
+date: Mon, 02 Sep 2024 18:49:49 GMT
+content-type: text/html; charset=utf-8
+content-length: 629
+strict-transport-security: max-age=31536000; includeSubDomains
+
+curl -H 'Host: myapp.contoso.com' https://74.241.234.56 -k
+<!DOCTYPE html>
+
+curl 74.241.234.56 -I
+HTTP/1.1 404 Not Found
+Date: Mon, 02 Sep 2024 18:38:17 GMT
+Content-Type: text/html
+Content-Length: 146
+Connection: keep-alive
+
+curl 74.241.234.56
+<html>
+<head><title>404 Not Found</title></head>
+<body>
+<center><h1>404 Not Found</h1></center>
+<hr><center>nginx</center>
+</body>
+</html>
+
+kubectl get no -owide
+NAME                                STATUS   ROLES    AGE   VERSION   INTERNAL-IP   EXTERNAL-IP   OS-IMAGE
+   KERNEL-VERSION      CONTAINER-RUNTIME
+aks-nodepool1-14217322-vmss000000   Ready    <none>   66m   v1.29.7   10.224.0.4    <none>        Ubuntu 22.04.4 LTS   5.15.0-1071-azure   containerd://1.7.20-1
+
+kubectl dumpy capture node aks-nodepool1-14217322-vmss000000
+tcpdump host 74.241.234.56 -w /tmp/tcpdump/client
+
+kubectl dumpy export dumpy-63958099 /tmp/tcpdump
+kubectl dumpy stop dumpy-63958099
+kubectl dumpy delete dumpy-63958099
+ls /tmp/tcpdump/dumpy*
+
+curl -H 'Host: myapp.contoso.com' https://74.241.234.56 -kI
+1	1.2.3.4	74.241.234.56	TCP	74	38778 ? 443 [SYN] Seq=0 Win=65280 Len=0 MSS=1360 SACK_PERM TSval=4196479201 TSecr=0 WS=128
+2	74.241.234.56	1.2.3.4	TCP	74	443 ? 38778 [SYN, ACK] Seq=0 Ack=1 Win=65160 Len=0 MSS=1360 SACK_PERM TSval=2525548834 TSecr=4196479201 WS=128
+3	1.2.3.4	74.241.234.56	TCP	66	38778 ? 443 [ACK] Seq=1 Ack=1 Win=65280 Len=0 TSval=4196479359 TSecr=2525548834
+4	1.2.3.4	74.241.234.56	TLSv1.3	583	Client Hello
+5	74.241.234.56	1.2.3.4	TCP	66	443 ? 38778 [ACK] Seq=1 Ack=518 Win=64768 Len=0 TSval=2525549183 TSecr=4196479368
+6	74.241.234.56	1.2.3.4	TLSv1.3	1352	Server Hello, Change Cipher Spec, Application Data, Application Data
+7	1.2.3.4	74.241.234.56	TCP	66	38778 ? 443 [ACK] Seq=518 Ack=1287 Win=64256 Len=0 TSval=4196479654 TSecr=2525549185
+8	74.241.234.56	1.2.3.4	TLSv1.3	229	Application Data, Application Data
+9	1.2.3.4	74.241.234.56	TCP	66	38778 ? 443 [ACK] Seq=518 Ack=1450 Win=64256 Len=0 TSval=4196479696 TSecr=2525549185
+10	1.2.3.4	74.241.234.56	TLSv1.3	146	Change Cipher Spec, Application Data
+11	1.2.3.4	74.241.234.56	TLSv1.3	112	Application Data
+12	1.2.3.4	74.241.234.56	TLSv1.3	115	Application Data
+13	1.2.3.4	74.241.234.56	TLSv1.3	169	Application Data, Application Data
+14	74.241.234.56	1.2.3.4	TLSv1.3	145	Application Data
+15	1.2.3.4	74.241.234.56	TCP	66	38778 ? 443 [ACK] Seq=796 Ack=1529 Win=64256 Len=0 TSval=4196479806 TSecr=2525549299
+16	74.241.234.56	1.2.3.4	TLSv1.3	145	Application Data
+17	74.241.234.56	1.2.3.4	TLSv1.3	137	Application Data
+18	74.241.234.56	1.2.3.4	TLSv1.3	193	Application Data
+19	1.2.3.4	74.241.234.56	TCP	66	38778 ? 443 [ACK] Seq=796 Ack=1608 Win=64256 Len=0 TSval=4196479862 TSecr=2525549299
+20	1.2.3.4	74.241.234.56	TCP	66	38778 ? 443 [ACK] Seq=796 Ack=1679 Win=64256 Len=0 TSval=4196479863 TSecr=2525549299
+21	1.2.3.4	74.241.234.56	TCP	66	38778 ? 443 [ACK] Seq=796 Ack=1806 Win=64256 Len=0 TSval=4196479863 TSecr=2525549302
+22	1.2.3.4	74.241.234.56	TLSv1.3	97	Application Data
+23	1.2.3.4	74.241.234.56	TLSv1.3	90	Application Data
+24	1.2.3.4	74.241.234.56	TCP	66	38778 ? 443 [FIN, ACK] Seq=851 Ack=1806 Win=64256 Len=0 TSval=4196479864 TSecr=2525549302
+25	74.241.234.56	1.2.3.4	TCP	66	443 ? 38778 [ACK] Seq=1806 Ack=852 Win=64768 Len=0 TSval=2525549590 TSecr=4196479863
+26	74.241.234.56	1.2.3.4	TCP	66	443 ? 38778 [FIN, ACK] Seq=1806 Ack=852 Win=64768 Len=0 TSval=2525549590 TSecr=4196479863
+27	1.2.3.4	74.241.234.56	TCP	66	38778 ? 443 [ACK] Seq=852 Ack=1807 Win=64256 Len=0 TSval=4196480157 TSecr=2525549590
+```
+
+```
+kubectl dumpy get
+kubectl dumpy capture deploy aks-helloworld -n hello-web-app-routing
+kubectl dumpy capture deploy nginx -n app-routing-system
+kubectl dumpy capture node all
+tcpdump host 74.241.234.56 -w /tmp/tcpdump/client
+
+kubectl dumpy export dumpy-74410416 /tmp/tcpdump
+kubectl dumpy export dumpy-55029686 -n app-routing-system /tmp/tcpdump
+kubectl dumpy export dumpy-65044851 -n hello-web-app-routing /tmp/tcpdump
+ls /tmp/tcpdump/dumpy*
+
+kubectl dumpy stop dumpy-74410416
+kubectl dumpy stop dumpy-55029686 -n app-routing-system
+kubectl dumpy stop dumpy-65044851 -n hello-web-app-routing
+kubectl dumpy delete dumpy-74410416
+kubectl dumpy delete dumpy-55029686 -n app-routing-system
+kubectl dumpy delete dumpy-65044851 -n hello-web-app-routing
+
+kubectl get po -A -owide | grep routing
+app-routing-system      nginx-7cd7f56848-rtvrv               1/1     Running   0          5m39s   10.244.1.4    aks-nodepool1-14217322-vmss000001   <none>           <none>
+app-routing-system      nginx-7cd7f56848-ts5dt               1/1     Running   0          5m32s   10.244.1.5    aks-nodepool1-14217322-vmss000001   <none>           <none>
+hello-web-app-routing   aks-helloworld-77fbc6b96c-n5rtq      1/1     Running   0          118s    10.244.0.20   aks-nodepool1-14217322-vmss000000   <none>           <none>
+kubectl get no -owide
+NAME                                STATUS   ROLES    AGE     VERSION   INTERNAL-IP   EXTERNAL-IP   OS-IMAGE             KERNEL-VERSION      CONTAINER-RUNTIME
+aks-nodepool1-14217322-vmss000000   Ready    <none>   5h39m   v1.29.7   10.224.0.4    <none>        Ubuntu 22.04.4 LTS   5.15.0-1071-azure   containerd://1.7.20-1
+aks-nodepool1-14217322-vmss000001   Ready    <none>   4h43m   v1.29.7   10.224.0.5    <none>        Ubuntu 22.04.4 LTS   5.15.0-1071-azure   containerd://1.7.20-1
+kubectl get ing -A
+NAMESPACE               NAME             CLASS                                HOSTS               ADDRESS         PORTS   AGE
+hello-web-app-routing   aks-helloworld   webapprouting.kubernetes.azure.com   myapp.contoso.com   74.241.234.56   80      5h23m
+
+curl -H 'Host: myapp.contoso.com' https://74.241.234.56 -kI
+1	1.2.3.4	74.241.234.56	TCP	74	35084 ? 443 [SYN] Seq=0 Win=64240 Len=0 MSS=1460 SACK_PERM TSval=4203449957 TSecr=0 WS=128
+2	74.241.234.56	1.2.3.4	TCP	74	443 ? 35084 [SYN, ACK] Seq=0 Ack=1 Win=65160 Len=0 MSS=1412 SACK_PERM TSval=4261195926 TSecr=4203449957 WS=128
+3	1.2.3.4	74.241.234.56	TCP	66	35084 ? 443 [ACK] Seq=1 Ack=1 Win=64256 Len=0 TSval=4203450023 TSecr=4261195926
+4	1.2.3.4	74.241.234.56	TLSv1.3	583	Client Hello
+5	74.241.234.56	1.2.3.4	TCP	66	443 ? 35084 [ACK] Seq=1 Ack=518 Win=64768 Len=0 TSval=4261196003 TSecr=4203450036
+6	74.241.234.56	1.2.3.4	TLSv1.3	1515	Server Hello, Change Cipher Spec, Application Data, Application Data, Application Data, Application Data
+7	1.2.3.4	74.241.234.56	TCP	66	35084 ? 443 [ACK] Seq=518 Ack=1450 Win=64128 Len=0 TSval=4203450106 TSecr=4261196006
+8	1.2.3.4	74.241.234.56	TLSv1.3	146	Change Cipher Spec, Application Data
+9	1.2.3.4	74.241.234.56	TLSv1.3	112	Application Data
+...
+19	1.2.3.4	74.241.234.56	TLSv1.3	90	Application Data
+20	1.2.3.4	74.241.234.56	TCP	66	35084 ? 443 [FIN, ACK] Seq=851 Ack=1828 Win=64128 Len=0 TSval=4203450189 TSecr=4261196091
+21	74.241.234.56	1.2.3.4	TCP	66	443 ? 35084 [ACK] Seq=1828 Ack=852 Win=64768 Len=0 TSval=4261196157 TSecr=4203450172
+22	74.241.234.56	1.2.3.4	TCP	66	443 ? 35084 [FIN, ACK] Seq=1828 Ack=852 Win=64768 Len=0 TSval=4261196157 TSecr=4203450172
+23	1.2.3.4	74.241.234.56	TCP	66	35084 ? 443 [ACK] Seq=852 Ack=1829 Win=64128 Len=0 TSval=4203450253 TSecr=4261196157
+
+kubectl logs -n app-routing-system -l app=nginx # standard logging output
+I0902 19:52:29.236097       6 status.go:85] "New leader elected" identity="nginx-7cd7f56848-rtvrv"
+1.2.3.5 - - [02/Sep/2024:20:02:13 +0000] "HEAD / HTTP/2.0" 200 0 "-" "curl/7.68.0" 37 0.014 [hello-web-app-routing-aks-helloworld-80] [] 10.244.0.20:80 0 0.014 200 557ffc21cbb028bcf9c6be49f796ddbb
+
+dumpy-65044851-aks-helloworld-77fbc6b96c-n5rtq
+20	32:88:d7:4c:61:bc		ARP	48	Who has 10.244.0.20? Tell 10.244.0.1
+21	ae:91:4c:fd:fa:8e		ARP	48	10.244.0.20 is at ae:91:4c:fd:fa:8e
+22	10.244.1.4	10.244.0.20	TCP	80	39492 ? 80 [SYN] Seq=0 Win=64240 Len=0 MSS=1418 SACK_PERM TSval=4150146873 TSecr=0 WS=128
+23	10.244.0.20	10.244.1.4	TCP	80	80 ? 39492 [SYN, ACK] Seq=0 Ack=1 Win=65160 Len=0 MSS=1460 SACK_PERM TSval=364703566 TSecr=4150146873 WS=128
+24	10.244.1.4	10.244.0.20	TCP	72	39492 ? 80 [ACK] Seq=1 Ack=1 Win=64256 Len=0 TSval=4150146875 TSecr=364703566
+25	10.244.1.4	10.244.0.20	HTTP	392	HEAD / HTTP/1.1 
+26	10.244.0.20	10.244.1.4	TCP	72	80 ? 39492 [ACK] Seq=1 Ack=321 Win=64896 Len=0 TSval=364703567 TSecr=4150146875
+27	10.244.0.20	10.244.1.4	HTTP	235	HTTP/1.1 200 OK 
+28	10.244.1.4	10.244.0.20	TCP	72	39492 ? 80 [ACK] Seq=321 Ack=164 Win=64128 Len=0 TSval=4150146887 TSecr=364703579
+
+dumpy-55029686-nginx-7cd7f56848-rtvrv
+ip.addr==1.2.3.5
+485	1.2.3.5	10.244.1.4	TCP	80	63098 ? 8443 [SYN] Seq=0 Win=64240 Len=0 MSS=1412 SACK_PERM TSval=4203449957 TSecr=0 WS=128
+486	10.244.1.4	1.2.3.5	TCP	80	8443 ? 63098 [SYN, ACK] Seq=0 Ack=1 Win=65160 Len=0 MSS=1460 SACK_PERM TSval=4261195926 TSecr=4203449957 WS=128
+487	1.2.3.5	10.244.1.4	TCP	72	63098 ? 8443 [ACK] Seq=1 Ack=1 Win=64256 Len=0 TSval=4203450023 TSecr=4261195926
+488	1.2.3.5	10.244.1.4	TLSv1.3	589	Client Hello
+489	10.244.1.4	1.2.3.5	TCP	72	8443 ? 63098 [ACK] Seq=1 Ack=518 Win=64768 Len=0 TSval=4261196003 TSecr=4203450036
+490	10.244.1.4	1.2.3.5	TLSv1.3	1521	Server Hello, Change Cipher Spec, Application Data, Application Data, Application Data, Application Data
+491	1.2.3.5	10.244.1.4	TCP	72	63098 ? 8443 [ACK] Seq=518 Ack=1450 Win=64128 Len=0 TSval=4203450106 TSecr=4261196006
+492	1.2.3.5	10.244.1.4	TLSv1.3	152	Change Cipher Spec, Application Data
+493	10.244.1.4	1.2.3.5	TLSv1.3	151	Application Data
+494	10.244.1.4	1.2.3.5	TLSv1.3	151	Application Data
+495	10.244.1.4	1.2.3.5	TLSv1.3	134	Application Data
+496	1.2.3.5	10.244.1.4	TLSv1.3	118	Application Data
+497	1.2.3.5	10.244.1.4	TLSv1.3	121	Application Data
+498	10.244.1.4	1.2.3.5	TCP	72	8443 ? 63098 [ACK] Seq=1670 Ack=693 Win=64768 Len=0 TSval=4261196077 TSecr=4203450110
+499	10.244.1.4	1.2.3.5	TLSv1.3	103	Application Data
+500	1.2.3.5	10.244.1.4	TLSv1.3	175	Application Data, Application Data
+508	10.244.1.4	1.2.3.5	TLSv1.3	199	Application Data
+509	1.2.3.5	10.244.1.4	TLSv1.3	103	Application Data
+510	1.2.3.5	10.244.1.4	TLSv1.3	96	Application Data
+511	1.2.3.5	10.244.1.4	TCP	72	63098 ? 8443 [FIN, ACK] Seq=851 Ack=1828 Win=64128 Len=0 TSval=4203450189 TSecr=4261196091
+512	10.244.1.4	1.2.3.5	TCP	72	8443 ? 63098 [ACK] Seq=1828 Ack=852 Win=64768 Len=0 TSval=4261196157 TSecr=4203450172
+513	10.244.1.4	1.2.3.5	TCP	72	8443 ? 63098 [FIN, ACK] Seq=1828 Ack=852 Win=64768 Len=0 TSval=4261196157 TSecr=4203450172
+514	1.2.3.5	10.244.1.4	TCP	72	63098 ? 8443 [ACK] Seq=852 Ack=1829 Win=64128 Len=0 TSval=4203450253 TSecr=4261196157
+ip.addr==10.244.0.20
+501	10.244.1.4	10.244.0.20	TCP	80	39492 ? 80 [SYN] Seq=0 Win=64240 Len=0 MSS=1460 SACK_PERM TSval=4150146873 TSecr=0 WS=128
+502	10.244.0.20	10.244.1.4	TCP	80	80 ? 39492 [SYN, ACK] Seq=0 Ack=1 Win=65160 Len=0 MSS=1418 SACK_PERM TSval=364703566 TSecr=4150146873 WS=128
+503	10.244.1.4	10.244.0.20	TCP	72	39492 ? 80 [ACK] Seq=1 Ack=1 Win=64256 Len=0 TSval=4150146875 TSecr=364703566
+504	10.244.1.4	10.244.0.20	HTTP	392	HEAD / HTTP/1.1 
+505	10.244.0.20	10.244.1.4	TCP	72	80 ? 39492 [ACK] Seq=1 Ack=321 Win=64896 Len=0 TSval=364703567 TSecr=4150146875
+506	10.244.0.20	10.244.1.4	HTTP	235	HTTP/1.1 200 OK 
+507	10.244.1.4	10.244.0.20	TCP	72	39492 ? 80 [ACK] Seq=321 Ack=164 Win=64128 Len=0 TSval=4150146887 TSecr=364703579
+860	10.244.1.4	10.244.0.20	TCP	72	39492 ? 80 [FIN, ACK] Seq=321 Ack=164 Win=64128 Len=0 TSval=4150206875 TSecr=364703579
+861	10.244.0.20	10.244.1.4	TCP	72	80 ? 39492 [FIN, ACK] Seq=164 Ack=322 Win=64896 Len=0 TSval=364763567 TSecr=4150206875
+862	10.244.1.4	10.244.0.20	TCP	72	39492 ? 80 [ACK] Seq=322 Ack=165 Win=64128 Len=0 TSval=4150206876 TSecr=364763567
+
+dumpy-74410416-aks-nodepool1-14217322-vmss000000
+ip.addr==1.2.3.5 or (ip.addr==10.244.0.20 and ip.addr==10.244.1.4)
+7877	10.244.1.4	10.244.0.20	TCP	80	39492 ? 80 [SYN] Seq=0 Win=64240 Len=0 MSS=1418 SACK_PERM TSval=4150146873 TSecr=0 WS=128
+7891	10.244.0.20	10.244.1.4	TCP	80	80 ? 39492 [SYN, ACK] Seq=0 Ack=1 Win=65160 Len=0 MSS=1460 SACK_PERM TSval=364703566 TSecr=4150146873 WS=128
+7894	10.244.1.4	10.244.0.20	TCP	72	39492 ? 80 [ACK] Seq=1 Ack=1 Win=64256 Len=0 TSval=4150146875 TSecr=364703566
+7895	10.244.1.4	10.244.0.20	HTTP	392	HEAD / HTTP/1.1 
+7896	10.244.1.4	10.244.0.20	TCP	72	39492 ? 80 [ACK] Seq=1 Ack=1 Win=64256 Len=0 TSval=4150146875 TSecr=364703566
+7897	10.244.1.4	10.244.0.20	TCP	72	39492 ? 80 [ACK] Seq=1 Ack=1 Win=64256 Len=0 TSval=4150146875 TSecr=364703566
+7900	10.244.0.20	10.244.1.4	TCP	72	80 ? 39492 [ACK] Seq=1 Ack=321 Win=64896 Len=0 TSval=364703567 TSecr=4150146875
+7903	10.244.0.20	10.244.1.4	HTTP	235	HTTP/1.1 200 OK 
+7906	10.244.1.4	10.244.0.20	TCP	72	39492 ? 80 [ACK] Seq=321 Ack=164 Win=64128 Len=0 TSval=4150146887 TSecr=364703579
+15972	10.244.1.4	10.244.0.20	TCP	72	39492 ? 80 [FIN, ACK] Seq=321 Ack=164 Win=64128 Len=0 TSval=4150206875 TSecr=364703579
+15975	10.244.0.20	10.244.1.4	TCP	72	80 ? 39492 [FIN, ACK] Seq=164 Ack=322 Win=64896 Len=0 TSval=364763567 TSecr=4150206875
+15978	10.244.1.4	10.244.0.20	TCP	72	39492 ? 80 [ACK] Seq=322 Ack=165 Win=64128 Len=0 TSval=4150206876 TSecr=364763567
+
+dumpy-74410416-aks-nodepool1-14217322-vmss000001
+ip.addr==1.2.3.5 or (ip.addr==10.244.0.20 and ip.addr==10.244.1.4)
+4794	1.2.3.5	74.241.234.56	TCP	80	63098 ? 443 [SYN] Seq=0 Win=64240 Len=0 MSS=1412 SACK_PERM TSval=4203449957 TSecr=0 WS=128
+4795	1.2.3.5	10.244.1.4	TCP	80	63098 ? 8443 [SYN] Seq=0 Win=64240 Len=0 MSS=1412 SACK_PERM TSval=4203449957 TSecr=0 WS=128
+4797	10.244.1.4	1.2.3.5	TCP	80	8443 ? 63098 [SYN, ACK] Seq=0 Ack=1 Win=65160 Len=0 MSS=1460 SACK_PERM TSval=4261195926 TSecr=4203449957 WS=128
+4799	74.241.234.56	1.2.3.5	TCP	80	443 ? 63098 [SYN, ACK] Seq=0 Ack=1 Win=65160 Len=0 MSS=1460 SACK_PERM TSval=4261195926 TSecr=4203449957 WS=128
+4800	1.2.3.5	74.241.234.56	TCP	72	63098 ? 443 [ACK] Seq=1 Ack=1 Win=64256 Len=0 TSval=4203450023 TSecr=4261195926
+4801	1.2.3.5	10.244.1.4	TCP	72	63098 ? 8443 [ACK] Seq=1 Ack=1 Win=64256 Len=0 TSval=4203450023 TSecr=4261195926
+4803	1.2.3.5	74.241.234.56	TLSv1.3	589	Client Hello
+4804	1.2.3.5	10.244.1.4	TLSv1.3	589	Client Hello
+4806	10.244.1.4	1.2.3.5	TCP	72	8443 ? 63098 [ACK] Seq=1 Ack=518 Win=64768 Len=0 TSval=4261196003 TSecr=4203450036
+4808	74.241.234.56	1.2.3.5	TCP	72	443 ? 63098 [ACK] Seq=1 Ack=518 Win=64768 Len=0 TSval=4261196003 TSecr=4203450036
+4809	10.244.1.4	1.2.3.5	TLSv1.3	1521	Server Hello, Change Cipher Spec, Application Data, Application Data, Application Data, Application Data
+4811	74.241.234.56	1.2.3.5	TLSv1.3	1521	Server Hello, Change Cipher Spec, Application Data, Application Data, Application Data, Application Data
+4812	1.2.3.5	74.241.234.56	TCP	72	63098 ? 443 [ACK] Seq=518 Ack=1450 Win=64128 Len=0 TSval=4203450106 TSecr=4261196006
+4813	1.2.3.5	10.244.1.4	TCP	72	63098 ? 8443 [ACK] Seq=518 Ack=1450 Win=64128 Len=0 TSval=4203450106 TSecr=4261196006
+4815	1.2.3.5	74.241.234.56	TLSv1.3	152	Change Cipher Spec, Application Data
+4816	1.2.3.5	10.244.1.4	TLSv1.3	152	Change Cipher Spec, Application Data
+4818	10.244.1.4	1.2.3.5	TLSv1.3	151	Application Data
+...
+4831	1.2.3.5	10.244.1.4	TLSv1.3	121	Application Data
+4833	10.244.1.4	1.2.3.5	TCP	72	8443 ? 63098 [ACK] Seq=1670 Ack=693 Win=64768 Len=0 TSval=4261196077 TSecr=4203450110
+4835	74.241.234.56	1.2.3.5	TCP	72	443 ? 63098 [ACK] Seq=1670 Ack=693 Win=64768 Len=0 TSval=4261196077 TSecr=4203450110
+4836	10.244.1.4	1.2.3.5	TLSv1.3	103	Application Data
+4838	74.241.234.56	1.2.3.5	TLSv1.3	103	Application Data
+4839	1.2.3.5	74.241.234.56	TLSv1.3	175	Application Data, Application Data
+4840	1.2.3.5	10.244.1.4	TLSv1.3	175	Application Data, Application Data
+4842	10.244.1.4	10.244.0.20	TCP	80	39492 ? 80 [SYN] Seq=0 Win=64240 Len=0 MSS=1460 SACK_PERM TSval=4150146873 TSecr=0 WS=128
+4845	10.244.0.20	10.244.1.4	TCP	80	80 ? 39492 [SYN, ACK] Seq=0 Ack=1 Win=65160 Len=0 MSS=1418 SACK_PERM TSval=364703566 TSecr=4150146873 WS=128
+4848	10.244.1.4	10.244.0.20	TCP	72	39492 ? 80 [ACK] Seq=1 Ack=1 Win=64256 Len=0 TSval=4150146875 TSecr=364703566
+4851	10.244.1.4	10.244.0.20	HTTP	392	HEAD / HTTP/1.1 
+4854	10.244.0.20	10.244.1.4	TCP	72	80 ? 39492 [ACK] Seq=1 Ack=321 Win=64896 Len=0 TSval=364703567 TSecr=4150146875
+4857	10.244.0.20	10.244.1.4	TCP	235	80 ? 39492 [PSH, ACK] Seq=1 Ack=321 Win=64896 Len=163 TSval=364703579 TSecr=4150146875
+4860	10.244.1.4	10.244.0.20	TCP	72	39492 ? 80 [ACK] Seq=321 Ack=164 Win=64128 Len=0 TSval=4150146887 TSecr=364703579
+4863	10.244.1.4	1.2.3.5	TLSv1.3	199	Application Data
+...
+4869	1.2.3.5	74.241.234.56	TLSv1.3	96	Application Data
+4870	1.2.3.5	74.241.234.56	TCP	72	63098 ? 443 [FIN, ACK] Seq=851 Ack=1828 Win=64128 Len=0 TSval=4203450189 TSecr=4261196091
+4871	1.2.3.5	10.244.1.4	TLSv1.3	96	Application Data
+4873	1.2.3.5	10.244.1.4	TCP	72	63098 ? 8443 [FIN, ACK] Seq=851 Ack=1828 Win=64128 Len=0 TSval=4203450189 TSecr=4261196091
+4875	10.244.1.4	1.2.3.5	TCP	72	8443 ? 63098 [ACK] Seq=1828 Ack=852 Win=64768 Len=0 TSval=4261196157 TSecr=4203450172
+4877	74.241.234.56	1.2.3.5	TCP	72	443 ? 63098 [ACK] Seq=1828 Ack=852 Win=64768 Len=0 TSval=4261196157 TSecr=4203450172
+4878	10.244.1.4	1.2.3.5	TCP	72	8443 ? 63098 [FIN, ACK] Seq=1828 Ack=852 Win=64768 Len=0 TSval=4261196157 TSecr=4203450172
+4880	74.241.234.56	1.2.3.5	TCP	72	443 ? 63098 [FIN, ACK] Seq=1828 Ack=852 Win=64768 Len=0 TSval=4261196157 TSecr=4203450172
+4881	1.2.3.5	74.241.234.56	TCP	72	63098 ? 443 [ACK] Seq=852 Ack=1829 Win=64128 Len=0 TSval=4203450253 TSecr=4261196157
+4882	1.2.3.5	10.244.1.4	TCP	72	63098 ? 8443 [ACK] Seq=852 Ack=1829 Win=64128 Len=0 TSval=4203450253 TSecr=4261196157
+9526	10.244.1.4	10.244.0.20	TCP	72	39492 ? 80 [FIN, ACK] Seq=321 Ack=164 Win=64128 Len=0 TSval=4150206875 TSecr=364703579
+9529	10.244.0.20	10.244.1.4	TCP	72	80 ? 39492 [FIN, ACK] Seq=164 Ack=322 Win=64896 Len=0 TSval=364763567 TSecr=4150206875
+9532	10.244.1.4	10.244.0.20	TCP	72	39492 ? 80 [ACK] Seq=322 Ack=165 Win=64128 Len=0 TSval=4150206876 TSecr=364763567
+```

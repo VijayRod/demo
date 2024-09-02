@@ -173,6 +173,7 @@ dumpy capture dumpy-09671733 successfully deleted
 ```
 tcpdump host 1.1.1.1 # Source or destination
 tcpdump port 443
+tcpdump host $(nslookup api.loganalytics.io | awk '/^Address: / {print $2}') -w /tmp/tcpdump-keda-law.pcap # Execute TCPDump with a filter targetting the LAW endpoint and let it run until the issue occurs again
 
 # Use tcpdump to exclude traffic from specific IP addresses
 tcpdump 'not net 168.63.129.16' # Alternatively, you can use tcpdump 'not net 168.63.129.16/32' or tcpdump '! net 168.63.129.16'

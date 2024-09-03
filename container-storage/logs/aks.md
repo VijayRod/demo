@@ -21,3 +21,5 @@ az aks create -g $rg -n aksgen -s $vmsize -c 1 -s Standard_D4s_v5 # Also non-eph
 - https://learn.microsoft.com/en-us/rest/api/aks/managed-clusters/create-or-update?tabs=HTTP#examples
 - https://learn.microsoft.com/en-us/training/paths/aks-cluster-architecture/
 - https://cloudacademy.com/course/introduction-to-aks-954/course-introduction/
+- https://github.com/Azure/AKS/
+- https://issuetracker.google.com/savedsearches/559746: Open Kubernetes Engine Issues

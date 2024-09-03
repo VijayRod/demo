@@ -11,3 +11,11 @@ azureVip="168.63.129.16"
 ```
 
 - https://learn.microsoft.com/en-us/azure/virtual-network/what-is-ip-address-168-63-129-16
+<br>
+
+- IMDS
+
+```
+http://169.254.169.254/metadata/instance/compute?api-version=2021-01-01&format=json
+```
+- https://learn.microsoft.com/en-us/azure/virtual-machines/instance-metadata-service?tabs=linux

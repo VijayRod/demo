@@ -64,16 +64,36 @@ kubectl logs -n gatekeeper-system -l gatekeeper.sh/operation=webhook | tail
 ```
 
 ```
-kubectl get constrainttemplates | grep k8sazure
+kubectl get crd | grep gatekeeper
+assign.mutations.gatekeeper.sh                                          2024-09-03T18:20:50Z
+assignimage.mutations.gatekeeper.sh                                     2024-09-03T18:20:50Z
+assignmetadata.mutations.gatekeeper.sh                                  2024-09-03T18:20:50Z
+configs.config.gatekeeper.sh                                            2024-09-03T18:20:50Z
+constraintpodstatuses.status.gatekeeper.sh                              2024-09-03T18:20:51Z
+constrainttemplatepodstatuses.status.gatekeeper.sh                      2024-09-03T18:20:51Z
+constrainttemplates.templates.gatekeeper.sh                             2024-09-03T18:20:51Z
+expansiontemplate.expansion.gatekeeper.sh                               2024-09-03T18:20:51Z
+expansiontemplatepodstatuses.status.gatekeeper.sh                       2024-09-03T18:20:51Z
+k8sazurev1antiaffinityrules.constraints.gatekeeper.sh                   2024-09-03T18:23:24Z
+k8sazurev1blockdefault.constraints.gatekeeper.sh                        2024-09-03T18:23:23Z
+...
+
+kubectl describe crd k8sazurev1antiaffinityrules.constraints.gatekeeper.sh| grep ^Status: -A 50
+Status:
+  Accepted Names:
+...
+
+kubectl get constrainttemplates #| grep k8sazure
+k8sazurev1antiaffinityrules                   5h49m
+k8sazurev1blockdefault                        5h49m
+...
 
 kubectl describe constrainttemplates k8sazurev1blockdefault | grep azure-policy-definition-id
 # kubectl describe k8sazurev1blockdefault | grep azure-policy-definition-id
-
 Annotations:  azure-policy-definition-id-1: /providers/Microsoft.Authorization/policyDefinitions/9f061a12-e40d-4183-a00e-171812443373
 
 kubectl get constraints | grep k8sazurev3hostnetworkingports
 ## OR kubectl get k8sazurev3hostnetworkingports
-
 NAME         ENFORCEMENT-ACTION   TOTAL-VIOLATIONS
 k8sazurev3hostnetworkingports.constraints.gatekeeper.sh/azurepolicy-k8sazurev3hostnetworkingports-4c4e07cda01a7867529e   dryrun               1
 k8sazurev3hostnetworkingports.constraints.gatekeeper.sh/azurepolicy-k8sazurev3hostnetworkingports-b5bc9122579d45b0c57b   dryrun               1
@@ -81,7 +101,6 @@ k8sazurev3hostnetworkingports.constraints.gatekeeper.sh/azurepolicy-k8sazurev3ho
 kubectl describe k8sazurev3hostnetworkingports.constraints.gatekeeper.sh/azurepolicy-k8sazurev3hostnetworkingports-4c4e07cda01a7867529e
 ## OR kubectl describe k8sazurev3hostnetworkingports
 ## OR kubectl describe constraints > /tmp/constraints.out
-
 Spec:
   Enforcement Action:  dryrun
   Match:

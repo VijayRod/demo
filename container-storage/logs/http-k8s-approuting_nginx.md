@@ -378,7 +378,7 @@ Chain KUBE-NODEPORTS (1 references)
 ```
 
 ```
-# Port 10254
+# port 10254
 # The GET /healthz request is sent every five seconds.
 
 az network nsg show -g mc_rg_aksapproute_swedencentral -n aks-agentpool-26217469-nsg --query securityRules

@@ -47,6 +47,7 @@ wireshark ip.addr==168.63.129.16
 http://169.254.169.254/metadata/instance/compute?api-version=2021-01-01&format=json
 ```
 - https://learn.microsoft.com/en-us/azure/virtual-machines/instance-metadata-service?tabs=linux
+<br>
 
 - IMDS/Scheduled events
 

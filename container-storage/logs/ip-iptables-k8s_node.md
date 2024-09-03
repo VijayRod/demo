@@ -78,3 +78,5 @@ aks-nodepool1-12914153-vmss000000:/# iptables-save | grep nginx
 aks-nodepool1-12914153-vmss000000:/# iptables -vnL # No new entries
 aks-nodepool1-12914153-vmss000000:/# ipset -L # No rows
 ```
+
+- https://blog.stevegriffith.nyc/posts/aks-networking-iptables

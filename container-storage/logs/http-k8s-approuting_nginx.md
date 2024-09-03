@@ -8,6 +8,13 @@ az aks get-credentials -g $rg -n aksapproute --overwrite-existing
 - https://learn.microsoft.com/en-us/azure/aks/app-routing
 
 ```
+kubectl describe po -n app-routing-system -l app=nginx | grep Image
+    Image:         mcr.microsoft.com/oss/kubernetes/ingress/nginx-ingress-controller:v1.11.2
+```
+- https://kubernetes.github.io/ingress-nginx/
+- https://github.com/kubernetes/ingress-nginx
+
+```
 kubectl get all -n app-routing-system --show-labels
 NAME                         READY   STATUS    RESTARTS   AGE     LABELS
 pod/nginx-7cd7f56848-7gxz6   1/1     Running   0          3m22s   app.kubernetes.io/component=ingress-controller,app.kubernetes.io/managed-by=aks-app-routing-operator,app=nginx,pod-template-hash=7cd7f56848
@@ -32,7 +39,9 @@ I0902 18:19:24.048863       7 controller.go:224] "Initial sync, sleeping for 1 s
 I0902 18:19:24.049100       7 event.go:377] Event(v1.ObjectReference{Kind:"Pod", Namespace:"app-routing-system", Name:"nginx-7cd7f56848-fcvv7", UID:"d1f3d035-a5d2-4792-a90e-871c26177ae5", APIVersion:"v1", ResourceVersion:"1169", FieldPath:""}): type: 'Normal' reason: 'RELOAD' NGINX reload triggered due to a change in configuration
 I0902 18:19:24.049395       7 leaderelection.go:260] successfully acquired lease app-routing-system/nginx
 I0902 18:19:24.049516       7 status.go:85] "New leader elected" identity="nginx-7cd7f56848-fcvv7"
+```
 
+```
 kubectl delete deploy aks-helloworld -n hello-web-app-routing
 kubectl delete deploy nginx -n app-routing-system
 kubectl delete ns hello-web-app-routing
@@ -345,4 +354,111 @@ ip.addr==1.2.3.5 or (ip.addr==10.244.0.20 and ip.addr==10.244.1.4)
 9526	10.244.1.4	10.244.0.20	TCP	72	39492 ? 80 [FIN, ACK] Seq=321 Ack=164 Win=64128 Len=0 TSval=4150206875 TSecr=364703579
 9529	10.244.0.20	10.244.1.4	TCP	72	80 ? 39492 [FIN, ACK] Seq=164 Ack=322 Win=64896 Len=0 TSval=364763567 TSecr=4150206875
 9532	10.244.1.4	10.244.0.20	TCP	72	39492 ? 80 [ACK] Seq=322 Ack=165 Win=64128 Len=0 TSval=4150206876 TSecr=364763567
+```
+
+```
+# iptable
+
+kubectl get ing -n hello-web-app-routing
+aks-helloworld   webapprouting.kubernetes.azure.com   myapp.contoso.com   74.241.234.56   80      31h
+aks-nodepool1-14217322-vmss000000:/# iptables -t filter -nvL
+Chain KUBE-EXTERNAL-SERVICES (2 references)
+ pkts bytes target     prot opt in     out     source               destination
+    0     0 DROP       tcp  --  *      *       0.0.0.0/0            74.241.234.56        /* app-routing-system/nginx:prometheus has no local endpoints */
+    0     0 DROP       tcp  --  *      *       0.0.0.0/0            0.0.0.0/0            /* app-routing-system/nginx:prometheus has no local endpoints */ ADDRTYPE match dst-type LOCAL
+    0     0 DROP       tcp  --  *      *       0.0.0.0/0            74.241.234.56        /* app-routing-system/nginx:http has no local endpoints */
+    0     0 DROP       tcp  --  *      *       0.0.0.0/0            0.0.0.0/0            /* app-routing-system/nginx:http has no local endpoints */ ADDRTYPE match dst-type LOCAL
+    0     0 DROP       tcp  --  *      *       0.0.0.0/0            74.241.234.56        /* app-routing-system/nginx:https has no local endpoints */
+    0     0 DROP       tcp  --  *      *       0.0.0.0/0            0.0.0.0/0            /* app-routing-system/nginx:https has no local endpoints */ ADDRTYPE match dst-type LOCAL
+Chain KUBE-NODEPORTS (1 references)
+ pkts bytes target     prot opt in     out     source               destination
+  510 69003 ACCEPT     tcp  --  *      *       0.0.0.0/0            0.0.0.0/0            /* app-routing-system/nginx:prometheus health check node port */
+    0     0 ACCEPT     tcp  --  *      *       0.0.0.0/0            0.0.0.0/0            /* app-routing-system/nginx:http health check node port */
+    0     0 ACCEPT     tcp  --  *      *       0.0.0.0/0            0.0.0.0/0            /* app-routing-system/nginx:https health check node port */
+```
+
+```
+# Port 10254
+# The GET /healthz request is sent every five seconds.
+
+az network nsg show -g mc_rg_aksapproute_swedencentral -n aks-agentpool-26217469-nsg --query securityRules
+[
+  {
+    "access": "Allow",
+    "destinationAddressPrefix": "74.241.234.56",
+    "destinationAddressPrefixes": [],
+    "destinationPortRanges": [
+      "10254",
+      "443",
+      "80"
+    ],
+    "direction": "Inbound",
+    "etag": "W/\"07e040ae-7715-4a21-96d4-0b77ed5327fb\"",
+    "id": "/subscriptions/redacts-1111-1111-1111-111111111111/resourceGroups/mc_rg_aksapproute_swedencentral/providers/Microsoft.Network/networkSecurityGroups/aks-agentpool-26217469-nsg/securityRules/k8s-azure-lb_allow_IPv4_0e71c69d55927e99928ad7d522e5dd4f",
+    "name": "k8s-azure-lb_allow_IPv4_0e71c69d55927e99928ad7d522e5dd4f",
+    "priority": 500,
+    "protocol": "Tcp",
+    "provisioningState": "Succeeded",
+    "resourceGroup": "mc_rg_aksapproute_swedencentral",
+    "sourceAddressPrefix": "Internet",
+    "sourceAddressPrefixes": [],
+    "sourcePortRange": "*",
+    "sourcePortRanges": [],
+    "type": "Microsoft.Network/networkSecurityGroups/securityRules"
+  }
+]
+
+kubectl get ing -n hello-web-app-routing
+kubectl get po -n app-routing-system -l app=nginx -owide
+aks-helloworld   webapprouting.kubernetes.azure.com   myapp.contoso.com   74.241.234.56   80      31h
+nginx-7cd7f56848-rtvrv   1/1     Running   0          26h   10.244.1.4   aks-nodepool1-14217322-vmss000001   <none>           <none>
+
+kubectl describe po -n app-routing-system -l app=nginx | grep 10254
+Annotations:          prometheus.io/port: 10254
+    Ports:         8080/TCP, 8443/TCP, 10254/TCP
+    Readiness:  http-get http://:10254/healthz delay=10s timeout=1s period=5s #success=1 #failure=3
+    
+kubectl get svc -A
+app-routing-system      nginx            LoadBalancer   10.0.45.15     74.241.234.56   80:31507/TCP,443:31149/TCP,10254:32578/TCP   32h
+
+aks-nodepool1-14217322-vmss000001
+wireshark ip.addr==10.244.1.1 and ip.addr==10.244.1.4
+wireshark tcp.port==10254
+40	10.244.1.1	10.244.1.4	TCP	80	42096 ? 10254 [SYN] Seq=0 Win=64240 Len=0 MSS=1460 SACK_PERM TSval=739098495 TSecr=0 WS=128
+42	10.244.1.4	10.244.1.1	TCP	80	10254 ? 42096 [SYN, ACK] Seq=0 Ack=1 Win=65160 Len=0 MSS=1460 SACK_PERM TSval=3320277675 TSecr=739098495 WS=128
+44	10.244.1.1	10.244.1.4	TCP	72	42096 ? 10254 [ACK] Seq=1 Ack=1 Win=64256 Len=0 TSval=739098495 TSecr=3320277675
+46	10.244.1.1	10.244.1.4	HTTP	182	GET /healthz HTTP/1.1 
+48	10.244.1.4	10.244.1.1	TCP	72	10254 ? 42096 [ACK] Seq=1 Ack=111 Win=65152 Len=0 TSval=3320277675 TSecr=739098495
+50	10.244.1.4	10.244.1.1	HTTP	242	HTTP/1.1 200 OK  (text/plain)
+52	10.244.1.1	10.244.1.4	TCP	72	42096 ? 10254 [ACK] Seq=111 Ack=171 Win=64128 Len=0 TSval=739098496 TSecr=3320277676
+54	10.244.1.4	10.244.1.1	TCP	72	10254 ? 42096 [FIN, ACK] Seq=171 Ack=111 Win=65152 Len=0 TSval=3320277676 TSecr=739098496
+56	10.244.1.1	10.244.1.4	TCP	72	42096 ? 10254 [FIN, ACK] Seq=111 Ack=172 Win=64128 Len=0 TSval=739098496 TSecr=3320277676
+
+dumpy-55029686-nginx-7cd7f56848-rtvrv
+wireshark ip.addr==10.244.1.1
+4	10.244.1.1	10.244.1.4	TCP	80	42054 → 10254 [SYN] Seq=0 Win=64240 Len=0 MSS=1460 SACK_PERM TSval=739068495 TSecr=0 WS=128
+5	10.244.1.4	10.244.1.1	TCP	80	10254 → 42054 [SYN, ACK] Seq=0 Ack=1 Win=65160 Len=0 MSS=1460 SACK_PERM TSval=3320247675 TSecr=739068495 WS=128
+6	10.244.1.1	10.244.1.4	TCP	72	42054 → 10254 [ACK] Seq=1 Ack=1 Win=64256 Len=0 TSval=739068495 TSecr=3320247675
+7	10.244.1.1	10.244.1.4	HTTP	182	GET /healthz HTTP/1.1 
+8	10.244.1.4	10.244.1.1	TCP	72	10254 → 42054 [ACK] Seq=1 Ack=111 Win=65152 Len=0 TSval=3320247675 TSecr=739068495
+19	10.244.1.4	10.244.1.1	HTTP	242	HTTP/1.1 200 OK  (text/plain)
+20	10.244.1.1	10.244.1.4	TCP	72	42054 → 10254 [ACK] Seq=111 Ack=171 Win=64128 Len=0 TSval=739068496 TSecr=3320247676
+21	10.244.1.4	10.244.1.1	TCP	72	10254 → 42054 [FIN, ACK] Seq=171 Ack=111 Win=65152 Len=0 TSval=3320247676 TSecr=739068496
+22	10.244.1.1	10.244.1.4	TCP	72	42054 → 10254 [FIN, ACK] Seq=111 Ack=172 Win=64128 Len=0 TSval=739068496 TSecr=3320247676
+```
+
+- https://kubernetes.github.io/ingress-nginx/deploy/: existing rule that allows access to port 80/tcp, 443/tcp and 10254/tcp
+- https://stackoverflow.com/questions/50008352/kubernetes-nginx-ingress-controller-liveness-probe-failed: Get http://10.1.1.254:10254/healthz: dial tcp 10.1.1.254:10254
+
+```
+# leader
+
+kubectl logs -n app-routing-system -l app=nginx | grep leader
+I0903 23:18:33.061405       7 leaderelection.go:250] attempting to acquire leader lease app-routing-system/nginx...
+I0903 23:18:33.067023       7 status.go:85] "New leader elected" identity="nginx-7cd7f56848-rtvrv"
+I0903 23:19:03.324480       7 leaderelection.go:260] successfully acquired lease app-routing-system/nginx
+I0903 23:19:03.324666       7 status.go:85] "New leader elected" identity="nginx-7cd7f56848-tfjb6"
+I0903 23:18:25.194896       7 leaderelection.go:250] attempting to acquire leader lease app-routing-system/nginx...
+I0903 23:18:25.199755       7 status.go:85] "New leader elected" identity="nginx-7cd7f56848-rtvrv"
+I0903 23:19:11.637295       7 status.go:85] "New leader elected" identity="nginx-7cd7f56848-tfjb6"
 ```

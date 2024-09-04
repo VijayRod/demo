@@ -25,3 +25,4 @@ kubectl get po -n kube-system -l component=ama-logs-agent
 ```
 
 - https://learn.microsoft.com/en-Us/azure/azure-monitor/containers/container-insights-enable-aks?tabs=azure-cli
+- https://learn.microsoft.com/en-us/azure/azure-monitor/containers/kubernetes-monitoring-enable: Container insights for log collection

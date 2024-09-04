@@ -1,9 +1,19 @@
 ```
 rg=rgmetrics
 az group create -n $rg -l $loc
-az aks create -g $rg -n aks --enable-azure-monitor-metrics -s $vmsize -c 1
+az aks create -g $rg -n aks --enable-azure-monitor-metrics -s $vmsize
 # az aks update -g $rg -n aks --enable-azure-monitor-metrics
 az aks get-credentials -g $rg -n aks --overwrite-existing
+
+# az aks update -g $rg -n aksretinatest --disable-azure-monitor-metrics
+  "azureMonitorProfile": {
+    "appMonitoring": null,
+    "containerInsights": null,
+    "metrics": {
+      "enabled": false,
+      "kubeStateMetrics": null
+    }
+  },
 ```
 
 ```
@@ -21,67 +31,45 @@ az aks show -g $rg -n aks --query azureMonitorProfile # Earlier value "azureMoni
 }
 
 kubectl get po -owide -n kube-system --show-labels | grep ama-
-ama-logs-67x56                        3/3     Running   0          29m   10.244.0.11   aks-nodepool1-24057285-vmss000000   <none>           <none>            component=ama-logs-agent,controller-revision-hash=6c47677c5b,kubernetes.azure.com/managedby=aks,pod-template-generation=1,tier=node
-ama-logs-rs-7fdd98d6dc-xl85n          2/2     Running   0          29m   10.244.0.12   aks-nodepool1-24057285-vmss000000   <none>           <none>            kubernetes.azure.com/managedby=aks,pod-template-hash=7fdd98d6dc,rsName=ama-logs-rs
-ama-metrics-5c8b5569bb-2fw72          2/2     Running   0          26m   10.244.0.14   aks-nodepool1-24057285-vmss000000   <none>           <none>            kubernetes.azure.com/managedby=aks,pod-template-hash=5c8b5569bb,rsName=ama-metrics
-ama-metrics-ksm-9fcd9bbf4-6bl6p       1/1     Running   0          26m   10.244.0.15   aks-nodepool1-24057285-vmss000000   <none>           <none>            app.kubernetes.io/component=ama-metrics,app.kubernetes.io/name=ama-metrics-ksm,app.kubernetes.io/part-of=ama-metrics-ksm,app.kubernetes.io/version=2.9.2,helm.sh/chart=azure-monitor-metrics-addon-0.1.0,pod-template-hash=9fcd9bbf4
-ama-metrics-node-m8t5p                2/2     Running   0          26m   10.244.0.13   aks-nodepool1-24057285-vmss000000   <none>           <none>            controller-revision-hash=7cc8f96456,dsName=ama-metrics-node,kubernetes.azure.com/managedby=aks,pod-template-generation=1
+ama-metrics-74c6b986c6-6z5nx                   2/2     Running   0               4m58s   10.244.1.10   aks-nodepool1-15264917-vmss000002   <none>           <none>            kubernetes.azure.com/managedby=aks,pod-template-hash=74c6b986c6,rsName=ama-metrics
+ama-metrics-74c6b986c6-xl79q                   2/2     Running   0               4m58s   10.244.2.4    aks-nodepool1-15264917-vmss000000   <none>           <none>            kubernetes.azure.com/managedby=aks,pod-template-hash=74c6b986c6,rsName=ama-metrics
+ama-metrics-ksm-b699d5cfc-8nfgx                1/1     Running   0               4m58s   10.244.2.3    aks-nodepool1-15264917-vmss000000   <none>           <none>            app.kubernetes.io/component=ama-metrics,app.kubernetes.io/name=ama-metrics-ksm,app.kubernetes.io/part-of=ama-metrics-ksm,app.kubernetes.io/version=2.12.0,helm.sh/chart=azure-monitor-metrics-addon-0.1.0,kubernetes.azure.com/managedby=aks,pod-template-hash=b699d5cfc
+ama-metrics-node-gs9q4                         2/2     Running   0               4m59s   10.244.0.5    aks-nodepool1-15264917-vmss000001   <none>           <none>            controller-revision-hash=c4f5858b8,dsName=ama-metrics-node,kubernetes.azure.com/managedby=aks,pod-template-generation=1
+ama-metrics-node-v4dcq                         2/2     Running   0               4m59s   10.244.2.2    aks-nodepool1-15264917-vmss000000   <none>           <none>            controller-revision-hash=c4f5858b8,dsName=ama-metrics-node,kubernetes.azure.com/managedby=aks,pod-template-generation=1
+ama-metrics-node-vzg6s                         2/2     Running   0               4m59s   10.244.1.8    aks-nodepool1-15264917-vmss000002   <none>           <none>            controller-revision-hash=c4f5858b8,dsName=ama-metrics-node,kubernetes.azure.com/managedby=aks,pod-template-generation=1
+ama-metrics-operator-targets-cc79466d5-vprng   2/2     Running   2 (4m42s ago)   4m58s   10.244.1.9    aks-nodepool1-15264917-vmss000002   <none>           <none>            kubernetes.azure.com/managedby=aks,pod-template-hash=cc79466d5,rsName=ama-metrics-operator-targets
 
-kubectl get po -owide -n kube-system --show-labels | grep kappie
-kappie-agent-79xs9                    1/1     Running   0          830m   10.224.0.4    aks-nodepool1-99125487-vmss000000   <none>           <none>            controller-revision-hash=79f6d8ccc5,k8s-app=kappie,pod-template-generation=1
+kubectl get po -owide -n kube-system --show-labels | grep retina
+retina-agent-7nhjt                             1/1     Running   0              5m27s   10.224.0.5    aks-nodepool1-15264917-vmss000002   <none>           <none>            controller-revision-hash=5cc484797f,k8s-app=retina,kubernetes.azure.com/managedby=aks,pod-template-generation=1
+retina-agent-cmtfp                             1/1     Running   0              5m27s   10.224.0.6    aks-nodepool1-15264917-vmss000001   <none>           <none>            controller-revision-hash=5cc484797f,k8s-app=retina,kubernetes.azure.com/managedby=aks,pod-template-generation=1
+retina-agent-vjjvx                             1/1     Running   0              5m27s   10.224.0.4    aks-nodepool1-15264917-vmss000000   <none>           <none>            controller-revision-hash=5cc484797f,k8s-app=retina,kubernetes.azure.com/managedby=aks,pod-template-generation=1
 
-kubectl get all -n kube-system -l component=ama-logs-agent
-NAME                 READY   STATUS    RESTARTS   AGE
-pod/ama-logs-26vns   3/3     Running   0          82m
+kubectl describe po -n kube-system -l rsName=ama-metrics | grep Image
+kubectl describe po -n kube-system -l dsName=ama-metrics-node | grep Image
+    Image:          mcr.microsoft.com/azuremonitor/containerinsights/ciprod/prometheus-collector/images:6.9.0-main-07-22-2024-2e3dfb56
+    Image:         mcr.microsoft.com/aks/msi/addon-token-adapter:master.240510.2
+    Image:          mcr.microsoft.com/azuremonitor/containerinsights/ciprod/prometheus-collector/images:6.9.0-main-07-22-2024-2e3dfb56
 
-NAME                      DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR   AGE
-daemonset.apps/ama-logs   1         1         1       1            1           <none>          82m
+    Image:          mcr.microsoft.com/azuremonitor/containerinsights/ciprod/prometheus-collector/images:6.9.0-main-07-22-2024-2e3dfb56
+    Image:         mcr.microsoft.com/aks/msi/addon-token-adapter:master.240510.2
 
-NAME                          READY   UP-TO-DATE   AVAILABLE   AGE
-deployment.apps/ama-logs-rs   1/1     1            1           82m
-
-kubectl get all -n kube-system -l rsName=ama-logs-rs
-NAME                               READY   STATUS    RESTARTS   AGE
-pod/ama-logs-rs-5cdd468cf4-nwgcw   2/2     Running   0          82m
-
-NAME                                     DESIRED   CURRENT   READY   AGE
-replicaset.apps/ama-logs-rs-5cdd468cf4   1         1         1       82m
-
-kubectl get all -n kube-system -l rsName=ama-metrics
-NAME                               READY   STATUS    RESTARTS   AGE
-pod/ama-metrics-5d5976ffc8-fjtrv   2/2     Running   0          79m
-
-NAME                                     DESIRED   CURRENT   READY   AGE
-replicaset.apps/ama-metrics-5d5976ffc8   1         1         1       79m
-
-kubectl get all -n kube-system -l app.kubernetes.io/component=ama-metrics
-NAME                                  READY   STATUS    RESTARTS   AGE
-pod/ama-metrics-ksm-9fcd9bbf4-vwjsw   1/1     Running   0          80m
-
-NAME                      TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)    AGE
-service/ama-metrics-ksm   ClusterIP   10.0.135.169   <none>        8080/TCP   80m
-
-NAME                              READY   UP-TO-DATE   AVAILABLE   AGE
-deployment.apps/ama-metrics-ksm   1/1     1            1           80m
-
-NAME                                        DESIRED   CURRENT   READY   AGE
-replicaset.apps/ama-metrics-ksm-9fcd9bbf4   1         1         1       80m
-
-kubectl get all -n kube-system -l dsName=ama-metrics-node
-NAME                         READY   STATUS    RESTARTS   AGE
-pod/ama-metrics-node-8pktk   2/2     Running   0          80m
-
+# Previously (updated to k8s-app=retina)
 kubectl get all -n kube-system -l k8s-app=kappie
 NAME                     READY   STATUS    RESTARTS   AGE
 pod/kappie-agent-79xs9   1/1     Running   0          87m
-
 NAME                 TYPE        CLUSTER-IP    EXTERNAL-IP   PORT(S)     AGE
 service/kappie-svc   ClusterIP   10.0.122.54   <none>        10093/TCP   87m
-
 NAME                          DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR   AGE
 daemonset.apps/kappie-agent   1         1         1       1            1           <none>          87m
 
-az aks update -g $rg -n aks --disable-azure-monitor-metrics
+kubectl get all -n kube-system -l k8s-app=retina
+kubectl describe po -n kube-system -l k8s-app=retina | grep Image
+NAME                     READY   STATUS    RESTARTS   AGE
+pod/retina-agent-zhr6d   1/1     Running   0          8m7s
+NAME                          DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR   AGE
+daemonset.apps/retina-agent   1         1         1       1            1           <none>          8m8s
+    Image:          mcr.microsoft.com/containernetworking/kappie-init:v0.1.4
+    Image:         mcr.microsoft.com/containernetworking/kappie-agent:v0.1.4
 ```
 
 ```
@@ -113,3 +101,4 @@ kube_configmap_annotations{namespace="default",configmap="kube-root-ca.crt"} 1
 ```
 
 - https://learn.microsoft.com/en-Us/azure/azure-monitor/containers/prometheus-metrics-enable?tabs=azure-portal
+- https://github.com/Azure/AKS/issues/4508: Retina-agent will be installed on clusters with ama-metrics and k8s versions >= 1.29

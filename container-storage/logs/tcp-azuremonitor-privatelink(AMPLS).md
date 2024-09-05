@@ -18,12 +18,12 @@ az resource show -g $rg -n mylinkscope --resource-type Microsoft.Insights/privat
 
 ```
 # add scoped resource
-tbd cli after private-link-scope create
-# https://learn.microsoft.com/en-us/azure/azure-monitor/logs/private-link-configure
-# Portal: In your AMPLS, select Azure Monitor Resources in the menu on the left. Select Add. (add the log analytics workspace)
 workspaceId=$(az aks show -g $rg -n aksloganalytics --query addonProfiles.omsagent.config.logAnalyticsWorkspaceResourceID -otsv)
 echo $workspaceId
 # /subscriptions/redacts-1111-1111-1111-111111111111/resourceGroups/defaultresourcegroup-sec/providers/Microsoft.OperationalInsights/workspaces/defaultworkspace-redacts-1111-1111-1111-111111111111-sec
+# https://learn.microsoft.com/en-us/azure/azure-monitor/logs/private-link-configure#connect-azure-monitor-resources
+# Portal: In your AMPLS, select Azure Monitor Resources in the menu on the left. Select Add. (add the log analytics workspace)
+# tbd az monitor private-link-scope scoped-resource create -g $rg -n scopedworkspace --linked-resource $workspaceId --scope-name mylinkscope
 
 az monitor private-link-scope scoped-resource list -g $rg --scope-name mylinkscope
 [

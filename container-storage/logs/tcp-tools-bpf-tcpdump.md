@@ -191,9 +191,10 @@ tcpdump 'not net 168.63.129.16 and not net 169.254.169.254 and not port 10250 an
 
 ```
 tcpdump tcp port http # tcpdump port 80 # tcpdump port http
-tcpdump tcp port https
 tcpdump tcp dst port 80 # tcpdump 'tcp dst port 80'
 tcpdump tcp dst port 80 -A # Displays the HTTP request/response in ASCII format.
+tcpdump -A -vvv host 169.254.169.254
+tcpdump 'tcp port 80 and (((ip[2:2] - ((ip[0]&0xf)<<2)) - ((tcp[12]&0xf0)>>2)) != 0)' # print only (http) packets that contain data
 ```
 
 ```
@@ -222,7 +223,16 @@ tcpdump 'tcp[((tcp[12:1] & 0xf0) >> 2):4] = 0x48454144' # HEAD
 - https://onlinetools.com/hex/convert-ascii-to-hex?input=GET  # 47455420. Remember to deselect 'Add 0x Hex Prefix' and 'Add Extra Spacing'. Also, don't forget to manually add a space after typing GET to match the 4 bytes requirement.
 - tbd https://www.rapidtables.com/code/text/ascii-table.html
 - tbd https://www.middlewareinventory.com/blog/tcpdump-capture-http-get-post-requests-apache-weblogic-websphere/
+- https://stackoverflow.com/questions/9241391/how-to-capture-all-the-http-packets-using-tcpdump
+- https://stackoverflow.com/questions/39012132/how-to-capture-only-http-with-tcpdump-with-linux
 <br>
+
+- https
+
+```
+tcpdump tcp port https
+
+```
 
 - ip
 

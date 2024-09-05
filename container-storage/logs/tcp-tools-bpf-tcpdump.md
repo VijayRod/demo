@@ -223,3 +223,9 @@ tcpdump 'tcp[((tcp[12:1] & 0xf0) >> 2):4] = 0x48454144' # HEAD
 - tbd https://www.rapidtables.com/code/text/ascii-table.html
 - tbd https://www.middlewareinventory.com/blog/tcpdump-capture-http-get-post-requests-apache-weblogic-websphere/
 <br>
+
+- ip
+
+```
+tcpdump ip
+```

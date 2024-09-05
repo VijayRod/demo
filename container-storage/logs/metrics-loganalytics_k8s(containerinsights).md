@@ -1,4 +1,9 @@
 ```
+rg=rg
+az group create -n $rg -l $loc
+az aks create -g $rg -n aksloganalytics -a monitoring -s $vmsize -c 1
+az aks get-credentials -g $rg -n aksloganalytics --overwrite-existing
+
 az aks enable-addons -a monitoring -g $rg -n aks
 az aks get-credentials -g $rg -n aks --overwrite-existing
 ```

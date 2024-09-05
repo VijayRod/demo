@@ -59,5 +59,32 @@ Escape character is '^]'.
 
 ```
 # https://learn.microsoft.com/en-us/azure/azure-monitor/logs/private-link-configure#connect-to-a-private-endpoint
+az monitor private-link-scope list #-otable
+az monitor private-link-scope show -g $rg -n mylinkscope --query privateEndpointConnections
+[
+      {
+        "id": "/subscriptions/redacts-1111-1111-1111-111111111111/resourceGroups/rg/providers/microsoft.insights/privatelinkscopes/my-scope/privateendpointconnections/connection-6bc3d9d6-d794-45e8-9677-57c7966128c4",
+        "name": "connection-6bc3d9d6-d794-45e8-9677-57c7966128c4",
+        "privateEndpoint": {
+          "id": "/subscriptions/redacts-1111-1111-1111-111111111111/resourceGroups/rg/providers/Microsoft.Network/privateEndpoints/linkscopepe",
+          "resourceGroup": "rg"
+        },
+        "privateLinkServiceConnectionState": {
+          "actionsRequired": "None",
+          "description": "Auto-Approved",
+          "status": "Approved"
+        },
+        "provisioningState": "Succeeded",
+        "resourceGroup": "rg",
+        "type": "microsoft.insights/privatelinkscopes/privateendpointconnections"
+      }
+    ]
+```
+
+```
 tbd az monitor private-link-scope private-link-resource list -g $rg --scope-name mylinkscope #-otable
+```
+
+```
+az monitor private-link-scope delete -g $rg -n mylinkscope -y
 ```

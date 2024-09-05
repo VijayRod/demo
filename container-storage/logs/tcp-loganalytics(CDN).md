@@ -103,7 +103,7 @@ s-part-0024.t-0009.t-msedge.net. 35 IN  A       13.107.246.52
 ;; WHEN: Thu Sep 05 18:58:15 UTC 2024
 ;; MSG SIZE  rcvd: 316
 
-# The laptop in Portugal connected to this POP location IP address
+# A laptop in Portugal connected to this POP location IP address
 # curl https://defaultazuremonitorworkspace-sec-amfmcbbvhpdehkfn.swedencentral.prometheus.monitor.azure.com
 {"error":{"code":"PathNotFound","message":"Path not found"}}
 # telnet defaultazuremonitorworkspace-sec-amfmcbbvhpdehkfn.swedencentral.prometheus.monitor.azure.com 443

@@ -26,6 +26,7 @@ echo $workspaceId
 # tbd az monitor private-link-scope scoped-resource create -g $rg -n scopedworkspace --linked-resource $workspaceId --scope-name mylinkscope
 
 az monitor private-link-scope scoped-resource list -g $rg --scope-name mylinkscope
+az monitor private-link-scope scoped-resource show -g $rg --scope-name mylinkscope -n scoped-defaultworkspace-efec8e52-e1ad-4ae1-8598-f243e56e2b08-sec-b06df31b-5f4a-401b-a19c-087ace44600c
 [
   {
     "id": "/subscriptions/redacts-1111-1111-1111-111111111111/resourceGroups/rg/providers/microsoft.insights/privatelinkscopes/my-scope/scopedresources/scoped-defaultworkspace-redacts-1111-1111-1111-111111111111-sec-b06df31b-5f4a-401b-a19c-087ace44600c",
@@ -50,9 +51,13 @@ az monitor account list #-otable
     "metrics": {
       "prometheusQueryEndpoint": "https://defaultazuremonitorworkspace-sec-amfmcbbvhpdehkfn.swedencentral.prometheus.monitor.azure.com"
 
-
 aks-nodepool1-19134489-vmss000000:/# telnet defaultazuremonitorworkspace-sec-amfmcbbvhpdehkfn.swedencentral.prometheus.monitor.azure.com 443
 Trying 13.107.246.53...
 Connected to s-part-0025.t-0009.t-msedge.net.
 Escape character is '^]'.
+```
+
+```
+# https://learn.microsoft.com/en-us/azure/azure-monitor/logs/private-link-configure#connect-to-a-private-endpoint
+tbd az monitor private-link-scope private-link-resource list -g $rg --scope-name mylinkscope #-otable
 ```

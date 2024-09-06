@@ -17,6 +17,9 @@ az login
 subId=
 az account set -s $subId
 az account show -s $subId --query isDefault
+
+# query
+az network private-link-service list -g $noderg --query "[].{Name:name,Alias:alias}" -o table
 ```
 
 - https://docs.microsoft.com/en-us/cli/azure

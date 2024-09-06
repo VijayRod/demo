@@ -20,6 +20,7 @@ az account show -s $subId --query isDefault
 
 # query
 az aks show -g $rg -n aks --query nodeResourceGroup -o tsv
+az network private-link-service list -g $noderg --query "[].id" -o tsv
 az network private-link-service list -g $noderg --query "[].{Name:name,Alias:alias}" -o table
 ```
 

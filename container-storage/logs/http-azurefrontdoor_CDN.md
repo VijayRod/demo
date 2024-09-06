@@ -1,3 +1,5 @@
+- https://learn.microsoft.com/en-us/answers/questions/296886/how-does-azure-cdn-find-closest-location-to-a-clie
 - https://learn.microsoft.com/en-us/azure/cdn/cdn-overview: distributed network of servers that can efficiently deliver web content to users. A content delivery network store cached content on edge servers in point of presence (POP) locations that are close to end users, to minimize latency.
+- https://learn.microsoft.com/en-us/azure/cdn/cdn-overview#how-it-works
 - https://learn.microsoft.com/en-us/azure/frontdoor/front-door-cdn-comparison#service-comparison
-- https://learn.microsoft.com/en-us/azure/cdn/cdn-pop-locations
+- https://learn.microsoft.com/en-us/azure/cdn/cdn-pop-locations 

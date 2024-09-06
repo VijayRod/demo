@@ -6,6 +6,11 @@ az monitor account show -g $rg -n monitor
 ```
 
 ```
+az monitor log-analytics workspace create -g $rg -n laworkspace
+az monitor log-analytics workspace show -g $rg -n laworkspace --query id -otsv
+```
+
+```
 az aks create -g $rg -n aksloganalytics -a monitoring -s $vmsize -c 1
 az aks get-credentials -g $rg -n aksloganalytics --overwrite-existing
 workspaceId=$(az aks show -g $rg -n aksloganalytics --query addonProfiles.omsagent.config.logAnalyticsWorkspaceResourceID -otsv)

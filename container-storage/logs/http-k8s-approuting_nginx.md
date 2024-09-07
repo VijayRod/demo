@@ -6,6 +6,7 @@ az aks get-credentials -g $rg -n aksapproute --overwrite-existing
 ```
 
 - https://learn.microsoft.com/en-us/azure/aks/app-routing
+- https://github.com/Azure/aks-app-routing-operator/blob/main/pkg/manifests/nginx.go
 
 ```
 kubectl describe po -n app-routing-system -l app=nginx | grep Image

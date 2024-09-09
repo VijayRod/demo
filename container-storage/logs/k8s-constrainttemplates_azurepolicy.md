@@ -147,3 +147,4 @@ az group delete -n $rgname -y --no-wait
 - https://learn.microsoft.com/en-us/azure/governance/policy/how-to/get-compliance-data#on-demand-evaluation-scan---azure-cli: az policy state trigger-scan -g $rg
 - https://learn.microsoft.com/en-us/azure/governance/policy/troubleshoot/general#scenario-evaluation-details-arent-up-to-date: ~The assignment takes 5-15 minutes to take effect.
 - https://learn.microsoft.com/en-us/azure/governance/policy/troubleshoot/general
+- https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/extensions/enforce-container-cpu-memory-limits: Run the following command to check the compliance of your cluster: kubectl describe k8sazurecontainerlimits 

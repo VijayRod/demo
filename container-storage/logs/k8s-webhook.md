@@ -22,14 +22,14 @@ aks-node-validating-webhook   1          2d13h
 ```
 # Webhooks.Rules
 
-kubectl describe mutatingwebhookconfigurations
+kubectl describe mutatingwebhookconfiguration
 Kind:         MutatingWebhookConfiguration
 Webhooks:
   Name:            aks-node-mutating-webhook.azmk8s.io
   Rules:
 ...
 
-kubectl describe validatingwebhookconfigurations
+kubectl describe validatingwebhookconfiguration
 Kind:         ValidatingWebhookConfiguration
 Webhooks:
   Name:            aks-node-validating-webhook.azmk8s.io

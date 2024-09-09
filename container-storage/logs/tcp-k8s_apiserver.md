@@ -68,3 +68,5 @@ Console escape. Commands are:
  e      exit telnet
 e
 ```
+
+- https://github.com/kubernetes/community/tree/master/sig-scalability/slos

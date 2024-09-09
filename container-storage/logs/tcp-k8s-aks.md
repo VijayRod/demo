@@ -60,3 +60,5 @@ az group delete -n rgnet -y --no-wait
 az group delete -n rgnet-managed -y --no-wait
 az group list -otable | grep -E '^rg|^repro' # startswith
 ```
+
+- https://github.com/kubernetes/community/tree/master/sig-scalability/slos

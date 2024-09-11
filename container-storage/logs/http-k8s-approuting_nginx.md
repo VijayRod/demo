@@ -1,7 +1,7 @@
 ```
 rg=rg
 az group create -n $rg -l $loc
-az aks create -g $rg -s $vmsize -n aksapproute --enable-app-routing
+az aks create -g $rg -n aksapproute --enable-app-routing -s $vmsize
 az aks get-credentials -g $rg -n aksapproute --overwrite-existing
 ```
 

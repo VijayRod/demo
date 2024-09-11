@@ -17,7 +17,7 @@ kubectl get no
 - https://github.com/tigera-solutions/install-calico-on-aks: Networking options for AKS cluster
 
 ```
-# /etc/cni/net.d/, /opt/cni/bin/
+# /etc/cni/net.d, /opt/cni/bin
 
 akscal - 10-azure.conflist
 aks-nodepool1-36628055-vmss000000:/var# cat /etc/cni/net.d/10-azure.conflist

@@ -7,6 +7,8 @@
 - https://stevegriffith.nyc/posts/aks-cni-calico-ipmasq/
 
 ```
+# ipmasq
+
 akscal
 aks-nodepool1-36628055-vmss000000:/# ps -aux | grep masq
 root        4233  0.0  0.1 718992 15820 ?        Ssl  04:13   0:00 /ip-masq-agent-v2 --v=2 --resync-interval=60
@@ -21,7 +23,7 @@ root        4541  0.0  0.2 719888 17992 ?        Ssl  10:19   0:00 /ip-masq-agen
 ```
 
 ```
-akscal
+# ipmasq.akscal
 
 aks-nodepool1-36628055-vmss000000:/# iptables-save | grep masq
 -A POSTROUTING -m comment --comment "\"ip-masq-agent: ensure nat POSTROUTING directs all non-LOCAL destination traffic to our custom IP-MASQ-AGENT chain\"" -m addrtype ! --dst-type LOCAL -j IP-MASQ-AGENT
@@ -70,7 +72,7 @@ az network vnet subnet show -g MC_rg_akscal_swedencentral --vnet-name aks-vnet-3
 ```
 
 ```
-akskube
+# ipmasq.akskube
 
 aks-nodepool1-10522532-vmss000000:/# iptables-save | grep masq
 -A POSTROUTING -m comment --comment "\"ip-masq-agent: ensure nat POSTROUTING directs all non-LOCAL destination traffic to our custom IP-MASQ-AGENT chain\"" -m addrtype ! --dst-type LOCAL -j IP-MASQ-AGENT

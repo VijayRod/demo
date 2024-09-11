@@ -4,3 +4,4 @@
 - https://www.tkng.io/cni/
 - https://docs.tigera.io/calico-cloud/networking/
 - https://labs.iximiuz.com/tutorials/container-networking-from-scratch
+- https://github.com/tigera-solutions/install-calico-on-aks: Networking options for AKS cluster

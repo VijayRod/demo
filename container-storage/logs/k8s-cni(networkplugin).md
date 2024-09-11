@@ -1,7 +1,7 @@
 - https://learn.microsoft.com/en-us/azure/aks/use-byo-cni?tabs=azure-cli
 - https://kubernetes.io/docs/concepts/extend-kubernetes/compute-storage-net/network-plugins/
 - https://github.com/containernetworking/cni
-- https://www.tkng.io/cni/
+- https://www.tkng.io/cni/: The Kubernetes Networking Guide
 - https://docs.tigera.io/calico-cloud/networking/
 - https://labs.iximiuz.com/tutorials/container-networking-from-scratch
 - https://github.com/tigera-solutions/install-calico-on-aks: Networking options for AKS cluster

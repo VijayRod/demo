@@ -22,7 +22,9 @@ root        6238  0.0  0.0   4476   840 ?        S    04:17   0:00 svlogd -ttt /
 10001       6352  0.0  0.7 1862932 58872 ?       Sl   04:17   0:01 calico-typha
 root        6363  0.0  0.6 1836484 53916 ?       Sl   04:17   0:00 calico-node -status-reporter
 root        6396  0.7  0.7 2205400 64148 ?       Sl   04:17   0:10 calico-node -felix
+```
 
+```
 kubectl get installation default -o go-template --template {{.spec.cni.ipam.type}} # HostLocal
 
 kubectl api-resources | grep install
@@ -223,6 +225,20 @@ Status:
   Mtu:                     1500
   Variant:                 Calico
 Events:                    <none>
+```
+
+```
+akscal
+kubectl get po -A | grep cal
+calico-system     calico-kube-controllers-6c6485578f-9gzpz   1/1     Running   0             46m
+calico-system     calico-node-7vn5m                          1/1     Running   0             46m
+calico-system     calico-typha-74c7b5bdf6-xj4vc              1/1     Running   0             46m
+
+akskubecal
+kubectl get po -A | grep cal
+calico-system     calico-kube-controllers-86845c4bdd-bt2zx   1/1     Running   0          44m
+calico-system     calico-node-x4ljj                          1/1     Running   0          44m
+calico-system     calico-typha-78fc59998c-8flzt              1/1     Running   0          44m
 ```
 
 - https://www.tigera.io/blog/byocni-introducing-calico-cni-for-azure-aks/

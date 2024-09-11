@@ -130,4 +130,5 @@ aks-nodepool1-10522532-vmss000000:/# ls /opt/cni/bin/ # no additional files pres
 
 - https://kubernetes.io/docs/concepts/extend-kubernetes/compute-storage-net/network-plugins/: If you want to enable traffic shaping support, you must add the bandwidth plugin to your CNI configuration file (default /etc/cni/net.d) and ensure that the binary is included in your CNI bin dir (default /opt/cni/bin).
 - https://stackoverflow.com/questions/49112336/container-runtime-network-not-ready-cni-config-uninitialized: Unable to update cni config: No networks found in /etc/cni/net.d. Container runtime network not ready
+- https://github.com/tigera-solutions/install-calico-on-aks: Using kubenet + Calico networking plugin and network policy. This option is a bit misleading in its naming as it suggests that kubenet is used while in reality the cluster is configured to use Calico CNI with Host-Local IPAM and Calico network policy engine...
 

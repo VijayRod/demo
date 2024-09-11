@@ -36,7 +36,7 @@ nginx            1/1     Running   0          21m     10.244.2.5   aks-npuser-11
 -A KUBE-SVL-2CMXP7HKUVJN7L6M -m comment --comment "default/nginx -> 10.244.2.5:80" -j KUBE-SEP-XW6I7J74P22Q2AZM
 
 # aks-npuser-11270689-vmss000002 - "default/nginx has no local endpoints" -m tcp --dport 80 -j DROP
-# By setting the "externalTrafficPolicy" to "local" on the nginx service, traffic will only be directed to those pods.
+# By setting the "externalTrafficPolicy" to "local" on the nginx service, traffic will only be directed to those instances/nodes.
 -A KUBE-EXTERNAL-SERVICES -d 20.91.172.24/32 -p tcp -m comment --comment "default/nginx has no local endpoints" -m tcp --dport 80 -j DROP
 -A KUBE-EXTERNAL-SERVICES -p tcp -m comment --comment "default/nginx has no local endpoints" -m addrtype --dst-type LOCAL -m tcp --dport 32643 -j DROP
 -A KUBE-NODEPORTS -p tcp -m comment --comment "default/nginx health check node port" -m tcp --dport 31701 -j ACCEPT

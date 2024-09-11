@@ -1,5 +1,28 @@
 ```
-az aks get-credentials -g $rg -n akskubecal --overwrite-existing
+akscal
+aks-nodepool1-36628055-vmss000000:/# ps -aux | grep calico
+10001       7074  0.0  0.0   1156     4 ?        Ss   04:14   0:00 /sbin/tini -- calico-typha
+10001       7087  0.0  0.6 1789200 55200 ?       Sl   04:14   0:01 calico-typha
+root        7646  0.0  0.6 1689020 55160 ?       Sl   04:14   0:00 calico-node -status-reporter
+root        7647  0.0  0.7 1762752 59420 ?       Sl   04:14   0:00 calico-node -allocate-tunnel-addrs
+root        7649  0.6  0.8 2131924 65100 ?       Sl   04:14   0:10 calico-node -felix
+root        7672  0.0  0.0   4476   860 ?        S    04:14   0:00 svlogd -ttt /var/log/calico/allocate-tunnel-addrs
+root        7674  0.0  0.0   4476   940 ?        S    04:14   0:00 svlogd -ttt /var/log/calico/felix
+root        7677  0.0  0.0   4476   856 ?        S    04:14   0:00 svlogd -ttt /var/log/calico/node-status-reporter
+
+akskubecal - /var/log/calico/cni
+aks-nodepool1-64104225-vmss000000:/# ps -aux | grep calico
+root        6199  0.0  0.6 1762752 54804 ?       Sl   04:17   0:00 calico-node -monitor-token
+root        6204  0.0  0.6 1689020 52252 ?       Sl   04:17   0:00 calico-node -allocate-tunnel-addrs
+root        6223  0.0  0.0   4476   864 ?        S    04:17   0:00 svlogd -ttt /var/log/calico/allocate-tunnel-addrs
+root        6225  0.0  0.0   4476   852 ?        S    04:17   0:00 svlogd -ttt /var/log/calico/felix
+root        6237  0.0  0.0   4476   940 ?        S    04:17   0:00 svlogd -ttt /var/log/calico/cni
+root        6238  0.0  0.0   4476   840 ?        S    04:17   0:00 svlogd -ttt /var/log/calico/node-status-reporter
+10001       6339  0.0  0.0   1156     4 ?        Ss   04:17   0:00 /sbin/tini -- calico-typha
+10001       6352  0.0  0.7 1862932 58872 ?       Sl   04:17   0:01 calico-typha
+root        6363  0.0  0.6 1836484 53916 ?       Sl   04:17   0:00 calico-node -status-reporter
+root        6396  0.7  0.7 2205400 64148 ?       Sl   04:17   0:10 calico-node -felix
+
 kubectl get installation default -o go-template --template {{.spec.cni.ipam.type}} # HostLocal
 
 kubectl api-resources | grep install

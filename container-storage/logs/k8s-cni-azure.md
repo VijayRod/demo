@@ -1,33 +1,14 @@
 ```
-az aks create -g $rg -n akscni -s $vmsize -c 1 --network-plugin azure
+akscal
 cat /var/run/azure-vnet.json
 cat /var/run/azure-vnet-ipam.json
 cat /etc/cni/net.d/10-azure.conflist
-```
 
-```
-aks-nodepool1-59385832-vmss000000:/# cat /etc/cni/net.d/10-azure.conflist
-{
-   "cniVersion":"0.3.0",
-   "name":"azure",
-   "plugins":[
-      {
-         "type":"azure-vnet",
-         "mode":"transparent",
-         "ipsToRouteViaHost":["169.254.20.10"],
-         "ipam":{
-            "type":"azure-vnet-ipam"
-         }
-      },
-      {
-         "type":"portmap",
-         "capabilities":{
-            "portMappings":true
-         },
-         "snat":true
-      }
-   ]
-}
+akscal
+ls /var/log/azure*
+/var/log/azure-cnimonitor.log  /var/log/azure-vnet-telemetry.log
+/var/log/azure-vnet-ipam.log   /var/log/azure-vnet.log
+...
 ```
 
 ```

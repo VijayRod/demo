@@ -19,7 +19,11 @@ akskube
         "type": "host-local",
         "ranges": [[{"subnet": "10.244.2.0/24"}]],
         "routes": [{"dst": "0.0.0.0/0"}]
-        
+```
+
+```
+# ipam.log
+
 akskubecal
 aks-nodepool1-64104225-vmss000000:/# cat /var/log/calico/cni/cni.log | grep IPAM
 2024-09-11 04:17:11.643 [INFO][6520] utils.go 344: Calico CNI passing podCidr to host-local IPAM: 0.0.0.0/0 ContainerID="aa1c1133fff09fab8f0a801b08ee94e2fac9487ffbad15f7c59fcdb29334748d"

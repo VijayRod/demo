@@ -9,6 +9,7 @@ kubectl get no
 ```
 
 - https://learn.microsoft.com/en-us/azure/aks/use-byo-cni?tabs=azure-cli
+- https://kubernetes.io/docs/concepts/cluster-administration/networking/#the-kubernetes-network-model
 - https://kubernetes.io/docs/concepts/extend-kubernetes/compute-storage-net/network-plugins/
 - https://github.com/containernetworking/cni
 - ** https://www.tkng.io/cni/: The Kubernetes Networking Guide

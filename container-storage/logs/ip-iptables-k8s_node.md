@@ -80,3 +80,4 @@ aks-nodepool1-12914153-vmss000000:/# ipset -L # No rows
 ```
 
 - https://blog.stevegriffith.nyc/posts/aks-networking-iptables
+- https://www.altoros.com/blog/kubernetes-networking-writing-your-own-simple-cni-plug-in-with-bash/: Fixing container-to-container communication...

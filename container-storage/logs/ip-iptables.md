@@ -1,17 +1,23 @@
-## iptable
+## iptables
 
 ```
 iptables-save > /tmp/iptables
 cat /tmp/iptables
-
-iptables -t filter -nvL # To view iptable chains
 ```
 
 - https://wiki.centos.org/HowTos/Network/IPTables
 - https://www.man7.org/linux/man-pages/man8/iptables.8.html
 - tbd https://www.baeldung.com/linux/iptables-intro
 
-## iptable.chain
+## iptables.chain
+
+```
+iptables -L | grep Chain
+iptables -L INPUT # --line-numbers
+iptables -nvL INPUT
+iptables -nvL INPUT -t filter
+iptables -t filter -nvL # To view all iptable chains
+```
 
 - https://thelinuxcode.com/iptables-tutorial/
 - tbd https://stackoverflow.com/questions/14955973/iptables-what-is-a-chain
@@ -23,3 +29,18 @@ iptables -t filter -nvL # To view iptable chains
 - https://rlworkman.net/howtos/iptables/chunkyhtml/c962.html
 - http://linux-ip.net/pages/diagrams.html#netfilter-kernel-packet-traversal
 - https://www.digitalocean.com/community/tutorials/a-deep-dive-into-iptables-and-netfilter-architecture
+- tbd https://cloudzy.com/blog/iptables-show-rules/
+- https://thelinuxcode.com/iptables-tutorial/: https://thelinuxcode.com/iptables-tutorial/
+
+## iptables.tables
+
+```
+iptables -vL -t filter
+iptables -vL -t nat
+iptables -vL -t mangle
+iptables -vL -t raw
+iptables -vL -t security
+```
+
+- https://unix.stackexchange.com/questions/205867/viewing-all-iptables-rules: iptables controls five different tables: filter, nat, mangle, raw and security. ...
+- https://thelinuxcode.com/iptables-tutorial/: These built-in chains belong to various  iptables tables...

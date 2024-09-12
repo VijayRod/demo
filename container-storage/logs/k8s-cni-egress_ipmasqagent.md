@@ -23,6 +23,12 @@ root        4541  0.0  0.2 719888 17992 ?        Ssl  10:19   0:00 /ip-masq-agen
 - https://learn.microsoft.com/en-us/azure/aks/azure-cni-overlay: azure-ip-masq-agent
 - https://stevegriffith.nyc/posts/aks-cni-calico-ipmasq/
 
+## ipmasq|nat
+
+- https://serverfault.com/questions/119365/what-is-the-difference-between-a-source-nat-destination-nat-and-masquerading: ...Masquerading is a special form of Source NAT where the source address is unknown at the time the rule is added to the tables in the kernel. ...
+- tbd https://unix.stackexchange.com/questions/21967/difference-between-snat-and-masquerade
+- tbd https://serverfault.com/questions/1083523/why-does-everybody-use-masquerade-snat-instead-of-napt-pat
+
 ## ipmasq.akscal
 
 ```

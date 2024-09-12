@@ -1,3 +1,5 @@
+## cni
+
 ```
 az aks create -g $rg -n akscal --network-plugin azure --network-policy calico -s $vmsize -c 1
 az aks create -g $rg -n akskubecal --network-plugin kubenet --network-policy calico -s $vmsize -c 1
@@ -14,12 +16,21 @@ kubectl get no
 - https://github.com/containernetworking/cni
 - ** https://www.tkng.io/cni/: The Kubernetes Networking Guide
 - https://docs.tigera.io/calico-cloud/networking/
-- https://labs.iximiuz.com/tutorials/container-networking-from-scratch
 - https://github.com/tigera-solutions/install-calico-on-aks: Networking options for AKS cluster
 
-```
-# /etc/cni/net.d
+More:
+- https://www.caseyc.net/cni-talk-kubecon-18.pdf
+- https://www.altoros.com/blog/kubernetes-networking-writing-your-own-simple-cni-plug-in-with-bash/
+- https://azuregulfblog.wordpress.com/wp-content/uploads/2019/04/aks_basicnetwork_technicalpaper.pdf
+- https://logingood.github.io/kubernetes/cni/2016/05/14/netns-and-cni.html
+- https://dougbtv.com/nfvpe/2017/06/22/cni-tutorial/
+- https://karampok.me/posts/chained-plugins-cni/
+- https://stevegriffith.nyc/posts/aks-networking-part2/
+- https://labs.iximiuz.com/tutorials/container-networking-from-scratch
 
+## cni./etc/cni/net.d
+
+```
 akscal - 10-azure.conflist
 aks-nodepool1-36628055-vmss000000:/var# cat /etc/cni/net.d/10-azure.conflist
 {
@@ -119,9 +130,9 @@ aks-nodepool1-10522532-vmss000000:/# cat /etc/cni/net.d/10-containerd-net.confli
 }
 ```
 
-```
-# /opt/cni/bin
+### cni./opt/cni/bin
 
+```
 akscal
 aks-nodepool1-36628055-vmss000000:/# ls /opt/cni/bin/azure*
 /opt/cni/bin/azure-vnet       /opt/cni/bin/azure-vnet-ipamv6     /opt/cni/bin/azure-vnet-telemetry.config

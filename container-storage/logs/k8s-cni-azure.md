@@ -290,3 +290,4 @@ kube-proxy-qdfmq                      1/1     Running   0          12h   10.224.
 - https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/azure-subscription-service-limits#azure-kubernetes-service-limits: Maximum pods per node: with Azure Container Networking Interface
 - https://learn.microsoft.com/en-us/azure/virtual-network/container-networking-overview
 - https://stevegriffith.nyc/posts/aks-networking-part2/
+- https://azuregulfblog.wordpress.com/wp-content/uploads/2019/04/aks_basicnetwork_technicalpaper.pdf

@@ -26,7 +26,7 @@ root        4541  0.0  0.2 719888 17992 ?        Ssl  10:19   0:00 /ip-masq-agen
 ## ipmasq|nat
 
 - https://serverfault.com/questions/119365/what-is-the-difference-between-a-source-nat-destination-nat-and-masquerading: ...Masquerading is a special form of Source NAT where the source address is unknown at the time the rule is added to the tables in the kernel. ...
-- tbd https://unix.stackexchange.com/questions/21967/difference-between-snat-and-masquerade
+- https://unix.stackexchange.com/questions/21967/difference-between-snat-and-masquerade: MASQUERADE does NOT require --to-source as it was made to work with dynamically assigned IPs. SNAT works ONLY with static IPs...
 - tbd https://serverfault.com/questions/1083523/why-does-everybody-use-masquerade-snat-instead-of-napt-pat
 
 ## ipmasq.akscal

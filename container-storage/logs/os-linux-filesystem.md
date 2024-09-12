@@ -1,1 +1,2 @@
 - https://wiki.archlinux.org/title/Category:File_systems
+- https://www.baeldung.com/linux/filesystem-guide

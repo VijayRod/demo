@@ -22,6 +22,7 @@ root        4541  0.0  0.2 719888 17992 ?        Ssl  10:19   0:00 /ip-masq-agen
 - https://github.com/kubernetes-sigs/ip-masq-agent
 - https://learn.microsoft.com/en-us/azure/aks/azure-cni-overlay: azure-ip-masq-agent
 - https://stevegriffith.nyc/posts/aks-cni-calico-ipmasq/
+- https://stevegriffith.nyc/posts/aks-networking-iptables/: IP-MASQ-AGENT chain is called by the POSTROUTING chain...
 
 ## ipmasq|nat
 

@@ -103,3 +103,6 @@ az afd origin create -g $rg --profile-name fdprofile --origin-group-name fdorigi
 --enabled-state Enabled \
 --host-name $LBCONFIG_IP
 ```
+
+- tbd https://learn.microsoft.com/en-us/azure/openshift/howto-secure-openshift-with-front-door
+  - tbd https://cloud.redhat.com/experts/aro/frontdoor/

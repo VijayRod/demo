@@ -1,3 +1,5 @@
+## fd
+
 ```
 rg=rg
 az group create -n $rg -l $loc
@@ -40,3 +42,64 @@ X-Cache: CONFIG_NOCACHE
 - https://learn.microsoft.com/en-us/azure/frontdoor/front-door-faq#what-is-the-difference-between-azure-front-door-and-azure-application-gateway-: Front Door is a global service that can distribute requests across regions, while Application Gateway is a regional service that can balance requests within a region. Azure Front Door works with scale units, clusters or stamp units, while Azure Application Gateway works with VMs, containers or other resources in the same scale unit.
 - https://learn.microsoft.com/en-us/azure/frontdoor/front-door-faq#when-should-i-deploy-an-application-gateway-behind-front-door-
 - https://learn.microsoft.com/en-us/azure/frontdoor/create-front-door-cli
+
+## fd.aks
+
+```
+tbd
+
+rg=rgfrontdoor
+az group create -n $rg -l $loc
+
+az aks create -g $rg -n aks -s $vmsize -c 1
+az aks get-credentials -g $rg -n aks --overwrite-existing
+cat << EOF | kubectl create -f -
+apiVersion: v1
+kind: Service
+metadata:
+  name: internal-app
+  annotations:
+    service.beta.kubernetes.io/azure-load-balancer-internal: "true"
+    service.beta.kubernetes.io/azure-pls-create: "true"
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+  selector:
+    run: nginx
+EOF
+kubectl run nginx --image=nginx --port=80
+sleep 30
+kubectl get svc internal-app # aks-nodepool1-06869368-vmss000000:/# curl 10.224.0.5 -I
+# https://learn.microsoft.com/en-us/azure/aks/internal-lb?#create-an-internal-load-balancer
+
+noderg=$(az aks show -g $rg -n aks --query nodeResourceGroup -o tsv) 
+az network private-link-service list -g $noderg --query "[].{Name:name,Alias:alias}" -o table
+plsId=$(az network private-link-service list -g $noderg --query "[].id" -o tsv)
+az network private-endpoint create -g $rg --name myAKSServicePE --vnet-name myOtherVNET --subnet pe-subnet --private-connection-resource-id $AKS_PLS_ID --connection-name connectToMyK8sService
+
+az afd profile create -g $rg -n fdprofile --sku Premium_AzureFrontDoor
+afdId=$(az afd profile show -g $rg -n fdprofile --query id -o tsv)
+az afd endpoint create -g $rg --profile-name fdprofile -n aksep$RANDOM --enabled-state Enabled
+az afd origin-group create -g $rg --profile-name fdprofile -n fdorigin \
+--probe-path '/' \
+--probe-protocol Http \
+--probe-request-type GET \
+--probe-interval-in-seconds 100 \
+--probe-interval-in-seconds 120 \
+--sample-size 4 \
+--successful-samples-required 3 \
+--additional-latency-in-milliseconds 50
+
+az afd origin create -g $rg --profile-name fdprofile --origin-group-name fdorigin --origin-name fdorigin \
+--enable-private-link true \
+--private-link-resource $privatelink_id \
+--private-link-location $LOCATION \
+--private-link-request-message 'Private link service from AFD' \
+--weight 1000 \
+--priority 1 \
+--http-port 80 \
+--https-port 443 \
+--enabled-state Enabled \
+--host-name $LBCONFIG_IP
+```

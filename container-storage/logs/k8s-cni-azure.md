@@ -291,3 +291,294 @@ kube-proxy-qdfmq                      1/1     Running   0          12h   10.224.
 - https://learn.microsoft.com/en-us/azure/virtual-network/container-networking-overview
 - https://stevegriffith.nyc/posts/aks-networking-part2/
 - https://azuregulfblog.wordpress.com/wp-content/uploads/2019/04/aks_basicnetwork_technicalpaper.pdf
+
+## cni.azure.networkProfile
+
+```
+az aks create -g $rg -n akscni --network-plugin azure -s $vmsize -c 2
+az aks show -g $rg -n akscni --query networkProfile
+az aks get-credentials -g $rg -n akscni
+kubectl get no
+
+  "advancedNetworking": null,
+  "dnsServiceIp": "10.0.0.10",
+  "networkDataplane": "azure",
+  "networkMode": null,
+  "networkPlugin": "azure",
+  "networkPluginMode": null,
+  "podCidr": null,
+  "podCidrs": null,
+  "podLinkLocalAccess": "IMDS",
+  "serviceCidr": "10.0.0.0/16",
+  "serviceCidrs": [
+    "10.0.0.0/16"
+    
+aks-nodepool1-33042731-vmss000000:/# cat /etc/cni/net.d/10-azure.conflist
+{
+   "cniVersion":"0.3.0",
+   "name":"azure",
+   "plugins":[
+      {
+         "type":"azure-vnet",
+         "mode":"transparent",
+         "ipsToRouteViaHost":["169.254.20.10"],
+         "ipam":{
+            "type":"azure-vnet-ipam"
+         }
+      },
+      {
+         "type":"portmap",
+         "capabilities":{
+            "portMappings":true
+         },
+         "snat":true
+      }
+   ]
+}
+
+aks-nodepool1-33042731-vmss000000:/# cat /var/run/azure-vnet.json
+{
+        "Network": {
+                "Version": "v1.4.54",
+                "TimeStamp": "2024-09-11T02:34:43.990795913Z",
+                "ExternalInterfaces": {
+                        "eth0": {
+                                "Name": "eth0",
+                                "Networks": {
+                                        "azure": {
+                                                "Id": "azure",
+                                                "Mode": "transparent",
+                                                "VlanId": 0,
+                                                "Subnets": [
+                                                        {
+                                                                "Family": 2,
+                                                                "Prefix": {
+                                                                        "IP": "10.224.0.0",
+                                                                        "Mask": "//8AAA=="
+                                                                },
+                                                                "Gateway": "10.224.0.1",
+                                                                "PrimaryIP": ""
+                                                        }
+                                                ],
+                                                "Endpoints": {
+                                                ...
+                                                },
+                                                "DNS": {
+                                                        "Suffix": "",
+                                                        "Servers": [
+                                                                "168.63.129.16"
+                                                        ],
+                                                        "Options": null
+                                                },
+                                                "EnableSnatOnHost": false,
+                                                "NetNs": "",
+                                                "SnatBridgeIP": ""
+                                        }
+                                },
+                                "Subnets": [
+                                        "10.224.0.0/16"
+                                ],
+                                "BridgeName": "",
+                                "DNSInfo": {
+                                        "Suffix": "",
+                                        "Servers": null,
+                                        "Options": null
+                                },
+                                "MacAddress": "fB5SHQuv",
+                                "IPAddresses": null,
+                                "Routes": null,
+                                "IPv4Gateway": "0.0.0.0",
+                                "IPv6Gateway": "::"
+                        }
+                }
+        }
+```
+
+```
+az aks create -g $rg -n akscnioverlay --network-plugin azure --network-plugin-mode overlay --pod-cidr 192.168.0.0/16 -s $vmsize -c 2
+az aks show -g $rg -n akscnioverlay --query networkProfile
+az aks get-credentials -g $rg -n akscnioverlay
+kubectl get no
+
+  "advancedNetworking": null,
+  "dnsServiceIp": "10.0.0.10",
+  "networkDataplane": "azure",
+  "networkMode": null,
+  "networkPlugin": "azure",
+  "networkPluginMode": "overlay",
+  "podCidr": "192.168.0.0/16",
+  "podCidrs": [
+    "192.168.0.0/16"
+  ],
+  "podLinkLocalAccess": "IMDS",
+  "serviceCidr": "10.0.0.0/16",
+  "serviceCidrs": [
+    "10.0.0.0/16"
+    
+aks-nodepool1-30840492-vmss000000:/# cat /etc/cni/net.d/15-azure-swift-overlay.conflist
+{
+        "cniVersion": "0.3.0",
+        "name": "azure",
+        "plugins": [
+                {
+                        "type": "azure-vnet",
+                        "mode": "transparent",
+                        "ipsToRouteViaHost": [
+                                "169.254.20.10"
+                        ],
+                        "executionMode": "v4swift",
+                        "ipam": {
+                                "mode": "v4overlay",
+                                "type": "azure-cns"
+                        },
+                        "dns": {},
+                        "runtimeConfig": {
+                                "dns": {}
+                        },
+                        "windowsSettings": {}
+                },
+                {
+                        "type": "portmap",
+                        "capabilities": {
+                                "portMappings": true
+                        },
+                        "snat": true
+                }
+        ]
+}
+
+aks-nodepool1-30840492-vmss000000:/# cat /var/run/azure-vnet.json
+{
+        "Network": {
+                "CnsClient": null,
+                "Version": "linux-amd64-v1.5.32",
+                "TimeStamp": "2024-09-16T18:24:22.253826851Z",
+                "ExternalInterfaces": {
+                        "eth0": {
+                                "Name": "eth0",
+                                "Networks": {
+                                        "azure": {
+                                                "Id": "azure",
+                                                "Mode": "transparent",
+                                                "VlanId": 0,
+                                                "Subnets": [
+                                                        {
+                                                                "Family": 2,
+                                                                "Prefix": {
+                                                                        "IP": "192.168.0.0",
+                                                                        "Mask": "//8AAA=="
+                                                                },
+                                                                "Gateway": "169.254.1.1",
+                                                                "PrimaryIP": ""
+                                                        }
+                                                ],
+                                                "Endpoints": {
+                                                ...
+                                                },
+                                                "DNS": {
+                                                        "Suffix": "",
+                                                        "Servers": null,
+                                                        "Options": null
+                                                },
+                                                "EnableSnatOnHost": false,
+                                                "NetNs": "",
+                                                "SnatBridgeIP": ""
+                                        }
+                                },
+                                "Subnets": [
+                                        "10.224.0.0/16"
+                                ],
+                                "BridgeName": "",
+                                "DNSInfo": {
+                                        "Suffix": "",
+                                        "Servers": null,
+                                        "Options": null
+                                },
+                                "MacAddress": "YEW9/a1H",
+                                "IPAddresses": null,
+                                "Routes": null,
+                                "IPv4Gateway": "0.0.0.0",
+                                "IPv6Gateway": "::"
+                        }
+                }
+        }
+        
+kubectl get po -n kube-system -l k8s-app=azure-cns
+NAME              READY   STATUS    RESTARTS   AGE
+azure-cns-dfs7g   1/1     Running   0          19m
+azure-cns-jcvsb   1/1     Running   0          19m
+azure-cns-vfg4p   1/1     Running   0          19m
+
+kubectl logs -n kube-system -l k8s-app=azure-cns
+Defaulted container "cns-container" out of: cns-container, cni-installer (init)
+Defaulted container "cns-container" out of: cns-container, cni-installer (init)
+Defaulted container "cns-container" out of: cns-container, cni-installer (init)
+2024/09/16 18:23:00 [1] [updateIPConfigState] Changing IpId [192.168.2.153] state to [Assigned], podInfo [InfraContainerID: [5d6d55498cd4a6b26a916da350844a88e120131e0fe6619b15f7e6997118bf0f], InterfaceID: [5d6d5549-eth0], Key: [5d6d5549-eth0], Name: [coredns-597bb9d4db-l9xps], Namespace: [kube-system]]. Current config [ID: [192.168.2.153], NCID: [f8ba6027-16ef-4116-95f2-923bbe9abaf1], IPAddress: [192.168.2.153], State: [Available], LastStateTransition: [2024-09-16T11:22:56Z] PodInfo: [%!s(<nil>)]]
+
+kubectl run nginx --image=nginx
+kubectl logs -n kube-system -l k8s-app=azure-cns
+2024/09/16 18:43:19 [1] [azure-cnsrequestIPConfigsHandler] Received cns.IPConfigsRequest {DesiredIPAddresses:[] PodInterfaceID:70513325-eth0 InfraContainerID:7051332514dcd314f5e2e611a9fef059471e15980badffd953b1772a63166f9c OrchestratorContext:[123 34 80 111 100 78 97 109 101 34 58 34 110 103 105 110 120 34 44 34 80 111 100 78 97 109 101 115 112 97 99 101 34 58 34 100 101 102 97 117 108 116 34 125] Ifname: SecondaryInterfacesExist:false}.
+2024/09/16 18:43:19 [1] [GetExistingIPConfig] IPConfigExists [false] for pod [70513325-eth0]
+2024/09/16 18:43:19 [1] [updateIPConfigState] Changing IpId [192.168.1.47] state to [Assigned], podInfo [InfraContainerID: [7051332514dcd314f5e2e611a9fef059471e15980badffd953b1772a63166f9c], InterfaceID: [70513325-eth0], Key: [70513325-eth0], Name: [nginx], Namespace: [default]]. Current config [ID: [192.168.1.47], NCID: [4b663566-aa09-4a6f-98d1-353bd5d25d4a], IPAddress: [192.168.1.47], State: [Available], LastStateTransition: [2024-09-16T18:22:58Z] PodInfo: [%!s(<nil>)]]
+2024/09/16 18:43:19 [1] IP config 70513325-eth0 initialized
+2024/09/16 18:43:19 [1] [AssignDesiredIPConfigs] Successfully assigned IPs for pod InfraContainerID: [7051332514dcd314f5e2e611a9fef059471e15980badffd953b1772a63166f9c], InterfaceID: [70513325-eth0], Key: [70513325-eth0], Name: [nginx], Namespace: [default]
+2024/09/16 18:43:19 [1] [azure-cnsrequestIPConfigsHandler] Sent cns.IPConfigsRequest {DesiredIPAddresses:[] PodInterfaceID:70513325-eth0 InfraContainerID:7051332514dcd314f5e2e611a9fef059471e15980badffd953b1772a63166f9c OrchestratorContext:[123 34 80 111 100 78 97 109 101 34 58 34 110 103 105 110 120 34 44 34 80 111 100 78 97 109 101 115 112 97 99 101 34 58 34 100 101 102 97 117 108 116 34 125] Ifname: SecondaryInterfacesExist:false} *cns.IPConfigsResponse &{PodIPInfo:[{PodIPConfig:{IPAddress:192.168.1.47 PrefixLength:16} NetworkContainerPrimaryIPConfig:{IPSubnet:{IPAddress:192.168.1.0 PrefixLength:16} DNSServers:[] GatewayIPAddress:} HostPrimaryIPInfo:{Gateway:10.224.0.1 PrimaryIP:10.224.0.5 Subnet:10.224.0.0/16} NICType:InfraNIC InterfaceName: MacAddress: SkipDefaultRoutes:false Routes:[]}] Response:{ReturnCode:Success Message:}}.
+kubectl get po nginx -owide
+nginx   1/1     Running   0          4m22s   192.168.1.47   aks-nodepool1-30840492-vmss000001   <none>           <none>
+aks-nodepool1-30840492-vmss000001:/# cat cat /var/run/azure-vnet.json
+                                                        "70513325-eth0": {
+                                                                "Id": "70513325-eth0",
+                                                                "SandboxKey": "",
+                                                                "IfName": "azvc440f4556932",
+                                                                "HostIfName": "azvc440f455693",
+                                                                "MacAddress": "ZqPi31PX",
+                                                                "InfraVnetIP": {
+                                                                        "IP": "",
+                                                                        "Mask": null
+                                                                },
+                                                                "LocalIP": "",
+                                                                "IPAddresses": [
+                                                                        {
+                                                                                "IP": "192.168.1.47",
+                                                                                "Mask": "//8AAA=="
+                                                                        }
+                                                                ],
+                                                                "Gateways": [
+                                                                        "0.0.0.0"
+                                                                ],
+                                                                "DNS": {
+                                                                        "Suffix": "",
+                                                                        "Servers": null,
+                                                                        "Options": null
+                                                                },
+                                                                "Routes": [
+                                                                        {
+                                                                                "Dst": {
+                                                                                        "IP": "0.0.0.0",
+                                                                                        "Mask": "AAAAAA=="
+                                                                                },
+                                                                                "Src": "",
+                                                                                "Gw": "169.254.1.1",
+                                                                                "Protocol": 0,
+                                                                                "DevName": "",
+                                                                                "Scope": 0,
+                                                                                "Priority": 0,
+                                                                                "Table": 0
+                                                                        }
+                                                                ],
+                                                                "VlanID": 0,
+                                                                "EnableSnatOnHost": false,
+                                                                "EnableInfraVnet": false,
+                                                                "EnableMultitenancy": false,
+                                                                "AllowInboundFromHostToNC": false,
+                                                                "AllowInboundFromNCToHost": false,
+                                                                "NetworkContainerID": "",
+                                                                "NetworkNameSpace": "/var/run/netns/cni-37bc323b-6978-74ae-6bf2-1f881e9f0e3f",
+                                                                "ContainerID": "7051332514dcd314f5e2e611a9fef059471e15980badffd953b1772a63166f9c",
+                                                                "PODName": "nginx",
+                                                                "PODNameSpace": "default",
+                                                                "SecondaryInterfaces": {}
+                                                        },
+```
+
+- https://learn.microsoft.com/en-us/azure/aks/azure-cni-overlay?tabs=kubectl

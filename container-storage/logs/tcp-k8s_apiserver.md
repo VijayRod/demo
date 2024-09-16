@@ -55,6 +55,31 @@ tcpdump port 443
 ```
 
 ```
+kubectl get svc
+NAME         TYPE           CLUSTER-IP    EXTERNAL-IP      PORT(S)        AGE
+kubernetes   ClusterIP      10.0.0.1      <none>           443/TCP        2d11h
+
+aks-nodepool1-32897461-vmss000000:/# curl 10.0.0.1:443 -v
+*   Trying 10.0.0.1:443...
+* Connected to 10.0.0.1 (10.0.0.1) port 443 (#0)
+> GET / HTTP/1.1
+> Host: 10.0.0.1:443
+> User-Agent: curl/7.81.0
+> Accept: */*
+>
+* Mark bundle as not supporting multiuse
+* HTTP 1.0, assume close after body
+< HTTP/1.0 400 Bad Request
+<
+Client sent an HTTP request to an HTTPS server.
+* Closing connection 0
+
+aks-nodepool1-32897461-vmss000000:/# iptables-save | grep 10.0.0.1
+-A KUBE-SERVICES -d 10.0.0.1/32 -p tcp -m comment --comment "default/kubernetes:https cluster IP" -j KUBE-SVC-NPX46M4PTMTKRN6Y
+-A KUBE-SVC-NPX46M4PTMTKRN6Y ! -s 10.244.0.0/16 -d 10.0.0.1/32 -p tcp -m comment --comment "default/kubernetes:https cluster IP" -j KUBE-MARK-MASQ
+```
+
+```
 kubectl debug -it --image=busybox -n kube-system metrics-server-5bd48455f4-dn8tf
 / # nc -vz $fqdn 443
 aks-rg-8d99b0-6s1xjo5i.hcp.swedencentral.azmk8s.io (4.225.35.13:443) open

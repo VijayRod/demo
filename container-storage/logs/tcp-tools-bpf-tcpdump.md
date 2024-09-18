@@ -1,6 +1,7 @@
 ```
 tcpdump
 tcpdump -w - # to write binary data to stdout
+tcpdump -w /tmp/tcpdump/capture
 tcpdump --list-interfaces # ip a # tcpdump -i eth0 # tcpdump -i any
 tcpdump -i lo # captures packets on the loopback interface
 tcpdump – version

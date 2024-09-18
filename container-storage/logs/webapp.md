@@ -27,3 +27,4 @@ HTTP/1.1 200 OK
 ```
 
 - https://learn.microsoft.com/en-us/azure/app-service/quickstart-dotnetcore?tabs=net70&pivots=development-environment-cli
+- https://techcommunity.microsoft.com/t5/nonprofit-techies/understanding-azure-web-apps-and-azure-app-service/ba-p/3812572: Azure App Service offers several features and benefits: Web Apps

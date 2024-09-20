@@ -1,9 +1,9 @@
 ## webapp
 
 ```
-rg=rg-webapp # repro-webapp, testshack
+rg=rgapp # repro-webapp, testshack
 loc=swedencentral
-plan=MyPlan
+plan=plan
 app="app$RANDOM"
 
 az group create -g $rg -l $loc

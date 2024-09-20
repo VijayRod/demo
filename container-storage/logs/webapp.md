@@ -1,3 +1,5 @@
+## webapp
+
 ```
 rg=rg-webapp # repro-webapp, testshack
 loc=swedencentral
@@ -26,6 +28,13 @@ hostNames0=$(az webapp show -g $rg -n $app --query hostNames[0] -otsv)
 echo $hostNames0
 curl $hostNames0 -I
 # mywebapp27540.azurewebsites.net # HTTP/1.1 200 OK
+
+nslookup mywebapp27540.azurewebsites.net
+mywebapp27540.azurewebsites.net canonical name = mywebapp27540.privatelink.azurewebsites.net.
+mywebapp27540.privatelink.azurewebsites.net     canonical name = waws-prod-sec-015.sip.azurewebsites.windows.net.
+waws-prod-sec-015.sip.azurewebsites.windows.net canonical name = waws-prod-sec-015-b71e.swedencentral.cloudapp.azure.com.
+Name:   waws-prod-sec-015-b71e.swedencentral.cloudapp.azure.com
+Address: 51.12.31.7
 ```
 
 - https://learn.microsoft.com/en-us/azure/app-service/quickstart-dotnetcore?tabs=net70&pivots=development-environment-cli

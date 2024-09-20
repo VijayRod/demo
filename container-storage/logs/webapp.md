@@ -18,12 +18,14 @@ appId=$(az webapp show -g $rg -n $app --query id)
 /subscriptions/redacts-1111-1111-1111-111111111111/resourceGroups/testshack/providers/Microsoft.Web/sites/MyWebApp24167
 
 webappUrl=$(az webapp show -g $rg -n $app --query defaultHostName -otsv)
-echo $webappUrl # mywebapp27540.azurewebsites.net
-curl $webappUrl -I # HTTP/1.1 200 OK
+echo $webappUrl
+curl $webappUrl -I
+# mywebapp27540.azurewebsites.net # HTTP/1.1 200 OK
 
 hostNames0=$(az webapp show -g $rg -n $app --query hostNames[0] -otsv)
-echo $hostNames0 # mywebapp24167.azurewebsites.net
-curl $hostNames0 -I # HTTP/1.1 200 OK
+echo $hostNames0
+curl $hostNames0 -I
+# mywebapp27540.azurewebsites.net # HTTP/1.1 200 OK
 ```
 
 - https://learn.microsoft.com/en-us/azure/app-service/quickstart-dotnetcore?tabs=net70&pivots=development-environment-cli

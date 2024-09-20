@@ -1,29 +1,29 @@
 ```
-rgname=rg-webapp # repro-webapp, testshack
+rg=rg-webapp # repro-webapp, testshack
 loc=swedencentral
 plan=MyPlan
 app="MyWebApp$RANDOM"
 
-az group create -g $rgname -l $loc
+az group create -g $rg -l $loc
 
-az appservice plan create -g $rgname -n $plan # --sku FREE # F1 / FREE, D1 (Shared), B1-B3, P1V3
-planId=$(az appservice plan show -g $rgname -n $plan --query id -o tsv)
+az appservice plan create -g $rg -n $plan # --sku FREE # F1 / FREE, D1 (Shared), B1-B3, P1V3
+planId=$(az appservice plan show -g $rg -n $plan --query id -o tsv)
 
-az webapp create -g $rgname -n $app -p $plan
-# az webapp create -g $rgname -n $app -p $plan -i nginx
+az webapp create -g $rg -n $app -p $plan
+# az webapp create -g $rg -n $app -p $plan -i nginx
 ```
 
 ```
-appId=$(az webapp show -g $rgname -n $app --query id)
+appId=$(az webapp show -g $rg -n $app --query id)
+/subscriptions/redacts-1111-1111-1111-111111111111/resourceGroups/testshack/providers/Microsoft.Web/sites/MyWebApp24167
 
-/subscriptions/8d99b0de-7ea1-4a2b-8fd0-c2ef9f25c5dc/resourceGroups/testshack/providers/Microsoft.Web/sites/MyWebApp24167
+webappUrl=$(az webapp show -g $rg -n $app --query defaultHostName -otsv)
+echo $webappUrl # mywebapp27540.azurewebsites.net
+curl $webappUrl -I # HTTP/1.1 200 OK
 
-hostNames0=$(az webapp show -g $rgname -n $app --query hostNames[0] -otsv)
-echo $hostNames0
-curl $hostNames0 -I
-
-mywebapp24167.azurewebsites.net
-HTTP/1.1 200 OK
+hostNames0=$(az webapp show -g $rg -n $app --query hostNames[0] -otsv)
+echo $hostNames0 # mywebapp24167.azurewebsites.net
+curl $hostNames0 -I # HTTP/1.1 200 OK
 ```
 
 - https://learn.microsoft.com/en-us/azure/app-service/quickstart-dotnetcore?tabs=net70&pivots=development-environment-cli

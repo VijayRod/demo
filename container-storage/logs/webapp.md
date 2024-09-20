@@ -14,7 +14,7 @@ az webapp create -g $rg -n $app -p $plan
 ```
 
 ```
-appId=$(az webapp show -g $rg -n $app --query id)
+appId=$(az webapp show -g $rg -n $app --query id -otsv)
 /subscriptions/redacts-1111-1111-1111-111111111111/resourceGroups/testshack/providers/Microsoft.Web/sites/MyWebApp24167
 
 appUrl=$(az webapp show -g $rg -n $app --query defaultHostName -otsv)

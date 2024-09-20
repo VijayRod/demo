@@ -2,6 +2,7 @@
 
 ```
 az vm create -g $rg -n vm --image Ubuntu2204 --admin-username azureuser --public-ip-sku Standard
+ssh azureuser@publicip
 ```
 
 ## vm.app

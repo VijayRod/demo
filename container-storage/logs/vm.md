@@ -1,3 +1,11 @@
+## vm
+
+```
+az vm create -g $rg -n vm --image Ubuntu2204 --admin-username azureuser --public-ip-sku Standard
+```
+
+## vm.app
+
 ```
 # Replace the below with appropriate values
 rgname=rgvm
@@ -32,3 +40,10 @@ Accept-Ranges: bytes
 ```
 
 - https://learn.microsoft.com/en-us/azure/virtual-machines/linux/quick-create-cli
+
+## vm.subnet
+
+```
+subnetId=$(az network vnet subnet show -g $rg --vnet-name vnet -n appsubnet --query id -otsv)
+az vm create -g $rg -n vm --image Ubuntu2204 --admin-username azureuser --public-ip-sku Standard --subnet $subnetId
+```

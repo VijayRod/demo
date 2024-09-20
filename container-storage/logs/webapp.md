@@ -17,9 +17,9 @@ az webapp create -g $rg -n $app -p $plan
 appId=$(az webapp show -g $rg -n $app --query id)
 /subscriptions/redacts-1111-1111-1111-111111111111/resourceGroups/testshack/providers/Microsoft.Web/sites/MyWebApp24167
 
-webappUrl=$(az webapp show -g $rg -n $app --query defaultHostName -otsv)
-echo $webappUrl
-curl $webappUrl -I
+appUrl=$(az webapp show -g $rg -n $app --query defaultHostName -otsv)
+echo $appUrl
+curl $appUrl -I
 # mywebapp27540.azurewebsites.net # HTTP/1.1 200 OK
 
 hostNames0=$(az webapp show -g $rg -n $app --query hostNames[0] -otsv)

@@ -1,18 +1,18 @@
 ```
-rgname=testshack
+rg=testshack
 loc=swedencentral
-plan=MyPlan
+plan=plan
 
-az group create -g $rgname -l $loc
+az group create -g $rg -l $loc
 
-az appservice plan create -g $rgname -n $plan
-# az appservice plan create -g $rgname -n $plan --sku P1V3
+az appservice plan create -g $rg -n $plan
+# az appservice plan create -g $rg -n $plan --sku P1V3
 ```
 
 ```
-planId=$(az appservice plan show -g $rgname -n $plan --query id -o tsv)
+planId=$(az appservice plan show -g $rg -n $plan --query id -o tsv)
 
-/subscriptions/8d99b0de-7ea1-4a2b-8fd0-c2ef9f25c5dc/resourceGroups/testshack/providers/Microsoft.Web/serverfarms/MyPlan
+/subscriptions/redacts-1111-1111-1111-111111111111/resourceGroups/testshack/providers/Microsoft.Web/serverfarms/MyPlan
 ```
 
 - https://learn.microsoft.com/en-us/azure/app-service/overview-hosting-plans#should-i-put-an-app-in-a-new-plan-or-an-existing-plan

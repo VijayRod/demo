@@ -1,3 +1,5 @@
+## cni.cilium.azure
+
 ```
 rg=rgcni
 az group create -n $rg -l $loc
@@ -29,6 +31,13 @@ replicaset.apps/cilium-operator-8cff7865b   1         1         1       5m6s
 - https://learn.microsoft.com/en-us/azure/aks/azure-cni-powered-by-cilium
 - https://azure.microsoft.com/en-us/updates/azure-cni-powered-by-cilium/
 - https://kubernetes.io/docs/tasks/administer-cluster/network-policy-provider/cilium-network-policy/
+
+## cni.cilium.azure.networkpolicy
+
+```
+```
+
+- https://learn.microsoft.com/en-us/azure/aks/azure-cni-powered-by-cilium#network-policy-enforcement
 - https://cilium.io/industries/cloud-providers/
 - https://docs.cilium.io/en/stable/#getting-started
 - https://docs.cilium.io/en/stable/operations/troubleshooting/

@@ -10,7 +10,7 @@ sleep 10; kubectl get po -A
 ```
 # all
 kubectl run nginx --image=nginx
-kubectl exec -it nginx -- /bin/bash # curl google.com -I # apt-get update -y && apt-get install dnsutils -y
+kubectl exec -it nginx -- /bin/bash # -- curl google.com -I # apt-get update -y && apt-get install dnsutils -y
 kubectl run busybox --image=busybox --command -- sh -c 'sleep 1d' # https://busybox.net/about.html
 kubectl run -it --rm busybox --image=busybox -- wget -qO- google.com
 kubectl run -it --rm aks-ssh --image=debian:stable # apt-get update -y && apt-get install dnsutils -y && apt-get install curl -y

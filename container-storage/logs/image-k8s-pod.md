@@ -34,6 +34,7 @@ kubectl run -it --rm nginx --image=nginx -- curl -I https://openai.com
 ```
 # dnsutils
 kubectl run dnsutils --image=registry.k8s.io/e2e-test-images/jessie-dnsutils:1.3 --command -- sh -c 'sleep infinity' # kubectl apply -f https://k8s.io/examples/admin/dns/dnsutils.yaml
+kubectl run dnsutils --image=registry.k8s.io/e2e-test-images/jessie-dnsutils:1.3 --command -- sh -c 'sleep infinity' -l run=dnsutils
 kubectl exec -it dnsutils -- /bin/bash
 
 kubectl debug node/aks-nodepool1-37663765-vmss000000 -it --image=ubuntu # or kubectl node-shell <NodeName>

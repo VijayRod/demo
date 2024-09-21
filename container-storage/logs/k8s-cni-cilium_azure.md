@@ -30,7 +30,11 @@ replicaset.apps/cilium-operator-8cff7865b   1         1         1       5m6s
 - https://techcommunity.microsoft.com/t5/azure-networking-blog/azure-cni-powered-by-cilium-for-azure-kubernetes-service-aks/ba-p/3662341: Cilium eBPF
 - https://learn.microsoft.com/en-us/azure/aks/azure-cni-powered-by-cilium
 - https://azure.microsoft.com/en-us/updates/azure-cni-powered-by-cilium/
-- https://kubernetes.io/docs/tasks/administer-cluster/network-policy-provider/cilium-network-policy/
+
+- https://cilium.io/industries/cloud-providers/
+- https://docs.cilium.io/en/stable/#getting-started
+- https://docs.cilium.io/en/stable/operations/troubleshooting/
+- https://docs.cilium.io/en/v1.9/gettingstarted/k8s-install-aks/
 
 ## cni.cilium.azure.networkpolicy
 
@@ -38,7 +42,5 @@ replicaset.apps/cilium-operator-8cff7865b   1         1         1       5m6s
 ```
 
 - https://learn.microsoft.com/en-us/azure/aks/azure-cni-powered-by-cilium#network-policy-enforcement
-- https://cilium.io/industries/cloud-providers/
-- https://docs.cilium.io/en/stable/#getting-started
-- https://docs.cilium.io/en/stable/operations/troubleshooting/
-- https://docs.cilium.io/en/v1.9/gettingstarted/k8s-install-aks/
+- https://kubernetes.io/docs/tasks/administer-cluster/network-policy-provider/cilium-network-policy/
+- https://docs.cilium.io/en/stable/security/policy/#network-policy

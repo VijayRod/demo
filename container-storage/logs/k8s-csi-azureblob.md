@@ -39,6 +39,10 @@ NAME                     PROVISIONER          RECLAIMPOLICY   VOLUMEBINDINGMODE 
 azureblob-fuse-premium   blob.csi.azure.com   Delete          Immediate              true                   74s
 azureblob-nfs-premium    blob.csi.azure.com   Delete          Immediate              true                   74s
 
+kubectl get ds -n kube-system
+NAME                         DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR   AGE
+csi-blob-node                1         1         1       1            1           <none>          44m
+
 # To retrieve related pods.
 kubectl get po -n kube-system -owide | grep csi-blob
 

@@ -15,6 +15,13 @@ aks-nodepool1-10522532-vmss000000:/# ps -aux | grep masq
 root        4541  0.0  0.2 719888 17992 ?        Ssl  10:19   0:00 /ip-masq-agent-v2 --v=2 --resync-interval=60
 ```
 
+```
+akskube
+kubectl get ds -n kube-system
+NAME                         DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR   AGE
+azure-ip-masq-agent          1         1         1       1            1           <none>          9h
+```
+
 - https://www.tkng.io/ingress/egress/
 - https://kubernetes.io/docs/tasks/administer-cluster/ip-masq-agent/
 - https://github.com/Azure/ip-masq-agent-v2

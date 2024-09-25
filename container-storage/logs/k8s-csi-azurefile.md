@@ -64,6 +64,16 @@ Name:                  azurefile-premium
 Parameters:            skuName=Premium_LRS
 ```
 
+## azurefile-csi.driver.parameter.storageAccount
+
+```
+az storage account list -g MC_rg_aks_swedencentral
+    "name": "fd121983a51b4483dab274b",
+    "networkRuleSet": {
+      "bypass": "AzureServices",
+      "defaultAction": "Allow", # Public network access = Enabled from all networks
+```
+
 ## azurefile-csi.driver.parameter.useDataPlaneAPI aka storage account firewall: 
 
 - https://github.com/kubernetes-sigs/azurefile-csi-driver/blob/master/pkg/azurefile/controllerserver.go: len(secret) == 0 && useDataPlaneAPI... failed to GetStorageAccesskey

@@ -47,8 +47,8 @@ kubectl get pv
 
 ## azurefile-csi.driver.parameter
 
-- https://github.com/kubernetes-sigs/azuredisk-csi-driver/blob/master/docs/driver-parameters.md
-- https://learn.microsoft.com/en-us/azure/aks/azure-disk-csi#create-a-custom-storage-class
+- https://github.com/kubernetes-sigs/azurefile-csi-driver/blob/master/docs/driver-parameters.md
+- https://learn.microsoft.com/en-us/azure/aks/azure-files-csi#create-a-custom-storage-class
 
 ## azurefile-csi.driver.parameter.skuName
 

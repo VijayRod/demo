@@ -17,9 +17,14 @@ root        4541  0.0  0.2 719888 17992 ?        Ssl  10:19   0:00 /ip-masq-agen
 
 ```
 akskube
+
 kubectl get ds -n kube-system
 NAME                         DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR   AGE
 azure-ip-masq-agent          1         1         1       1            1           <none>          9h
+
+kubectl describe po -n kube-system -l k8s-app=azure-ip-masq-agent
+    Image:         mcr.microsoft.com/aks/ip-masq-agent-v2:v0.1.11
+
 ```
 
 - https://www.tkng.io/ingress/egress/

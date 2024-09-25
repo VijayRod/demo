@@ -8,8 +8,6 @@ az aks get-credentials -g $rg -n aks --overwrite-existing
 
 kubectl get sc
 NAME                     PROVISIONER          RECLAIMPOLICY   VOLUMEBINDINGMODE      ALLOWVOLUMEEXPANSION   AGE
-azureblob-fuse-premium   blob.csi.azure.com   Delete          Immediate              true                   45m
-azureblob-nfs-premium    blob.csi.azure.com   Delete          Immediate              true                   45m
 azurefile                file.csi.azure.com   Delete          Immediate              true                   9h
 azurefile-csi            file.csi.azure.com   Delete          Immediate              true                   9h
 azurefile-csi-premium    file.csi.azure.com   Delete          Immediate              true                   9h
@@ -46,6 +44,11 @@ kubectl get po nginx-azurefile -owide
 kubectl get pvc pvc-azurefile
 kubectl get pv
 ```
+
+## azurefile-csi.driver.parameter
+
+- https://github.com/kubernetes-sigs/azuredisk-csi-driver/blob/master/docs/driver-parameters.md
+- https://learn.microsoft.com/en-us/azure/aks/azure-disk-csi#create-a-custom-storage-class
 
 ## azurefile-csi.driver.parameter.skuName
 

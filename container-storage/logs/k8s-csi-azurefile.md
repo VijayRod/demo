@@ -6,6 +6,37 @@ az group create -n $rg -l swedencentral
 az aks create -g $rg -n aks
 az aks get-credentials -g $rg -n aks --overwrite-existing
 
+kubectl get sc
+NAME                     PROVISIONER          RECLAIMPOLICY   VOLUMEBINDINGMODE      ALLOWVOLUMEEXPANSION   AGE
+azureblob-fuse-premium   blob.csi.azure.com   Delete          Immediate              true                   45m
+azureblob-nfs-premium    blob.csi.azure.com   Delete          Immediate              true                   45m
+azurefile                file.csi.azure.com   Delete          Immediate              true                   9h
+azurefile-csi            file.csi.azure.com   Delete          Immediate              true                   9h
+azurefile-csi-premium    file.csi.azure.com   Delete          Immediate              true                   9h
+azurefile-premium        file.csi.azure.com   Delete          Immediate              true                   9h
+
+kubectl describe sc azurefile
+Name:                  azurefile
+IsDefaultClass:        No
+Annotations:           <none>
+Provisioner:           file.csi.azure.com
+Parameters:            skuName=Standard_LRS
+AllowVolumeExpansion:  True
+MountOptions:
+  mfsymlinks
+  actimeo=30
+  nosharesock
+ReclaimPolicy:      Delete
+VolumeBindingMode:  Immediate
+Events:             <none>
+
+kubectl get ds -n kube-system
+NAME                         DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR   AGE
+csi-azurefile-node           1         1         1       1            1           <none>          9h
+csi-azurefile-node-win       0         0         0       0            0           <none>          9h
+```
+
+```
 kubectl delete po nginx-azurefile
 kubectl delete pvc pvc-azurefile
 kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/azurefile-csi-driver/master/deploy/example/pvc-azurefile-csi.yaml
@@ -14,6 +45,20 @@ kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/azurefile-csi
 kubectl get po nginx-azurefile -owide
 kubectl get pvc pvc-azurefile
 kubectl get pv
+```
+
+## azurefile-csi.driver.parameter.skuName
+
+```
+kubectl describe sc | grep -E 'Name|Parameters'
+Name:                  azurefile
+Parameters:            skuName=Standard_LRS
+Name:                  azurefile-csi
+Parameters:            skuName=Standard_LRS
+Name:                  azurefile-csi-premium
+Parameters:            skuName=Premium_LRS
+Name:                  azurefile-premium
+Parameters:            skuName=Premium_LRS
 ```
 
 ## azurefile-csi.driver.parameter.useDataPlaneAPI aka storage account firewall: 

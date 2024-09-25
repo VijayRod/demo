@@ -1,3 +1,5 @@
+## cni.azure.overlay
+
 ```
 rg=rgcni
 az group create -n $rg -l $loc
@@ -20,3 +22,7 @@ Labels:             agentpool=nodepool1
 ```
 
 - https://learn.microsoft.com/en-us/azure/aks/azure-cni-overlay?tabs=kubectl
+
+## cni.azure.overlay.upgrade
+
+- https://learn.microsoft.com/en-us/azure/aks/azure-cni-overlay?tabs=kubectl#upgrade-an-existing-cluster-to-cni-overlay

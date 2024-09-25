@@ -13,3 +13,5 @@ nc -l 3333
 # Terminal 2
 ls >/dev/tcp/localhost/3333
 ```
+
+- https://www.unixfu.ch/use-netcat-instead-of-telnet/: telnet is history

@@ -34,6 +34,11 @@ az aks update --enable-blob-driver -g $rg -n aks
 # To get credentials for running commands further below.
 az aks get-credentials -g $rg -n aks --overwrite-existing
 
+kubectl get sc
+NAME                     PROVISIONER          RECLAIMPOLICY   VOLUMEBINDINGMODE      ALLOWVOLUMEEXPANSION   AGE
+azureblob-fuse-premium   blob.csi.azure.com   Delete          Immediate              true                   74s
+azureblob-nfs-premium    blob.csi.azure.com   Delete          Immediate              true                   74s
+
 # To retrieve related pods.
 kubectl get po -n kube-system -owide | grep csi-blob
 
@@ -64,6 +69,47 @@ kubectl get po -n kube-system csi-blob-node-wvn8q -oyaml | grep image: | grep bl
 ## azureblob-fuse.driver.parameter.isHnsEnabled
 - https://github.com/kubernetes-sigs/blob-csi-driver/blob/master/docs/driver-parameters.md: enable Hierarchical namespace for Azure DataLake storage account
 - https://learn.microsoft.com/en-us/azure/aks/azure-csi-blob-storage-provision?tabs=mount-nfs%2Csecret#before-you-begin: To support an Azure DataLake Gen2 storage account when using blobfuse mount...
+
+## azureblob-fuse.driver.parameter.protocol.fuse
+
+```
+kubectl describe sc azureblob-fuse-premium
+Name:                  azureblob-fuse-premium
+IsDefaultClass:        No
+Annotations:           <none>
+Provisioner:           blob.csi.azure.com
+Parameters:            skuName=Premium_LRS
+AllowVolumeExpansion:  True
+MountOptions:
+  -o allow_other
+  --file-cache-timeout-in-seconds=120
+  --use-attr-cache=true
+  --cancel-list-on-mount-seconds=10
+  -o attr_timeout=120
+  -o entry_timeout=120
+  -o negative_timeout=120
+  --log-level=LOG_WARNING
+  --cache-size-mb=1000
+ReclaimPolicy:      Delete
+VolumeBindingMode:  Immediate
+Events:             <none>
+```
+
+## azureblob-fuse.driver.parameter.protocol.fuse.nfs
+
+```
+kubectl describe sc azureblob-nfs-premium
+Name:                  azureblob-nfs-premium
+IsDefaultClass:        No
+Annotations:           <none>
+Provisioner:           blob.csi.azure.com
+Parameters:            protocol=nfs,skuName=Premium_LRS
+AllowVolumeExpansion:  True
+MountOptions:          <none>
+ReclaimPolicy:         Delete
+VolumeBindingMode:     Immediate
+Events:                <none>
+```
 
 ## azureblob-fuse.driver.parameter.skuName.GRS
 
@@ -138,26 +184,8 @@ az storage account list -g MC_rgcni_akseadsv5_swedencentral | grep -E 'id|"name"
 ## azureblob-fuse.driver.parameter.skuName.LRS
 
 ```
-kubectl describe sc azureblob-fuse-premium # default is Premium_LRS
-Name:                  azureblob-fuse-premium
-IsDefaultClass:        No
-Annotations:           <none>
-Provisioner:           blob.csi.azure.com
+kubectl describe sc azureblob-fuse-premium
 Parameters:            skuName=Premium_LRS
-AllowVolumeExpansion:  True
-MountOptions:
-  -o allow_other
-  --file-cache-timeout-in-seconds=120
-  --use-attr-cache=true
-  --cancel-list-on-mount-seconds=10
-  -o attr_timeout=120
-  -o entry_timeout=120
-  -o negative_timeout=120
-  --log-level=LOG_WARNING
-  --cache-size-mb=1000
-ReclaimPolicy:      Delete
-VolumeBindingMode:  Immediate
-Events:             <none>
 
 az storage account list -g MC_rgcni_akseadsv5_swedencentral | grep -E 'id|"name"'
     "id": "/subscriptions/redacts-1111-1111-1111-111111111111/resourceGroups/MC_rg_aks_swedencentral/providers/Microsoft.Storage/storageAccounts/fuse414dbe20ef224a7a9ae",

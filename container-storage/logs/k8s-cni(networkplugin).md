@@ -4,11 +4,15 @@
 az aks create -g $rg -n akscal --network-plugin azure --network-policy calico -s $vmsize -c 1
 az aks create -g $rg -n akskubecal --network-plugin kubenet --network-policy calico -s $vmsize -c 1
 az aks create -g $rg -n akskube --network-plugin kubenet # default
-# az aks create -g $rg -n akscni --network-plugin azure -s $vmsize -c 2
 az aks get-credentials -g $rg -n akscal --overwrite-existing
 az aks get-credentials -g $rg -n akskubecal --overwrite-existing
 az aks get-credentials -g $rg -n akskube --overwrite-existing
 kubectl get no
+```
+
+```
+az aks create -g $rg -n akscni --network-plugin azure -s $vmsize -c 2
+az aks get-credentials -g $rg -n akscni --overwrite-existing
 ```
 
 - https://learn.microsoft.com/en-us/azure/aks/use-byo-cni?tabs=azure-cli
@@ -151,3 +155,80 @@ aks-nodepool1-10522532-vmss000000:/# ls /opt/cni/bin/ # no additional files pres
 - https://stackoverflow.com/questions/49112336/container-runtime-network-not-ready-cni-config-uninitialized: Unable to update cni config: No networks found in /etc/cni/net.d. Container runtime network not ready
 - https://github.com/tigera-solutions/install-calico-on-aks: Using kubenet + Calico networking plugin and network policy. This option is a bit misleading in its naming as it suggests that kubenet is used while in reality the cluster is configured to use Calico CNI with Host-Local IPAM and Calico network policy engine...
 
+## k8s-cni.pod.egress.azure.transparent
+
+```
+kubectl run nginx --image=nginx
+sleep 10
+kubectl get po -owide
+nginx            1/1     Running   0          56s   10.224.0.32   aks-nodepool1-21988115-vmss000000   <none>           <none>
+
+aks-nodepool1-21988115-vmss000000:/# apt update && apt install net-tools -y
+aks-nodepool1-21988115-vmss000000:/# route -n
+Kernel IP routing table
+Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
+0.0.0.0         10.224.0.1      0.0.0.0         UG    100    0        0 eth0
+10.224.0.0      0.0.0.0         255.255.0.0     U     100    0        0 eth0
+10.224.0.1      0.0.0.0         255.255.255.255 UH    100    0        0 eth0
+10.224.0.5      0.0.0.0         255.255.255.255 UH    0      0        0 azv59a2ee5f1fb
+10.224.0.14     0.0.0.0         255.255.255.255 UH    0      0        0 azv45ad16253fe
+10.224.0.32     0.0.0.0         255.255.255.255 UH    0      0        0 azvc440f455693
+168.63.129.16   10.224.0.1      255.255.255.255 UGH   100    0        0 eth0
+169.254.169.254 10.224.0.1      255.255.255.255 UGH   100    0        0 eth0
+
+az network vnet subnet show -g MC_rg_akscni_swedencentral --vnet-name aks-vnet-29277632 -n aks-subnet --query addressPrefix -otsv
+10.224.0.0/16 # 10.224.0.1 Reserved by Azure for the default gateway.
+
+aks-nodepool1-21988115-vmss000000:/# ip addr # | grep azvc440f455693
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host
+       valid_lft forever preferred_lft forever
+2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP group default qlen 1000
+    link/ether 7c:1e:52:1d:08:1f brd ff:ff:ff:ff:ff:ff
+    inet 10.224.0.4/16 metric 100 brd 10.224.255.255 scope global eth0
+       valid_lft forever preferred_lft forever
+    inet6 fe80::7e1e:52ff:fe1d:81f/64 scope link
+       valid_lft forever preferred_lft forever
+...
+8: azvc440f455693@if7: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default qlen 1000
+    link/ether aa:aa:aa:aa:aa:aa brd ff:ff:ff:ff:ff:ff link-netns cni-1f519b11-2afb-0b8f-4220-5ee7bb07af0a
+    inet6 fe80::a8aa:aaff:feaa:aaaa/64 scope link
+       valid_lft forever preferred_lft forever
+       
+aks-nodepool1-21988115-vmss000000:/# ip netns pids cni-1f519b11-2afb-0b8f-4220-5ee7bb07af0a # ip netns
+36405
+36538
+36572
+36573
+
+aks-nodepool1-21988115-vmss000000:/# ps -aux | grep nginx
+root       36538  0.0  0.0  11416  7508 ?        Ss   20:55   0:00 nginx: master process nginx -g daemon off;
+systemd+   36572  0.0  0.0  11880  2784 ?        S    20:55   0:00 nginx: worker process
+systemd+   36573  0.0  0.0  11880  2784 ?        S    20:55   0:00 nginx: worker process
+
+aks-nodepool1-21988115-vmss000000:/# nsenter -t 36538 -n ip addr
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host
+       valid_lft forever preferred_lft forever
+7: eth0@if8: <BROADCAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default qlen 1000
+    link/ether fa:54:ea:32:98:8c brd ff:ff:ff:ff:ff:ff link-netnsid 0
+    inet 10.224.0.32/16 scope global eth0
+       valid_lft forever preferred_lft forever
+    inet6 fe80::f854:eaff:fe32:988c/64 scope link
+       valid_lft forever preferred_lft forever
+
+root@aks-nodepool1-21988115-vmss000000:/# crictl pods nginx
+POD ID              CREATED             STATE               NAME                             NAMESPACE           ATTEMPT             RUNTIME
+d6470858c09cf       6 minutes ago       Ready               nginx                            default             0                   (default)
+
+aks-nodepool1-21988115-vmss000000:/# crictl inspectp d6470858c09cf | grep pid
+    "pid": 36405,
+```
+
+- https://stevegriffith.nyc/posts/bridge-vs-transparent/

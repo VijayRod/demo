@@ -13,11 +13,6 @@ az aks show -g $rg -n aks --query networkProfile.networkPluginMode
 kubectl describe no
 Labels:             agentpool=nodepool1
                     kubernetes.azure.com/azure-cni-overlay=true
-                    kubernetes.azure.com/network-name=aks-vnet-14939177
-                    kubernetes.azure.com/network-resourcegroup=rgcni
-                    kubernetes.azure.com/network-subnet=aks-subnet
-                    kubernetes.azure.com/network-subscription=redacts-1111-1111-1111-111111111111
-                    kubernetes.azure.com/nodenetwork-vnetguid=eb6bc04b-710d-4348-8020-be2a2b853bf5
                     kubernetes.azure.com/podnetwork-type=overlay
 
 kubectl get po -n kube-system -l k8s-app=azure-cns

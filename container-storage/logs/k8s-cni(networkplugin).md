@@ -4,7 +4,7 @@
 az aks create -g $rg -n akscal --network-plugin azure --network-policy calico -s $vmsize -c 1
 az aks create -g $rg -n akskubecal --network-plugin kubenet --network-policy calico -s $vmsize -c 1
 az aks create -g $rg -n akskube --network-plugin kubenet # default
-# az aks create -g $rg -n akscni --network-plugin azure
+# az aks create -g $rg -n akscni --network-plugin azure -s $vmsize -c 2
 az aks get-credentials -g $rg -n akscal --overwrite-existing
 az aks get-credentials -g $rg -n akskubecal --overwrite-existing
 az aks get-credentials -g $rg -n akskube --overwrite-existing

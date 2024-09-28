@@ -1,3 +1,5 @@
+## k8s-cni.azure
+
 ```
 akscal
 cat /var/run/azure-vnet.json
@@ -292,7 +294,7 @@ kube-proxy-qdfmq                      1/1     Running   0          12h   10.224.
 - https://stevegriffith.nyc/posts/aks-networking-part2/
 - https://azuregulfblog.wordpress.com/wp-content/uploads/2019/04/aks_basicnetwork_technicalpaper.pdf
 
-## cni.azure.networkProfile
+## k8s-cni.azure.networkProfile
 
 ```
 az aks create -g $rg -n akscni --network-plugin azure -s $vmsize -c 2

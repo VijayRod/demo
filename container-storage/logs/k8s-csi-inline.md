@@ -1,3 +1,5 @@
+## inline
+
 This uses steps in 
 https://learn.microsoft.com/en-us/azure/aks/azure-csi-files-storage-provision#mount-file-share-as-an-inline-volume to use the Azure File CSI driver to mount an inline Azure File share as a volume in a pod. Inline volumes follow the lifecyle of the pod as indicated in https://kubernetes.io/blog/2022/08/29/csi-inline-volumes-ga/.
 
@@ -136,3 +138,7 @@ kubectl delete pod/mypod
 kubectl delete secret azure-secret
 az storage account delete -g $rgname -n $storageAccountName -y
 ```
+
+## inline.(blob.csi).pod
+
+- https://github.com/kubernetes-sigs/blob-csi-driver/blob/master/deploy/example/nginx-blobfuse-inline-volume.yaml

@@ -46,7 +46,7 @@ Defaulted container "cns-container" out of: cns-container, cni-installer (init)
 2024/09/28 22:26:21 [1] [azure-cnsrequestIPConfigsHandler] Sent cns.IPConfigsRequest {DesiredIPAddresses:[] PodInterfaceID:eb4b0c93-eth0 InfraContainerID:eb4b0c9327ed9d298f9bd6dfd0e2e029d120e5fd4866bd3e8bfb47d7eb540d76 OrchestratorContext:[123 34 80 111 100 78 97 109 101 34 58 34 110 103 105 110 120 34 44 34 80 111 100 78 97 109 101 115 112 97 99 101 34 58 34 100 101 102 97 117 108 116 34 125] Ifname: SecondaryInterfacesExist:false} *cns.IPConfigsResponse &{PodIPInfo:[{PodIPConfig:{IPAddress:192.168.0.192 PrefixLength:16} NetworkContainerPrimaryIPConfig:{IPSubnet:{IPAddress:192.168.0.0 PrefixLength:16} DNSServers:[] GatewayIPAddress:} HostPrimaryIPInfo:{Gateway:10.224.0.1 PrimaryIP:10.224.0.5 Subnet:10.224.0.0/16} NICType:InfraNIC InterfaceName: MacAddress: SkipDefaultRoutes:false Routes:[]}] Response:{ReturnCode:Success Message:}}.
 ```
 
-- https://learn.microsoft.com/en-us/azure/aks/azure-cni-overlay?tabs=kubectl: Like Azure CNI Overlay, Kubenet assigns IP addresses to pods from an address space logically different from the VNet
+- https://learn.microsoft.com/en-us/azure/aks/azure-cni-overlay?tabs=kubectl: Like Azure CNI Overlay, Kubenet assigns IP addresses to pods from an address space logically different from the VNet. routing domain is created in the Azure Networking stack for the pod's private CIDR space. no need to provision custom routes on the cluster subnet
 - https://learn.microsoft.com/en-us/azure/architecture/operator-guides/aks/troubleshoot-network-aks: If using Azure CNI for dynamic IP allocation
 
 ## cni.azure.overlay.upgrade

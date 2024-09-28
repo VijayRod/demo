@@ -233,3 +233,79 @@ aks-nodepool1-21988115-vmss000000:/# crictl inspectp d6470858c09cf | grep pid
 ```
 
 - https://stevegriffith.nyc/posts/bridge-vs-transparent/
+
+k8s-cni.pod.egress.azure.overlay aka Azure CNI Overlay
+
+```
+kubectl run nginx --image=nginx
+sleep 10
+kubectl get po -owide
+nginx            1/1     Running   0          4m33s   192.168.0.192   aks-nodepool1-34233576-vmss000000   <none>           <none>
+
+aks-nodepool1-34233576-vmss000000:/# apt update && apt install net-tools -y && route -n
+Kernel IP routing table
+Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
+0.0.0.0         10.224.0.1      0.0.0.0         UG    100    0        0 eth0
+10.224.0.0      0.0.0.0         255.255.0.0     U     100    0        0 eth0
+10.224.0.1      0.0.0.0         255.255.255.255 UH    100    0        0 eth0
+168.63.129.16   10.224.0.1      255.255.255.255 UGH   100    0        0 eth0
+169.254.169.254 10.224.0.1      255.255.255.255 UGH   100    0        0 eth0
+192.168.0.23    0.0.0.0         255.255.255.255 UH    0      0        0 azv0a0b823946e
+192.168.0.115   0.0.0.0         255.255.255.255 UH    0      0        0 azvd127591233b
+192.168.0.192   0.0.0.0         255.255.255.255 UH    0      0        0 azvc440f455693
+192.168.0.221   0.0.0.0         255.255.255.255 UH    0      0        0 azv91f99aa0756
+
+az network vnet subnet show -g MC_rg_akscnioverlay_swedencentral --vnet-name aks-vnet-37980258 -n aks-subnet --query addressPrefix -otsv
+10.224.0.0/16 # 10.224.0.1 Reserved by Azure for the default gateway.
+
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host
+       valid_lft forever preferred_lft forever
+2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP group default qlen 1000
+    link/ether 60:45:bd:fd:72:85 brd ff:ff:ff:ff:ff:ff
+    inet 10.224.0.5/16 metric 100 brd 10.224.255.255 scope global eth0
+       valid_lft forever preferred_lft forever
+    inet6 fe80::6245:bdff:fefd:7285/64 scope link
+       valid_lft forever preferred_lft forever
+...
+18: azvc440f455693@if17: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default qlen 1000
+    link/ether aa:aa:aa:aa:aa:aa brd ff:ff:ff:ff:ff:ff link-netns cni-6d4439f3-7a95-d008-518f-8d2becaf8f31
+    inet6 fe80::a8aa:aaff:feaa:aaaa/64 scope link
+       valid_lft forever preferred_lft forever
+       
+aks-nodepool1-34233576-vmss000000:/# ip netns pids cni-6d4439f3-7a95-d008-518f-8d2becaf8f31
+56546
+56665
+56700
+56701
+
+aks-nodepool1-34233576-vmss000000:/# ps -aux | grep nginx
+root       56665  0.0  0.0  11416  7464 ?        Ss   22:26   0:00 nginx: master process nginx -g daemon off;
+systemd+   56700  0.0  0.0  11880  2872 ?        S    22:26   0:00 nginx: worker process
+systemd+   56701  0.0  0.0  11880  2872 ?        S    22:26   0:00 nginx: worker process
+
+aks-nodepool1-34233576-vmss000000:/# nsenter -t 56665 -n ip addr
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host
+       valid_lft forever preferred_lft forever
+17: eth0@if18: <BROADCAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default qlen 1000
+    link/ether ba:06:92:24:8d:a1 brd ff:ff:ff:ff:ff:ff link-netnsid 0
+    inet 192.168.0.192/16 scope global eth0
+       valid_lft forever preferred_lft forever
+    inet6 fe80::b806:92ff:fe24:8da1/64 scope link
+       valid_lft forever preferred_lft forever
+
+kubectl get nnc -n kube-system -owide
+NAME                                REQUESTED IPS   ALLOCATED IPS   SUBNET
+                   SUBNET CIDR      NC ID                                  NC MODE   NC TYPE   NC VERSION
+aks-nodepool1-34233576-vmss000000   0               256             routingdomain_fb71a450-e4af-5861-8f2a-7252c613411c_overlaysubnet   192.168.0.0/16   0a64a24c-9110-4bd0-a688-4b575b8e2e91   static    overlay   0
+aks-nodepool1-34233576-vmss000001   0               256             routingdomain_fb71a450-e4af-5861-8f2a-7252c613411c_overlaysubnet   192.168.0.0/16   6d37af7f-cc3d-4a29-a4a4-8349e4750beb   static    overlay   0
+```
+
+- https://learn.microsoft.com/en-us/azure/architecture/operator-guides/aks/troubleshoot-network-aks: If using Azure CNI for dynamic IP allocation

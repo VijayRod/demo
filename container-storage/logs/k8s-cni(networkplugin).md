@@ -165,8 +165,7 @@ sleep 10
 kubectl get po -owide
 nginx            1/1     Running   0          56s   10.224.0.32   aks-nodepool1-21988115-vmss000000   <none>           <none>
 
-aks-nodepool1-21988115-vmss000000:/# apt update && apt install net-tools -y
-aks-nodepool1-21988115-vmss000000:/# route -n
+aks-nodepool1-21988115-vmss000000:/# apt update && apt install net-tools -y && route -n
 Kernel IP routing table
 Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
 0.0.0.0         10.224.0.1      0.0.0.0         UG    100    0        0 eth0

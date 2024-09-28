@@ -3,7 +3,7 @@
 ```
 rg=rgcni
 az group create -n $rg -l $loc
-az aks create -g $rg -n aks --network-plugin azure --network-plugin-mode overlay --pod-cidr 192.168.0.0/16
+az aks create -g $rg -n aks --network-plugin azure --network-plugin-mode overlay --pod-cidr 192.168.0.0/16  -s $vmsize -c 2
 # az aks update -g $rg -n aks --network-plugin-mode overlay --pod-cidr 192.168.0.0/16
 az aks get-credentials -g $rg -n aks --overwrite-existing
 

@@ -1,4 +1,4 @@
-## cni
+## k8s-cni
 
 ```
 az aks create -g $rg -n akscal --network-plugin azure --network-policy calico -s $vmsize -c 1
@@ -29,7 +29,7 @@ More:
 - https://stevegriffith.nyc/posts/aks-networking-part2/
 - https://labs.iximiuz.com/tutorials/container-networking-from-scratch
 
-## cni./etc/cni/net.d
+## k8s-cni./etc/cni/net.d
 
 ```
 akscal - 10-azure.conflist
@@ -131,7 +131,7 @@ aks-nodepool1-10522532-vmss000000:/# cat /etc/cni/net.d/10-containerd-net.confli
 }
 ```
 
-### cni./opt/cni/bin
+### k8s-cni./opt/cni/bin
 
 ```
 akscal

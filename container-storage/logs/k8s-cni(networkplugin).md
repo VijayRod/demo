@@ -12,7 +12,9 @@ kubectl get no
 
 ```
 az aks create -g $rg -n akscni --network-plugin azure -s $vmsize -c 2
+az aks create -g $rg -n akscnioverlay --network-plugin azure --network-plugin-mode overlay --pod-cidr 192.168.0.0/16 -s $vmsize -c 2
 az aks get-credentials -g $rg -n akscni --overwrite-existing
+az aks get-credentials -g $rg -n akscnioverlay --overwrite-existing
 ```
 
 - https://learn.microsoft.com/en-us/azure/aks/use-byo-cni?tabs=azure-cli

@@ -1,3 +1,5 @@
+## pv
+
 ```
 kubectl api-resources | grep pv
 NAME                                SHORTNAMES          APIVERSION                             NAMESPACED   KIND
@@ -48,3 +50,12 @@ kubectl get po,pv,pvc
 - https://kubernetes.io/docs/tasks/configure-pod-container/configure-persistent-volume-storage/
 - https://learn.microsoft.com/en-us/azure/aks/concepts-storage#volumes
 - https://learn.microsoft.com/en-us/azure/aks/concepts-storage#persistent-volumes
+
+## pv.delete
+
+```
+kubectl describe pv task-pv-volume
+Reclaim Policy:  Delete
+```
+
+- https://kubernetes.io/docs/concepts/storage/persistent-volumes/#storage-object-in-use-protection: volumes can either be Retained, Recycled, or Deleted.

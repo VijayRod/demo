@@ -1,0 +1,1 @@
+- https://en.wikipedia.org/wiki/List_of_Microsoft_Windows_components#References: you'll find a table below the references section on this page

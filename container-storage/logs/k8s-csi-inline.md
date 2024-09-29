@@ -190,4 +190,9 @@ spec:
 EOF
 kubectl get pv
 kubectl get pvc
+
+NAME           CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                   STORAGECLASS   VOLUMEATTRIBUTESCLASS   REASON   AGE
+pv-blobmodel   10Gi       ROX            Retain           Bound    default/pvc-blobmodel                  <unset>                          0s
+NAME            STATUS    VOLUME         CAPACITY   ACCESS MODES   STORAGECLASS   VOLUMEATTRIBUTESCLASS   AGE
+pvc-blobmodel   Pending   pv-blobmodel   0                                        <unset>                 0s
 ```

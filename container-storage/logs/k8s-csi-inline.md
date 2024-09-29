@@ -142,3 +142,52 @@ az storage account delete -g $rgname -n $storageAccountName -y
 ## inline.(blob.csi).pod
 
 - https://github.com/kubernetes-sigs/blob-csi-driver/blob/master/deploy/example/nginx-blobfuse-inline-volume.yaml
+
+## inline.(blob.csi).pv
+
+```
+rg=rg
+storage="storage$RANDOM"
+az storage account create -g $rg -n $storage --kind BlobStorage --access-tier Cool --output none # --sku Premium_LRS 
+key=$(az storage account keys list -g $rg -n $storage --query [0].value -o tsv)
+kubectl create secret generic blob-secret --from-literal=azurestorageaccountname=$storage --from-literal=azurestorageaccountkey=$key
+
+kubectl delete pvc pvc-blobmodel
+kubectl delete pv pv-blobmodel
+cat << EOF | kubectl create -f - 
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv-blobmodel
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadOnlyMany
+  persistentVolumeReclaimPolicy: Retain
+  csi:
+    driver: blob.csi.azure.com
+    readOnly: true
+    volumeHandle: pv-blobmodel
+    volumeAttributes:
+      containerName: nginx
+    nodeStageSecretRef:
+      name: blob-secret
+      namespace: default
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: pvc-blobmodel
+spec:
+  accessModes:
+    - ReadOnlyMany
+  resources:
+    requests:
+      storage: 10Gi
+  volumeName: pv-blobmodel
+  storageClassName: ""
+EOF
+kubectl get pv
+kubectl get pvc
+```

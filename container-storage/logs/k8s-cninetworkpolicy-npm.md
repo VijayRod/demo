@@ -17,3 +17,4 @@ azure-npm   1         1         1       1            1           <none>         
 
 - https://github.com/Azure/azure-container-networking/blob/master/docs/npm.md
 - https://learn.microsoft.com/en-us/azure/aks/use-network-policies#network-policy-options-in-aks
+- https://github.com/Azure/AKS/issues/2792: NPM pods watch pod, namespace and netpol related events

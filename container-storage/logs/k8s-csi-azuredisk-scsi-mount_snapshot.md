@@ -3,9 +3,20 @@ rg=rg
 az group create -n $rg -l swedencentral
 az aks create -g $rg -n aks
 az aks get-credentials -g $rg -n aks --overwrite-existing
+
+kubectl get crd
+NAME                                             CREATED AT
+volumesnapshotclasses.snapshot.storage.k8s.io    2024-09-29T19:59:22Z
+volumesnapshotcontents.snapshot.storage.k8s.io   2024-09-29T19:59:22Z
+volumesnapshots.snapshot.storage.k8s.io          2024-09-29T19:59:22Z
+
+kubectl api-resources | grep snapshot
+volumesnapshotclasses               vsclass,vsclasses   snapshot.storage.k8s.io/v1             false        VolumeSnapshotClass
+volumesnapshotcontents              vsc,vscs            snapshot.storage.k8s.io/v1             false        VolumeSnapshotContent
+volumesnapshots                     vs                  snapshot.storage.k8s.io/v1             true         VolumeSnapshot
+
 kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/azuredisk-csi-driver/master/deploy/example/snapshot/storageclass-azuredisk-snapshot.yaml
 kubectl get volumesnapshotclass
-
 NAME                DRIVER               DELETIONPOLICY   AGE
 csi-azuredisk-vsc   disk.csi.azure.com   Delete           11s
 ```

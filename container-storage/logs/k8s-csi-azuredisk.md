@@ -32,7 +32,7 @@ csi-azuredisk-node           1         1         1       1            1         
 csi-azuredisk-node-win       0         0         0       0            0           <none>          9h
 ```
 
-- https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/scenarios/app-platform/aks/storage: managed disks
+- https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/scenarios/app-platform/aks/storage: (Volume refers to a) managed disks
   
 ## azuredisk-csi.driver.parameter
 

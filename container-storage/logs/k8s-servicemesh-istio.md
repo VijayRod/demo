@@ -1,3 +1,5 @@
+## k8s-servicemesh-istio
+
 ```
 rg=rgmeshistio
 az group create -n $rg -l $loc
@@ -51,6 +53,40 @@ kubectl logs -n aks-istio-system -l app=istiod
 2023-11-15T19:02:27.360324Z     info    validationController    validatingwebhookconfiguration istio-validator-asm-1-17-aks-istio-system (failurePolicy=Fail, resourceVersion=6023) is up-to-date. No change required.
 2023-11-15T19:02:39.721883Z     info    rootcertrotator Jitter complete, start rotator.
 2023-11-15T19:03:33.559241Z     info    validationController    validatingwebhookconfiguration istio-validator-asm-1-17-aks-istio-system (failurePolicy=Fail, resourceVersion=6325) is up-to-date. No change required.
+
+kubectl get crd
+NAME                                             CREATED AT
+authorizationpolicies.security.istio.io          2024-09-30T18:23:18Z
+destinationrules.networking.istio.io             2024-09-30T18:23:18Z
+envoyfilters.networking.istio.io                 2024-09-30T18:23:18Z
+gateways.networking.istio.io                     2024-09-30T18:23:18Z
+peerauthentications.security.istio.io            2024-09-30T18:23:18Z
+proxyconfigs.networking.istio.io                 2024-09-30T18:23:18Z
+requestauthentications.security.istio.io         2024-09-30T18:23:18Z
+serviceentries.networking.istio.io               2024-09-30T18:23:18Z
+sidecars.networking.istio.io                     2024-09-30T18:23:18Z
+telemetries.telemetry.istio.io                   2024-09-30T18:23:18Z
+virtualservices.networking.istio.io              2024-09-30T18:23:18Z
+wasmplugins.extensions.istio.io                  2024-09-30T18:23:18Z
+workloadentries.networking.istio.io              2024-09-30T18:23:18Z
+workloadgroups.networking.istio.io               2024-09-30T18:23:18Z
+
+kubectl get validatingwebhookconfiguration
+NAME                                        WEBHOOKS   AGE
+azure-service-mesh-ccp-validating-webhook   2          5s
+istio-validator-asm-1-21-aks-istio-system   1          5s
+
+kubectl describe validatingwebhookconfiguration azure-service-mesh-ccp-validating-webhook
+    URL:           https://ccp-webhook.66fa976c1ba07c000117d762.svc.cluster.local.:8443/v1/validate/istio
+  Failure Policy:  Ignore
+  
+kubectl describe validatingwebhookconfiguration istio-validator-asm-1-21-aks-istio-system
+    Service:
+      Name:        istiod-asm-1-21
+      Namespace:   aks-istio-system
+      Path:        /validate
+      Port:        443
+  Failure Policy:  Fail
 ```
 
 - https://kubernetes.io/blog/2017/05/managing-microservices-with-istio-service-mesh/

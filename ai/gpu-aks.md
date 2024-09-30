@@ -60,6 +60,7 @@ With the NVIDIA GPU Operator, you don't have to worry about installing and updat
 ### Use the AKS GPU image
 With AKS, you get an AKS image that already has the NVIDIA device plugin for Kubernetes installed. You can only use the AKS GPU image with Ubuntu 18.04.
 - https://learn.microsoft.com/en-us/azure/aks/gpu-cluster?tabs=add-ubuntu-gpu-node-pool#use-the-aks-gpu-image-preview
+- https://github.com/Azure/AKS/releases/tag/2024-09-18: AKS will no longer support the GPU image (preview). recommended by AKS include the default experience with manual NVIDIA device plugin installation or the NVIDIA GPU Operator
 
 ## GPU-optimized VM/VMSS sizes in Azure
 - https://learn.microsoft.com/en-us/azure/virtual-machines/sizes-gpu

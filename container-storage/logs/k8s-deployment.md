@@ -7,6 +7,30 @@ kubectl get po -l app=nginx
 kubectl create deploy nginx --image=nginx --dry-run=client -oyaml 
 kubectl rollout restart deploy nginx
 kubectl delete deploy nginx
+
+kubectl delete deploy nginx
+cat << EOF | kubectl create -f -
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: nginx
+  name: nginx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - image: nginx
+        name: nginx
+EOF
+kubectl get po
 ```
 
 - https://kubernetes.io/: K8s, is an open-source system for automating deployment, scaling, and...

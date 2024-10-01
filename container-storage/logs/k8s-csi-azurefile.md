@@ -208,3 +208,56 @@ kubectl get deploy nginx -w
 az aks scale -g $rg -n aks -c 6
 kubectl get no
 ```
+
+```
+# Multiple pods that use different file share volumes within the same storage account
+rm /tmp/pods.yaml
+for i in $(seq -f "%03g" 1 600)
+do
+  cat <<EOF >> /tmp/pods.yaml
+kind: Pod
+apiVersion: v1
+metadata:
+  name: nginx-azurefile-$i
+spec:
+  nodeSelector:
+    "kubernetes.io/os": linux
+  containers:
+    - image: nginx
+      name: nginx-azurefile
+      command:
+        - "/bin/bash"
+        - "-c"
+        - set -euo pipefail; while true; do echo $(date) >> /mnt/azurefile/outfile; sleep 1; done
+      volumeMounts:
+        - name: persistent-storage
+          mountPath: "/mnt/azurefile"
+          readOnly: false
+  volumes:
+    - name: persistent-storage
+      persistentVolumeClaim:
+        claimName: pvc-azurefile-$i
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvc-azurefile-$i
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 100Gi
+  storageClassName: azurefile-csi
+--- # This is necessary as it precedes the next pod definition in the file
+EOF
+done
+kubectl create -f /tmp/pods.yaml
+kubectl get pv | grep Bound | wc -l
+kubectl get po | grep Running | wc -l
+
+cat /tmp/pods.yaml
+kubectl delete -f /tmp/pods.yaml
+kubectl delete po --all
+kubectl delete pvc --all
+```

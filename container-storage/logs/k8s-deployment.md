@@ -30,7 +30,7 @@ spec:
       - image: nginx
         name: nginx
 EOF
-kubectl get po
+kubectl get po -w
 ```
 
 - https://kubernetes.io/: K8s, is an open-source system for automating deployment, scaling, and...

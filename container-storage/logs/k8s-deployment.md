@@ -1,8 +1,11 @@
 ```
 kubectl create deploy nginx --image=nginx
+kubectl scale deploy nginx --replicas 10
+kubectl get deploy -w
 kubectl get po -l app=nginx
  
 kubectl rollout restart deploy nginx
+kubectl delete deploy nginx
 ```
 
 - https://kubernetes.io/: K8s, is an open-source system for automating deployment, scaling, and...

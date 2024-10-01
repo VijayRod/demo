@@ -4,7 +4,7 @@ kubectl scale deploy nginx --replicas 10
 kubectl get deploy -w
 kubectl get po -l app=nginx
 
-kubectl run deploy nginx --image=nginx --dry-run=client -oyaml 
+kubectl create deploy nginx --image=nginx --dry-run=client -oyaml 
 kubectl rollout restart deploy nginx
 kubectl delete deploy nginx
 ```

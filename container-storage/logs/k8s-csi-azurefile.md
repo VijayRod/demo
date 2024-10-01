@@ -47,6 +47,9 @@ kubectl get pv
 
 - https://github.com/kubernetes-sigs/azurefile-csi-driver/blob/master/docs/driver-parameters.md: volumeAttributes.shareName. Azure file share name
 - https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/scenarios/app-platform/aks/storage: (Volume refers to a) Static or dynamically created file share (not a storage account)
+- https://learn.microsoft.com/en-us/azure/aks/azure-files-csi
+- https://learn.microsoft.com/en-us/azure/aks/azure-csi-files-storage-provision
+- https://github.com/kubernetes-sigs/azurefile-csi-driver/tree/master/deploy/example
 
 ## azurefile-csi.driver.parameter
 

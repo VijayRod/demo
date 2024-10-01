@@ -108,3 +108,58 @@ azurestorageaccountname:  23 bytes
 
 - https://learn.microsoft.com/en-us/azure/aks/azure-csi-files-storage-provision#static-provisioning-parameters-for-persistentvolume: volumeAttributes.secretName... nodeStageSecretRef.name: If empty, driver uses kubelet identity to get account key.
 - https://learn.microsoft.com/en-us/azure/aks/azure-csi-files-storage-provision#mount-file-share-as-an-inline-volume: volumeAttributes.secretName
+
+## azurefile-csi.scale
+
+```
+# Multiple pods using the same file share volume
+kubectl delete deploy nginx
+cat << EOF | kubectl create -f -
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: nginx
+  name: nginx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - image: nginx
+        name: nginx
+        volumeMounts:
+        - name: persistent-storage
+          mountPath: /mnt/azurefile
+          readOnly: false
+      volumes:
+      - name: persistent-storage
+        persistentVolumeClaim:
+          claimName: pvc-azurefile
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvc-azurefile
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 100Gi
+  storageClassName: azurefile-csi
+EOF
+kubectl get po -w
+
+kubectl scale deploy nginx --replicas 600
+kubectl get deploy nginx -w
+
+az aks scale -g $rg -n aks -c 6
+kubectl get no
+```

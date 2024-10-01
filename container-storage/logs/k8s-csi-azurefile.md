@@ -45,6 +45,48 @@ kubectl get pvc pvc-azurefile
 kubectl get pv
 ```
 
+```
+kubectl delete po nginx-azurefile
+kubectl delete pvc pvc-azurefile
+cat << EOF | kubectl create -f -
+kind: Pod
+apiVersion: v1
+metadata:
+  name: nginx-azurefile
+spec:
+  nodeSelector:
+    "kubernetes.io/os": linux
+  containers:
+    - image: nginx
+      name: nginx-azurefile
+      command:
+        - "/bin/bash"
+        - "-c"
+        - set -euo pipefail; while true; do echo $(date) >> /mnt/azurefile/outfile; sleep 1; done
+      volumeMounts:
+        - name: persistent-storage
+          mountPath: "/mnt/azurefile"
+          readOnly: false
+  volumes:
+    - name: persistent-storage
+      persistentVolumeClaim:
+        claimName: pvc-azurefile
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvc-azurefile
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 100Gi
+  storageClassName: azurefile-csi
+EOF
+kubectl get po -w
+```
+
 - https://github.com/kubernetes-sigs/azurefile-csi-driver/blob/master/docs/driver-parameters.md: volumeAttributes.shareName. Azure file share name
 - https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/scenarios/app-platform/aks/storage: (Volume refers to a) Static or dynamically created file share (not a storage account)
 - https://learn.microsoft.com/en-us/azure/aks/azure-files-csi

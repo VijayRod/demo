@@ -105,11 +105,11 @@ kubectl get pvc pvc-azuredisk-wait
   
 - https://kubernetes.io/docs/concepts/storage/storage-classes/#volume-binding-mode
 
-## sc.volumeBindingMode.pv
+### sc.volumeBindingMode.pv
 
 - https://kubernetes.io/docs/concepts/storage/persistent-volumes/#binding
 
-## sc.volumeBindingMode.pvc
+### sc.volumeBindingMode.pvc
 
 ```
 kubectl delete pvc pvc-azurefile
@@ -152,7 +152,7 @@ kubectl get pvc -w
 pvc-azuredisk   Pending                                                                        managed-csi     <unset>                 0s
 ```
 
-## k8s-pvc.binding.error "pod has unbound immediate PersistentVolumeClaims"
+#### sc.volumeBindingMode.pvc.error "pod has unbound immediate PersistentVolumeClaims"
 
 Pod is in a pending state with an error "pod has unbound immediate PersistentVolumeClaims".
 

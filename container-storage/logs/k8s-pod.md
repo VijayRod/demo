@@ -112,3 +112,19 @@ az network vnet subnet show -g MC_rg_aks_swedencentral --vnet-name aks-vnet-9242
 
 - https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/#define-a-liveness-http-request
 - https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/: A common pattern for liveness probes is to use the same low-cost HTTP endpoint as for readiness probes, but with a higher failureThreshold. This ensures that the pod is observed as not-ready for some period of time before it is hard killed...
+
+## pod.error
+
+### Error 'spec.initContainers: Forbidden: pod updates may not add or remove containers'
+
+```
+Error: "The Pod "web-nginx" is invalid: spec.initContainers: Forbidden: pod updates may not add or remove containers'
+
+Error2: "The Pod "web-nginx" is invalid: spec.Containers: Forbidden: pod updates may not add or remove containers'
+```
+
+```
+# tbd https://github.com/hashicorp/vault/issues/11064: a MutatingWebHook on the pod.
+kubectl get mutatingwebhookconfiguration
+kubectl get validatingwebhookconfiguration
+```

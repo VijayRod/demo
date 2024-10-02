@@ -1,3 +1,27 @@
+## sc.volumeBindingMode
+
+```
+kubectl describe sc | grep -e Provisioner -e VolumeBind
+Provisioner:           file.csi.azure.com
+VolumeBindingMode:  Immediate
+Provisioner:           file.csi.azure.com
+VolumeBindingMode:  Immediate
+Provisioner:           file.csi.azure.com
+VolumeBindingMode:  Immediate
+Provisioner:           file.csi.azure.com
+VolumeBindingMode:  Immediate
+Provisioner:           disk.csi.azure.com
+VolumeBindingMode:     WaitForFirstConsumer
+Provisioner:           disk.csi.azure.com
+VolumeBindingMode:     WaitForFirstConsumer
+Provisioner:           disk.csi.azure.com
+VolumeBindingMode:     WaitForFirstConsumer
+Provisioner:           disk.csi.azure.com
+VolumeBindingMode:     WaitForFirstConsumer
+Provisioner:           disk.csi.azure.com
+VolumeBindingMode:     WaitForFirstConsumer
+```
+
 ```
 kubectl delete pvc pvc-azuredisk-wait pvc-azuredisk-immediate
 kubectl delete sc scwait scimmediate
@@ -45,9 +69,7 @@ spec:
   storageClassName: scimmediate
 EOF
 kubectl get pv,pvc
-```
 
-```
 NAME                                                        CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                             STORAGECLASS   REASON   AGE
 persistentvolume/pvc-fdbc8954-58e6-4d53-9753-7ec663404f81   10Gi       RWO            Delete           Bound    default/pvc-azuredisk-immediate   scimmediate             49s
 NAME                                            STATUS    VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   AGE
@@ -82,3 +104,64 @@ kubectl get pvc pvc-azuredisk-wait
 ```
   
 - https://kubernetes.io/docs/concepts/storage/storage-classes/#volume-binding-mode
+
+## sc.volumeBindingMode.pv
+
+- https://kubernetes.io/docs/concepts/storage/persistent-volumes/#binding
+
+## sc.volumeBindingMode.pvc
+
+```
+kubectl delete pvc pvc-azurefile
+cat << EOF | kubectl create -f -
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvc-azurefile
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 100Gi
+  storageClassName: azurefile-csi # VolumeBindingMode:  Immediate
+EOF
+kubectl get pvc -w
+
+NAME            STATUS    VOLUME   CAPACITY   ACCESS MODES   STORAGECLASS    VOLUMEATTRIBUTESCLASS   AGE
+pvc-azurefile   Pending                                      azurefile-csi   <unset>                 0s
+pvc-azurefile   Pending   pvc-f42aa6f8-6ca1-4c21-8396-032f1ce9aee3   0                         azurefile-csi   <unset>                 24s
+pvc-azurefile   Bound     pvc-f42aa6f8-6ca1-4c21-8396-032f1ce9aee3   100Gi      RWX            azurefile-csi   <unset>                 24s
+
+kubectl delete pvc pvc-azuredisk
+cat << EOF | kubectl create -f -
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvc-azuredisk
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+  storageClassName: managed-csi # VolumeBindingMode:     WaitForFirstConsumer
+EOF
+kubectl get pvc -w
+
+pvc-azuredisk   Pending                                                                        managed-csi     <unset>                 0s
+```
+
+## k8s-pvc.binding.error "pod has unbound immediate PersistentVolumeClaims"
+
+Pod is in a pending state with an error "pod has unbound immediate PersistentVolumeClaims".
+
+```
+>       Events:
+>          Type     Reason            Age                From               Message
+>          ----     ------            ----               ----               -------
+>          Warning  FailedScheduling  27s (x2 over 27s)  default-scheduler  error while running >"VolumeBinding" filter plugin for pod "mysql-0": pod has unbound immediate PersistentVolumeClaims
+```
+
+- https://stackoverflow.com/questions/74741993/0-1-nodes-are-available-1-pod-has-unbound-immediate-persistentvolumeclaims: You need to create a PV in order to get a PVC bound...
+- https://stackoverflow.com/questions/60774220/kubernetes-pod-has-unbound-immediate-persistentvolumeclaims: PersistentVolumeClaims will remain unbound indefinitely if a matching PersistentVolume does not exist. The PersistentVolume is matched with accessModes and capacity...

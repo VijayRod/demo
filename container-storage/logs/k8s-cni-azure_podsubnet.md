@@ -120,12 +120,12 @@ Conditions:
   Ready                         False   Thu, 03 Oct 2024 22:22:21 +0000   Thu, 03 Oct 2024 22:01:55 +0000   KubeletNotReady                 container runtime network not ready: NetworkReady=false reason:NetworkPluginNotReady message:Network plugin returns error: cni plugin not initialized
 
 kubectl get nnc -n kube-system
-NAMESPACE     NAME                                  ALLOCATED IPS   NC MODE   NC VERSION
-kube-system   aks-newnodepool-29606608-vmss000000   255             static    0
-kube-system   aks-newnodepool-29606608-vmss000001   255             static    0
-kube-system   aks-nodepool5-25787112-vmss000000
-kube-system   aks-nodepool5-25787112-vmss000001
-kube-system   aks-nodepool5-25787112-vmss000002
+NAME                                  ALLOCATED IPS   NC MODE   NC VERSION
+aks-nodepool1-36149301-vmss000000     255             static    0
+aks-nodepool1-36149301-vmss000001     255             static    0
+aks-nodepool5-25787112-vmss000000
+aks-nodepool5-25787112-vmss000001
+aks-nodepool5-25787112-vmss000002
 
 kubectl describe nnc -n kube-system aks-nodepool5-25787112-vmss000000
 Spec:

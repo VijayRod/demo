@@ -21,8 +21,7 @@ azure-cns-d6j9c   1/1     Running   0          60m
 azure-cns-hxlw6   1/1     Running   0          60m
 
 kubectl get nnc -n kube-system -owide
-NAME                                REQUESTED IPS   ALLOCATED IPS   SUBNET
-                   SUBNET CIDR      NC ID                                  NC MODE   NC TYPE   NC VERSION
+NAME                                REQUESTED IPS   ALLOCATED IPS   SUBNET                   SUBNET CIDR      NC ID                                  NC MODE   NC TYPE   NC VERSION
 aks-nodepool1-34233576-vmss000000   0               256             routingdomain_fb71a450-e4af-5861-8f2a-7252c613411c_overlaysubnet   192.168.0.0/16   0a64a24c-9110-4bd0-a688-4b575b8e2e91   static    overlay   0
 aks-nodepool1-34233576-vmss000001   0               256             routingdomain_fb71a450-e4af-5861-8f2a-7252c613411c_overlaysubnet   192.168.0.0/16   6d37af7f-cc3d-4a29-a4a4-8349e4750beb   static    overlay   0
 

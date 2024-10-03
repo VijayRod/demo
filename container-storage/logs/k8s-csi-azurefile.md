@@ -297,7 +297,12 @@ spec:
 --- # This is necessary as it precedes the next pod definition in the file
 EOF
 done
+
+echo Before starting the creation process...
+date
 kubectl create -f /tmp/pods.yaml
+echo After the creation process is complete...
+date
 kubectl get pv | grep Bound | wc -l
 kubectl get po | grep Running | wc -l
 

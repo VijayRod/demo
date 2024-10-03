@@ -6,6 +6,7 @@ az feature show --namespace Microsoft.ContainerService --name AzureVnetScalePrev
 ```
 
 - https://learn.microsoft.com/en-us/azure/aks/concepts-network-azure-cni-pod-subnet
+- https://learn.microsoft.com/en-us/azure/aks/configure-azure-cni-static-block-allocation#plan-ip-addressing
 
 ## k8s-cni.azure.podsubnet.static
 
@@ -80,6 +81,7 @@ az aks nodepool add -g $rg --cluster-name akspodsubnet  -n nodepool2 --vnet-subn
 ```
 # InsufficientSubnetSize - no NCs found in NNC CRD
 # 10.6.0.0/26 subnet with an IP range from 10.6.0.0 to 10.6.0.63 which give us 64 - 5 reserved addresses = 59 usable IPs.
+# "Pre-allocated IPs 160" for the 10 new nodes, which works out to 16 IPs per node. https://learn.microsoft.com/en-us/azure/aks/configure-azure-cni-static-block-allocation#plan-ip-addressing: "CIDR blocks of /28 (16 IPs) are allocated to nodes based on..."
 
 rg=rg
 az group create -n $rg -l $loc

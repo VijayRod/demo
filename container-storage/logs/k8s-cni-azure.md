@@ -302,18 +302,19 @@ az aks show -g $rg -n akscni --query networkProfile
 az aks get-credentials -g $rg -n akscni
 kubectl get no
 
-  "advancedNetworking": null,
-  "dnsServiceIp": "10.0.0.10",
-  "networkDataplane": "azure",
-  "networkMode": null,
-  "networkPlugin": "azure",
-  "networkPluginMode": null,
-  "podCidr": null,
-  "podCidrs": null,
-  "podLinkLocalAccess": "IMDS",
-  "serviceCidr": "10.0.0.0/16",
-  "serviceCidrs": [
-    "10.0.0.0/16"
+  "networkProfile": {
+    "advancedNetworking": null,
+    "dnsServiceIp": "10.0.0.10",
+    "networkDataplane": "azure",
+    "networkMode": null,
+    "networkPlugin": "azure",
+    "networkPluginMode": null,
+    "podCidr": null,
+    "podCidrs": null,
+    "podLinkLocalAccess": "IMDS",
+    "serviceCidr": "10.0.0.0/16",
+    "serviceCidrs": [
+      "10.0.0.0/16"
     
 aks-nodepool1-33042731-vmss000000:/# cat /etc/cni/net.d/10-azure.conflist
 {

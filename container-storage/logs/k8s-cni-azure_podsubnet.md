@@ -8,7 +8,7 @@ az feature show --namespace Microsoft.ContainerService --name AzureVnetScalePrev
 - https://learn.microsoft.com/en-us/azure/aks/concepts-network-azure-cni-pod-subnet
 - https://learn.microsoft.com/en-us/azure/aks/configure-azure-cni-static-block-allocation#plan-ip-addressing
 
-## k8s-cni.azure.podsubnet.static
+## k8s-cni.azure.podsubnet.staticblock
 
 ```
 rg=rg
@@ -76,7 +76,11 @@ az aks nodepool add -g $rg --cluster-name akspodsubnet  -n nodepool2 --vnet-subn
 - https://learn.microsoft.com/en-us/azure/aks/configure-azure-cni-static-block-allocation
 - https://learn.microsoft.com/en-us/azure/aks/concepts-network-azure-cni-pod-subnet#static-block-allocation-mode-preview
 
-## k8s-cni.azure.podsubnet.static.error.InsufficientSubnetSize - no NCs found in NNC CRD
+### k8s-cni.azure.podsubnet.staticblock.16IPs
+
+- https://learn.microsoft.com/en-us/azure/aks/configure-azure-cni-static-block-allocation#plan-ip-addressing: "CIDR blocks of /28 (16 IPs) are allocated to nodes based on..."
+
+### k8s-cni.azure.podsubnet.staticblock.16IPs.error.InsufficientSubnetSize - no NCs found in NNC CRD
 
 ```
 # InsufficientSubnetSize - no NCs found in NNC CRD

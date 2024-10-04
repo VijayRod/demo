@@ -59,13 +59,16 @@ kubectl get po -n kube-system csi-blob-node-wvn8q -oyaml | grep image: | grep bl
 ```
 
 - https://github.com/kubernetes-sigs/blob-csi-driver/blob/master/pkg/blob/nodeserver.go
+- https://github.com/kubernetes-sigs/blob-csi-driver#usage (features)
+- https://github.com/kubernetes-sigs/blob-csi-driver/blob/master/docs/design.md: To prevent possible regression issues, Azure Blob Storage CSI driver use azure cloud provider library. Thus, all bug fixes in the built-in blobfuse plugin would be incorporated into this driver.
+- https://github.com/kubernetes-sigs/blob-csi-driver/tree/master/deploy/example
 - https://github.com/Azure/AKS/tree/master/vhd-notes
 - https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/scenarios/app-platform/aks/storage: (Volume refers to a) blob storage container
 - https://learn.microsoft.com/en-us/azure/aks/concepts-storage#azure-blob-storage
 - https://learn.microsoft.com/en-us/azure/aks/azure-blob-csi
 - https://learn.microsoft.com/en-us/azure/aks/azure-blob-csi#azure-blob-storage-csi-driver-features
-- - https://github.com/kubernetes-sigs/blob-csi-driver#usage (features)
-- https://github.com/kubernetes-sigs/blob-csi-driver/blob/master/docs/design.md: To prevent possible regression issues, Azure Blob Storage CSI driver use azure cloud provider library. Thus, all bug fixes in the built-in blobfuse plugin would be incorporated into this driver.
+- https://github.com/Azure/azure-storage-fuse/blob/main/TSG.md
+- https://github.com/Seagate/cloudfuse: Cloudfuse is a fork of blobfuse2, and adds S3 support, a GUI, and Windows support
 
 ## azureblob-fuse.driver.parameter
 - https://github.com/kubernetes-sigs/blob-csi-driver/blob/master/docs/driver-parameters.md

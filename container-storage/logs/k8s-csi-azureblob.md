@@ -104,6 +104,126 @@ VolumeBindingMode:  Immediate
 Events:             <none>
 ```
 
+```
+kubectl delete statefulset statefulset-blob
+cat << EOF | kubectl create -f -
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: statefulset-blob
+  labels:
+    app: nginx
+spec:
+  serviceName: statefulset-blob
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      nodeSelector:
+        "kubernetes.io/os": linux
+      containers:
+        - name: statefulset-blob
+          image: nginx
+          volumeMounts:
+            - name: persistent-storage
+              mountPath: /mnt/blob
+  updateStrategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: nginx
+  volumeClaimTemplates:
+    - metadata:
+        name: persistent-storage
+      spec:
+        storageClassName: azureblob-fuse-premium
+        accessModes: ["ReadWriteMany"]
+        resources:
+          requests:
+            storage: 100Gi
+EOF
+kubectl get po -w
+```
+
+```
+kubectl delete po mypod
+kubectl delete pvc pvc-azureblob-fuse
+cat << EOF | kubectl create -f -
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvc-azureblob-fuse
+spec:
+  accessModes:
+  - ReadWriteMany
+  storageClassName: azureblob-fuse-premium
+  resources:
+    requests:
+      storage: 5Gi
+---
+kind: Pod
+apiVersion: v1
+metadata:
+  name: mypod
+spec:
+  containers:
+  - name: mypod
+    image: nginx
+    volumeMounts:
+    - mountPath: "/mnt/blob"
+      name: volume
+  volumes:
+    - name: volume
+      persistentVolumeClaim:
+        claimName: pvc-azureblob-fuse
+EOF
+kubectl get po -w
+
+kubectl get secret
+NAME                                                   TYPE     DATA   AGE
+azure-storage-account-fused6a211cbd37d4469a72-secret   Opaque   2      28m
+
+kubectl describe secret
+Name:         azure-storage-account-fused6a211cbd37d4469a72-secret
+Namespace:    default
+Labels:       <none>
+Annotations:  <none>
+Type:  Opaque
+Data
+====
+azurestorageaccountkey:   88 bytes
+azurestorageaccountname:  23 bytes
+
+kubectl logs -n kube-system csi-blob-node-zd69f -c blob
+I1004 18:04:17.352023    5991 utils.go:104] GRPC call: /csi.v1.Node/NodeStageVolume
+I1004 18:04:17.352040    5991 utils.go:105] GRPC request: {"staging_target_path":"/var/lib/kubelet/plugins/kubernetes.io/csi/blob.csi.azure.com/5d741b144cd1f0f31ab1abf1ad8b1e2b5a6614e14e68dbf6429182c5dc7623b6/globalmount","volume_capability":{"AccessType":{"Mount":{"mount_flags":["-o allow_other","--file-cache-timeout-in-seconds=120","--use-attr-cache=true","--cancel-list-on-mount-seconds=10","-o attr_timeout=120","-o entry_timeout=120","-o negative_timeout=120","--log-level=LOG_WARNING","--cache-size-mb=1000"]}},"access_mode":{"mode":5}},"volume_context":{"containername":"pvc-5428d94a-923c-4d42-8496-6038f9ac8384","csi.storage.k8s.io/pv/name":"pvc-5428d94a-923c-4d42-8496-6038f9ac8384","csi.storage.k8s.io/pvc/name":"pvc-azureblob-fuse","csi.storage.k8s.io/pvc/namespace":"default","secretnamespace":"default","skuName":"Premium_LRS","storage.kubernetes.io/csiProvisionerIdentity":"1728056647464-33-blob.csi.azure.com"},"volume_id":"MC_rgblob_aks_swedencentral#fused6a211cbd37d4469a72#pvc-5428d94a-923c-4d42-8496-6038f9ac8384##default#"}
+I1004 18:04:17.352392    5991 blob.go:504] volumeID(MC_rgblob_aks_swedencentral#fused6a211cbd37d4469a72#pvc-5428d94a-923c-4d42-8496-6038f9ac8384##default#) authEnv: []
+I1004 18:04:17.414838    5991 blob.go:911] got storage account(fused6a211cbd37d4469a72) from secret(azure-storage-account-fused6a211cbd37d4469a72-secret) namespace(default)
+I1004 18:04:17.414887    5991 nodeserver.go:386] target /var/lib/kubelet/plugins/kubernetes.io/csi/blob.csi.azure.com/5d741b144cd1f0f31ab1abf1ad8b1e2b5a6614e14e68dbf6429182c5dc7623b6/globalmount
+protocol
+
+volumeId MC_rgblob_aks_swedencentral#fused6a211cbd37d4469a72#pvc-5428d94a-923c-4d42-8496-6038f9ac8384##default#
+mountflags [-o allow_other --file-cache-timeout-in-seconds=120 --use-attr-cache=true --cancel-list-on-mount-seconds=10 -o attr_timeout=120 -o entry_timeout=120 -o negative_timeout=120 --log-level=LOG_WARNING --cache-size-mb=1000]
+mountOptions [-o allow_other --file-cache-timeout-in-seconds=120 --use-attr-cache=true --cancel-list-on-mount-seconds=10 -o attr_timeout=120 -o entry_timeout=120 -o negative_timeout=120 --log-level=LOG_WARNING --cache-size-mb=1000 --pre-mount-validate=true --use-https=true --empty-dir-check=false --tmp-path=/mnt/MC_rgblob_aks_swedencentral#fused6a211cbd37d4469a72#pvc-5428d94a-923c-4d42-8496-6038f9ac8384##default# --container-name=pvc-5428d94a-923c-4d42-8496-6038f9ac8384]
+args /var/lib/kubelet/plugins/kubernetes.io/csi/blob.csi.azure.com/5d741b144cd1f0f31ab1abf1ad8b1e2b5a6614e14e68dbf6429182c5dc7623b6/globalmount -o allow_other --file-cache-timeout-in-seconds=120 --use-attr-cache=true --cancel-list-on-mount-seconds=10 -o attr_timeout=120 -o entry_timeout=120 -o negative_timeout=120 --log-level=LOG_WARNING --cache-size-mb=1000 --pre-mount-validate=true --use-https=true --empty-dir-check=false --tmp-path=/mnt/MC_rgblob_aks_swedencentral#fused6a211cbd37d4469a72#pvc-5428d94a-923c-4d42-8496-6038f9ac8384##default# --container-name=pvc-5428d94a-923c-4d42-8496-6038f9ac8384
+serverAddress fused6a211cbd37d4469a72.blob.core.windows.net
+I1004 18:04:17.414905    5991 nodeserver.go:166] start connecting to blobfuse proxy, protocol: , args: /var/lib/kubelet/plugins/kubernetes.io/csi/blob.csi.azure.com/5d741b144cd1f0f31ab1abf1ad8b1e2b5a6614e14e68dbf6429182c5dc7623b6/globalmount -o allow_other --file-cache-timeout-in-seconds=120 --use-attr-cache=true --cancel-list-on-mount-seconds=10 -o attr_timeout=120 -o entry_timeout=120 -o negative_timeout=120 --log-level=LOG_WARNING --cache-size-mb=1000 --pre-mount-validate=true --use-https=true --empty-dir-check=false --tmp-path=/mnt/MC_rgblob_aks_swedencentral#fused6a211cbd37d4469a72#pvc-5428d94a-923c-4d42-8496-6038f9ac8384##default# --container-name=pvc-5428d94a-923c-4d42-8496-6038f9ac8384
+I1004 18:04:17.415364    5991 nodeserver.go:175] begin to mount with blobfuse proxy, protocol: , args: /var/lib/kubelet/plugins/kubernetes.io/csi/blob.csi.azure.com/5d741b144cd1f0f31ab1abf1ad8b1e2b5a6614e14e68dbf6429182c5dc7623b6/globalmount -o allow_other --file-cache-timeout-in-seconds=120 --use-attr-cache=true --cancel-list-on-mount-seconds=10 -o attr_timeout=120 -o entry_timeout=120 -o negative_timeout=120 --log-level=LOG_WARNING --cache-size-mb=1000 --pre-mount-validate=true --use-https=true --empty-dir-check=false --tmp-path=/mnt/MC_rgblob_aks_swedencentral#fused6a211cbd37d4469a72#pvc-5428d94a-923c-4d42-8496-6038f9ac8384##default# --container-name=pvc-5428d94a-923c-4d42-8496-6038f9ac8384
+I1004 18:04:18.645913    5991 mount_linux.go:282] Detected umount with safe 'not mounted' behavior
+I1004 18:04:18.646050    5991 nodeserver.go:645] blobfuse mount at /var/lib/kubelet/plugins/kubernetes.io/csi/blob.csi.azure.com/5d741b144cd1f0f31ab1abf1ad8b1e2b5a6614e14e68dbf6429182c5dc7623b6/globalmount success
+I1004 18:04:18.646073    5991 nodeserver.go:444] volume(MC_rgblob_aks_swedencentral#fused6a211cbd37d4469a72#pvc-5428d94a-923c-4d42-8496-6038f9ac8384##default#) mount on "/var/lib/kubelet/plugins/kubernetes.io/csi/blob.csi.azure.com/5d741b144cd1f0f31ab1abf1ad8b1e2b5a6614e14e68dbf6429182c5dc7623b6/globalmount" succeeded
+I1004 18:04:18.646095    5991 utils.go:111] GRPC response: {}
+I1004 18:04:18.666667    5991 utils.go:104] GRPC call: /csi.v1.Node/NodePublishVolume
+I1004 18:04:18.666682    5991 utils.go:105] GRPC request: {"staging_target_path":"/var/lib/kubelet/plugins/kubernetes.io/csi/blob.csi.azure.com/5d741b144cd1f0f31ab1abf1ad8b1e2b5a6614e14e68dbf6429182c5dc7623b6/globalmount","target_path":"/var/lib/kubelet/pods/4bbce626-894d-4896-bc38-718c4aaec726/volumes/kubernetes.io~csi/pvc-5428d94a-923c-4d42-8496-6038f9ac8384/mount","volume_capability":{"AccessType":{"Mount":{"mount_flags":["-o allow_other","--file-cache-timeout-in-seconds=120","--use-attr-cache=true","--cancel-list-on-mount-seconds=10","-o attr_timeout=120","-o entry_timeout=120","-o negative_timeout=120","--log-level=LOG_WARNING","--cache-size-mb=1000"]}},"access_mode":{"mode":5}},"volume_context":{"containername":"pvc-5428d94a-923c-4d42-8496-6038f9ac8384","csi.storage.k8s.io/ephemeral":"false","csi.storage.k8s.io/pod.name":"mypod","csi.storage.k8s.io/pod.namespace":"default","csi.storage.k8s.io/pod.uid":"4bbce626-894d-4896-bc38-718c4aaec726","csi.storage.k8s.io/pv/name":"pvc-5428d94a-923c-4d42-8496-6038f9ac8384","csi.storage.k8s.io/pvc/name":"pvc-azureblob-fuse","csi.storage.k8s.io/pvc/namespace":"default","csi.storage.k8s.io/serviceAccount.name":"default","csi.storage.k8s.io/serviceAccount.tokens":"***stripped***","secretnamespace":"default","skuName":"Premium_LRS","storage.kubernetes.io/csiProvisionerIdentity":"1728056647464-33-blob.csi.azure.com"},"volume_id":"MC_rgblob_aks_swedencentral#fused6a211cbd37d4469a72#pvc-5428d94a-923c-4d42-8496-6038f9ac8384##default#"}
+I1004 18:04:18.667074    5991 nodeserver.go:139] NodePublishVolume: volume MC_rgblob_aks_swedencentral#fused6a211cbd37d4469a72#pvc-5428d94a-923c-4d42-8496-6038f9ac8384##default# mounting /var/lib/kubelet/plugins/kubernetes.io/csi/blob.csi.azure.com/5d741b144cd1f0f31ab1abf1ad8b1e2b5a6614e14e68dbf6429182c5dc7623b6/globalmount at /var/lib/kubelet/pods/4bbce626-894d-4896-bc38-718c4aaec726/volumes/kubernetes.io~csi/pvc-5428d94a-923c-4d42-8496-6038f9ac8384/mount with mountOptions: [bind]
+I1004 18:04:18.667092    5991 mount_linux.go:218] Mounting cmd (mount) with arguments ( -o bind /var/lib/kubelet/plugins/kubernetes.io/csi/blob.csi.azure.com/5d741b144cd1f0f31ab1abf1ad8b1e2b5a6614e14e68dbf6429182c5dc7623b6/globalmount /var/lib/kubelet/pods/4bbce626-894d-4896-bc38-718c4aaec726/volumes/kubernetes.io~csi/pvc-5428d94a-923c-4d42-8496-6038f9ac8384/mount)
+I1004 18:04:18.671368    5991 mount_linux.go:218] Mounting cmd (mount) with arguments ( -o bind,remount /var/lib/kubelet/plugins/kubernetes.io/csi/blob.csi.azure.com/5d741b144cd1f0f31ab1abf1ad8b1e2b5a6614e14e68dbf6429182c5dc7623b6/globalmount /var/lib/kubelet/pods/4bbce626-894d-4896-bc38-718c4aaec726/volumes/kubernetes.io~csi/pvc-5428d94a-923c-4d42-8496-6038f9ac8384/mount)
+I1004 18:04:18.672538    5991 nodeserver.go:155] NodePublishVolume: volume MC_rgblob_aks_swedencentral#fused6a211cbd37d4469a72#pvc-5428d94a-923c-4d42-8496-6038f9ac8384##default# mount /var/lib/kubelet/plugins/kubernetes.io/csi/blob.csi.azure.com/5d741b144cd1f0f31ab1abf1ad8b1e2b5a6614e14e68dbf6429182c5dc7623b6/globalmount at /var/lib/kubelet/pods/4bbce626-894d-4896-bc38-718c4aaec726/volumes/kubernetes.io~csi/pvc-5428d94a-923c-4d42-8496-6038f9ac8384/mount successfully
+I1004 18:04:18.672553    5991 utils.go:111] GRPC response: {}
+```
+
 ## azureblob-fuse.driver.parameter.protocol.fuse.nfs
 
 ```
@@ -119,6 +239,12 @@ ReclaimPolicy:         Delete
 VolumeBindingMode:     Immediate
 Events:                <none>
 ```
+
+## azureblob-fuse.driver.parameter.nodeStageSecretRef
+
+-- https://github.com/kubernetes-sigs/blob-csi-driver/blob/master/docs/driver-parameters.md: secret name that stores...
+-- https://github.com/kubernetes-sigs/blob-csi-driver/blob/master/deploy/example/pv-blobfuse-auth.yaml
+-- https://github.com/kubernetes-sigs/blob-csi-driver/blob/master/deploy/example/pv-blobfuse-csi.yaml
 
 ## azureblob-fuse.driver.parameter.skuName.GRS
 

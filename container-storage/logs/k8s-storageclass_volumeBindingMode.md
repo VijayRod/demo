@@ -108,6 +108,7 @@ kubectl get pvc pvc-azuredisk-wait
 ### sc.volumeBindingMode.pv
 
 - https://kubernetes.io/docs/concepts/storage/persistent-volumes/#binding
+- https://learn.microsoft.com/en-us/azure/aks/azure-disk-csi#create-a-custom-storage-class: You can use a volumeBindingMode: Immediate class that guarantees it occurs immediately once the PVC is created. When your node pools are topology constrained, for example when using availability zones, PVs would be bound or provisioned without knowledge of the pod's scheduling requirements. To address this scenario, you can use volumeBindingMode: WaitForFirstConsumer
 
 ### sc.volumeBindingMode.pvc
 

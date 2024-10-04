@@ -18,7 +18,7 @@ az network vnet subnet create -g $rg --vnet-name vnet -n nodesubnet --address-pr
 az network vnet subnet create -g $rg --vnet-name vnet -n podsubnet --address-prefixes 10.40.0.0/13 -o none
 nodesubnetId=$(az network vnet subnet show -g $rg --vnet-name vnet -n nodesubnet --query id -otsv)
 podsubnetId=$(az network vnet subnet show -g $rg --vnet-name vnet -n podsubnet --query id -otsv)
-az aks create -g $rg -n akspodsubnet --network-plugin azure --pod-ip-allocation-mode StaticBlock --vnet-subnet-id $nodesubnetId --pod-subnet-id $podsubnet --enable-addons monitoring -s $vmsize -c 2
+az aks create -g $rg -n akspodsubnet --network-plugin azure --pod-ip-allocation-mode StaticBlock --vnet-subnet-id $nodesubnetId --pod-subnet-id $podsubnetId --enable-addons monitoring -s $vmsize -c 2
 az aks get-credentials -g $rg -n akspodsubnet --overwrite-existing
 ```
 
@@ -64,12 +64,13 @@ Status:
     Vnet ID:               vnet
 ```    
 
-```    
-az network vnet subnet create -g $rg --vnet-name $vnet -n nodesubnet2 --address-prefixes 10.244.0.0/16 -o none 
-az network vnet subnet create -g $rg --vnet-name $vnet -n podsubnet2 --address-prefixes 10.244.0.0/26 -o none
-nodesubnet2Id=$(az network vnet subnet show -g $rg --vnet-name vnet -n nodesubnet2 --query id -otsv)
-podsubnet2Id=$(az network vnet subnet show -g $rg --vnet-name vnet -n podsubnet2 --query id -otsv)
-az aks nodepool add -g $rg --cluster-name akspodsubnet  -n nodepool2 --vnet-subnet-id $node2subnet2Id --pod-subnet-id $podsubnet2Id --pod-ip-allocation-mode StaticBlock -c 2 --no-wait # --max-pods 250
+```
+# az aks nodepool delete -g $rg --cluster-name akspodsubnet -n nodepool2    
+az network vnet subnet create -g $rg --vnet-name vnet -n nodesubnet2 --address-prefixes 10.242.0.0/16 -o none 
+az network vnet subnet create -g $rg --vnet-name vnet -n podsubnet2 --address-prefixes 10.243.0.0/26 -o none
+nodesubnetId2=$(az network vnet subnet show -g $rg --vnet-name vnet -n nodesubnet2 --query id -otsv)
+podsubnetId2=$(az network vnet subnet show -g $rg --vnet-name vnet -n podsubnet2 --query id -otsv)
+az aks nodepool add -g $rg --cluster-name akspodsubnet -n nodepool2 --vnet-subnet-id $nodesubnetId2 --pod-subnet-id $podsubnetId2 --pod-ip-allocation-mode StaticBlock -s $vmsize -c 2 #--no-wait --max-pods 250
 ````
 
 - https://azure.microsoft.com/en-us/updates/public-preview-azure-cni-static-block-ip-allocation-support-in-aks/
@@ -94,14 +95,15 @@ az network vnet subnet create -g $rg --vnet-name vnet -n nodesubnet --address-pr
 az network vnet subnet create -g $rg --vnet-name vnet -n podsubnet --address-prefixes 10.40.0.0/13 -o none
 nodesubnetId=$(az network vnet subnet show -g $rg --vnet-name vnet -n nodesubnet --query id -otsv)
 podsubnetId=$(az network vnet subnet show -g $rg --vnet-name vnet -n podsubnet --query id -otsv)
-az aks create -g $rg -n akspodsubnet --network-plugin azure --pod-ip-allocation-mode StaticBlock --vnet-subnet-id $nodesubnetId --pod-subnet-id $podsubnet --enable-addons monitoring -s $vmsize -c 2
+az aks create -g $rg -n akspodsubnet --network-plugin azure --pod-ip-allocation-mode StaticBlock --vnet-subnet-id $nodesubnetId --pod-subnet-id $podsubnetId --enable-addons monitoring -s $vmsize -c 2
 az aks get-credentials -g $rg -n akspodsubnet --overwrite-existing
 
-az network vnet subnet create -g $rg --vnet-name $vnet -n nodesubnet5 --address-prefixes 10.5.0.0/16 -o none 
-az network vnet subnet create -g $rg --vnet-name $vnet -n podsubnet5 --address-prefixes 10.6.0.0/26 -o none
-nodesubnet5Id=$(az network vnet subnet show -g $rg --vnet-name vnet -n nodesubnet5 --query id -otsv)
-podsubnet5Id=$(az network vnet subnet show -g $rg --vnet-name vnet -n podsubnet5 --query id -otsv)
-az aks nodepool add -g $rg --cluster-name akspodsubnet  -n nodepool5 --vnet-subnet-id $node5subnetId --pod-subnet-id $pod5subnetId --pod-ip-allocation-mode StaticBlock -c 3
+# az aks nodepool delete -g $rg --cluster-name akspodsubnet -n nodepool5
+az network vnet subnet create -g $rg --vnet-name vnet -n nodesubnet5 --address-prefixes 10.5.0.0/16 -o none 
+az network vnet subnet create -g $rg --vnet-name vnet -n podsubnet5 --address-prefixes 10.6.0.0/26 -o none
+nodesubnetId5=$(az network vnet subnet show -g $rg --vnet-name vnet -n nodesubnet5 --query id -otsv)
+podsubnetId5=$(az network vnet subnet show -g $rg --vnet-name vnet -n podsubnet5 --query id -otsv)
+az aks nodepool add -g $rg --cluster-name akspodsubnet -n nodepool5 --vnet-subnet-id $nodesubnetId5 --pod-subnet-id $podsubnetId5 --pod-ip-allocation-mode StaticBlock -s $vmsize -c 3
 az aks nodepool scale -g $rg --cluster-name akspodsubnet  -n nodepool5 -c 10 # InsufficientSubnetSize - no NCs found in NNC CRD
 
 (InsufficientSubnetSize) Pre-allocated IPs 160 exceeds IPs available 59 in Subnet Cidr 10.6.0.0/26, Subnet Name pod5subnet. http://aka.ms/aks/insufficientsubnetsize

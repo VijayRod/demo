@@ -118,3 +118,9 @@ Reclaim Policy:  Delete
 ```
 
 - https://kubernetes.io/docs/concepts/storage/persistent-volumes/#storage-object-in-use-protection: volumes can either be Retained, Recycled, or Deleted.
+
+## pv.status.bound
+
+```
+storageclass.volumeBindingMode
+```

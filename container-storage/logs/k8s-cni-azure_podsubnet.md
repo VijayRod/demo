@@ -79,6 +79,41 @@ az aks nodepool add -g $rg --cluster-name akspodsubnet -n nodepool2 --vnet-subne
 
 ### k8s-cni.azure.podsubnet.staticblock.16IPs
 
+```
+# To determine how many 16 IP blocks are allocated to a node, you should look at the number of pods that are currently running on that node.
+
+kubectl delete deploy nginx
+cat << EOF | kubectl create -f -
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: nginx
+  name: nginx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - image: nginx
+        name: nginx
+      nodeSelector:
+        kubernetes.io/hostname: aks-nodepool1-90720178-vmss000000
+EOF
+
+kubectl scale deploy nginx --replicas 30
+kubectl get deploy -w
+
+kubectl get po -A -owide | grep aks-nodepool1-90720178-vmss000000 | grep Running | wc -l
+# kubectl describe nnc -n kube-system aks-nodepool1-90720178-vmss000000
+```
+
 - https://learn.microsoft.com/en-us/azure/aks/configure-azure-cni-static-block-allocation#plan-ip-addressing: "CIDR blocks of /28 (16 IPs) are allocated to nodes based on..."
 
 ### k8s-cni.azure.podsubnet.staticblock.16IPs.error.InsufficientSubnetSize - no NCs found in NNC CRD

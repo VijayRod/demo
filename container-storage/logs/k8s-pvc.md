@@ -7,7 +7,7 @@ persistentvolumeclaims              pvc                 v1                      
 persistentvolumes                   pv                  v1                                     false        PersistentVolume
 ```
 
-## k8s-pvc.lifecycle.binding
+## k8s-pvc.status.bound aka binding
 
 ```
 storageclass.volumeBindingMode

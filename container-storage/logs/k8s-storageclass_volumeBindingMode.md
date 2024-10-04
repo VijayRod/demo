@@ -112,6 +112,7 @@ kubectl get pvc pvc-azuredisk-wait
 ### sc.volumeBindingMode.pvc
 
 ```
+# pv.azurefile
 kubectl delete pvc pvc-azurefile
 cat << EOF | kubectl create -f -
 apiVersion: v1
@@ -133,6 +134,7 @@ pvc-azurefile   Pending                                      azurefile-csi   <un
 pvc-azurefile   Pending   pvc-f42aa6f8-6ca1-4c21-8396-032f1ce9aee3   0                         azurefile-csi   <unset>                 24s
 pvc-azurefile   Bound     pvc-f42aa6f8-6ca1-4c21-8396-032f1ce9aee3   100Gi      RWX            azurefile-csi   <unset>                 24s
 
+# pv.azuredisk.dynamic
 kubectl delete pvc pvc-azuredisk
 cat << EOF | kubectl create -f -
 apiVersion: v1
@@ -150,6 +152,60 @@ EOF
 kubectl get pvc -w
 
 pvc-azuredisk   Pending                                                                        managed-csi     <unset>                 0s
+
+# pv.azuredisk.static
+# az disk delete -g MC_rg_aks_swedencentral -n disk
+az disk create -g MC_rg_aks_swedencentral -n disk --size-gb 20 --query id --output tsv
+diskId=$(az disk show -g MC_rg_aks_swedencentral -n disk --query id -otsv)
+kubectl delete pv pv-azuredisk
+cat << EOF | kubectl create -f -
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  annotations:
+    pv.kubernetes.io/provisioned-by: disk.csi.azure.com
+  name: pv-azuredisk
+spec:
+  capacity:
+    storage: 20Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: managed-csi
+  csi:
+    driver: disk.csi.azure.com
+    volumeHandle: $diskId
+    volumeAttributes:
+      fsType: ext4
+EOF
+kubectl get pv
+kubectl delete pvc pvc-azuredisk
+cat << EOF | kubectl create -f -
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvc-azuredisk
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi
+  volumeName: pv-azuredisk
+  storageClassName: managed-csi
+EOF
+kubectl get pvc
+
+kubectl get pv -w
+NAME           CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS    CLAIM   STORAGECLASS   VOLUMEATTRIBUTESCLASS   REASON   AGE
+pv-azuredisk   20Gi       RWO            Retain           Pending               managed-csi    <unset>            0s
+pv-azuredisk   20Gi       RWO            Retain           Available             managed-csi    <unset>            0s
+pv-azuredisk   20Gi       RWO            Retain           Available     default/pvc-azuredisk   managed-csi    <unset>                          14s
+pv-azuredisk   20Gi       RWO            Retain           Bound         default/pvc-azuredisk   managed-csi    <unset>                          14s
+kubectl get pvc -w
+NAME            STATUS    VOLUME         CAPACITY   ACCESS MODES   STORAGECLASS   VOLUMEATTRIBUTESCLASS   AGE
+pvc-azuredisk   Pending       pv-azuredisk   0                         managed-csi    <unset>                 0s
+pvc-azuredisk   Bound         pv-azuredisk   20Gi       RWO            managed-csi    <unset>                 15s
 ```
 
 #### sc.volumeBindingMode.pvc.error "pod has unbound immediate PersistentVolumeClaims"

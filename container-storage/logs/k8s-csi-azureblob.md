@@ -244,6 +244,77 @@ Events:                <none>
 
 ## azureblob-fuse.driver.parameter.nodeStageSecretRef
 
+```
+echo rg: $rg
+storage="storage$RANDOM"
+container="microservices"
+noderg=$(az aks show -g $rg -n aks --query nodeResourceGroup -o tsv)
+az storage account create -g $noderg -n $storage -o none
+export AZURE_STORAGE_CONNECTION_STRING=$(az storage account show-connection-string -g $noderg -n $storage -o tsv)
+key=$(az storage account keys list -g $noderg --account-name $storage --query "[0].value" -o tsv)
+echo Storage account key: $key
+az storage container create --account-name $storage -n $container --auth-mode login
+
+kubectl delete secret azure-secret
+kubectl create secret generic azure-secret --from-literal=azurestorageaccountname=$storage --from-literal=azurestorageaccountkey=$key
+
+kubectl delete po mypod
+kubectl delete pvc pvc-blobmodels
+kubectl delete pv pv-blobmodels
+cat << EOF | kubectl create -f -
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv-blobmodels
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadOnlyMany
+  persistentVolumeReclaimPolicy: Retain
+  csi:
+    driver: blob.csi.azure.com
+    readOnly: true
+    volumeHandle: pv-blobmodels
+    volumeAttributes:
+      containerName: $container
+    nodeStageSecretRef:
+      name: azure-secret
+      namespace: default
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: pvc-blobmodels
+spec:
+  accessModes:
+    - ReadOnlyMany
+  resources:
+    requests:
+      storage: 10Gi
+  volumeName: pv-blobmodels
+  storageClassName: ""
+---
+kind: Pod
+apiVersion: v1
+metadata:
+  name: mypod
+spec:
+  containers:
+  - name: mypod
+    image: nginx
+    volumeMounts:
+    - mountPath: /mnt/blob
+      name: volume
+  volumes:
+    - name: volume
+      persistentVolumeClaim:
+        claimName: pvc-blobmodels
+EOF
+kubectl get po,pv,pvc
+sleep 10
+```
+
 - https://github.com/kubernetes-sigs/blob-csi-driver/blob/master/docs/driver-parameters.md: secret name that stores...
 - https://github.com/kubernetes-sigs/blob-csi-driver/blob/master/deploy/example/pv-blobfuse-auth.yaml
 - https://github.com/kubernetes-sigs/blob-csi-driver/blob/master/deploy/example/pv-blobfuse-csi.yaml

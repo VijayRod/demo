@@ -5,6 +5,8 @@ kubectl api-resources | grep pv
 NAME                                SHORTNAMES          APIVERSION                             NAMESPACED   KIND
 persistentvolumeclaims              pvc                 v1                                     true         PersistentVolumeClaim
 persistentvolumes                   pv                  v1                                     false        PersistentVolume
+
+kubectl get pvc --sort-by=.metadata.creationTimestamp -A |grep -i azurefile|grep -i Pending|head -n5
 ```
 
 ## k8s-pvc.scale

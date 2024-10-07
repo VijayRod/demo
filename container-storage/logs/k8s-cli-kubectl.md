@@ -13,6 +13,22 @@ sudo az aks install-cli
 - https://learn.microsoft.com/en-us/azure/aks/tutorial-kubernetes-deploy-cluster?tabs=azure-cli#install-the-kubernetes-cli
 - https://learn.microsoft.com/en-us/cli/azure/aks?view=azure-cli-latest#az-aks-install-cli
 
+## kubectl.discovery/memcache
+```
+# stopped the cluster
+
+az aks get-credentials -g $rg -n aks # retrieves credentials
+kubectl get ns
+E0918 19:30:42.864781    3734 memcache.go:265] couldn't get current server API group list: Get "https://aks-rg-efec8e-tgdhcfxs.hcp.swedencentral.azmk8s.io:443/api?timeout=32s": dial tcp: lookup aks-rg-efec8e-tgdhcfxs.hcp.swedencentral.azmk8s.io on 10.255.255.254:53: no such host
+
+nslookup aks-rg-efec8e-tgdhcfxs.hcp.swedencentral.azmk8s.io
+Server:         10.255.255.254
+Address:        10.255.255.254#53
+** server can't find aks-rg-efec8e-tgdhcfxs.hcp.swedencentral.azmk8s.io: NXDOMAIN
+```
+
+- https://github.com/kubernetes/kubernetes/blob/master/staging/src/k8s.io/client-go/discovery/cached/memory/memcache.go
+
 ## kubectl.get-credentials
 
 ```
@@ -39,6 +55,44 @@ kube-public       Active   21h
 kube-system       Active   21h
 ```
 
+## kubectl.tools
+- https://collabnix.github.io/kubetools/, Cluster with Core CLI tools
+
+### kubectl.tools.fubectl
+- https://github.com/kubermatic/fubectl
+
+### kubectl.tools.krew
+```
+kubectl krew
+kubectl krew search # Discover available plugins
+
+export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
+```
+
+- https://github.com/kubernetes-sigs/krew
+- https://krew.sigs.k8s.io/docs/user-guide/quickstart/
+
+### kubectl.tools.box
+- https://github.com/astefanutti/kubebox
+
+### kubectl.tools.kubecolor
+- https://github.com/hidetatz/kubecolor
+
+### kubectl.tools.kubectl-status
+- https://github.com/bergerx/kubectl-status
+
+### kubectl.tools.lens
+
+```
+# Kubernetes IDE
+```
+
+- https://github.com/lensapp/lens
+- https://github.com/MuhammedKalkan/OpenLens
+
+### kubectl.tools.viddy
+- https://github.com/sachaos/viddy
+
 ## kubectl.transport/round_trippers
 ```
 kubectl get ns -v=9
@@ -53,18 +107,3 @@ I0918 19:34:31.441713    3808 round_trippers.go:577] Response Headers:
 
 - https://github.com/kubernetes/kubernetes/blob/master/staging/src/k8s.io/client-go/transport/round_trippers.go
 
-## kubectl.discovery/memcache
-```
-# stopped the cluster
-
-az aks get-credentials -g $rg -n aks # retrieves credentials
-kubectl get ns
-E0918 19:30:42.864781    3734 memcache.go:265] couldn't get current server API group list: Get "https://aks-rg-efec8e-tgdhcfxs.hcp.swedencentral.azmk8s.io:443/api?timeout=32s": dial tcp: lookup aks-rg-efec8e-tgdhcfxs.hcp.swedencentral.azmk8s.io on 10.255.255.254:53: no such host
-
-nslookup aks-rg-efec8e-tgdhcfxs.hcp.swedencentral.azmk8s.io
-Server:         10.255.255.254
-Address:        10.255.255.254#53
-** server can't find aks-rg-efec8e-tgdhcfxs.hcp.swedencentral.azmk8s.io: NXDOMAIN
-```
-
-- https://github.com/kubernetes/kubernetes/blob/master/staging/src/k8s.io/client-go/discovery/cached/memory/memcache.go

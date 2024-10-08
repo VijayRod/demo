@@ -585,3 +585,78 @@ aks-nodepool1-30840492-vmss000001:/# cat cat /var/run/azure-vnet.json
 ```
 
 - https://learn.microsoft.com/en-us/azure/aks/azure-cni-overlay?tabs=kubectl
+
+## k8s-cni.azure.IPs
+
+```
+# --network-plugin azure
+rg=rg
+az group create -n $rg -l $loc
+az network vnet create -g $rg --name vnet --address-prefixes 10.0.0.0/8 -o none 
+az network vnet subnet create -g $rg --vnet-name vnet -n akssubnet --address-prefixes 10.240.0.0/16 -o none 
+subnetId=$(az network vnet subnet show -g $rg --vnet-name vnet -n akssubnet --query id -otsv)
+az aks create -g $rg -n aks --vnet-subnet-id $subnetId -s $vmsize -c 2 --network-plugin azure
+az aks get-credentials -g $rg -n aks --overwrite-existing
+
+cidr="10.2.0.0/16" # success
+subnet=subnet2
+nodepool=nodepool2
+count=2
+maxpods=250
+az network vnet subnet create -g $rg --vnet-name vnet -n $subnet --address-prefixes $cidr -o none 
+subnetId=$(az network vnet subnet show -g $rg --vnet-name vnet -n $subnet --query id -otsv)
+az aks nodepool add -g $rg --cluster-name aks -n $nodepool --vnet-subnet-id $subnetId -s $vmsize -c $count --max-pods $maxpods # --os-sku Mariner
+# az aks nodepool delete -g $rg --cluster-name aks -n $nodepool --no-wait
+
+cidr="10.3.0.0/24" # 10.3.0.0 to 10.3.0.255 i.e. 256 hosts. success
+subnet=subnet3
+nodepool=nodepool3
+count=1
+maxpods=250
+az network vnet subnet create -g $rg --vnet-name vnet -n $subnet --address-prefixes $cidr -o none 
+subnetId=$(az network vnet subnet show -g $rg --vnet-name vnet -n $subnet --query id -otsv)
+az aks nodepool add -g $rg --cluster-name aks -n $nodepool --vnet-subnet-id $subnetId -s $vmsize -c $count --max-pods $maxpods # --os-sku Mariner
+# az aks nodepool delete -g $rg --cluster-name aks -n $nodepool --no-wait
+
+cidr="10.32.0.0/24" # 10.32.0.0 to 10.32.0.255 i.e. 256 hosts. InsufficientSubnetSize
+subnet=subnet32
+nodepool=nodepool32
+count=2
+maxpods=250
+az network vnet subnet create -g $rg --vnet-name vnet -n $subnet --address-prefixes $cidr -o none 
+subnetId=$(az network vnet subnet show -g $rg --vnet-name vnet -n $subnet --query id -otsv)
+az aks nodepool add -g $rg --cluster-name aks -n $nodepool --vnet-subnet-id $subnetId -s $vmsize -c $count --max-pods $maxpods # --os-sku Mariner
+# az aks nodepool delete -g $rg --cluster-name aks -n $nodepool --no-wait
+
+(InsufficientSubnetSize) Pre-allocated IPs 498 exceeds IPs available 251 in Subnet Cidr 10.32.0.0/24, Subnet Name subnet32. http://aka.ms/aks/insufficientsubnetsize
+Code: InsufficientSubnetSize
+Message: Pre-allocated IPs 498 exceeds IPs available 251 in Subnet Cidr 10.32.0.0/24, Subnet Name subnet32. http://aka.ms/aks/insufficientsubnetsize
+Target: agentPoolProfile.vnetSubnetID
+## (maxpodsxcount)-count=(250x2)-2=498
+## hosts-subnetReserved=256-5=251
+
+cidr="10.33.0.0/24" # 10.33.0.0 to 10.33.0.255 i.e. 256 hosts. InsufficientSubnetSize
+subnet=subnet33
+nodepool=nodepool33
+count=3
+maxpods=250
+az network vnet subnet create -g $rg --vnet-name vnet -n $subnet --address-prefixes $cidr -o none 
+subnetId=$(az network vnet subnet show -g $rg --vnet-name vnet -n $subnet --query id -otsv)
+az aks nodepool add -g $rg --cluster-name aks -n $nodepool --vnet-subnet-id $subnetId -s $vmsize -c $count --max-pods $maxpods # --os-sku Mariner
+# az aks nodepool delete -g $rg --cluster-name aks -n $nodepool --no-wait
+
+(InsufficientSubnetSize) Pre-allocated IPs 747 exceeds IPs available 251 in Subnet Cidr 10.33.0.0/24, Subnet Name subnet33. http://aka.ms/aks/insufficientsubnetsize
+Code: InsufficientSubnetSize
+Message: Pre-allocated IPs 747 exceeds IPs available 251 in Subnet Cidr 10.33.0.0/24, Subnet Name subnet33. http://aka.ms/aks/insufficientsubnetsize
+Target: agentPoolProfile.vnetSubnetID
+## (maxpodsxcount)-count=(250x3)-3=747
+## hosts-subnetReserved=256-5=251
+
+for i in {2..100}; do az aks nodepool delete -g $rg --cluster-name aks -n nodepool$i --no-wait; done
+```
+
+- https://learn.microsoft.com/en-us/azure/aks/concepts-network-ip-address-planning
+- https://learn.microsoft.com/en-us/azure/aks/concepts-network-legacy-cni#ip-address-availability-and-exhaustion
+- https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/connectivity/insufficientsubnetsize-error-advanced-networking
+- https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/create-upgrade-delete/error-code-subnetisfull-upgrade
+- https://github.com/Azure/aks-engine/blob/master/examples/largeclusters/README.md

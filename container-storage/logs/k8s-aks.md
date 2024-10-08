@@ -23,7 +23,7 @@ az aks create -g $rg -n aks --vnet-subnet-id $subnetId -s $vmsize -c 2 --network
 
 subnet=subnet2
 nodepool=nodepool2
-az network vnet subnet create -g $rg --vnet-name vnet -n $subnet --address-prefixes 10.241.0.0/16 -o none 
+az network vnet subnet create -g $rg --vnet-name vnet -n $subnet --address-prefixes 10.242.0.0/16 -o none 
 subnetId=$(az network vnet subnet show -g $rg --vnet-name vnet -n $subnet --query id -otsv)
 az aks nodepool add -g $rg --cluster-name aks -n $nodepool -s $vmsize -c 2 # --max-pods 250 # --os-sku Mariner
 # az aks nodepool delete -g $rg --cluster-name aks -n $nodepool --no-wait

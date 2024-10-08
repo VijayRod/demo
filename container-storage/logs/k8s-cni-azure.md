@@ -589,7 +589,7 @@ aks-nodepool1-30840492-vmss000001:/# cat cat /var/run/azure-vnet.json
 ## k8s-cni.azure.IPs
 
 ```
-# --network-plugin azure
+# azure-cni.create
 rg=rg
 az group create -n $rg -l $loc
 az network vnet create -g $rg --name vnet --address-prefixes 10.0.0.0/8 -o none 

@@ -407,6 +407,180 @@ az storage account list -g MC_rgcni_akseadsv5_swedencentral | grep -E 'id|"name"
 - https://learn.microsoft.com/en-us/answers/questions/1166011/getting-a-403-error-when-connecting-to-a-blob-cont: "Selected Networks" - It means the storage account is firewall enabled.
 - https://github.com/kubernetes-sigs/blob-csi-driver/blob/master/pkg/blob/controllerserver.go: if len(secrets) == 0 && useDataPlaneAPI {... "failed to GetStorageAccesskey on account
 
+## azureblob-fuse.error
+
+### azureblob-fuse.error parsing volumeID(pv-blobmodels) return with error: error parsing volume id: "pv-blobmodels", should at least contain two #
+
+```
+# scenario involing a harmless error
+# steps in azureblob-fuse.driver.parameter.nodeStageSecretRef
+
+k logs -n kube-system csi-blob-node-bnrss -c blob | tail -n 50
+I1008 18:13:40.594330    6512 utils.go:104] GRPC call: /csi.v1.Node/NodeStageVolume
+I1008 18:13:40.594344    6512 utils.go:105] GRPC request: {"secrets":"***stripped***","staging_target_path":"/var/lib/kubelet/plugins/kubernetes.io/csi/blob.csi.azure.com/dd3330e4623d772350df7f53cdeb02c81107e08a91a860d86adf2d4985ed1143/globalmount","volume_capability":{"AccessType":{"Mount":{}},"access_mode":{"mode":3}},"volume_context":{"containerName":"microservices"},"volume_id":"pv-blobmodels"}
+I1008 18:13:40.594663    6512 blob.go:423] parsing volumeID(pv-blobmodels) return with error: error parsing volume id: "pv-blobmodels", should at least contain two #
+I1008 18:13:40.594681    6512 blob.go:504] volumeID(pv-blobmodels) authEnv: []
+I1008 18:13:40.594711    6512 nodeserver.go:386] target /var/lib/kubelet/plugins/kubernetes.io/csi/blob.csi.azure.com/dd3330e4623d772350df7f53cdeb02c81107e08a91a860d86adf2d4985ed1143/globalmount
+protocol
+volumeId pv-blobmodels
+mountflags []
+mountOptions [--pre-mount-validate=true --use-https=true --cancel-list-on-mount-seconds=10 --empty-dir-check=false --tmp-path=/mnt/pv-blobmodels --container-name=microservices]
+args /var/lib/kubelet/plugins/kubernetes.io/csi/blob.csi.azure.com/dd3330e4623d772350df7f53cdeb02c81107e08a91a860d86adf2d4985ed1143/globalmount --pre-mount-validate=true --use-https=true --cancel-list-on-mount-seconds=10 --empty-dir-check=false --tmp-path=/mnt/pv-blobmodels --container-name=microservices
+serverAddress storage3116.blob.core.windows.net
+I1008 18:13:40.594769    6512 nodeserver.go:166] start connecting to blobfuse proxy, protocol: , args: /var/lib/kubelet/plugins/kubernetes.io/csi/blob.csi.azure.com/dd3330e4623d772350df7f53cdeb02c81107e08a91a860d86adf2d4985ed1143/globalmount --pre-mount-validate=true --use-https=true --cancel-list-on-mount-seconds=10 --empty-dir-check=false --tmp-path=/mnt/pv-blobmodels --container-name=microservices
+I1008 18:13:40.595242    6512 nodeserver.go:175] begin to mount with blobfuse proxy, protocol: , args: /var/lib/kubelet/plugins/kubernetes.io/csi/blob.csi.azure.com/dd3330e4623d772350df7f53cdeb02c81107e08a91a860d86adf2d4985ed1143/globalmount --pre-mount-validate=true --use-https=true --cancel-list-on-mount-seconds=10 --empty-dir-check=false --tmp-path=/mnt/pv-blobmodels --container-name=microservices
+I1008 18:13:41.840872    6512 mount_linux.go:282] Detected umount with safe 'not mounted' behavior
+I1008 18:13:41.841046    6512 nodeserver.go:645] blobfuse mount at /var/lib/kubelet/plugins/kubernetes.io/csi/blob.csi.azure.com/dd3330e4623d772350df7f53cdeb02c81107e08a91a860d86adf2d4985ed1143/globalmount success
+I1008 18:13:41.841076    6512 nodeserver.go:444] volume(pv-blobmodels) mount on "/var/lib/kubelet/plugins/kubernetes.io/csi/blob.csi.azure.com/dd3330e4623d772350df7f53cdeb02c81107e08a91a860d86adf2d4985ed1143/globalmount" succeeded
+I1008 18:13:41.841088    6512 utils.go:111] GRPC response: {}
+
+kubectl get po,pv,pvc
+NAME        READY   STATUS    RESTARTS   AGE
+pod/mypod   1/1     Running   0          17s
+NAME                             CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                    STORAGECLASS   VOLUMEATTRIBUTESCLASS   REASON   AGE
+persistentvolume/pv-blobmodels   10Gi       ROX            Retain           Bound    default/pvc-blobmodels                  <unset>                          18s
+NAME                                   STATUS   VOLUME          CAPACITY   ACCESS MODES   STORAGECLASS   VOLUMEATTRIBUTESCLASS   AGE
+persistentvolumeclaim/pvc-blobmodels   Bound    pv-blobmodels   10Gi       ROX                           <unset>                 17s
+```
+
+### azureblob-fuse.error code = Internal desc = Mount failed with error: rpc error: code = Unknown desc = exit status 1 Error: failed to initialize new pipeline [config error in azstorage [account name not provided]]
+
+```
+# scenario where $storage2 does not exist
+# steps in azureblob-fuse.driver.parameter.nodeStageSecretRef
+kubectl create secret generic azure-secret --from-literal=azurestorageaccountname=$storage2 --from-literal=azurestorageaccountkey=$key
+
+# azurestorageaccountname:  0 bytes
+kubectl describe secret
+Name:         azure-secret
+Namespace:    default
+Labels:       <none>
+Annotations:  <none>
+Type:  Opaque
+Data
+====
+azurestorageaccountkey:   88 bytes
+azurestorageaccountname:  0 bytes
+
+# serverAddress .blob.core.windows.net, code = Unknown desc = exit status 1 Error: failed to initialize new pipeline [config error in azstorage [account name not provided]]
+k logs -n kube-system csi-blob-node-bnrss -c blob
+I1008 18:04:48.444845    6512 utils.go:104] GRPC call: /csi.v1.Node/NodeStageVolume
+I1008 18:04:48.444863    6512 utils.go:105] GRPC request: {"secrets":"***stripped***","staging_target_path":"/var/lib/kubelet/plugins/kubernetes.io/csi/blob.csi.azure.com/dd3330e4623d772350df7f53cdeb02c81107e08a91a860d86adf2d4985ed1143/globalmount","volume_capability":{"AccessType":{"Mount":{}},"access_mode":{"mode":3}},"volume_context":{"containerName":"microservices"},"volume_id":"pv-blobmodels"}
+I1008 18:04:48.445263    6512 blob.go:423] parsing volumeID(pv-blobmodels) return with error: error parsing volume id: "pv-blobmodels", should at least contain two #
+I1008 18:04:48.445280    6512 blob.go:504] volumeID(pv-blobmodels) authEnv: []
+I1008 18:04:48.445351    6512 nodeserver.go:386] target /var/lib/kubelet/plugins/kubernetes.io/csi/blob.csi.azure.com/dd3330e4623d772350df7f53cdeb02c81107e08a91a860d86adf2d4985ed1143/globalmount
+protocol
+volumeId pv-blobmodels
+mountflags []
+mountOptions [--pre-mount-validate=true --use-https=true --cancel-list-on-mount-seconds=10 --empty-dir-check=false --tmp-path=/mnt/pv-blobmodels --container-name=microservices]
+args /var/lib/kubelet/plugins/kubernetes.io/csi/blob.csi.azure.com/dd3330e4623d772350df7f53cdeb02c81107e08a91a860d86adf2d4985ed1143/globalmount --pre-mount-validate=true --use-https=true --cancel-list-on-mount-seconds=10 --empty-dir-check=false --tmp-path=/mnt/pv-blobmodels --container-name=microservices
+serverAddress .blob.core.windows.net
+I1008 18:04:48.445387    6512 nodeserver.go:166] start connecting to blobfuse proxy, protocol: , args: /var/lib/kubelet/plugins/kubernetes.io/csi/blob.csi.azure.com/dd3330e4623d772350df7f53cdeb02c81107e08a91a860d86adf2d4985ed1143/globalmount --pre-mount-validate=true --use-https=true --cancel-list-on-mount-seconds=10 --empty-dir-check=false --tmp-path=/mnt/pv-blobmodels --container-name=microservices
+I1008 18:04:48.445957    6512 nodeserver.go:175] begin to mount with blobfuse proxy, protocol: , args: /var/lib/kubelet/plugins/kubernetes.io/csi/blob.csi.azure.com/dd3330e4623d772350df7f53cdeb02c81107e08a91a860d86adf2d4985ed1143/globalmount --pre-mount-validate=true --use-https=true --cancel-list-on-mount-seconds=10 --empty-dir-check=false --tmp-path=/mnt/pv-blobmodels --container-name=microservices
+E1008 18:04:49.015328    6512 nodeserver.go:178] GRPC call returned with an error:rpc error: code = Unknown desc = exit status 1 Error: failed to initialize new pipeline [config error in azstorage [account name not provided]]
+E1008 18:04:49.015366    6512 nodeserver.go:412] rpc error: code = Internal desc = Mount failed with error: rpc error: code = Unknown desc = exit status 1 Error: failed to initialize new pipeline [config error in azstorage [account name not provided]]
+, output:
+Please refer to http://aka.ms/blobmounterror for possible causes and solutions for mount errors.
+
+k get po,pvc,pv
+NAME        READY   STATUS              RESTARTS   AGE
+pod/mypod   0/1     ContainerCreating   0          78s
+NAME                                   STATUS   VOLUME          CAPACITY   ACCESS MODES   STORAGECLASS   VOLUMEATTRIBUTESCLASS   AGE
+persistentvolumeclaim/pvc-blobmodels   Bound    pv-blobmodels   10Gi       ROX                           <unset>                 78s
+NAME                             CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                    STORAGECLASS   VOLUMEATTRIBUTESCLASS   REASON   AGE
+persistentvolume/pv-blobmodels   10Gi       ROX            Retain           Bound    default/pvc-blobmodels                  <unset>                          78s
+```
+
+### azureblob-fuse.error code = Internal desc = Mount failed with error: rpc error: code = Unknown desc = exit status 1 Error: failed to initialize new pipeline [decode account key: illegal base64 data at input byte 8]
+
+```
+# scenario where the key is "incorrect"
+# steps in azureblob-fuse.driver.parameter.nodeStageSecretRef
+kubectl create secret generic azure-secret --from-literal=azurestorageaccountname=$storage --from-literal=azurestorageaccountkey="incorrect"
+
+k logs -n kube-system csi-blob-node-bnrss -c blob | tail -n 50
+I1008 18:42:57.300266    6512 utils.go:104] GRPC call: /csi.v1.Node/NodeStageVolume
+I1008 18:42:57.300281    6512 utils.go:105] GRPC request: {"secrets":"***stripped***","staging_target_path":"/var/lib/kubelet/plugins/kubernetes.io/csi/blob.csi.azure.com/dd3330e4623d772350df7f53cdeb02c81107e08a91a860d86adf2d4985ed1143/globalmount","volume_capability":{"AccessType":{"Mount":{}},"access_mode":{"mode":3}},"volume_context":{"containerName":"microservices"},"volume_id":"pv-blobmodels"}
+I1008 18:42:57.300538    6512 blob.go:423] parsing volumeID(pv-blobmodels) return with error: error parsing volume id: "pv-blobmodels", should at least contain two #
+I1008 18:42:57.300549    6512 blob.go:504] volumeID(pv-blobmodels) authEnv: []
+I1008 18:42:57.300575    6512 nodeserver.go:386] target /var/lib/kubelet/plugins/kubernetes.io/csi/blob.csi.azure.com/dd3330e4623d772350df7f53cdeb02c81107e08a91a860d86adf2d4985ed1143/globalmount
+protocol
+volumeId pv-blobmodels
+mountflags []
+mountOptions [--pre-mount-validate=true --use-https=true --cancel-list-on-mount-seconds=10 --empty-dir-check=false --tmp-path=/mnt/pv-blobmodels --container-name=microservices]
+args /var/lib/kubelet/plugins/kubernetes.io/csi/blob.csi.azure.com/dd3330e4623d772350df7f53cdeb02c81107e08a91a860d86adf2d4985ed1143/globalmount --pre-mount-validate=true --use-https=true --cancel-list-on-mount-seconds=10 --empty-dir-check=false --tmp-path=/mnt/pv-blobmodels --container-name=microservices
+serverAddress storage13696.blob.core.windows.net
+I1008 18:42:57.300586    6512 nodeserver.go:166] start connecting to blobfuse proxy, protocol: , args: /var/lib/kubelet/plugins/kubernetes.io/csi/blob.csi.azure.com/dd3330e4623d772350df7f53cdeb02c81107e08a91a860d86adf2d4985ed1143/globalmount --pre-mount-validate=true --use-https=true --cancel-list-on-mount-seconds=10 --empty-dir-check=false --tmp-path=/mnt/pv-blobmodels --container-name=microservices
+I1008 18:42:57.300975    6512 nodeserver.go:175] begin to mount with blobfuse proxy, protocol: , args: /var/lib/kubelet/plugins/kubernetes.io/csi/blob.csi.azure.com/dd3330e4623d772350df7f53cdeb02c81107e08a91a860d86adf2d4985ed1143/globalmount --pre-mount-validate=true --use-https=true --cancel-list-on-mount-seconds=10 --empty-dir-check=false --tmp-path=/mnt/pv-blobmodels --container-name=microservices
+E1008 18:42:57.891878    6512 nodeserver.go:178] GRPC call returned with an error:rpc error: code = Unknown desc = exit status 1 Error: failed to initialize new pipeline [decode account key: illegal base64 data at input byte 8]
+E1008 18:42:57.891924    6512 nodeserver.go:412] rpc error: code = Internal desc = Mount failed with error: rpc error: code = Unknown desc = exit status 1 Error: failed to initialize new pipeline [decode account key: illegal base64 data at input byte 8]
+, output:
+Please refer to http://aka.ms/blobmounterror for possible causes and solutions for mount errors.
+E1008 18:42:57.891995    6512 utils.go:109] GRPC error: rpc error: code = Internal desc = Mount failed with error: rpc error: code = Unknown desc = exit status 1 Error: failed to initialize new pipeline [decode account key: illegal base64 data at input byte 8]
+, output:
+Please refer to http://aka.ms/blobmounterror for possible causes and solutions for mount errors.
+
+k describe po
+  Type     Reason       Age                   From     Message
+  ----     ------       ----                  ----     -------
+  Warning  FailedMount  2m55s (x48 over 84m)  kubelet  MountVolume.MountDevice failed for volume "pv-blobmodels" : rpc error: code = Internal desc = Mount failed with error: rpc error: code = Unknown desc = exit status 1 Error: failed to initialize new pipeline [decode account key: illegal base64 data at input byte 8]
+, output:
+Please refer to http://aka.ms/blobmounterror for possible causes and solutions for mount errors.
+
+k get po,pvc,pv
+NAME        READY   STATUS              RESTARTS   AGE
+pod/mypod   0/1     ContainerCreating   0          78s
+NAME                                   STATUS   VOLUME          CAPACITY   ACCESS MODES   STORAGECLASS   VOLUMEATTRIBUTESCLASS   AGE
+persistentvolumeclaim/pvc-blobmodels   Bound    pv-blobmodels   10Gi       ROX                           <unset>                 78s
+NAME                             CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                    STORAGECLASS   VOLUMEATTRIBUTESCLASS   REASON   AGE
+persistentvolume/pv-blobmodels   10Gi       ROX            Retain           Bound    default/pvc-blobmodels                  <unset>                          78s
+```
+
+### azureblob-fuse.error code = Internal desc = Mount failed with error: rpc error: code = Unknown desc = exit status 1 Error: failed to initialize new pipeline [failed to authenticate credentials for azstorage]
+
+```
+# scenario where the storage account key is regenerated after creating a secret
+# steps in azureblob-fuse.driver.parameter.nodeStageSecretRef
+az storage account keys renew -g $noderg -n $storage --key primary
+
+k logs -n kube-system csi-blob-node-bnrss -c blob | tail -n 50
+
+k describe po
+  Warning  FailedMount  13s (x6 over 32s)  kubelet            MountVolume.MountDevice failed for volume "pv-blobmodels" : rpc error: code = Internal desc = Mount failed with error: rpc error: code = Unknown desc = exit status 1 Error: failed to initialize new pipeline [failed to authenticate credentials for azstorage]
+, output:
+Please refer to http://aka.ms/blobmounterror for possible causes and solutions for mount errors.
+
+k logs -n kube-system csi-blob-node-bnrss -c blob | tail -n 50
+I1008 18:55:56.065741    6512 utils.go:104] GRPC call: /csi.v1.Node/NodeStageVolume
+I1008 18:55:56.065758    6512 utils.go:105] GRPC request: {"secrets":"***stripped***","staging_target_path":"/var/lib/kubelet/plugins/kubernetes.io/csi/blob.csi.azure.com/dd3330e4623d772350df7f53cdeb02c81107e08a91a860d86adf2d4985ed1143/globalmount","volume_capability":{"AccessType":{"Mount":{}},"access_mode":{"mode":3}},"volume_context":{"containerName":"microservices"},"volume_id":"pv-blobmodels"}
+I1008 18:55:56.066031    6512 blob.go:423] parsing volumeID(pv-blobmodels) return with error: error parsing volume id: "pv-blobmodels", should at least contain two #
+I1008 18:55:56.066046    6512 blob.go:504] volumeID(pv-blobmodels) authEnv: []
+I1008 18:55:56.066074    6512 nodeserver.go:386] target /var/lib/kubelet/plugins/kubernetes.io/csi/blob.csi.azure.com/dd3330e4623d772350df7f53cdeb02c81107e08a91a860d86adf2d4985ed1143/globalmount
+protocol
+volumeId pv-blobmodels
+mountflags []
+mountOptions [--pre-mount-validate=true --use-https=true --cancel-list-on-mount-seconds=10 --empty-dir-check=false --tmp-path=/mnt/pv-blobmodels --container-name=microservices]
+args /var/lib/kubelet/plugins/kubernetes.io/csi/blob.csi.azure.com/dd3330e4623d772350df7f53cdeb02c81107e08a91a860d86adf2d4985ed1143/globalmount --pre-mount-validate=true --use-https=true --cancel-list-on-mount-seconds=10 --empty-dir-check=false --tmp-path=/mnt/pv-blobmodels --container-name=microservices
+serverAddress storage1216.blob.core.windows.net
+I1008 18:55:56.066091    6512 nodeserver.go:166] start connecting to blobfuse proxy, protocol: , args: /var/lib/kubelet/plugins/kubernetes.io/csi/blob.csi.azure.com/dd3330e4623d772350df7f53cdeb02c81107e08a91a860d86adf2d4985ed1143/globalmount --pre-mount-validate=true --use-https=true --cancel-list-on-mount-seconds=10 --empty-dir-check=false --tmp-path=/mnt/pv-blobmodels --container-name=microservices
+I1008 18:55:56.066482    6512 nodeserver.go:175] begin to mount with blobfuse proxy, protocol: , args: /var/lib/kubelet/plugins/kubernetes.io/csi/blob.csi.azure.com/dd3330e4623d772350df7f53cdeb02c81107e08a91a860d86adf2d4985ed1143/globalmount --pre-mount-validate=true --use-https=true --cancel-list-on-mount-seconds=10 --empty-dir-check=false --tmp-path=/mnt/pv-blobmodels --container-name=microservices
+E1008 18:55:56.697781    6512 nodeserver.go:178] GRPC call returned with an error:rpc error: code = Unknown desc = exit status 1 Error: failed to initialize new pipeline [failed to authenticate credentials for azstorage]
+E1008 18:55:56.697837    6512 nodeserver.go:412] rpc error: code = Internal desc = Mount failed with error: rpc error: code = Unknown desc = exit status 1 Error: failed to initialize new pipeline [failed to authenticate credentials for azstorage]
+, output:
+Please refer to http://aka.ms/blobmounterror for possible causes and solutions for mount errors.
+E1008 18:55:56.697907    6512 utils.go:109] GRPC error: rpc error: code = Internal desc = Mount failed with error: rpc error: code = Unknown desc = exit status 1 Error: failed to initialize new pipeline [failed to authenticate credentials for azstorage]
+, output:
+Please refer to http://aka.ms/blobmounterror for possible causes and solutions for mount errors.
+
+k get po,pvc,pv
+NAME        READY   STATUS              RESTARTS   AGE
+pod/mypod   0/1     ContainerCreating   0          78s
+NAME                                   STATUS   VOLUME          CAPACITY   ACCESS MODES   STORAGECLASS   VOLUMEATTRIBUTESCLASS   AGE
+persistentvolumeclaim/pvc-blobmodels   Bound    pv-blobmodels   10Gi       ROX                           <unset>                 78s
+NAME                             CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                    STORAGECLASS   VOLUMEATTRIBUTESCLASS   REASON   AGE
+persistentvolume/pv-blobmodels   10Gi       ROX            Retain           Bound    default/pvc-blobmodels                  <unset>                          78s
+```
+
 ## azureblob-fuse.provision.dynamic
 
 ```

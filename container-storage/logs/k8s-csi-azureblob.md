@@ -72,6 +72,81 @@ kubectl get po -n kube-system csi-blob-node-wvn8q -oyaml | grep image: | grep bl
 - https://github.com/Azure/azure-storage-fuse/blob/main/TSG.md
 - https://github.com/Seagate/cloudfuse: Cloudfuse is a fork of blobfuse2, and adds S3 support, a GUI, and Windows support
 
+## azureblob-fuse.debug
+
+```
+k get po -A -owide | grep blob
+kube-system   csi-blob-node-4zzxn                   4/4     Running   0          30m   10.224.0.4   aks-nodepool1-18418801-vmss000001   <none>           <none>
+kube-system   csi-blob-node-bnrss                   4/4     Running   0          30m   10.224.0.5   aks-nodepool1-18418801-vmss000000   <none>           <none>
+
+kubectl logs -n kube-system csi-blob-node-zd69f -c blob
+```
+
+```
+# k exec -it -n kube-system csi-blob-node-4zzxn -c blob -- /bin/bash
+
+ps -ef | grep csi # Or ps aux | grep csi
+...
+root        6480    4765  0 08:40 ?        00:00:00 /blobplugin --v=5 --endpoint=unix:///csi/csi.sock --blobfuse-proxy-endpoint=unix:///csi/blobfuse-proxy.sock --enable-blobfuse-proxy=true --nodeid=aks-nodepool1-18418801-vmss000001 --user-agent-suffix=AKS --enable-aznfs-mount=true
+
+/blobplugin -h
+
+# Streaming logs
+/blobplugin --v=5 --endpoint=unix:///csi/csi.sock --blobfuse-proxy-endpoint=unix:///csi/blobfuse-proxy.sock --enable-blobfuse-proxy=true --nodeid=aks-nodepool1-18418801-vmss000001 --user-agent-suffix=AKS --enable-aznfs-mount=true
+I1008 09:39:51.392013   86532 main.go:74] driver userAgent: blob.csi.azure.com/v1.23.7 AKS
+...
+Streaming logs below:
+^C
+
+# /blobplugin --v=7 with round_trippers GET
+root@aks-nodepool1-18418801-vmss000001:/# /blobplugin --v=7 --endpoint=unix:///csi/csi.sock --blobfuse-proxy-endpoint=unix:///csi/blobfuse-proxy.sock --enable-blobfuse-proxy=true>
+I1008 19:44:10.364913   93125 main.go:74] driver userAgent: blob.csi.azure.com/v1.23.7 AKS
+W1008 19:44:10.364950   93125 client_config.go:618] Neither --kubeconfig nor --master was specified.  Using the inClusterConfig.  This might not work.
+I1008 19:44:10.365276   93125 util.go:339] set QPS(25.000000) and QPS Burst(50) for driver kubeClient
+I1008 19:44:10.365757   93125 azure.go:62] reading cloud config from secret kube-system/azure-cloud-provider
+I1008 19:44:10.366188   93125 round_trippers.go:463] GET https://aks-rgblob-efec8e-l5w3h6rx.hcp.swedencentral.azmk8s.io:443/api/v1/namespaces/kube-system/secrets/azure-cloud-provider
+I1008 19:44:10.366499   93125 round_trippers.go:469] Request Headers:
+I1008 19:44:10.366763   93125 round_trippers.go:473]     Authorization: Bearer <masked>
+I1008 19:44:10.367031   93125 round_trippers.go:473]     Accept: application/json, */*
+I1008 19:44:10.367294   93125 round_trippers.go:473]     User-Agent: blob.csi.azure.com/v1.23.7 AKS
+I1008 19:44:10.403193   93125 round_trippers.go:574] Response Status: 404 Not Found in 35 milliseconds
+
+ss
+Netid    State     Recv-Q    Send-Q                                                                            Local Address:Port                   Peer Address:Port     Process
+u_dgr    ESTAB     0         0                                                                           /run/systemd/notify 13780                             * 0
+u_dgr    ESTAB     0         0                                                                  /run/systemd/journal/dev-log 13808                             * 0
+u_dgr    ESTAB     0         0                                                                   /run/systemd/journal/socket 13810                             * 0
+u_dgr    ESTAB     0         0                                                                      /run/chrony/chronyd.sock 18009                             * 0
+u_str    ESTAB     0         0            /run/containerd/s/a63fe07dfc068c5b6720e9188eb39bdfcbbc0e6f2399165683de01c4c2e605cc 32601                             * 33574
+
+ping 10.224.0.4
+bash: ping: command not found
+netstat -atunp | grep -E "10.224.0.4|10.224.0.5"
+bash: netstat: command not found
+strace
+bash: strace: command not found
+
+apt-get update -y && apt-get install net-tools strace -y
+ping 10.224.0.4
+PING 10.224.0.4 (10.224.0.4) 56(84) bytes of data.
+64 bytes from 10.224.0.4: icmp_seq=1 ttl=64 time=0.033 ms
+64 bytes from 10.224.0.4: icmp_seq=2 ttl=64 time=0.044 ms
+netstat -atunp | grep -E "10.224.0.4|10.224.0.5"
+tcp        0      0 10.224.0.4:19100        0.0.0.0:*               LISTEN      8302/node-exporter
+tcp        0      0 10.224.0.4:49854        169.254.169.254:80      TIME_WAIT   -
+tcp        0      0 10.224.0.4:49826        169.254.169.254:80      TIME_WAIT   -
+
+strace -s 99 -ffp 8302
+strace: Process 8302 attached with 5 threads
+[pid  8306] futex(0xc000061948, FUTEX_WAIT_PRIVATE, 0, NULL <unfinished ...>
+[pid  8305] futex(0xc000061148, FUTEX_WAIT_PRIVATE, 0, NULL <unfinished ...>
+[pid  8304] futex(0xc000060948, FUTEX_WAIT_PRIVATE, 0, NULL <unfinished ...>
+[pid  8303] restart_syscall(<... resuming interrupted read ...> <unfinished ...>
+[pid  8302] epoll_pwait(4, [{events=EPOLLIN|EPOLLOUT, data={u32=759693314, u64=9179953998470840322}}], 128, -1, NULL, 0) = 1
+[pid  8302] futex(0x1171da0, FUTEX_WAKE_PRIVATE, 1 <unfinished ...>
+[pid  8303] <... restart_syscall resumed>) = 0
+```
+
 ## azureblob-fuse.driver.parameter
 - https://github.com/kubernetes-sigs/blob-csi-driver/blob/master/docs/driver-parameters.md
 - https://learn.microsoft.com/en-us/azure/aks/azure-csi-blob-storage-provision?tabs=mount-nfs%2Csecret#storage-class-parameters-for-dynamic-persistent-volumes

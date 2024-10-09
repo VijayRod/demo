@@ -140,3 +140,4 @@ kubectl logs samples-tf-mnist-demo-smnr6
 Here's the link to the code for nodes with unready GPU:
 
 - https://github.com/kubernetes/autoscaler/blob/master/cluster-autoscaler/processors/customresources/gpu_processor.go: nodesWithUnreadyGpu
+- https://github.com/kubernetes/autoscaler/blob/7e95c7e63a5f0773e51bc484b1f7dbe802fe668a/cluster-autoscaler/core/static_autoscaler.go#L970

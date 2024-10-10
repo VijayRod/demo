@@ -36,5 +36,7 @@ helm show values ingress-nginx --repo https://kubernetes.github.io/ingress-nginx
 ```
 TBD helm install ...Debug=true
 TBD helm upgrade ...Debug=true
+helm status trident
+helm get all trident
 ```
 - tbd https://gist.github.com/fardjad/7532a2b275e255ae92494435f2220c73#file-debugging-and-authoring-helm-charts-and-post-renderer-hooks-with-viddy-md

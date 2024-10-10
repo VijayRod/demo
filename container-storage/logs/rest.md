@@ -47,6 +47,10 @@ curl openai.com -v
   
 ## rest.api.app.bruno
 
+```
+# Windows, Bruno install: Create Collection, then proceed to create a New Request using GET https://example.com/test.txt, and then run it
+```
+
 - https://docs.usebruno.com/scripting/getting-started
 - https://github.com/usebruno/bruno/: Bruno - Opensource IDE for exploring and testing APIs.
 

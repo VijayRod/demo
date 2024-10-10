@@ -246,6 +246,7 @@ spec:
       storage: 100Gi
   storageClassName: azurefile-csi
 EOF
+# cat /tmp/pods.yaml
 kubectl get po -w
 
 kubectl scale deploy nginx --replicas 600
@@ -298,6 +299,7 @@ spec:
 --- # This is necessary as it precedes the next pod definition in the file
 EOF
 done
+# cat /tmp/pods.yaml
 
 echo Before starting the creation process...
 date
@@ -306,9 +308,71 @@ echo After the creation process is complete...
 date
 kubectl get pv | grep Bound | wc -l
 kubectl get po | grep Running | wc -l
+kubectl get po -w
 
-cat /tmp/pods.yaml
 kubectl delete -f /tmp/pods.yaml
 kubectl delete po --all
 kubectl delete pvc --all
+```
+
+```
+# Multiple pods that each utilize ten file share volumes, all housed within the same storage account
+pods=10
+volPerPod=10
+rm /tmp/pods.yaml
+for i in $(seq -f "%03g" 1 $pods)
+do
+  cat <<EOF >> /tmp/pods.yaml
+---
+kind: Pod
+apiVersion: v1
+metadata:
+  name: nginx-$i
+spec:
+  nodeSelector:
+    kubernetes.io/os: linux
+  containers:
+    - image: nginx
+      name: nginx
+      volumeMounts:
+EOF
+for j in $(seq -f "%03g" 1 $volPerPod)
+do
+  cat <<EOF >> /tmp/pods.yaml
+        - name: persistent-storage-$i$j
+          mountPath: /mnt/azurefile$i$j
+          readOnly: false
+EOF
+done
+  cat <<EOF >> /tmp/pods.yaml
+  volumes:
+EOF
+for j in $(seq -f "%03g" 1 $volPerPod)
+do
+  cat <<EOF >> /tmp/pods.yaml
+    - name: persistent-storage-$i$j
+      persistentVolumeClaim:
+        claimName: pvc-azurefile-$i$j
+EOF
+done
+for j in $(seq -f "%03g" 1 $volPerPod)
+do
+  cat <<EOF >> /tmp/pods.yaml
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvc-azurefile-$i$j
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 100Gi
+  storageClassName: azurefile-csi
+---
+EOF
+done
+done
+# cat /tmp/pods.yaml
 ```

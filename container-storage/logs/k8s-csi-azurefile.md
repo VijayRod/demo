@@ -309,7 +309,7 @@ echo After the creation process is complete...
 date
 kubectl get pv | grep Bound | wc -l
 kubectl get po | grep Running | wc -l
-kubectl get po -w
+watch kubectl get po # kubectl get po -w
 
 # delete
 date

@@ -313,6 +313,7 @@ kubectl get po -w
 kubectl delete -f /tmp/pods.yaml
 kubectl delete po --all
 kubectl delete pvc --all
+kubectl get po,pvc,pv
 ```
 
 ```

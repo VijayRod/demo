@@ -44,6 +44,12 @@ az storage account list -g MC_rg_aks_swedencentral
 ## az-storage.networkRuleSet.defaultAction.firewall
 - https://learn.microsoft.com/en-us/answers/questions/1166011/getting-a-403-error-when-connecting-to-a-blob-cont: "Check Allow Access From (All Networks / Selected Networks)" "Selected Networks" - It means the storage account is firewall enabled.
 
+## az-storage.scale.throttling
+
+- https://learn.microsoft.com/en-us/azure/storage/common/storage-account-overview#types-of-storage-accounts
+- https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/azure-subscription-service-limits#azure-storage-limits
+- https://aka.ms/srpthrottlinglimits
+
 ## az-storage.sku
 
 - https://learn.microsoft.com/en-us/azure/storage/common/storage-account-overview#types-of-storage-accounts: Type of storage account (az storage account create --kind), Redundancy options (az storage account create --sku)

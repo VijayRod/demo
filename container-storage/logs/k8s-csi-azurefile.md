@@ -257,30 +257,6 @@ kubectl get no
 ```
 
 ```
-# create
-echo Before starting the creation process...
-date
-kubectl create -f /tmp/pods.yaml
-echo After the creation process is complete...
-date
-kubectl get pv | grep Bound | wc -l
-kubectl get po | grep Running | wc -l
-watch kubectl get po # kubectl get po -w
-
-# delete
-date
-kubectl delete -f /tmp/pods.yaml
-kubectl delete po --all
-kubectl delete pvc --all
-date
-kubectl get po,pvc,pv
-
-# misc
-clear
-kubectl get events -w
-```
-
-```
 # Multiple pods that each utilize a different file share volume, all housed within the same storage account
 rm /tmp/pods.yaml
 for i in $(seq -f "%03g" 1 600)
@@ -386,4 +362,28 @@ EOF
 done
 done
 # cat /tmp/pods.yaml
+```
+
+```
+# create
+echo Before starting the creation process...
+date
+kubectl create -f /tmp/pods.yaml
+echo After the creation process is complete...
+date
+kubectl get pv | grep Bound | wc -l
+kubectl get po | grep Running | wc -l
+watch kubectl get po # kubectl get po -w
+
+# delete
+date
+kubectl delete -f /tmp/pods.yaml
+kubectl delete po --all
+kubectl delete pvc --all
+date
+kubectl get po,pvc,pv
+
+# misc
+clear
+kubectl get events -w
 ```

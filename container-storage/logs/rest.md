@@ -4,7 +4,7 @@
 - https://restfulapi.net/http-methods/
 - https://restapitutorial.com/
 
-## rest.api.app.examples
+### rest.api.app.examples
 
 ```
 curl https://example.com/test.txt -v
@@ -28,8 +28,7 @@ curl openai.com -v
 
 - https://blog.postman.com/rest-api-examples/
 
-
-## rest.api.examples.XMLHttpRequest
+### rest.api.app.examples.XMLHttpRequest
 
 - https://www.peej.co.uk/articles/rich-user-experience.html: REST. XMLHttpRequest object to issue a HTTP GET request to the URL
 - https://www.w3schools.com/js/js_json_http.asp: XMLHttpRequest
@@ -40,13 +39,24 @@ curl openai.com -v
 - https://www.w3schools.com/xml/dom_http.asp: XMLHttpRequest
 - https://www.w3schools.com/xml/ajax_xmlhttprequest_create.asp
 
-## rest.api.azure.Microsoft.ContainerService (aks)
-
-- https://learn.microsoft.com/en-us/rest/api/aks/
-- https://github.com/Azure/azure-rest-api-specs/blob/main/specification/containerservice/resource-manager/Microsoft.ContainerService/aks/readme.md
-
-## rest.api.tool.doc.swagger
+### rest.api.app.doc.swagger
 
 - https://stackify.com/rest-api-tutorial/
 - https://editor.swagger.io/
 - https://swagger.io/tools/swagger-ui/
+  
+## rest.api.app.bruno
+
+- https://docs.usebruno.com/scripting/getting-started
+- https://github.com/usebruno/bruno/: Bruno - Opensource IDE for exploring and testing APIs.
+
+## rest.api.app.postman
+
+- https://www.postman.com/downloads/
+- https://www.postman.com/downloads/: Postman on the web (Try the Web Version), or simply sign in at https://www.postman.com/
+- https://web.postman.co/templates/recommended: REST API basics, etc.
+
+## rest.api.azure.Microsoft.ContainerService (aks)
+
+- https://learn.microsoft.com/en-us/rest/api/aks/
+- https://github.com/Azure/azure-rest-api-specs/blob/main/specification/containerservice/resource-manager/Microsoft.ContainerService/aks/readme.md

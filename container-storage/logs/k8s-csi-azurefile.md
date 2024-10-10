@@ -256,7 +256,7 @@ kubectl get no
 ```
 
 ```
-# Multiple pods that use different file share volumes within the same storage account
+# Multiple pods that each utilize a different file share volume, all housed within the same storage account
 rm /tmp/pods.yaml
 for i in $(seq -f "%03g" 1 600)
 do

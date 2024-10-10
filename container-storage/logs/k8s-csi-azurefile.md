@@ -362,6 +362,15 @@ EOF
 done
 done
 # cat /tmp/pods.yaml
+
+# When deploying 10 pods each with 10 azurefile-csi PVCs: Most pods are up and running in about 20 seconds. However, it consistently takes over 3 minutes for the last few pods to reach a Running state. During this delay, 'kubectl get events' shows ExternalProvisioning events indicating "Waiting for a volume to be created either by the external provisioner 'file.csi.azure.com'". The storage account activity log has TooManyRequests errors for "Put File Share" operations, specifically mentioning a Write_ObservationWindow_00:00:01.
+# When deploying 10 pods each with 10 azurefile-csi-premium PVCs: Pods already running within a minute.
+# When deploying 10 pods each with 200 azurefile-csi-premium PVCs: This significantly increases creation time of all pods to over 35 minutes, accompanied by ExternalProvisioning and TooManyRequests errors for "Put File Share", also with a Write_ObservationWindow_00:00:01.
+tbd CSI driver creating multiple storage accounts
+tbd custom azurefile storage class created with useDataPlaneAPI and standard storage
+tbd custom azurefile storage class created with useDataPlaneAPI and premium storage
+tbd ReadWriteOnce and Azure Disk CSI driver v2 (preview)
+tbd Azure NetApp Files
 ```
 
 ```

@@ -318,6 +318,10 @@ kubectl delete po --all
 kubectl delete pvc --all
 date
 kubectl get po,pvc,pv
+
+# misc
+clear
+kubectl get events -w
 ```
 
 ```

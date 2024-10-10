@@ -301,6 +301,7 @@ EOF
 done
 # cat /tmp/pods.yaml
 
+# create
 echo Before starting the creation process...
 date
 kubectl create -f /tmp/pods.yaml
@@ -310,9 +311,12 @@ kubectl get pv | grep Bound | wc -l
 kubectl get po | grep Running | wc -l
 kubectl get po -w
 
+# delete
+date
 kubectl delete -f /tmp/pods.yaml
 kubectl delete po --all
 kubectl delete pvc --all
+date
 kubectl get po,pvc,pv
 ```
 

@@ -1,15 +1,12 @@
 Here are the commands to create a cluster with an ephemeral OS disk.
 
 ```
-# Replace values in the below.
-rgname=resourceGroupName
-clustername=akseph
-```
+rg=rg
+az group create -n $rg -l $loc
+az aks create -g $rg -n aks --node-osdisk-type Ephemeral -s $vmsize -c 2
+az aks get-credentials -g $rg -n $aks --overwrite-existing
 
-```
-# Create a cluster.
-az aks create -g $rgname -n $clustername --node-osdisk-type Ephemeral -s Standard_DS3_v2
-az aks get-credentials -g $rgname -n $clustername --overwrite-existing
+az aks nodepool add -g $rg --cluster-name aks -n np2 --node-osdisk-type Ephemeral # --node-osdisk-size 128
 ```
 
 ```

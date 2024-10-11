@@ -8,3 +8,5 @@ ssh azureuser@$ip
 subnetId=$(az network vnet subnet show -g $rgname --vnet-name $vnet -n $subnet --query id -otsv)
 az vm create -g $rgname -n $vm --image=Ubuntu2204 --subnet $subnetId
 ```
+
+- https://azure.microsoft.com/en-us/blog/azure-virtual-machine-internals-part-1/

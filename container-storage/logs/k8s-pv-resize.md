@@ -1,5 +1,9 @@
+## k8s-pv-resize
+
 ```
 kubectl patch pvc pvc-azuredisk -p '{"spec":{"resources":{"requests":{"storage":"300Gi"}}}}' --type=merge
+
+# Alternatively, you can use 'kubectl edit pvc' and modify the size accordingly.
 ```
 
 ```
@@ -51,3 +55,33 @@ AllowVolumeExpansion:  True
 - https://github.com/kubernetes-sigs/azuredisk-csi-driver/issues/273: ~ (earlier) could only resize azure disk when it's in "unattached" state i.e. before dynamic resize
 - https://azure.microsoft.com/en-us/updates/live-resize-of-azure-disk-storage-in-public-preview/
 - https://github.com/kubernetes-sigs/azuredisk-csi-driver/blob/master/docs/known-issues/sizegrow.md
+
+## k8s-pv-resize.sc.AllowVolumeExpansion
+
+```
+kubectl describe sc | grep -e 'Name|Exp'
+Name:                  azurefile
+Parameters:            skuName=Standard_LRS
+AllowVolumeExpansion:  True
+Name:                  azurefile-csi
+Parameters:            skuName=Standard_LRS
+AllowVolumeExpansion:  True
+Name:                  azurefile-csi-premium
+Parameters:            skuName=Premium_LRS
+AllowVolumeExpansion:  True
+Name:                  azurefile-premium
+Parameters:            skuName=Premium_LRS
+AllowVolumeExpansion:  True
+Name:                  default
+AllowVolumeExpansion:  True
+Name:                  managed
+AllowVolumeExpansion:  True
+Name:                  managed-csi
+AllowVolumeExpansion:  True
+Name:                  managed-csi-premium
+AllowVolumeExpansion:  True
+Name:                  managed-premium
+AllowVolumeExpansion:  True
+```
+
+- https://github.com/kubernetes-sigs/azuredisk-csi-driver/tree/master/deploy/example/resize: Azure Disk CSI Driver now supports resizing attached disk from v1.11. Pod restart on agent node is not necessary from v1.11. make sure allowVolumeExpansion: true is set in storage class.

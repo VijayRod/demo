@@ -250,6 +250,10 @@ kubectl get po -A -owide | grep azuredisk | grep 000000
 
 ## pv.volumeHandle.error.volumeOperationAlreadyExists
 
+```
+# The error "An operation with the given Volume ID already exists" indicates that a previous mount operation is stuck, and the CSI driver is currently preventing another mount of the same volume with a lock.
+```
+
 - https://github.com/kubernetes-sigs/azuredisk-csi-driver/blob/master/pkg/azuredisk/nodeserver.go: volumeOperationAlreadyExistsFmt = "An operation with the given Volume ID %s already exists"
 - https://github.com/kubernetes-sigs/azurefile-csi-driver/blob/master/pkg/azurefile/volume_lock.go: volumeOperationAlreadyExistsFmt = "An operation with the given Volume ID %s already exists"
 - https://github.com/kubernetes-csi/csi-driver-nfs/blob/master/pkg/nfs/utils.go: volumeOperationAlreadyExistsFmt = "An operation with the given Volume ID %s already exists"

@@ -85,3 +85,84 @@ AllowVolumeExpansion:  True
 ```
 
 - https://github.com/kubernetes-sigs/azuredisk-csi-driver/tree/master/deploy/example/resize: Azure Disk CSI Driver now supports resizing attached disk from v1.11. Pod restart on agent node is not necessary from v1.11. make sure allowVolumeExpansion: true is set in storage class.
+
+## k8s-pv-resize.scale
+
+```
+# deploy/azuredisk
+kubectl delete deploy nginx
+kubectl delete pvc pvc-azuredisk
+cat << EOF | kubectl create -f -
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: nginx
+  name: nginx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - image: nginx
+        name: nginx
+        volumeMounts:
+        - name: azure
+          mountPath: /mnt/azure
+      volumes:
+      - name: azure
+        persistentVolumeClaim:
+          claimName: pvc-azuredisk
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvc-azuredisk
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi
+  storageClassName: managed-csi
+EOF
+watch kubectl get deploy
+
+kubectl patch pvc pvc-azuredisk -p '{"spec":{"resources":{"requests":{"storage":"22Gi"}}}}' --type=merge
+watch kubectl get pvc,pv
+kubectl describe pvc
+```
+
+```
+# statefulset/azuredisk
+# https://github.com/kubernetes-sigs/azuredisk-csi-driver/tree/master/deploy/example/resize
+kubectl delete statefulset statefulset-azuredisk
+kubectl delete pvc -l app=nginx
+kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/azuredisk-csi-driver/master/deploy/example/statefulset.yaml
+watch kubectl get statefulset
+
+kubectl exec -it statefulset-azuredisk-0 -- df -h /mnt/azuredisk
+kubectl patch pvc persistent-storage-statefulset-azuredisk-0 --type merge --patch '{"spec": {"resources": {"requests": {"storage": "15Gi"}}}}'
+
+watch kubectl get pvc # 2m
+kubectl exec -it statefulset-azuredisk-0 -- df -h /mnt/azuredisk
+
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/sdc         15G  2.1M   15G   1% /mnt/azuredisk
+```
+
+```
+# pod/azurefile
+# https://github.com/kubernetes-sigs/azurefile-csi-driver/tree/master/deploy/example/resize
+```
+
+```
+# tbd/azureblob
+# https://github.com/kubernetes-sigs/blob-csi-driver/blob/master/test/e2e/testsuites/dynamically_provisioned_resize_volume_tester.go
+```

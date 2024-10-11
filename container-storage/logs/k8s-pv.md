@@ -258,6 +258,7 @@ kubectl get po -A -owide | grep azuredisk | grep 000000
 - https://github.com/kubernetes-sigs/azurefile-csi-driver/blob/master/pkg/azurefile/volume_lock.go: volumeOperationAlreadyExistsFmt = "An operation with the given Volume ID %s already exists"
 - https://github.com/kubernetes-csi/csi-driver-nfs/blob/master/pkg/nfs/utils.go: volumeOperationAlreadyExistsFmt = "An operation with the given Volume ID %s already exists"
 - https://github.com/kubernetes-csi/csi-driver-smb/issues/444: An operation with the given Volume ID test-csi-driver-smb already exists
+- https://github.com/rook/rook/issues/4896: ~ The mitigation is to restart the CSI driver pod
 
 ## pv.volumeHandle.volume_id
 

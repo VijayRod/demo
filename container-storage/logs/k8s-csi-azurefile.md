@@ -371,6 +371,7 @@ tbd custom azurefile storage class created with useDataPlaneAPI and standard sto
 tbd custom azurefile storage class created with useDataPlaneAPI and premium storage
 tbd ReadWriteOnce and Azure Disk CSI driver v2 (preview)
 tbd Azure NetApp Files
+tbd Azure Premium SSD v2, ultra disks, Azure Container Storage
 ```
 
 ```

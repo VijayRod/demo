@@ -1,7 +1,0 @@
-- https://azure.microsoft.com/en-us/blog/per-disk-metrics-managed-disks/
-- https://dba.stackexchange.com/questions/279640/azure-virtual-machine-local-temp-storage-d-drive-how-much-iops-it-can-han
-- https://github.com/Azure/AKS/issues/1373: AKS Latency and performance/availability issues due to IO saturation and throttling under load 
-- https://learn.microsoft.com/en-us/azure/aks/developer-best-practices-resource-management#define-pod-resource-requests-and-limits
-- https://learn.microsoft.com/en-us/azure/virtual-machines/disks-performance
-- https://learn.microsoft.com/en-us/azure/virtual-machines/sizes
-- https://learn.microsoft.com/en-us/troubleshoot/azure/virtual-machines/troubleshoot-performance-bottlenecks-linux#disk

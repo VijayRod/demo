@@ -54,3 +54,51 @@ Parameters:            skuname=Premium_LRS
 Name:                  managed-premium
 Parameters:            cachingmode=ReadOnly,kind=Managed,storageaccounttype=Premium_LRS
 ```
+
+## azuredisk-csi.provision.dynamic
+
+```
+kubectl delete deploy nginx
+kubectl delete pvc pvc-azuredisk
+cat << EOF | kubectl create -f -
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: nginx
+  name: nginx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - image: nginx
+        name: nginx
+        volumeMounts:
+        - name: azure
+          mountPath: /mnt/azure
+      volumes:
+      - name: azure
+        persistentVolumeClaim:
+          claimName: pvc-azuredisk
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvc-azuredisk
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi
+  storageClassName: managed-csi
+EOF
+watch kubectl get deploy
+```

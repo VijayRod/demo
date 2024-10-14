@@ -6,6 +6,30 @@ az group create -n $rg -l swedencentral
 az aks create -g $rg -n aks
 az aks get-credentials -g $rg -n aks --overwrite-existing
 
+kubectl describe csidrivers disk.csi.azure.com
+Name:         disk.csi.azure.com
+Namespace:
+Labels:       addonmanager.kubernetes.io/mode=Reconcile
+              kubernetes.io/cluster-service=true
+Annotations:  csiDriver: v1.29.9
+              snapshot: v6.3.3
+API Version:  storage.k8s.io/v1
+Kind:         CSIDriver
+Metadata:
+  Creation Timestamp:  2024-10-10T08:49:02Z
+  Resource Version:    458
+  UID:                 18feb06c-6b0b-4776-8b6d-7a43470db107
+Spec:
+  Attach Required:     true
+  Fs Group Policy:     File
+  Pod Info On Mount:   false
+  Requires Republish:  false
+  Se Linux Mount:      false
+  Storage Capacity:    false
+  Volume Lifecycle Modes:
+    Persistent
+Events:  <none>
+
 kubectl get sc
 NAME                     PROVISIONER          RECLAIMPOLICY   VOLUMEBINDINGMODE      ALLOWVOLUMEEXPANSION   AGE
 default (default)        disk.csi.azure.com   Delete          WaitForFirstConsumer   true                   9h

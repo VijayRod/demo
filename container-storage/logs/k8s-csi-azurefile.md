@@ -3,7 +3,7 @@
 ```
 rg=rg
 az group create -n $rg -l swedencentral
-az aks create -g $rg -n aks
+az aks create -g $rg -n aks -s $vmsize -c 1
 az aks get-credentials -g $rg -n aks --overwrite-existing
 
 kubectl describe csidrivers file.csi.azure.com
@@ -59,6 +59,32 @@ kubectl get ds -n kube-system
 NAME                         DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR   AGE
 csi-azurefile-node           1         1         1       1            1           <none>          9h
 csi-azurefile-node-win       0         0         0       0            0           <none>          9h
+
+kubectl get po -n kube-system -l app=csi-azurefile-node
+NAME                       READY   STATUS    RESTARTS   AGE
+csi-azurefile-node-l7dwx   3/3     Running   0          16m
+
+kubectl describe po -n kube-system -l app=csi-azurefile-node | grep Image:
+    Image:         mcr.microsoft.com/oss/kubernetes-csi/livenessprobe:v2.12.0
+    Image:         mcr.microsoft.com/oss/kubernetes-csi/csi-node-driver-registrar:v2.10.1
+    Image:         mcr.microsoft.com/oss/kubernetes-csi/azurefile-csi:v1.30.5
+
+# https://github.com/kubernetes-sigs/azurefile-csi-driver/blob/master/charts/latest/azurefile-csi-driver/values.yaml
+image:
+  baseRepo: mcr.microsoft.com
+  azurefile:
+    repository: /k8s/csi/azurefile-csi
+  csiProvisioner:
+    repository: /oss/kubernetes-csi/csi-provisioner
+  csiResizer:
+    repository: /oss/kubernetes-csi/csi-resizer
+  livenessProbe:
+    repository: /oss/kubernetes-csi/livenessprobe
+  nodeDriverRegistrar:
+    repository: /oss/kubernetes-csi/csi-node-driver-registrarimage
+# tbd Note: This is part of the azurefile image.
+controller:
+  name: csi-azurefile-controller
 ```
 
 ```
@@ -119,6 +145,8 @@ kubectl get po -w
 - https://learn.microsoft.com/en-us/azure/aks/azure-files-csi
 - https://learn.microsoft.com/en-us/azure/aks/azure-csi-files-storage-provision
 - https://github.com/kubernetes-sigs/azurefile-csi-driver/tree/master/deploy/example
+- https://github.com/kubernetes-sigs/azurefile-csi-driver/blob/master/charts/latest/azurefile-csi-driver/values.yaml
+- https://github.com/kubernetes-sigs/azurefile-csi-driver/blob/master/deploy/csi-azurefile-controller.yaml
 
 ## azurefile-csi.driver.parameter
 
@@ -339,7 +367,16 @@ done
 done
 # cat /tmp/pods.yaml
 
-# When deploying 10 pods each with 10 azurefile-csi PVCs: Most pods are up and running in about 20 seconds. However, it consistently takes over 3 minutes for the last few pods to reach a Running state. During this delay, 'kubectl get events' shows ExternalProvisioning events indicating "Waiting for a volume to be created either by the external provisioner 'file.csi.azure.com'". The storage account activity log has TooManyRequests errors for "Put File Share" operations, specifically mentioning a Write_ObservationWindow_00:00:01.
+# When deploying 10 pods each with 10 azurefile-csi PVCs: Most pods are up and running in about 20 seconds. However, it consistently takes over 3 minutes for the last few pods to reach a Running state. During this delay, 'kubectl get events' shows ExternalProvisioning events indicating "Waiting for a volume to be created either by the external provisioner 'file.csi.azure.com'". The storage account activity log has TooManyRequests errors for "Put File Share" operations, specifically mentioning a Write_ObservationWindow_00:00:01
+e.g.
+    "operationName": {
+        "value": "Microsoft.Storage/storageAccounts/fileServices/shares/write",
+        "localizedValue": "Put File Share"
+    },
+        "statusCode": "429",
+        "serviceRequestId": null,
+        "statusMessage": "{\"error\":{\"code\":\"TooManyRequests\",\"message\":\"The request is being throttled as the limit has been reached for operation type - Write_ObservationWindow_00:00:01. For more information, see - https://aka.ms/srpthrottlinglimits\"}}",
+## https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/request-limits-and-throttling#storage-throttling: The limits apply per region of the resource in the request.
 # When deploying 10 pods each with 10 azurefile-csi-premium PVCs: Pods already running within a minute.
 # When deploying 10 pods each with 200 azurefile-csi-premium PVCs: This significantly increases creation time of all pods to over 35 minutes, accompanied by ExternalProvisioning and TooManyRequests errors for "Put File Share", also with a Write_ObservationWindow_00:00:01.
 tbd CSI driver creating multiple storage accounts

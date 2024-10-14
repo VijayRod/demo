@@ -476,12 +476,6 @@ az storage account list -g MC_rgcni_akseadsv5_swedencentral | grep -E 'id|"name"
       "name": "Premium_LRS",
 ```
 
-## azureblob-fuse.driver.parameter.useDataPlaneAPI aka storage account firewall: 
-
-- https://github.com/kubernetes-sigs/blob-csi-driver/blob/master/docs/driver-parameters.md: specify whether use data plane API for blob container create/delete, this could solve the SRP API throttling issue since data plane API has almost no limit, while it would fail when there is firewall or vnet setting on storage account i.e. make sure the storage account is not set to "Check Allow Access From (All Networks / Selected Networks)" "Selected Networks" i.e. set "Enabled from all networks" in the specified storage account
-- https://learn.microsoft.com/en-us/answers/questions/1166011/getting-a-403-error-when-connecting-to-a-blob-cont: "Selected Networks" - It means the storage account is firewall enabled.
-- https://github.com/kubernetes-sigs/blob-csi-driver/blob/master/pkg/blob/controllerserver.go: if len(secrets) == 0 && useDataPlaneAPI {... "failed to GetStorageAccesskey on account
-
 ## azureblob-fuse.error
 
 ### azureblob-fuse.error parsing volumeID(pv-blobmodels) return with error: error parsing volume id: "pv-blobmodels", should at least contain two #

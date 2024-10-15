@@ -1,2 +1,0 @@
-- https://learn.microsoft.com/en-us/azure/aks/azure-disk-csi: In-tree drivers attach or detach disks in serial, while CSI drivers attach or detach disks in batch. There's significant improvement when there are multiple disks attaching to one node.
-- https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/slow-attach-detach-operations-azure-disk: The operations are done sequentially. This limitation is a known issue with the in-tree Azure disk driver

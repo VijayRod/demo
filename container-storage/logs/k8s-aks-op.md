@@ -40,3 +40,33 @@ az aks update -g $rg -n aks
 az aks nodepool update -g $noderg --cluster-name aks -n nodepool1
 az resource update --id /subscriptions/redacts-1111-1111-1111-111111111111/resourceGroups/$rg/providers/Microsoft.ContainerService/managedClusters/aks
 ```
+
+## k8s-aks-op.upgrade
+
+```
+az aks show -g $rg -n aks --query agentPoolProfiles[0].upgradeSettings
+  "drainTimeoutInMinutes": null,
+  "maxSurge": "10%",
+  "nodeSoakDurationInMinutes": null,
+  "undrainableNodeBehavior": null
+```
+
+- https://learn.microsoft.com/en-us/azure/aks/upgrade
+- https://learn.microsoft.com/en-us/azure/aks/upgrade-aks-cluster?tabs=azure-cli
+- https://learn.microsoft.com/en-us/azure/aks/upgrade-cluster
+- tbd https://www.pjlewis.com/posts/best-practices-for-upgrading-updating-your-aks-clusters/
+
+### k8s-aks-op.upgrade.events
+
+- https://azure.microsoft.com/en-us/updates/generally-available-azure-kubernetes-support-for-upgrade-events/
+
+### k8s-aks-op.upgrade.auto
+
+```
+az aks show -g $rg -n aks --query autoUpgradeProfile
+  "nodeOsUpgradeChannel": "NodeImage",
+  "upgradeChannel": null
+```
+
+- https://learn.microsoft.com/en-us/azure/aks/upgrade#automatic-upgrades
+- https://learn.microsoft.com/en-us/azure/aks/upgrade-cluster#configure-automatic-upgrades

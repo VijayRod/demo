@@ -115,6 +115,7 @@ storagepools                        sp                  containerstorage.azure.c
 
 ## k8s-csi-acstor.misc.pods
 
+```
 k get po -A
 NAMESPACE                       NAME                                                            READY   STATUS    RESTARTS       AGE
 acstor                          azurecontainerstorage-agent-core-65578c78c8-8vj2r               3/3     Running   1 (134m ago)   136m

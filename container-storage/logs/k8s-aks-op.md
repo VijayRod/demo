@@ -21,6 +21,18 @@ az aks nodepool operation-abort -g $rg --cluster-name aks --nodepool-name nodepo
 - https://learn.microsoft.com/en-us/cli/azure/aks?view=azure-cli-latest#az-aks-operation-abort
 - https://learn.microsoft.com/en-us/cli/azure/aks/nodepool?view=azure-cli-latest#az-aks-nodepool-operation-abort
 
+## k8s-aks-op.delete.cluster
+
+```
+# The node resource group was removed before the cluster deletion was fully completed
+noderg=$(az aks show -g $rg -n aks --query nodeResourceGroup -o tsv)   
+az group delete -n $noderg -y -f # --no-wait
+az aks delete -g $rg -n aks -y # --no-wait # success
+
+# Removed the cluster resource group
+az group delete -n $rg -y -f # --no-wait # success
+```
+
 ## k8s-aks-op.reconcile
 
 ```

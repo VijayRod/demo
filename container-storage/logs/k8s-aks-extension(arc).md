@@ -86,7 +86,7 @@ az k8s-extension show -t managedClusters -g $rg -c aksdapr -n dapr
 - https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/extensions/troubleshoot-dapr-extension-installation-errors
 - https://docs.dapr.io/operations/troubleshooting/common_issues/
 
-## k8s-aks-extension.app.dapr.OSS
+### k8s-aks-extension.app.dapr.OSS
 
 - https://docs.dapr.io/operations/hosting/kubernetes/kubernetes-deploy/#install-dapr-from-an-official-dapr-helm-chart
 

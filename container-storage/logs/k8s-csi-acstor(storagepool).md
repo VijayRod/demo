@@ -172,7 +172,8 @@ kube-system                     extension-operator-f5bdcf9d7-cnpbs              
 ## k8s-csi-acstor.misc.pods.extension
 
 ```
-# Refer k8s-aks-extension(arc)
+# Refer to k8s-aks-extension(arc)
+# These pods are also created when you use the command az aks create --enable-azure-container-storage
 
 k get po -n kube-system --show-labels | grep ext
 extension-agent-7bc85fbfc5-lmxvs      2/2     Running   0          135m   app.kubernetes.io/component=extension-agent,app.kubernetes.io/name=extension-manager,control-plane=extension-agent,kubernetes.azure.com/managedby=aks,pod-template-hash=7bc85fbfc5

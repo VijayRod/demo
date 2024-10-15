@@ -34,7 +34,9 @@ k describe po -n kube-system -l app.kubernetes.io/component=extension-operator
 # creating
 az k8s-extension show -t managedClusters -g $rg -c aksdapr -n dapr
   "provisioningState": "Creating",
+```
 
+```
 # failed
 az k8s-extension show -t managedClusters -g $rg -c aksdapr -n dapr
   "provisioningState": "Failed",

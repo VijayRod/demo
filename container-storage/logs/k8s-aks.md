@@ -36,9 +36,10 @@ for i in {2..100}; do az aks nodepool delete -g $rg --cluster-name aks -n nodepo
 - https://github.com/andyzhangx/demo/blob/master/debug/README.md
 - https://github.com/feiskyer/kubernetes-handbook/blob/master/README.md
 - https://learn.microsoft.com/en-us/azure/aks/
-- https://learn.microsoft.com/en-us/azure/architecture/guide/multitenant/service/aks
 - https://learn.microsoft.com/en-us/rest/api/aks/managed-clusters/create-or-update?tabs=HTTP#examples
 - https://learn.microsoft.com/en-us/training/paths/aks-cluster-architecture/
 - https://cloudacademy.com/course/introduction-to-aks-954/course-introduction/
+- https://learn.microsoft.com/en-us/azure/architecture/guide/multitenant/service/aks
+- https://learn.microsoft.com/en-us/azure/aks/best-practices-app-cluster-reliability
 - https://github.com/Azure/AKS/
 - https://issuetracker.google.com/savedsearches/559746: Open Kubernetes Engine Issues

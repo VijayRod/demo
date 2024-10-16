@@ -27,6 +27,8 @@ k describe po -n kube-system -l app.kubernetes.io/component=extension-operator
 
 - https://learn.microsoft.com/en-us/azure/architecture/hybrid/arc-hybrid-kubernetes#topology-network-and-routing: dp.kubernetesconfiguration.azure.com
 - https://learn.microsoft.com/en-us/azure/aks/outbound-rules-control-egress#cluster-extensions: dp.kubernetesconfiguration.azure.com...
+- https://aka.ms/k8s-extensions-TSG
+- https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/extensions/cluster-extension-deployment-errors
 
 ### k8s-aks-extension.debug.provisioningState
 

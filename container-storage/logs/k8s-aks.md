@@ -1,3 +1,4 @@
+## aks
 ```
 rg=rg
 az group create -n $rg -l $loc
@@ -43,3 +44,6 @@ for i in {2..100}; do az aks nodepool delete -g $rg --cluster-name aks -n nodepo
 - https://learn.microsoft.com/en-us/azure/aks/best-practices-app-cluster-reliability
 - https://github.com/Azure/AKS/
 - https://issuetracker.google.com/savedsearches/559746: Open Kubernetes Engine Issues
+
+## aks.scale
+- https://learn.microsoft.com/en-us/azure/aks/best-practices-performance-scale-large

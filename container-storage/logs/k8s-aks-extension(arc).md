@@ -61,6 +61,11 @@ k logs -n kube-system extension-operator-f5bdcf9d7-kddgc
 {"Message":"StatefulSet is not ready: dapr-system/dapr-scheduler-server. 0 out of 3 expected pods are ready","LogType":"ConfigAgentTrace","LogLevel":"Information","Environment":"prod","Role":"ClusterConfigAgent","Location":"swedencentral","ArmId":"/subscriptions/redacts-1111-1111-1111-111111111111/resourceGroups/rg/providers/Microsoft.ContainerService/managedclusters/aksdapr/providers/Microsoft.KubernetesConfiguration/extensions/dapr","CorrelationId":"b4fd574e-f47f-48d6-8706-de2b367a75f3","AgentName":"ExtensionController microsoft.dapr:1.14.4-msft.5","AgentVersion":"1.20.1","AgentTimestamp":"2024/10/15 22:11:33.848"}
 ```
 
+## k8s-aks-extension.app.backup
+
+- https://learn.microsoft.com/en-us/azure/aks/cluster-extensions#currently-available-extensions: Azure Backup for AKS
+- https://learn.microsoft.com/en-us/azure/backup/azure-kubernetes-service-cluster-manage-backups#install-backup-extension
+
 ## k8s-aks-extension.app.dapr
 
 ```

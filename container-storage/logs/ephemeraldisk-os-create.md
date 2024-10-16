@@ -1,15 +1,27 @@
 Here are the commands to create a cluster with an ephemeral OS disk.
 
 ```
+# aks
 rg=rg
 az group create -n $rg -l $loc
 az aks create -g $rg -n aks --node-osdisk-type Ephemeral -s $vmsize -c 2
 az aks get-credentials -g $rg -n $aks --overwrite-existing
 
 az aks nodepool add -g $rg --cluster-name aks -n np2 --node-osdisk-type Ephemeral # --node-osdisk-size 128
+
+kubectl describe no
+Capacity:
+  ephemeral-storage:  129886128Ki
+Allocatable:
+  ephemeral-storage:  119703055367
+Allocated resources:
+  Resource           Requests     Limits
+  --------           --------     ------
+  ephemeral-storage  0 (0%)       0 (0%)
 ```
 
 ```
+# vm
 az vm create -g $rg -n vm --image Ubuntu2204 --ephemeral-os-disk # --admin-username azureuser --public-ip-sku Standard --ephemeral-placement CacheDisk or ResourceDisk
 
 TBD (No ephemeral property in the below)

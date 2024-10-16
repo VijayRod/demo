@@ -21,6 +21,14 @@ csinodes                                                storage.k8s.io/v1       
 csistoragecapacities                                    storage.k8s.io/v1                      true         CSIStorageCapacity
 storageclasses                      sc                  storage.k8s.io/v1                      false        StorageClass
 volumeattachments                                       storage.k8s.io/v1                      false        VolumeAttachment
+
+k describe no
+Name:               aks-nodepool1-19171753-vmss000000
+Roles:              <none>
+Labels:             agentpool=nodepool1
+                    storageprofile=managed
+                    storagetier=Premium_LRS
+                    topology.disk.csi.azure.com/zone=
 ```
 
 - [kubernetes.io/blog/2019/01/15/container-storage-interface-ga/](https://kubernetes.io/blog/2019/01/15/container-storage-interface-ga/)

@@ -49,6 +49,8 @@ az aks show -g $rg -n aks --query agentPoolProfiles[0].upgradeSettings
   "maxSurge": "10%",
   "nodeSoakDurationInMinutes": null,
   "undrainableNodeBehavior": null
+
+# More details in pdb
 ```
 
 - https://learn.microsoft.com/en-us/azure/aks/upgrade

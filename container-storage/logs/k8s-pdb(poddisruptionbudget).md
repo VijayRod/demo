@@ -1,0 +1,1 @@
+- https://learn.microsoft.com/en-us/azure/aks/best-practices-app-cluster-reliability#pod-disruption-budgets-pdbs

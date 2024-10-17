@@ -26,6 +26,7 @@ aks-node-validating-webhook   1          2d13h
 
 - https://discuss.elastic.co/t/can-i-disable-the-webhook/226113: the easiest way to disable the webhook is to remove its configuration from Kubernetes: kubectl delete validatingwebhookconfiguration. If you want to re-enable it later, just reapply ECK yaml manifests.
 - https://www.elastic.co/guide/en/cloud-on-k8s/1.2/k8s-disable-webhook.html: kubectl delete validatingwebhookconfigurations
+- https://kyverno.io/docs/troubleshooting/#api-server-is-blocked: Delete the Kyverno validating and mutating webhook configurations
 
 ## webhook.multiple
 

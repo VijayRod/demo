@@ -23,7 +23,7 @@ az keyvault security-domain download --hsm-name $keyvaultName --sd-wrapping-keys
 - https://learn.microsoft.com/en-us/azure/key-vault/managed-hsm/quick-create-cli
 - https://learn.microsoft.com/en-us/azure/key-vault/managed-hsm/overview
 
-## az-keyvault.hsm.key
+### az-keyvault.hsm.key
 
 ```
 # https://learn.microsoft.com/en-us/azure/key-vault/managed-hsm/built-in-roles#built-in-roles: Managed HSM Administrator. Not permitted to perform any key management operations.
@@ -40,7 +40,7 @@ az keyvault key list --hsm-name $keyvaultName
 
 https://learn.microsoft.com/en-us/azure/key-vault/managed-hsm/key-management
 
-## az-keyvault.hsm.role
+### az-keyvault.hsm.role
 
 ```
 az keyvault role assignment list --hsm-name $keyvaultName -o
@@ -51,3 +51,8 @@ az keyvault role assignment create --hsm-name $keyvaultName --role "Managed HSM 
 
 - https://learn.microsoft.com/en-us/azure/key-vault/managed-hsm/role-management
 - https://learn.microsoft.com/en-us/azure/key-vault/managed-hsm/built-in-roles#built-in-roles: Managed HSM Administrator. Not permitted to perform any key management operations.
+
+# az-keyvault.hsm.example.aks
+
+```
+```

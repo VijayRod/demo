@@ -29,6 +29,7 @@ tbd az policy assignment create -n "TEST-AKS_AzurePolicyAddOn_DINE" --policy "a8
 ```
 - https://jloudon.com/cloud/Azure-Spring-Clean-DINE-to-Automate-your-Monitoring-Governance-with-Azure-Monitor-Metric-Alerts/
 - https://github.com/Azure/azure-policy/blob/master/built-in-policies/policyDefinitions
+- https://learn.microsoft.com/en-us/azure/governance/policy/concepts/effect-deploy-if-not-exists
 
 ## az-policy.example.aks
 

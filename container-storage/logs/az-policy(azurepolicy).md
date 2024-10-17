@@ -1,9 +1,31 @@
+## az-policy.builtin
+
+```
+# https://github.com/Azure/azure-policy/blob/master/built-in-policies/policyDefinitions/Kubernetes/AKS_CSI.json
+  "id": "/providers/Microsoft.Authorization/policyDefinitions/c5110b6e-5272-4989-9935-59ad06fdf341",
+  "name": "c5110b6e-5272-4989-9935-59ad06fdf341"
+
+az policy assignment list -otable | grep c5110b6e # No rows
+az policy assignment create -n TEST-AKS_CSI --policy c5110b6e-5272-4989-9935-59ad06fdf341 # -p /tmp/param-values.json
+az policy assignment list -otable | grep c5110b6e # success
+
+                                                         Default            TEST-AKS_CSI
+               /providers/Microsoft.Authorization/policyDefinitions/c5110b6e-5272-4989-9935-59ad06fdf341
+                                   /subscriptions/redacts-1111-1111-1111-111111111111
+                                   
+# az policy assignment delete -n TEST-AKS_CSI
+```
+
+- https://learn.microsoft.com/en-us/azure/governance/policy/concepts/effect-deploy-if-not-exists
+
 ## az-azurepolicy.builtin.DINE (DeployIfNotExists)
 
 ```
 # DeployIfNotExists (DINE) policies
 # Look for DINE files here: https://github.com/Azure/azure-policy/blob/master/built-in-policies/policyDefinitions
 # e.g. https://github.com/Azure/azure-policy/blob/master/built-in-policies/policyDefinitions/Kubernetes/AKS_AzurePolicyAddOn_DINE.json
+
+tbd az policy assignment create -n "TEST-AKS_AzurePolicyAddOn_DINE" --policy "a8eff44f-8c92-45c3-a3fb-9880802d67a7" # -p /tmp/param-values.json # ResourceIdentityRequired. Policy assignments must include a 'managed identity' when assigning 'DeployIfNotExists' policy definitions or policy definitions that contain a deployment in the effect details
 ```
 - https://jloudon.com/cloud/Azure-Spring-Clean-DINE-to-Automate-your-Monitoring-Governance-with-Azure-Monitor-Metric-Alerts/
 - https://github.com/Azure/azure-policy/blob/master/built-in-policies/policyDefinitions

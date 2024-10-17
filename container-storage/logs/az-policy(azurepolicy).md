@@ -72,7 +72,7 @@ az policy assignment list -otable | grep TEST
 
 rg=rg
 az group create -n $rg -l $loc
-az aks create -g $rg -n akspolicy -s $vmsize -c 1
+az aks create -g $rg -n akspolicy -s $vmsize -c 1 # RequestDisallowedByPolicy
 
 (RequestDisallowedByPolicy) Resource 'akspolicy' was disallowed by policy. Policy identifiers: '[{"policyAssignment":{"name":"TEST-DenyAKSWithoutPolicyAddon","id":"/subscriptions/redacts-1111-1111-1111-111111111111/providers/Microsoft.Authorization/policyAssignments/TEST-DenyAKSWithoutPolicyAddon"},"policyDefinition":{"name":"TEST-DenyAKSWithoutPolicyAddon","id":"/subscriptions/redacts-1111-1111-1111-111111111111/providers/Microsoft.Authorization/policyDefinitions/TEST-DenyAKSWithoutPolicyAddon"}}]'.
 Code: RequestDisallowedByPolicy

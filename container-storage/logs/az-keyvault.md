@@ -5,7 +5,7 @@
 
 # provision
 oid=$(az ad signed-in-user show --query id -o tsv)
-hsm=mhsm$RANDOM; keyvaultName=$hsm
+keyvaultName=mhsm$RANDOM
 az keyvault create -g $rg --hsm-name $keyvaultName --administrators $oid --retention-days 7
 keyVaultId=$(az keyvault show --hsm-name $keyvaultName --query "[id]" -o tsv) 
 echo $keyVaultId # /subscriptions/redacts-1111-1111-1111-111111111111/resourceGroups/rg/providers/Microsoft.KeyVault/managedHSMs/mhsm23736

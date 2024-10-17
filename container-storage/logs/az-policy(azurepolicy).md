@@ -18,7 +18,7 @@ az policy assignment list -otable | grep c5110b6e # success
 
 - https://learn.microsoft.com/en-us/azure/governance/policy/concepts/effect-deploy-if-not-exists
 
-## az-azurepolicy.builtin.DINE (DeployIfNotExists)
+## az-policy.builtin.DINE (DeployIfNotExists)
 
 ```
 # DeployIfNotExists (DINE) policies

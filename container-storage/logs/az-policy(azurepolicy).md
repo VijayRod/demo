@@ -31,6 +31,9 @@ az policy assignment create -n TEST-AKS_AzurePolicyAddOn_DINE --policy a8eff44f-
 - https://jloudon.com/cloud/Azure-Spring-Clean-DINE-to-Automate-your-Monitoring-Governance-with-Azure-Monitor-Metric-Alerts/
 - https://github.com/Azure/azure-policy/blob/master/built-in-policies/policyDefinitions
 - https://learn.microsoft.com/en-us/azure/governance/policy/concepts/effect-deploy-if-not-exists: Search for filenames that contain the word DINE
+- https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/ready/enterprise-scale/dine-guidance#why-use-dine-and-modify-policies
+- https://techcommunity.microsoft.com/t5/azure-governance-and-management/azure-policy-introduces-user-assigned-msi-support-faster-dine/ba-p/2661073: DeployIfNotExist Latency Time
+- https://www.azurecitadel.com/policy/basics/dine/
 
 ### az-policy.builtin.DINE.aks
 

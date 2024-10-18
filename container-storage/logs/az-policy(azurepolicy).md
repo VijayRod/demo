@@ -16,7 +16,7 @@ az policy assignment list -otable | grep c5110b6e # success
 # az policy assignment delete -n TEST-AKS_CSI
 ```
 
-- https://learn.microsoft.com/en-us/azure/governance/policy/concepts/effect-deploy-if-not-exists
+- https://github.com/Azure/azure-policy/tree/master/built-in-policies/policyDefinitions
 
 ## az-policy.builtin.DINE (DeployIfNotExists)
 
@@ -30,7 +30,7 @@ az policy assignment create -n TEST-AKS_AzurePolicyAddOn_DINE --policy a8eff44f-
 ```
 - https://jloudon.com/cloud/Azure-Spring-Clean-DINE-to-Automate-your-Monitoring-Governance-with-Azure-Monitor-Metric-Alerts/
 - https://github.com/Azure/azure-policy/blob/master/built-in-policies/policyDefinitions
-- https://learn.microsoft.com/en-us/azure/governance/policy/concepts/effect-deploy-if-not-exists
+- https://learn.microsoft.com/en-us/azure/governance/policy/concepts/effect-deploy-if-not-exists: Search for filenames that contain the word DINE
 
 ### az-policy.builtin.DINE.aks
 

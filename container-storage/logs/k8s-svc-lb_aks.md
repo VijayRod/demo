@@ -385,3 +385,36 @@ kubectl exec -it nginx2 -- curl ifconfig.me # 74.241.163.46 (Shows the same IP)
 ```
 
 - https://learn.microsoft.com/en-us/azure/load-balancer/outbound-rules#scale
+
+## k8s-svc-lb.aks.outbound.port
+
+```
+az aks create
+    --load-balancer-managed-outbound-ip-count                     : Load balancer managed outbound IP count.
+        Desired number of managed outbound IPs for load balancer outbound connection. Valid for Standard SKU load balancer cluster only.
+    --load-balancer-outbound-ports                                : Load balancer outbound allocated ports.
+        Desired static number of outbound ports per VM in the load balancer backend pool. By default, set to 0 which uses the default allocation based on the number of VMs. Please specify a value in the range of [0, 64000] that is a multiple of 8.
+
+# https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/create-upgrade-delete/error-code-invalidloadbalancerprofileallocatedoutboundports: 64,000 ports per IP / <outbound ports per node> * <number of outbound IPs> = <maximum number of nodes in the cluster>. each worker node is allocated 1,024 ports (by default). consider node surges that happen during cluster upgrades and other operations
+# i.e. (64,000 ports per IP / <outbound ports per node>) * <number of outbound IPs> = <maximum number of nodes in the cluster>
+# For example, if we have a cluster of 100 nodes and each worker node has the default 1024 ports, we'll need 2 outbound IPs because the calculation is 100 * (1024/64000) which equals 1.6, rounding up to 2.
+```        
+        
+- https://aka.ms/aks/slb-port
+- https://learn.microsoft.com/en-us/azure/aks/load-balancer-standard#configure-outbound-ports-and-idle-timeout
+- https://learn.microsoft.com/en-us/azure/aks/load-balancer-standard#scale-the-number-of-managed-outbound-public-ips
+
+## k8s-svc-lb.aks.outbound.port.error.InvalidLoadBalancerProfileAllocatedOutboundPorts
+
+```
+rg=rg
+az group create -n $rg -l $loc
+az aks create -g $rg -n akslb --load-balancer-managed-outbound-ip-count 1 --load-balancer-outbound-ports 50000 -s $vmsize -c 2 # InvalidLoadBalancerProfileAllocatedOutboundPorts # (64000/50000)*1 = 1.n = max 1 node
+
+(InvalidLoadBalancerProfileAllocatedOutboundPorts) Load balancer profile allocated ports 50000 is not in an allowable range given the number of nodes and IPs provisioned. Total node count 3 requires 150000 ports but only 64000 ports are available given 1 outbound public IPs. Refer to https://aka.ms/aks/slb-ports for more details.
+Code: InvalidLoadBalancerProfileAllocatedOutboundPorts
+Message: Load balancer profile allocated ports 50000 is not in an allowable range given the number of nodes and IPs provisioned. Total node count 3 requires 150000 ports but only 64000 ports are available given 1 outbound public IPs. Refer to https://aka.ms/aks/slb-ports for more details.
+Target: networkProfile.loadBalancerProfile.allocatedOutboundPorts
+```
+
+- https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/create-upgrade-delete/error-code-invalidloadbalancerprofileallocatedoutboundports

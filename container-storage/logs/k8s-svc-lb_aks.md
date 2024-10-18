@@ -1,3 +1,8 @@
+## k8s-svc-lb.aks
+
+- https://cloud-provider-azure.sigs.k8s.io/topics/loadbalancer/
+- https://learn.microsoft.com/en-us/azure/aks/load-balancer-standard
+
 ```
 az aks show -g $rg -n aks --query networkProfile.loadBalancerProfile
 

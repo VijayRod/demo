@@ -407,9 +407,10 @@ az aks create
 ## k8s-svc-lb.aks.outbound.port.error.InvalidLoadBalancerProfileAllocatedOutboundPorts
 
 ```
+# (64000 ports per IP / 50000 outbound ports configured) * 1 outbound IP configured = 1.n = max of 1 node
 rg=rg
 az group create -n $rg -l $loc
-az aks create -g $rg -n akslb --load-balancer-managed-outbound-ip-count 1 --load-balancer-outbound-ports 50000 -s $vmsize -c 2 # InvalidLoadBalancerProfileAllocatedOutboundPorts # (64000/50000)*1 = 1.n = max 1 node
+az aks create -g $rg -n akslb --load-balancer-managed-outbound-ip-count 1 --load-balancer-outbound-ports 50000 -s $vmsize -c 2 # InvalidLoadBalancerProfileAllocatedOutboundPorts
 
 (InvalidLoadBalancerProfileAllocatedOutboundPorts) Load balancer profile allocated ports 50000 is not in an allowable range given the number of nodes and IPs provisioned. Total node count 3 requires 150000 ports but only 64000 ports are available given 1 outbound public IPs. Refer to https://aka.ms/aks/slb-ports for more details.
 Code: InvalidLoadBalancerProfileAllocatedOutboundPorts

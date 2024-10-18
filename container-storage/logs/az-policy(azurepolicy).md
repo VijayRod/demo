@@ -44,7 +44,7 @@ az policy assignment list -otable | grep AKS_AzurePolicyAddOn_DINE
 
 - https://github.com/Azure/azure-policy/blob/master/built-in-policies/policyDefinitions/Kubernetes/AKS_AzurePolicyAddOn_DINE.json
 
-## az-policy.example.aks
+## az-policy.custom.example.aks
 
 ```
 cat <<EOF > /tmp/params.json

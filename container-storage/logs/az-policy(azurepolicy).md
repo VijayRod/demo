@@ -25,11 +25,24 @@ az policy assignment list -otable | grep c5110b6e # success
 # Look for DINE files here: https://github.com/Azure/azure-policy/blob/master/built-in-policies/policyDefinitions
 # e.g. https://github.com/Azure/azure-policy/blob/master/built-in-policies/policyDefinitions/Kubernetes/AKS_AzurePolicyAddOn_DINE.json
 
-tbd az policy assignment create -n TEST-AKS_AzurePolicyAddOn_DINE --policy a8eff44f-8c92-45c3-a3fb-9880802d67a7 # -p /tmp/param-values.json # ResourceIdentityRequired. Policy assignments must include a 'managed identity' when assigning 'DeployIfNotExists' policy definitions or policy definitions that contain a deployment in the effect details
+# az policy assignment create -n TEST-AKS_AzurePolicyAddOn_DINE --policy a8eff44f-8c92-45c3-a3fb-9880802d67a7 # -p /tmp/param-values.json # ResourceIdentityRequired. Policy assignments must include a 'managed identity' when assigning 'DeployIfNotExists' policy definitions or policy definitions that contain a deployment in the effect details
+az policy assignment create -n TEST-AKS_AzurePolicyAddOn_DINE --policy a8eff44f-8c92-45c3-a3fb-9880802d67a7 --mi-system-assigned -l swedencentral
 ```
 - https://jloudon.com/cloud/Azure-Spring-Clean-DINE-to-Automate-your-Monitoring-Governance-with-Azure-Monitor-Metric-Alerts/
 - https://github.com/Azure/azure-policy/blob/master/built-in-policies/policyDefinitions
 - https://learn.microsoft.com/en-us/azure/governance/policy/concepts/effect-deploy-if-not-exists
+
+### az-policy.builtin.DINE.aks
+
+```
+az policy assignment create -n TEST-AKS_AzurePolicyAddOn_DINE --policy a8eff44f-8c92-45c3-a3fb-9880802d67a7 --mi-system-assigned -l swedencentral
+az policy assignment list -otable | grep AKS_AzurePolicyAddOn_DINE
+
+                                                         Default            TEST-AKS_AzurePolicyAddOn_DINE
+               /providers/Microsoft.Authorization/policyDefinitions/a8eff44f-8c92-45c3-a3fb-9880802d67a7     /subscriptions/redacts-1111-1111-1111-111111111111  swedencentral
+```
+
+- https://github.com/Azure/azure-policy/blob/master/built-in-policies/policyDefinitions/Kubernetes/AKS_AzurePolicyAddOn_DINE.json
 
 ## az-policy.example.aks
 

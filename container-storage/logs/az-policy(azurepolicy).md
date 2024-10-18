@@ -150,3 +150,10 @@ Info: {
     "policyExemptionIds": []
 }
 ```
+
+## az-policy.scan
+
+```
+az policy state trigger-scan # Trigger a policy compliance evaluation at the current subscription scope
+az policy state trigger-scan -g $rg --no-wait
+```

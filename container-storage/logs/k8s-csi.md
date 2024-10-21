@@ -254,6 +254,8 @@ mount -t cifs
 ## k8s-csi.csi-provisioner
 
 ```
+# PVC binding delays - If the Persistent Volume (PV) and Persistent Volume Claim (PVC) are slow to bind, taking more than a minute for example, it's likely related to the external-provisioner. Both the kube-controller-manager and external-provisioner are upstream components. Reducing the number of PVCs you currently have might help speed things up. If that doesn't work, consider submitting a request at https://github.com/kubernetes/kubernetes/issues.
+
 https://github.com/kubernetes-sigs/azurefile-csi-driver/blob/master/charts/latest/azurefile-csi-driver/values.yaml
 image:
   baseRepo: mcr.microsoft.com

@@ -22,6 +22,7 @@ sys     0m0.010s
 
 curl -kvv https://google.com
 curl https://$fqdn -k --trace-time --trace /tmp/curl.log # cat /tmp/curl.log
+url="https://google.com"; curl -Ss -m 10 -I $url >/dev/null 2>&1
 ```
 
 ```

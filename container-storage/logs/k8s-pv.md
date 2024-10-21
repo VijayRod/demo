@@ -248,18 +248,10 @@ pv-azuredisk4   22Gi       RWO            Retain           Bound         default
 kubectl get po -A -owide | grep azuredisk | grep 000000
 ```
 
-## pv.volumeHandle.error.volumeOperationAlreadyExists
+## pv.volumeHandle.error.volumeOperationAlreadyExists.azstorage
 
-```
-# The error "An operation with the given Volume ID already exists" indicates that a previous mount operation is stuck, and the CSI driver is currently preventing another mount of the same volume with a lock.
-```
-
-- https://github.com/kubernetes-sigs/azuredisk-csi-driver/blob/master/pkg/azuredisk/nodeserver.go: volumeOperationAlreadyExistsFmt = "An operation with the given Volume ID %s already exists"
-- https://github.com/kubernetes-sigs/azurefile-csi-driver/blob/master/pkg/azurefile/volume_lock.go: volumeOperationAlreadyExistsFmt = "An operation with the given Volume ID %s already exists"
-- https://github.com/kubernetes-csi/csi-driver-nfs/blob/master/pkg/nfs/utils.go: volumeOperationAlreadyExistsFmt = "An operation with the given Volume ID %s already exists"
-- https://github.com/kubernetes-csi/csi-driver-smb/issues/444: An operation with the given Volume ID test-csi-driver-smb already exists
-- https://github.com/rook/rook/issues/4896: ~ The mitigation is to restart the CSI driver pod
-
+- https://github.com/Azure/azure-storage-fuse/blob/main/TSG.md#common-mount-problems: 3. failed to mount : failed to authenticate credentials for azstorage...
+  
 ## pv.volumeHandle.volume_id
 
 ```
@@ -278,6 +270,18 @@ I0914 10:36:55.796684       1 utils.go:78] GRPC request: {"publish_context":{"LU
 
 - https://kubernetes.io/docs/concepts/storage/volumes/: volumeHandle: A string value that uniquely identifies the volume. This value must correspond to the value returned in the volume.id field of the CreateVolumeResponse by the CSI driver. The value is passed as volume_id on all calls to the CSI volume driver
 
-## pv.volumeHandle.error.volumeOperationAlreadyExists.azstorage
+## pv.volumeHandle.volume_id.error.volumeOperationAlreadyExists
 
-- https://github.com/Azure/azure-storage-fuse/blob/main/TSG.md#common-mount-problems: 3. failed to mount : failed to authenticate credentials for azstorage...
+```
+# The error "An operation with the given Volume ID already exists" indicates that a previous mount operation is stuck, and the CSI driver is currently preventing another mount of the same volume with a lock.
+# The error is in CSI driver pod logs
+# If you come across an error in the CSI logs right after the NodeStageVolume mount, consider performing a manual mount on that node using the specified protocol.
+```
+
+- https://github.com/kubernetes-sigs/azuredisk-csi-driver/blob/master/pkg/azuredisk/nodeserver.go: volumeOperationAlreadyExistsFmt = "An operation with the given Volume ID %s already exists"
+- https://github.com/kubernetes-sigs/azurefile-csi-driver/blob/master/pkg/azurefile/volume_lock.go: volumeOperationAlreadyExistsFmt = "An operation with the given Volume ID %s already exists"
+- https://github.com/kubernetes-csi/csi-driver-nfs/blob/master/pkg/nfs/utils.go: volumeOperationAlreadyExistsFmt = "An operation with the given Volume ID %s already exists"
+- https://github.com/kubernetes-csi/csi-driver-smb/issues/444: An operation with the given Volume ID test-csi-driver-smb already exists
+- https://github.com/rook/rook/issues/4896: ~ The mitigation is to restart the CSI driver pod
+  
+

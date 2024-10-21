@@ -1,2 +1,0 @@
-- https://learn.microsoft.com/en-us/azure/storage/blobs/network-file-system-protocol-support-how-to#step-2-configure-network-security
-- https://learn.microsoft.com/en-us/azure/storage/blobs/network-file-system-protocol-support

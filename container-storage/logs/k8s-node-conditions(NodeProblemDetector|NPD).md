@@ -15,6 +15,9 @@ kubectl describe no # Conditions
 
 - https://learn.microsoft.com/en-us/azure/aks/node-problem-detector#node-conditions
 - https://learn.microsoft.com/en-us/azure/aks/node-problem-detector#check-the-node-conditions-and-events
+- https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/#node-conditions
+- https://kubernetes.io/docs/reference/node/node-status/#condition
+- https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/#taint-nodes-by-condition
 
 ## k8s-node-conditions_NodeProblemDetector.events
 

@@ -1,5 +1,9 @@
 ## k8s-node-conditions_NodeProblemDetector
 
+```
+# See the section on k8s-node-cordon.drain.app.draino
+```
+
 - https://learn.microsoft.com/en-us/azure/aks/node-problem-detector
 - https://github.com/kubernetes/node-problem-detector: node-problem-detector uses Event and NodeCondition to report problems to apiserver
 

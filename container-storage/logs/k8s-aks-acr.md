@@ -53,6 +53,9 @@ The login server endpoint suffix '.azurecr.io' is automatically appended.
 [2023-08-03T12:36:47Z]
 Your cluster can pull images from imageshack.azurecr.io!
 
+# --debug
+urllib3.connectionpool: https://management.azure.com:443 "POST /subscriptions/redacts-1111-1111-1111-111111111111/resourceGroups/rg/providers/Microsoft.ContainerService/managedClusters/aksacr/listClusterUserCredential?api-version=2024-02-01 HTTP/1.1" 200 12953
+
 # az aks check-acr -g $rgname -n $clustername --acr $registry --node-name aks-nodepool1-31040111-vmss000005
 The login server endpoint suffix '.azurecr.io' is automatically appended.
 [2023-08-03T12:37:12Z] Checking host name resolution (imageshack.azurecr.io): SUCCEEDED

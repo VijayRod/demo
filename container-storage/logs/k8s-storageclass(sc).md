@@ -10,7 +10,7 @@
 ```
 # useDataPlaneAPI aka storage account firewall
 # By setting useDataPlaneAPI to "true", there is almost no (throttling) limit for creating file share. Just remember to enable public access in the storage account firewall settings.
-
+# If useDataPlaneAPI isn't an option due to storage firewall requirements, the next move could be to space out the creation of PVs to avoid exceeding the SRP limits. See the section on Write_ObservationWindow_00:00:01.
 ```
 - https://github.com/kubernetes-sigs/azurefile-csi-driver/blob/master/docs/driver-parameters.md: useDataPlaneAPI. specify whether use data plane API for file share create/delete/resize, this could solve the SRP API throttling issue since data plane API has almost no limit, while it would fail when there is firewall or vnet setting on storage account
 - https://learn.microsoft.com/en-us/azure/aks/azure-csi-files-storage-provision: useDataPlaneAPI. Specify whether to use data plane API for file share create/delete/resize, which could solve the SRP API throttling issue because the data plane API has almost no limit, while it would fail when there's firewall or Vnet settings on storage account.

@@ -1,4 +1,4 @@
-## azureblob-fuse
+## azureblob
 
 Here are steps from https://learn.microsoft.com/en-us/azure/aks/azure-blob-csi to install this driver.
       
@@ -72,7 +72,7 @@ kubectl get po -n kube-system csi-blob-node-wvn8q -oyaml | grep image: | grep bl
 - https://github.com/Azure/azure-storage-fuse/blob/main/TSG.md
 - https://github.com/Seagate/cloudfuse: Cloudfuse is a fork of blobfuse2, and adds S3 support, a GUI, and Windows support
 
-## azureblob-fuse.debug
+## azureblob.debug
 
 ```
 k get po -A -owide | grep blob
@@ -147,16 +147,16 @@ strace: Process 8302 attached with 5 threads
 [pid  8303] <... restart_syscall resumed>) = 0
 ```
 
-## azureblob-fuse.driver.parameter
+## azureblob.driver.parameter
 - https://github.com/kubernetes-sigs/blob-csi-driver/blob/master/docs/driver-parameters.md
 - https://learn.microsoft.com/en-us/azure/aks/azure-csi-blob-storage-provision?tabs=mount-nfs%2Csecret#storage-class-parameters-for-dynamic-persistent-volumes
 
-## azureblob-fuse.driver.parameter.isHnsEnabled
+## azureblob.driver.parameter.isHnsEnabled
 - https://github.com/kubernetes-sigs/blob-csi-driver/blob/master/docs/driver-parameters.md: enable Hierarchical namespace for Azure DataLake storage account
 - https://learn.microsoft.com/en-us/azure/aks/azure-csi-blob-storage-provision?tabs=mount-nfs%2Csecret#before-you-begin: To support an Azure DataLake Gen2 storage account when using blobfuse mount...
   - https://github.com/Azure/AKS/issues/4274#issuecomment-2102486680: ADLS (Azure DataLake Gen2 storage account). isHnsEnabled: "true" in the storage class parameters. mount option --use-adls=true in the persistent volume. If you are going to enable a storage account with Hierarchical Namespace, existing persistent volumes should be remounted with --use-adls=true mount option.
 
-## azureblob-fuse.driver.parameter.protocol.fuse
+## azureblob.driver.parameter.protocol.fuse
 
 ```
 kubectl describe sc azureblob-fuse-premium
@@ -301,7 +301,7 @@ I1004 18:04:18.672538    5991 nodeserver.go:155] NodePublishVolume: volume MC_rg
 I1004 18:04:18.672553    5991 utils.go:111] GRPC response: {}
 ```
 
-## azureblob-fuse.driver.parameter.protocol.fuse.nfs
+## azureblob.driver.parameter.protocol.nfs
 
 ```
 kubectl describe sc azureblob-nfs-premium
@@ -317,7 +317,7 @@ VolumeBindingMode:     Immediate
 Events:                <none>
 ```
 
-## azureblob-fuse.driver.parameter.nodeStageSecretRef
+## azureblob.driver.parameter.nodeStageSecretRef
 
 ```
 echo rg: $rg
@@ -394,7 +394,7 @@ sleep 10
 - https://github.com/kubernetes-sigs/blob-csi-driver/blob/master/deploy/example/pv-blobfuse-auth.yaml
 - https://github.com/kubernetes-sigs/blob-csi-driver/blob/master/deploy/example/pv-blobfuse-csi.yaml
 
-## azureblob-fuse.driver.parameter.skuName.GRS
+## azureblob.driver.parameter.skuName.GRS
 
 ```
 kubectl delete po mypod
@@ -464,7 +464,7 @@ az storage account list -g MC_rgcni_akseadsv5_swedencentral | grep -E 'id|"name"
       "name": "Standard_GRS",
 ```
 
-## azureblob-fuse.driver.parameter.skuName.LRS
+## azureblob.driver.parameter.skuName.LRS
 
 ```
 kubectl describe sc azureblob-fuse-premium
@@ -476,9 +476,9 @@ az storage account list -g MC_rgcni_akseadsv5_swedencentral | grep -E 'id|"name"
       "name": "Premium_LRS",
 ```
 
-## azureblob-fuse.error
+## azureblob.error
 
-### azureblob-fuse.error parsing volumeID(pv-blobmodels) return with error: error parsing volume id: "pv-blobmodels", should at least contain two #
+### azureblob.error parsing volumeID(pv-blobmodels) return with error: error parsing volume id: "pv-blobmodels", should at least contain two #
 
 ```
 # scenario involing a harmless error
@@ -512,7 +512,7 @@ NAME                                   STATUS   VOLUME          CAPACITY   ACCES
 persistentvolumeclaim/pvc-blobmodels   Bound    pv-blobmodels   10Gi       ROX                           <unset>                 17s
 ```
 
-### azureblob-fuse.error code = Internal desc = Mount failed with error: rpc error: code = Unknown desc = exit status 1 Error: failed to initialize new pipeline [config error in azstorage [account name not provided]]
+### azureblob.error code = Internal desc = Mount failed with error: rpc error: code = Unknown desc = exit status 1 Error: failed to initialize new pipeline [config error in azstorage [account name not provided]]
 
 ```
 # scenario where $storage2 does not exist
@@ -560,7 +560,7 @@ NAME                             CAPACITY   ACCESS MODES   RECLAIM POLICY   STAT
 persistentvolume/pv-blobmodels   10Gi       ROX            Retain           Bound    default/pvc-blobmodels                  <unset>                          78s
 ```
 
-### azureblob-fuse.error code = Internal desc = Mount failed with error: rpc error: code = Unknown desc = exit status 1 Error: failed to initialize new pipeline [decode account key: illegal base64 data at input byte 8]
+### azureblob.error code = Internal desc = Mount failed with error: rpc error: code = Unknown desc = exit status 1 Error: failed to initialize new pipeline [decode account key: illegal base64 data at input byte 8]
 
 ```
 # scenario where the key is "incorrect"
@@ -605,7 +605,7 @@ NAME                             CAPACITY   ACCESS MODES   RECLAIM POLICY   STAT
 persistentvolume/pv-blobmodels   10Gi       ROX            Retain           Bound    default/pvc-blobmodels                  <unset>                          78s
 ```
 
-### azureblob-fuse.error code = Internal desc = Mount failed with error: rpc error: code = Unknown desc = exit status 1 Error: failed to initialize new pipeline [failed to authenticate credentials for azstorage]
+### azureblob.error code = Internal desc = Mount failed with error: rpc error: code = Unknown desc = exit status 1 Error: failed to initialize new pipeline [failed to authenticate credentials for azstorage]
 
 ```
 # scenario where the storage account key is regenerated after creating a secret
@@ -650,14 +650,14 @@ NAME                             CAPACITY   ACCESS MODES   RECLAIM POLICY   STAT
 persistentvolume/pv-blobmodels   10Gi       ROX            Retain           Bound    default/pvc-blobmodels                  <unset>                          78s
 ```
 
-## azureblob-fuse.provision.dynamic
+## azureblob.provision.dynamic
 
 ```
 # azureblob-fuse.driver.parameter.protocol.fuse
 ```
 - https://learn.microsoft.com/en-us/azure/aks/azure-csi-blob-storage-provision?tabs=mount-blobfuse%2Csecret#dynamically-provision-a-volume
 
-## azureblob-fuse.provision.static
+## azureblob.provision.static
 
 ```
 # azureblob-fuse.driver.parameter.nodeStageSecretRef

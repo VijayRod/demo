@@ -1,16 +1,19 @@
+## k8s-aks-acr
+
 ```
 # Replace the below with appropriate values
 rgname=secureshack2
 registry=imageshack
 clustername=aksacr
+az group create -n $rgname -l $loc
 ```
 
 ```
 # To create an ACR (Azure Container Registry)
-az acr create -g $rgname -n $registry --sku basic
+az acr create -g $rgname -n $registry --sku basic -s $vmsize -c 2
 
 # To create a cluster
-az aks create -g $rgname -n $clustername --attach-acr $registry
+az aks create -g $rgname -n $clustername --attach-acr $registry -s $vmsize -c 2
 az aks get-credentials -g $rgname -n $clustername
 
 # To deploy a pod with an image from the registry

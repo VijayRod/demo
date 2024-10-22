@@ -36,6 +36,150 @@ Events:
 
 ## k8s-aks-acr.debug
 
+```
+acrLoginServer=$(az acr show -g $rgname -n $registry --query loginServer -otsv)
+echo $acrLoginServer # imageshack.azurecr.io
+
+root@aks-nodepool1-74128781-vmss000000:/# nslookup imageshack.azurecr.io
+Server:         168.63.129.16
+Address:        168.63.129.16#53
+Non-authoritative answer:
+imageshack.azurecr.io   canonical name = sec.fe.azcr.io.
+sec.fe.azcr.io  canonical name = sec-acr-reg.trafficmanager.net.
+sec-acr-reg.trafficmanager.net  canonical name = r0910sec-az.swedencentral.cloudapp.azure.com.
+Name:   r0910sec-az.swedencentral.cloudapp.azure.com
+Address: 1.2.3.4
+
+root@aks-nodepool1-74128781-vmss000000:/# curl https://imageshack.azurecr.io -I
+HTTP/1.1 404 Not Found
+Server: AzureContainerRegistry
+Date: Tue, 22 Oct 2024 18:24:10 GMT
+Content-Type: application/octet-stream
+Content-Length: 9
+Connection: keep-alive
+Strict-Transport-Security: max-age=31536000; includeSubDomains
+
+aks-nodepool1-74128781-vmss000000:/# curl -v https://imageshack.azurecr.io
+*   Trying 51.12.25.66:443...
+* Connected to imageshack.azurecr.io (1.2.3.4) port 443 (#0)
+* ALPN, offering h2
+* ALPN, offering http/1.1
+*  CAfile: /etc/ssl/certs/ca-certificates.crt
+*  CApath: /etc/ssl/certs
+* TLSv1.0 (OUT), TLS header, Certificate Status (22):
+* TLSv1.3 (OUT), TLS handshake, Client hello (1):
+* TLSv1.2 (IN), TLS header, Certificate Status (22):
+* TLSv1.3 (IN), TLS handshake, Server hello (2):
+* TLSv1.2 (IN), TLS header, Finished (20):
+* TLSv1.2 (IN), TLS header, Supplemental data (23):
+* TLSv1.3 (IN), TLS handshake, Encrypted Extensions (8):
+* TLSv1.2 (IN), TLS header, Supplemental data (23):
+* TLSv1.3 (IN), TLS handshake, Certificate (11):
+* TLSv1.2 (IN), TLS header, Supplemental data (23):
+* TLSv1.3 (IN), TLS handshake, CERT verify (15):
+* TLSv1.2 (IN), TLS header, Supplemental data (23):
+* TLSv1.3 (IN), TLS handshake, Finished (20):
+* TLSv1.2 (OUT), TLS header, Finished (20):
+* TLSv1.3 (OUT), TLS change cipher, Change cipher spec (1):
+* TLSv1.2 (OUT), TLS header, Supplemental data (23):
+* TLSv1.3 (OUT), TLS handshake, Finished (20):
+* SSL connection using TLSv1.3 / TLS_AES_256_GCM_SHA384
+* ALPN, server accepted to use http/1.1
+* Server certificate:
+*  subject: C=US; ST=WA; L=Redmond; O=Microsoft Corporation; CN=*.azurecr.io
+*  start date: Aug 14 03:29:28 2024 GMT
+*  expire date: Feb 10 03:29:28 2025 GMT
+*  subjectAltName: host "imageshack.azurecr.io" matched cert's "*.azurecr.io"
+*  issuer: C=US; O=Microsoft Corporation; CN=Microsoft Azure RSA TLS Issuing CA 03
+*  SSL certificate verify ok.
+* TLSv1.2 (OUT), TLS header, Supplemental data (23):
+> GET / HTTP/1.1
+> Host: imageshack.azurecr.io
+> User-Agent: curl/7.81.0
+> Accept: */*
+>
+* TLSv1.2 (IN), TLS header, Supplemental data (23):
+* TLSv1.3 (IN), TLS handshake, Newsession Ticket (4):
+* TLSv1.2 (IN), TLS header, Supplemental data (23):
+* TLSv1.3 (IN), TLS handshake, Newsession Ticket (4):
+* old SSL session ID is stale, removing
+* TLSv1.2 (IN), TLS header, Supplemental data (23):
+* Mark bundle as not supporting multiuse
+< HTTP/1.1 404 Not Found
+< Server: AzureContainerRegistry
+< Date: Tue, 22 Oct 2024 18:23:47 GMT
+< Content-Type: application/octet-stream
+< Content-Length: 9
+< Connection: keep-alive
+< Strict-Transport-Security: max-age=31536000; includeSubDomains
+<
+* Connection #0 to host imageshack.azurecr.io left intact
+
+az aks show -g $rgname -n $clustername --query identityProfile.kubeletidentity
+{
+  "clientId": "redactc-ff96-4106-873c-7f52972f0c52",
+  "objectId": "redacto-e53d-42c3-9385-8e11f066376c",
+  "resourceId": "/subscriptions/redacts-1111-1111-1111-111111111111/resourcegroups/MC_rg_aksacr_swedencentral/providers/Microsoft.ManagedIdentity/userAssignedIdentities/aksacr-agentpool"
+}
+
+noderg=$(az aks show -g $rgname -n $clustername --query nodeResourceGroup -o tsv)   
+az vmss show -g $noderg -n aks-nodepool1-74128781-vmss --query identity.userAssignedIdentities
+{
+  "/subscriptions/redacts-1111-1111-1111-111111111111/resourceGroups/MC_rg_aksacr_swedencentral/providers/Microsoft.ManagedIdentity/userAssignedIdentities/aksacr-agentpool": {
+    "clientId": "redactc-ff96-4106-873c-7f52972f0c52",
+    "principalId": "redacto-e53d-42c3-9385-8e11f066376c"
+  }
+}
+# Azure portal: VMSS, Security, Identity, User assigned.
+
+# tbd AcrPull - cluster has been created with a service principal
+# https://learn.microsoft.com/en-us/azure/architecture/operator-guides/aks/aks-triage-container-registry
+ASSIGNEE=$(az aks show -g $rg -n aksacr --query servicePrincipalProfile.clientId -o tsv)
+az role assignment list --assignee $ASSIGNEE --all -o table
+
+# AcrPull
+ASSIGNEE=$(az aks show -g $rgname -n $clustername --query identityProfile.kubeletidentity.clientId -otsv)
+az role assignment list --assignee $ASSIGNEE --all -o table
+Principal                             Role     Scope
+------------------------------------  -------  ---------------------------------------------------------------------------------------------------------------------------------
+redactsc-ff96-4106-873c-7f52972f0c52  AcrPull  /subscriptions/redacts-1111-1111-1111-111111111111/resourceGroups/rg/providers/Microsoft.ContainerRegistry/registries/imageshack
+
+# AcrPull (alternative)
+acrId=$(az acr show -g $rgname -n $registry --query id -otsv)
+echo $acrId # /subscriptions/redacts-1111-1111-1111-111111111111/resourceGroups/rg/providers/Microsoft.ContainerRegistry/registries/imageshack
+az role assignment list --scope $acrId
+[
+  {
+    "condition": null,
+    "conditionVersion": null,
+    "createdBy": "9b4c987b-c068-4a9b-96a0-34b7633a607d",
+    "createdOn": "2024-10-22T18:46:05.976312+00:00",
+    "delegatedManagedIdentityResourceId": null,
+    "description": null,
+    "id": "/subscriptions/redacts-1111-1111-1111-111111111111/resourceGroups/rg/providers/Microsoft.ContainerRegistry/registries/imageshack/providers/Microsoft.Authorization/roleAssignments/95af4577-d347-4f53-ac82-8e3443b07a84",
+    "name": "95af4577-d347-4f53-ac82-8e3443b07a84",
+    "principalId": "redacto-e53d-42c3-9385-8e11f066376c",
+    "principalName": "redactc-ff96-4106-873c-7f52972f0c52",
+    "principalType": "ServicePrincipal",
+    "resourceGroup": "rg",
+    "roleDefinitionId": "/subscriptions/redacts-1111-1111-1111-111111111111/providers/Microsoft.Authorization/roleDefinitions/7f951dda-4ed3-4680-a7ca-43fe172d538d",
+    "roleDefinitionName": "AcrPull",
+    "scope": "/subscriptions/redacts-1111-1111-1111-111111111111/resourceGroups/rg/providers/Microsoft.ContainerRegistry/registries/imageshack",
+    "type": "Microsoft.Authorization/roleAssignments",
+    "updatedBy": "9b4c987b-c068-4a9b-96a0-34b7633a607d",
+    "updatedOn": "2024-10-22T18:46:05.976312+00:00"
+  }
+]
+# az role assignment list --scope $acrId --query [0].principalId -otsv
+# Azure Portal: ACR, Access control (IAM), Role assignments, All or Task Function, AcrPull.
+
+az acr show -g $rgname -n $registry --query publicNetworkAccess # "Enabled"
+# Azure Portal: ACR, Settings, Network.
+
+tbd crictl pull imageshack.azurecr.io/library/nginx:latest # 401 Unauthorized
+kubectl run mynginx --image=imageshack.azurecr.io/library/nginx:latest # Success
+```
+
 - https://learn.microsoft.com/en-us/azure/container-registry/container-registry-troubleshoot-login
   
 ## k8s-aks-acr.check-acr
@@ -73,6 +217,27 @@ Your cluster can pull images from imageshack.azurecr.io!
 
 - https://github.com/Azure/aks-canipull
 - https://github.com/andyzhangx/demo/blob/master/aks/canipull/README.md - "deprecation: please use az aks check-acr (--node-name) command to throubleshoot ACR connection issue on specific AKS node"
+
+## k8s-aks-acr.check-acr.error.Validating image pull permission: FAILED
+
+```
+ASSIGNEE=$(az aks show -g $rgname -n $clustername --query identityProfile.kubeletidentity.clientId -otsv)
+az role assignment list --assignee $ASSIGNEE --all -o table
+Principal                             Role     Scope
+------------------------------------  -------  ---------------------------------------------------------------------------------------------------------------------------------
+redactc-ff96-4106-873c-7f52972f0c52  AcrPull  /subscriptions/redacts-1111-1111-1111-111111111111/resourceGroups/rg/providers/Microsoft.ContainerRegistry/registries/imageshack
+
+az role assignment delete --assignee $ASSIGNEE --role AcrPull
+# (or) az role assignment delete --assignee $ASSIGNEE --scope $acrId # Message "No matched assignments were found to delete" means its already deleted
+
+az aks check-acr -g $rgname -n $clustername --acr $registry
+[2024-10-22T18:32:07Z] Validating managed identity existance: SUCCEEDED
+[2024-10-22T18:32:08Z] Validating image pull permission: FAILED
+[2024-10-22T18:32:08Z] ACR imageshack.azurecr.io rejected token exchange: ACR token exchange endpoint returned error status: 401. body:
+
+az role assignment create --role AcrPull --assignee $ASSIGNEE --scope $acrId
+az aks check-acr -g $rgname -n $clustername --acr $registry # Validating image pull permission: SUCCEEDED
+```
 
 ## k8s-aks-acr.image
 

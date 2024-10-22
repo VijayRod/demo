@@ -71,5 +71,22 @@ Your cluster can pull images from imageshack.azurecr.io!
 
 ## k8s-aks-acr.check-acr.canipull
 
+## k8s-aks-acr.image
+
+```
+# Check out the Dockerfile section for instructions on how to create and import a custom image.
+
+az acr import -n $registry --source docker.io/library/nginx # Imports an image from another Container Registry. Import removes the need to docker pull, docker tag, docker push.
+
+tbd root@aks-nodepool1-74128781-vmss000000:/# crictl pull imageshack.azurecr.io/library/nginx:latest # GET request to https://imageshack.azurecr.io/oauth2/token?scope=repository%3Alibrary%2Fnginx%3Apull&service=imageshack.azurecr.io: 401 Unauthorized
+k run mynginx --image=imageshack.azurecr.io/library/nginx:latest # kubelet  Successfully pulled image "imageshack.azurecr.io/library/nginx:latest"
+
+az acr repository list -n $registry -otable # library/nginx
+
+az acr repository show-tags -n $registry --repository nginx -otable # latest
+
+az acr repository delete -n $registry --repository nginx -y # Are you sure you want to delete the repository 'nginx' and all images under it? (y/n)
+```
+
 - https://github.com/Azure/aks-canipull
 - https://github.com/andyzhangx/demo/blob/master/aks/canipull/README.md - "deprecation: please use az aks check-acr (--node-name) command to throubleshoot ACR connection issue on specific AKS node"

@@ -16,7 +16,7 @@ cat <<EOF > /tmp/docker/Dockerfile
 FROM nginx:latest
 EOF
 # cat /tmp/docker/Docker
-# See the section on az acr login -n imageshack --expose-token
+# See the section on `az acr login -n imageshack --expose-token`. It means you can skip installing Docker.
 az acr build --registry $registry --image nginx .
 ```
 

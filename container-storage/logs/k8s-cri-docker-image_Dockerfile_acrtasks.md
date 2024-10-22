@@ -22,3 +22,4 @@ az acr build --registry $registry --image nginx .
 ```
 
 - https://learn.microsoft.com/en-us/azure/container-registry/container-registry-tutorial-quick-task
+- https://learn.microsoft.com/en-us/azure/container-registry/container-registry-get-started-azure-cli

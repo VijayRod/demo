@@ -1,3 +1,5 @@
+## k8s-aks-privatecluster
+
 ```
 rg=rgsec
 az group create -n $rg -l $loc
@@ -40,3 +42,24 @@ az aks show -g $rg -n aks --query privateLinkResources
 ```
 
 - https://learn.microsoft.com/en-us/azure/aks/private-clusters?tabs=azure-portal
+
+## k8s-aks-privatecluster.kubectl
+
+```
+# This from a machine that's not in the same virtual network or in a connected peer network
+az aks get-credentials -g $rg -n aksprivate
+The behavior of this command has been altered by the following extension: aks-preview
+Merged "aksprivate" as current context in /root/.kube/config
+k get ns
+E1022 22:49:10.398697    2193 memcache.go:265] couldn't get current server API group list: Get "https://aksprivate-rg-efec8e-sdh56nw0.b313df19-f990-44e7-8fcd-06f1051b18f7.privatelink.swedencentral.azmk8s.io:443/api?timeout=32s": tls: failed to verify certificate: x509: certificate is valid for *.notebooks.azure.net, not aksprivate-rg-efec8e-sdh56nw0.b313df19-f990-44e7-8fcd-06f1051b18f7.privatelink.swedencentral.azmk8s.io
+
+# You can run this command from any computer that's logged in with Azure credentials
+az aks command invoke -g $rg -n aksprivate --command "kubectl get ns"
+command started at 2024-10-22 23:04:44+00:00, finished at 2024-10-22 23:04:44+00:00 with exitcode=0
+NAME              STATUS   AGE
+aks-command       Active   4s
+default           Active   73m
+kube-node-lease   Active   73m
+kube-public       Active   73m
+kube-system       Active   73m
+```

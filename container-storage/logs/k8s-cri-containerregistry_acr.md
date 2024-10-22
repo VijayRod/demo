@@ -228,6 +228,7 @@ az acr create -g $rg -n $registry --sku basic
 az aks create -g $rg -n aksprivateacr --enable-private-cluster --attach-acr $registry -s $vmsize -c 2 # success
 
 # The error is occurring because the 'check-acr' command is being executed on a machine that isn't connected to the VNet of our private AKS cluster.
+# Same error when using Azure Cloud Shell
 az aks check-acr -g $rg -n aksprivateacr --acr $registry
 The login server endpoint suffix '.azurecr.io' is automatically appended.
 Merged "aksprivateacr2" as current context in /tmp/tmpw8dt0pbe

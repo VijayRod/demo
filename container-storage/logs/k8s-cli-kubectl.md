@@ -81,6 +81,19 @@ export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
 ### kubectl.tools.kubectl-status
 - https://github.com/bergerx/kubectl-status
 
+### kubectl.tools.kubelogin
+
+- https://github.com/Azure/kubelogin
+- https://azure.github.io/kubelogin/install.html
+- https://learn.microsoft.com/en-us/azure/aks/kubelogin-authentication
+- https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/#no-auth-provider-found: Azure AKS: kubelogin plugin
+- https://learn.microsoft.com/en-us/azure/aks/enable-authentication-microsoft-entra-id: You need kubectl with a minimum version of 1.18.1 or kubelogin. With the Azure CLI and the Azure PowerShell module, these two commands are included and automatically managed. Meaning, they're upgraded by default and running az aks install-cli isn't required or recommended
+
+#### kubectl.tools.kubelogin.error.executable kubelogin failed with exit code 1
+
+- https://stackoverflow.com/questions/74702519/executable-kubelogin-failed-with-exit-code-1: Installing snap via kubelogin may also cause this problem. sudo az aks install-cli
+- https://learn.microsoft.com/en-us/answers/questions/1191403/i-couldnt-be-able-to-connect-private-aks-cluster: the issue arises when we install kubelogin via snap. Just execute following command to install kubectl & kubelogin. sudo az aks install-cli
+
 ### kubectl.tools.lens
 
 ```

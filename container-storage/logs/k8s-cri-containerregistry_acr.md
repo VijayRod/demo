@@ -181,6 +181,7 @@ kubectl run mynginx --image=imageshack.azurecr.io/library/nginx:latest # Success
 ```
 
 - https://learn.microsoft.com/en-us/azure/container-registry/container-registry-troubleshoot-login
+- https://learn.microsoft.com/en-us/azure/architecture/operator-guides/aks/aks-triage-container-registry: Verify the connection to the container registry
   
 ## k8s-aks-acr.check-acr
 

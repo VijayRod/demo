@@ -10,7 +10,7 @@ az group create -n $rgname -l $loc
 
 ```
 # To create an ACR (Azure Container Registry)
-az acr create -g $rgname -n $registry --sku basic -s $vmsize -c 2
+az acr create -g $rgname -n $registry --sku basic
 
 # To create a cluster
 az aks create -g $rgname -n $clustername --attach-acr $registry -s $vmsize -c 2

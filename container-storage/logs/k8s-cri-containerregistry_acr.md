@@ -263,6 +263,10 @@ The behavior of this command has been altered by the following extension: aks-pr
 Merged "aksprivateacr" as current context in /root/.kube/config
 k get ns
 E1022 22:49:10.398697    2193 memcache.go:265] couldn't get current server API group list: Get "https://aksprivate-rg-efec8e-sdh56nw0.b313df19-f990-44e7-8fcd-06f1051b18f7.privatelink.swedencentral.azmk8s.io:443/api?timeout=32s": tls: failed to verify certificate: x509: certificate is valid for *.notebooks.azure.net, not aksprivate-rg-efec8e-sdh56nw0.b313df19-f990-44e7-8fcd-06f1051b18f7.privatelink.swedencentral.azmk8s.io
+
+az aks command invoke -g $rg -n aksprivateacr2 --command "kubectl run mynginx --image=imageshack.azurecr.io/library/nginx:latest"
+az aks command invoke -g $rg -n aksprivateacr2 --command "kubectl get po" # mynginx   1/1     Running   0          16s
+az aks command invoke -g $rg -n aksprivateacr2 --command "kubectl describe po" # Successfully pulled image "imageshack.azurecr.io/library/nginx:latest"
 ```
 
 ## k8s-aks-acr.check-acr.error.Validating image pull permission: FAILED

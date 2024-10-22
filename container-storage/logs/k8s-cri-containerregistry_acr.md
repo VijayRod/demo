@@ -88,5 +88,29 @@ az acr repository show-tags -n $registry --repository nginx -otable # latest
 az acr repository delete -n $registry --repository nginx -y # Are you sure you want to delete the repository 'nginx' and all images under it? (y/n)
 ```
 
+## k8s-aks-acr.login
+
+```
+# earlier
+az acr login -n $registry
+You may want to use 'az acr login -n imageshack --expose-token' to get an access token, which does not require Docker to be installed.
+2024-10-22 18:23:44.394058 An error occurred: DOCKER_COMMAND_ERROR
+Cannot connect to the Docker daemon at unix:///var/run/docker.sock. Is the docker daemon running?
+```
+
+```
+az acr login -n imageshack --expose-token
+You can perform manual login using the provided access token below, for example: 'docker login loginServer -u 00000000-0000-0000-0000-000000000000 -p accessToken'
+{
+  "accessToken": "eyredacted_bhqA",
+  "loginServer": "imageshack.azurecr.io"
+}
+
+accessToken="eyredacted_bhqA"
+acrLoginServer=$(az acr show -g $rgname -n $registry --query loginServer -otsv); echo $acrLoginServer # imageshack.azurecr.io
+docker login $acrLoginServer -u 00000000-0000-0000-0000-000000000000 -p $accessToken
+# Login Succeeded
+```
+
 - https://github.com/Azure/aks-canipull
 - https://github.com/andyzhangx/demo/blob/master/aks/canipull/README.md - "deprecation: please use az aks check-acr (--node-name) command to throubleshoot ACR connection issue on specific AKS node"

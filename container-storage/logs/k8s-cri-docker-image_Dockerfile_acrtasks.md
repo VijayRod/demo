@@ -12,11 +12,12 @@ kubectl run image22gacrtasks --image=imageshack.azurecr.io/image22gacrtasks:v1
 ```
 
 ```
+# You can bypass Docker installation by using `az acr login --expose-token`.
 cat <<EOF > /tmp/docker/Dockerfile
 FROM nginx:latest
 EOF
 # cat /tmp/docker/Docker
-# See the section on `az acr login -n imageshack --expose-token`. It means you can skip installing Docker.
+# See the section on `az acr login -n imageshack --expose-token`
 az acr build --registry $registry --image nginx .
 ```
 

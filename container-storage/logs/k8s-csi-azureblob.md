@@ -321,6 +321,7 @@ Events:                <none>
 
 - https://learn.microsoft.com/en-us/azure/storage/blobs/network-file-system-protocol-support-how-to#step-2-configure-network-security: The NFS 3.0 protocol uses ports 111 and 2048.
 - https://learn.microsoft.com/en-us/azure/storage/blobs/network-file-system-protocol-support
+- https://github.com/kubernetes-sigs/blob-csi-driver/blob/master/docs/csi-debug.md: nfs
 
 ## azureblob.driver.parameter.nodeStageSecretRef
 

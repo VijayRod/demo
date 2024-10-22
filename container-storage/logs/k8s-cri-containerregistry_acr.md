@@ -71,6 +71,9 @@ Your cluster can pull images from imageshack.azurecr.io!
 
 ## k8s-aks-acr.check-acr.canipull
 
+- https://github.com/Azure/aks-canipull
+- https://github.com/andyzhangx/demo/blob/master/aks/canipull/README.md - "deprecation: please use az aks check-acr (--node-name) command to throubleshoot ACR connection issue on specific AKS node"
+
 ## k8s-aks-acr.image
 
 ```
@@ -111,6 +114,3 @@ acrLoginServer=$(az acr show -g $rgname -n $registry --query loginServer -otsv);
 docker login $acrLoginServer -u 00000000-0000-0000-0000-000000000000 -p $accessToken
 # Login Succeeded
 ```
-
-- https://github.com/Azure/aks-canipull
-- https://github.com/andyzhangx/demo/blob/master/aks/canipull/README.md - "deprecation: please use az aks check-acr (--node-name) command to throubleshoot ACR connection issue on specific AKS node"

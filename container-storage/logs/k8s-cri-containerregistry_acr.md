@@ -218,6 +218,53 @@ Your cluster can pull images from imageshack.azurecr.io!
 - https://github.com/Azure/aks-canipull
 - https://github.com/andyzhangx/demo/blob/master/aks/canipull/README.md - "deprecation: please use az aks check-acr (--node-name) command to throubleshoot ACR connection issue on specific AKS node"
 
+## ## k8s-aks-acr.check-acr.privatecluster
+
+```
+rg=rg
+registry=imageshack
+clustername=aksacr
+az acr create -g $rg -n $registry --sku basic
+az aks create -g $rg -n aksprivateacr --enable-private-cluster --attach-acr $registry -s $vmsize -c 2 # success
+
+# The error is occurring because the 'check-acr' command is being executed on a machine that isn't connected to the VNet of our private AKS cluster.
+az aks check-acr -g $rg -n aksprivateacr --acr $registry
+The login server endpoint suffix '.azurecr.io' is automatically appended.
+Merged "aksprivateacr2" as current context in /tmp/tmpw8dt0pbe
+Unable to connect to the server: tls: failed to verify certificate: x509: certificate is valid for *.notebooks.azure.net, not aksprivate-rg-efec8e-sdh56nw0.b313df19-f990-44e7-8fcd-06f1051b18f7.privatelink.swedencentral.azmk8s.io
+The command failed with an unexpected error. Here is the traceback:
+'serverVersion'
+Traceback (most recent call last):
+  File "/opt/az/lib/python3.11/site-packages/knack/cli.py", line 233, in invoke
+    cmd_result = self.invocation.execute(args)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/az/lib/python3.11/site-packages/azure/cli/core/commands/__init__.py", line 664, in execute
+    raise ex
+  File "/opt/az/lib/python3.11/site-packages/azure/cli/core/commands/__init__.py", line 731, in _run_jobs_serially
+    results.append(self._run_job(expanded_arg, cmd_copy))
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/az/lib/python3.11/site-packages/azure/cli/core/commands/__init__.py", line 701, in _run_job
+    result = cmd_copy(params)
+             ^^^^^^^^^^^^^^^^
+  File "/opt/az/lib/python3.11/site-packages/azure/cli/core/commands/__init__.py", line 334, in __call__
+    return self.handler(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/az/lib/python3.11/site-packages/azure/cli/core/commands/command_operation.py", line 121, in handler
+    return op(**command_args)
+           ^^^^^^^^^^^^^^^^^^
+  File "/opt/az/lib/python3.11/site-packages/azure/cli/command_modules/acs/custom.py", line 1611, in aks_check_acr
+    kubectl_version["serverVersion"]["minor"])
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+KeyError: 'serverVersion'
+
+# Similar error while using kubectl on a machine that isn't connected to the VNet of our private AKS cluster.
+az aks get-credentials -g $rg -n aksprivateacr
+The behavior of this command has been altered by the following extension: aks-preview
+Merged "aksprivateacr" as current context in /root/.kube/config
+k get ns
+E1022 22:49:10.398697    2193 memcache.go:265] couldn't get current server API group list: Get "https://aksprivate-rg-efec8e-sdh56nw0.b313df19-f990-44e7-8fcd-06f1051b18f7.privatelink.swedencentral.azmk8s.io:443/api?timeout=32s": tls: failed to verify certificate: x509: certificate is valid for *.notebooks.azure.net, not aksprivate-rg-efec8e-sdh56nw0.b313df19-f990-44e7-8fcd-06f1051b18f7.privatelink.swedencentral.azmk8s.io
+```
+
 ## k8s-aks-acr.check-acr.error.Validating image pull permission: FAILED
 
 ```

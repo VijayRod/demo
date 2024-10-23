@@ -37,7 +37,7 @@ Events:
 ## k8s-aks-acr.debug
 
 ```
-# Did the image pulling fail on all agent nodes? Could the customer try another ACR image in the same ACR or a different ACR repository to help narrow down the issue?
+# Did the image pulling fail on all agent nodes? Could you try another ACR image in the same ACR or a different ACR repository to help narrow down the issue?
 
 acrLoginServer=$(az acr show -g $rgname -n $registry --query loginServer -otsv)
 echo $acrLoginServer # imageshack.azurecr.io
@@ -221,7 +221,7 @@ Your cluster can pull images from imageshack.azurecr.io!
 - https://github.com/Azure/aks-canipull
 - https://github.com/andyzhangx/demo/blob/master/aks/canipull/README.md - "deprecation: please use az aks check-acr (--node-name) command to throubleshoot ACR connection issue on specific AKS node"
 
-## ## k8s-aks-acr.check-acr.privatecluster
+## k8s-aks-acr.check-acr.privatecluster
 
 ```
 rg=rg

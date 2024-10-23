@@ -1,3 +1,9 @@
+## privateendpoint.debug
+
+```
+# Our test, which involved editing the host file on a cluster node to include the correct DNS record, allowed docker login to succeed, confirming our theory about the need for correct DNS record.
+```
+
 ## privateendpoint.webapp
 
 ```

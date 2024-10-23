@@ -37,6 +37,8 @@ Events:
 ## k8s-aks-acr.debug
 
 ```
+# Did the image pulling fail on all agent nodes? Could the customer try another ACR image in the same ACR or a different ACR repository to help narrow down the issue?
+
 acrLoginServer=$(az acr show -g $rgname -n $registry --query loginServer -otsv)
 echo $acrLoginServer # imageshack.azurecr.io
 

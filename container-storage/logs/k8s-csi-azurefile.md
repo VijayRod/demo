@@ -379,7 +379,7 @@ e.g.
 ## https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/request-limits-and-throttling#storage-throttling: The limits apply per region of the resource in the request.
 # When deploying 10 pods each with 10 azurefile-csi-premium PVCs: Pods already running within a minute.
 # When deploying 10 pods each with 200 azurefile-csi-premium PVCs: This significantly increases creation time of all pods to over 35 minutes, accompanied by ExternalProvisioning and TooManyRequests errors for "Put File Share", also with a Write_ObservationWindow_00:00:01.
-tbd CSI driver creating multiple storage accounts
+# CSI driver creating multiple storage accounts: This won't make a difference because the throttling limit applies to the entire region per subscription
 tbd custom azurefile storage class created with useDataPlaneAPI and standard storage
 tbd custom azurefile storage class created with useDataPlaneAPI and premium storage
 tbd ReadWriteOnce and Azure Disk CSI driver v2 (preview)

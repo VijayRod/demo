@@ -38,6 +38,7 @@ Events:
 
 ```
 # Did the image pulling fail on all agent nodes? Could you try another ACR image in the same ACR or a different ACR repository to help narrow down the issue?
+# See the section on k8s-node.kubelet.credentials.kubeletidentity to confirm that either the VM Scale Set or the node's /etc/kubernetes/azure.json includes the identityProfile.kubeletidentity.clientId. The clientId is important because crictl uses the kubeletidentity to fetch the image from the registry.
 
 acrLoginServer=$(az acr show -g $rgname -n $registry --query loginServer -otsv)
 echo $acrLoginServer # imageshack.azurecr.io
@@ -116,23 +117,6 @@ aks-nodepool1-74128781-vmss000000:/# curl -v https://imageshack.azurecr.io
 < Strict-Transport-Security: max-age=31536000; includeSubDomains
 <
 * Connection #0 to host imageshack.azurecr.io left intact
-
-az aks show -g $rgname -n $clustername --query identityProfile.kubeletidentity
-{
-  "clientId": "redactc-ff96-4106-873c-7f52972f0c52",
-  "objectId": "redacto-e53d-42c3-9385-8e11f066376c",
-  "resourceId": "/subscriptions/redacts-1111-1111-1111-111111111111/resourcegroups/MC_rg_aksacr_swedencentral/providers/Microsoft.ManagedIdentity/userAssignedIdentities/aksacr-agentpool"
-}
-
-noderg=$(az aks show -g $rgname -n $clustername --query nodeResourceGroup -o tsv)   
-az vmss show -g $noderg -n aks-nodepool1-74128781-vmss --query identity.userAssignedIdentities
-{
-  "/subscriptions/redacts-1111-1111-1111-111111111111/resourceGroups/MC_rg_aksacr_swedencentral/providers/Microsoft.ManagedIdentity/userAssignedIdentities/aksacr-agentpool": {
-    "clientId": "redactc-ff96-4106-873c-7f52972f0c52",
-    "principalId": "redacto-e53d-42c3-9385-8e11f066376c"
-  }
-}
-# Azure portal: VMSS, Security, Identity, User assigned.
 
 # tbd AcrPull - cluster has been created with a service principal
 # https://learn.microsoft.com/en-us/azure/architecture/operator-guides/aks/aks-triage-container-registry

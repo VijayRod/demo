@@ -60,6 +60,20 @@ curl openai.com -v
 - https://www.postman.com/downloads/: Postman on the web (Try the Web Version), or simply sign in at https://www.postman.com/
 - https://web.postman.co/templates/recommended: REST API basics, etc.
 
+## rest.api.app.ResourceExplorer
+
+```
+# This includes both Read Only and Read/Write views.
+```
+
+- https://resources.azure.com/
+
+## rest.api.app.ResourceExplorer.ResourceManager
+
+```
+# Azure portal: Resource Manager. Offers a view that is read-only.
+```
+
 ## rest.api.azure.Microsoft.ContainerService (aks)
 
 - https://learn.microsoft.com/en-us/rest/api/aks/

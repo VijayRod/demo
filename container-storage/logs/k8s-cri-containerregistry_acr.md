@@ -348,7 +348,7 @@ Please store your generated credentials safely. Meanwhile you can use it through
   "name": "MyToken",
   "provisioningState": "Succeeded",
   "resourceGroup": "rg",
-  "scopeMapId": "/subscriptions/efec8e52-e1ad-4ae1-8598-f243e56e2b08/resourceGroups/rg/providers/Microsoft.ContainerRegistry/registries/imageshack/scopeMaps/MyToken-scope-map",
+  "scopeMapId": "/subscriptions/redacts-1111-1111-1111-111111111111/resourceGroups/rg/providers/Microsoft.ContainerRegistry/registries/imageshack/scopeMaps/MyToken-scope-map",
   "status": "enabled",
   "systemData": {
     "createdAt": "2024-10-23T18:47:32.258021+00:00",

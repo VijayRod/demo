@@ -56,7 +56,12 @@ CONTAINER           IMAGE               CREATED             STATE               
 ```
 Pod status: CrashLoopBackOff
 kubectl logs: exec /docker-entrypoint.sh: exec format error
+
+k describe node | grep arch
+                    beta.kubernetes.io/arch=amd64
+                    kubernetes.io/arch=amd64
 ```
 
 - https://www.reddit.com/r/docker/comments/1bq7fhs/getting_exec_dockerentrypointsh_exec_format_error/: That's the error you get when running the wrong architecture executable for the CPU.
 - https://stackoverflow.com/questions/73320833/docker-image-running-successfully-in-my-local-but-not-in-kuberneters-cluster: inspect your_image and it will show on which Architecture it will work
+- tbd https://stackoverflow.com/questions/73320833/docker-image-running-successfully-in-my-local-but-not-in-kuberneters-cluster: it could be due to the building image on Mac or Arm and your K8s cluster is not supporting that architecture.

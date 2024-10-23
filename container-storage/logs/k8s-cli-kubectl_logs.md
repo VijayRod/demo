@@ -1,3 +1,5 @@
+## k8s-cli-kubectl.logs
+
 ```
 kubectl run nginx --image=nginx
 
@@ -48,3 +50,13 @@ CONTAINER           IMAGE               CREATED             STATE               
 - https://github.com/kubernetes/kubernetes/blob/master/staging/src/k8s.io/kubectl/pkg/cmd/logs/logs.go
 - https://stackoverflow.com/questions/47915287/where-are-kubernetes-pods-logfiles
 - https://kubernetes.io/docs/reference/kubectl/cheatsheet/#interacting-with-running-pods: kubectl logs
+
+## k8s-cli-kubectl.logs.error exec /docker-entrypoint.sh: exec format error
+
+```
+Pod status: CrashLoopBackOff
+kubectl logs: exec /docker-entrypoint.sh: exec format error
+```
+
+- https://www.reddit.com/r/docker/comments/1bq7fhs/getting_exec_dockerentrypointsh_exec_format_error/: That's the error you get when running the wrong architecture executable for the CPU.
+- https://stackoverflow.com/questions/73320833/docker-image-running-successfully-in-my-local-but-not-in-kuberneters-cluster: inspect your_image and it will show on which Architecture it will work

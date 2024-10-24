@@ -15,6 +15,9 @@ aroId=$(az aro show -g $rg -n aro --query id -otsv); echo $aroId
 
 aroApiUrl=$(az aro show -g $rg -n aro --query apiserverProfile.url -otsv); echo $aroApiUrl
 https://api.zr4skrmn.swedencentral.aroapp.io:6443/
+
+aroNodeRg=$(az aro show -g $rg -n aro --query clusterProfile.resourceGroupId -otsv); echo $aroNodeRg
+/subscriptions/redacts-1111-1111-1111-111111111111/resourcegroups/aro-zr4skrmn
 ```
 
 - https://access.redhat.com/documentation/en-us/openshift_container_platform/ (Product Documentation)
@@ -156,7 +159,49 @@ https://api.zr4skrmn.swedencentral.aroapp.io:6443/
 
 - https://learn.microsoft.com/en-us/azure/openshift/howto-create-private-cluster-4x: By default OpenShift uses self-signed certificates for all of the routes created on *.apps.<random>.<location>.aroapp.io.
 
+## k8s-aro.spec.clusterProfile.resourceGroupId
+
+```
+aroNodeRg=$(az aro show -g $rg -n aro --query clusterProfile.resourceGroupId -otsv); echo $aroNodeRg
+/subscriptions/redacts-1111-1111-1111-111111111111/resourcegroups/aro-zr4skrmn
+
+az resource list -l $loc -otable | grep aro-zr4skrmn
+aro-xwjww-nsg                                                                           aro-zr4skrmn                                         swedencentral  Microsoft.Network/networkSecurityGroups
+imageregistryxw6rp                                                                      aro-zr4skrmn                                         swedencentral  Microsoft.Storage/storageAccounts
+aro-xwjww-pe                                                                            aro-zr4skrmn                                         swedencentral  Microsoft.Network/privateEndpoints
+clusterxw6rp                                                                            aro-zr4skrmn                                         swedencentral  Microsoft.Storage/storageAccounts
+aro-xwjww-internal                                                                      aro-zr4skrmn                                         swedencentral  Microsoft.Network/loadBalancers
+aro-xwjww-pip-v4                                                                        aro-zr4skrmn                                         swedencentral  Microsoft.Network/publicIPAddresses
+aro-xwjww-default-v4                                                                    aro-zr4skrmn                                         swedencentral  Microsoft.Network/publicIPAddresses
+aro-xwjww                                                                               aro-zr4skrmn                                         swedencentral  Microsoft.Network/loadBalancers
+aro-xwjww-pls                                                                           aro-zr4skrmn                                         swedencentral  Microsoft.Network/privateLinkServices
+aro-xwjww-pls.nic.f1358a98-aa8b-494d-a397-3b70a5ecbc11                                  aro-zr4skrmn                                         swedencentral  Microsoft.Network/networkInterfaces
+aro-xwjww-pe.nic.1b5fa5cf-89d2-4aa2-83bc-38a43a7d3bda                                   aro-zr4skrmn                                         swedencentral  Microsoft.Network/networkInterfaces
+aro-xwjww-master0-nic                                                                   aro-zr4skrmn                                         swedencentral  Microsoft.Network/networkInterfaces
+aro-xwjww-master2-nic                                                                   aro-zr4skrmn                                         swedencentral  Microsoft.Network/networkInterfaces
+aro-xwjww-master1-nic                                                                   aro-zr4skrmn                                         swedencentral  Microsoft.Network/networkInterfaces
+aro-xwjww-master-1                                                                      aro-zr4skrmn                                         swedencentral  Microsoft.Compute/virtualMachines
+aro-xwjww-master-0                                                                      aro-zr4skrmn                                         swedencentral  Microsoft.Compute/virtualMachines
+aro-xwjww-master-2                                                                      aro-zr4skrmn                                         swedencentral  Microsoft.Compute/virtualMachines
+aro-xwjww-worker-swedencentral2-grggt-nic                                               aro-zr4skrmn                                         swedencentral  Microsoft.Network/networkInterfaces
+aro-xwjww-worker-swedencentral2-grggt                                                   aro-zr4skrmn                                         swedencentral  Microsoft.Compute/virtualMachines
+aro-xwjww-worker-swedencentral3-f2thf-nic                                               aro-zr4skrmn                                         swedencentral  Microsoft.Network/networkInterfaces
+aro-xwjww-worker-swedencentral3-f2thf                                                   aro-zr4skrmn                                         swedencentral  Microsoft.Compute/virtualMachines
+aro-xwjww-worker-swedencentral1-gdhrw-nic                                               aro-zr4skrmn                                         swedencentral  Microsoft.Network/networkInterfaces
+aro-xwjww-worker-swedencentral1-gdhrw                                                   aro-zr4skrmn                                         swedencentral  Microsoft.Compute/virtualMachines
+```
+
 ## k8s-aro.spec.MachineSet.node-role.master
+
+```
+az aro show -g $rg -n aro --query masterProfile
+{
+  "diskEncryptionSetId": null,
+  "encryptionAtHost": "Disabled",
+  "subnetId": "/subscriptions/redacts-1111-1111-1111-111111111111/resourceGroups/rg/providers/Microsoft.Network/virtualNetworks/vnet/subnets/aromastersubnet",
+  "vmSize": "Standard_D8s_v3"
+}
+```
 
 ## k8s-aro.spec.MachineSet.node-role.infra
 
@@ -168,6 +213,51 @@ https://api.zr4skrmn.swedencentral.aroapp.io:6443/
 - https://learn.microsoft.com/en-us/azure/openshift/howto-infrastructure-nodes#before-you-begin: The nodes must have an Azure tag of node_role: infra
 
 ## k8s-aro.spec.MachineSet.node-role.worker
+
+```
+az aro show -g $rg -n aro --query workerProfiles
+az aro show -g $rg -n aro --query workerProfilesStatus
+[
+  {
+    "count": 3,
+    "diskEncryptionSetId": null,
+    "diskSizeGb": 128,
+    "encryptionAtHost": "Disabled",
+    "name": "worker",
+    "subnetId": "/subscriptions/redacts-1111-1111-1111-111111111111/resourceGroups/rg/providers/Microsoft.Network/virtualNetworks/vnet/subnets/aroworkersubnet",
+    "vmSize": "Standard_D4s_v3"
+  }
+]
+[
+  {
+    "count": 1,
+    "diskEncryptionSetId": null,
+    "diskSizeGb": 128,
+    "encryptionAtHost": "Disabled",
+    "name": "aro-xwjww-worker-swedencentral1",
+    "subnetId": "/subscriptions/redacts-1111-1111-1111-111111111111/resourceGroups/rg/providers/Microsoft.Network/virtualNetworks/vnet/subnets/aroworkersubnet",
+    "vmSize": "Standard_D4s_v3"
+  },
+  {
+    "count": 1,
+    "diskEncryptionSetId": null,
+    "diskSizeGb": 128,
+    "encryptionAtHost": "Disabled",
+    "name": "aro-xwjww-worker-swedencentral2",
+    "subnetId": "/subscriptions/redacts-1111-1111-1111-111111111111/resourceGroups/rg/providers/Microsoft.Network/virtualNetworks/vnet/subnets/aroworkersubnet",
+    "vmSize": "Standard_D4s_v3"
+  },
+  {
+    "count": 1,
+    "diskEncryptionSetId": null,
+    "diskSizeGb": 128,
+    "encryptionAtHost": "Disabled",
+    "name": "aro-xwjww-worker-swedencentral3",
+    "subnetId": "/subscriptions/redacts-1111-1111-1111-111111111111/resourceGroups/rg/providers/Microsoft.Network/virtualNetworks/vnet/subnets/aroworkersubnet",
+    "vmSize": "Standard_D4s_v3"
+  }
+]
+```
 
 ## k8s-aro.spec.vmsize
 

@@ -93,8 +93,7 @@ az acr update --anonymous-pull-enabled true -n $registry # (BadRequest) Anonymou
 crictl pull imageshack.azurecr.io/library/nginx:latest
 
 # In a public AKS cluster that's attached to a public ACR
-# tbd with az acr token
-az acr token create --registry $registry --name MyToken --repository library/nginx content/write content/read --output json
+# tbd with az acr login
 root@aks-nodepool1-74128781-vmss000000:/# crictl pull --creds MyToken:7oredacted imageshack.azurecr.io/library/nginx:latest # 401 Unauthorized
 ```
 

@@ -43,6 +43,7 @@ az resource show --query tags --ids /subscriptions/redacts-1111-1111-1111-111111
 
 - https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/tag-resources
 - https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/tag-resources-cli
+- https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/manage-resource-groups-cli#tag-resource-groups
 
 ```
 az aks create -g $rg -n aks --tags dept=IT costcenter=9999 -s $vmSize

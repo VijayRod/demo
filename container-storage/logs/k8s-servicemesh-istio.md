@@ -93,3 +93,7 @@ kubectl describe validatingwebhookconfiguration istio-validator-asm-1-21-aks-ist
 - https://learn.microsoft.com/en-us/azure/aks/istio-about
 - https://istio.io/latest/docs/
 - https://github.com/VijayRod/demo/blob/master/aks/servicemesh-istio
+
+## k8s-servicemesh-istio.app.redis
+
+- https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-best-practices-kubernetes#potential-connection-collision-with-istioenvoy

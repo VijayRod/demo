@@ -265,5 +265,6 @@ sigs.k8s.io/cluster-api
 - https://capz.sigs.k8s.io/: CAPZ enables efficient management at scale of self-managed or managed (AKS) clusters on Azure.
 - https://capz.sigs.k8s.io/managed/managedcluster
 
-## k8s.tools.md
-https://collabnix.github.io/kubetools/
+## k8s.tools
+
+- https://collabnix.github.io/kubetools/

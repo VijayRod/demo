@@ -192,3 +192,7 @@ kubectl delete sa ${SERVICE_ACCOUNT_NAME} -n ${SERVICE_ACCOUNT_NAMESPACE}
 
 - https://learn.microsoft.com/en-us/azure/aks/learn/tutorial-kubernetes-workload-identity
 - https://azure.github.io/azure-workload-identity/docs/installation/managed-clusters.html
+
+## identity-auth-openid_oidc_WorkloadIdentity.aks.keyvault
+
+- https://learn.microsoft.com/en-us/azure/aks/workload-identity-deploy-cluster#grant-permissions-to-access-azure-key-vault

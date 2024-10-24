@@ -34,6 +34,8 @@ Events:
 ```
 
 - https://learn.microsoft.com/en-us/azure/aks/cluster-container-registry-integration
+- https://learn.microsoft.com/en-us/cli/azure/acr
+- https://azure.github.io/acr/
 
 ## k8s-aks-acr.debug
 
@@ -279,7 +281,7 @@ az role assignment create --role AcrPull --assignee $ASSIGNEE --scope $acrId
 az aks check-acr -g $rgname -n $clustername --acr $registry # Validating image pull permission: SUCCEEDED
 ```
 
-## k8s-aks-acr.image
+## k8s-aks-acr.repository aka image
 
 ```
 # Check out the Dockerfile section for instructions on how to create and import a custom image.
@@ -295,6 +297,10 @@ az acr repository show-tags -n $registry --repository nginx -otable # latest
 
 az acr repository delete -n $registry --repository nginx -y # Are you sure you want to delete the repository 'nginx' and all images under it? (y/n)
 ```
+
+## k8s-aks-acr.repository.token
+
+- https://learn.microsoft.com/en-us/azure/container-registry/container-registry-repository-scoped-permissions: By creating tokens, a registry owner can provide users or services with scoped, time-limited access to repositories to pull or push images or perform other actions.
 
 ## k8s-aks-acr.login
 
@@ -364,3 +370,5 @@ Please store your generated credentials safely. Meanwhile you can use it through
 ```
 
 - https://learn.microsoft.com/en-us/azure/container-registry/container-registry-authentication?tabs=azure-cli
+- https://learn.microsoft.com/en-us/troubleshoot/azure/azure-container-registry/acr-authentication-errors: The az acr login command calls the docker login command and uses the Microsoft Entra access token to authenticate against the ACR. It requires the Docker client and Docker daemon to be installed on the machine where you execute the command. When the Docker daemon doesn't run in your environment, if you need to authenticate with ACR, use the az acr login command with the --expose-token parameter. This command is helpful when you need to run scripts that don't require the Docker daemon but only the Docker CLI
+- https://azure.github.io/acr/AAD-OAuth.html#overview

@@ -3,7 +3,7 @@ This uses steps in https://learn.microsoft.com/en-us/azure/aks/learn/tutorial-ku
 ```
 # To export environmental variables
 export RESOURCE_GROUP=$rg
-export LOCATION="westcentralus" # "For az identity federated-credential create" error "(MethodNotAllowed) The request format was unexpected : Support for federated identity credentials not enabled", refer https://learn.microsoft.com/en-us/azure/active-directory/workload-identities/workload-identity-federation-considerations#unsupported-regions-user-assigned-managed-identities
+# (currently not necessary) export LOCATION="westcentralus" # "For az identity federated-credential create" error "(MethodNotAllowed) The request format was unexpected : Support for federated identity credentials not enabled", refer https://learn.microsoft.com/en-us/azure/active-directory/workload-identities/workload-identity-federation-considerations#unsupported-regions-user-assigned-managed-identities
 export SERVICE_ACCOUNT_NAMESPACE="default"
 export SERVICE_ACCOUNT_NAME="workload-identity-sa"
 export SUBSCRIPTION="$(az account show --query id --output tsv)"
@@ -16,7 +16,7 @@ export clustername=akswork
 
 ```
 # To create an AKS cluster
-az aks create -g "${RESOURCE_GROUP}" -n $clustername --node-count 1 --enable-oidc-issuer --enable-workload-identity -l "${LOCATION}"
+az aks create -g "${RESOURCE_GROUP}" -n $clustername --enable-oidc-issuer --enable-workload-identity -s $vmsize -c 2 # -l "${LOCATION}"
 export AKS_OIDC_ISSUER="$(az aks show -n $clustername -g "${RESOURCE_GROUP}" --query "oidcIssuerProfile.issuerUrl" -otsv)"
 
 # To create an Azure Key Vault and secret

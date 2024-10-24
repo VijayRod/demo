@@ -3,7 +3,7 @@ This uses steps in https://learn.microsoft.com/en-us/azure/aks/learn/tutorial-ku
 ```
 # To export environmental variables
 export RESOURCE_GROUP=$rg
-# (currently not necessary) export LOCATION="westcentralus" # "For az identity federated-credential create" error "(MethodNotAllowed) The request format was unexpected : Support for federated identity credentials not enabled", refer https://learn.microsoft.com/en-us/azure/active-directory/workload-identities/workload-identity-federation-considerations#unsupported-regions-user-assigned-managed-identities
+export LOCATION="swedencentral" # (currently not necessary) "For az identity federated-credential create" error "(MethodNotAllowed) The request format was unexpected : Support for federated identity credentials not enabled", refer https://learn.microsoft.com/en-us/azure/active-directory/workload-identities/workload-identity-federation-considerations#unsupported-regions-user-assigned-managed-identities
 export SERVICE_ACCOUNT_NAMESPACE="default"
 export SERVICE_ACCOUNT_NAME="workload-identity-sa"
 export SUBSCRIPTION="$(az account show --query id --output tsv)"

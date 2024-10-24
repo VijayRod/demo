@@ -307,7 +307,7 @@ Cannot connect to the Docker daemon at unix:///var/run/docker.sock. Is the docke
 ```
 
 ```
-az acr login -n imageshack --expose-token
+az acr login -n $registry --expose-token
 You can perform manual login using the provided access token below, for example: 'docker login loginServer -u 00000000-0000-0000-0000-000000000000 -p accessToken'
 {
   "accessToken": "eyredacted_bhqA",

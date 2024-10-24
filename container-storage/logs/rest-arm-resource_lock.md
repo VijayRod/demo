@@ -9,3 +9,4 @@ az lock list -g $rg -otable
 ```
 
 - https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/lock-resources?tabs=json#azure-cli
+- https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/manage-resource-groups-cli#lock-resource-groups

@@ -12,7 +12,7 @@ redisId=$(az redis show -g $rg -n $redis --query id -otsv); echo $redisId
 redisHostName=$(az redis show -g $rg -n $redis --query hostName -otsv); echo $redisHostName
 redis3942.redis.cache.windows.net
 
-az redis delete -g $rg -n $redis -y
+# az redis delete -g $rg -n $redis -y
 # az group delete -n $rg -y --no-wait
 ```
 

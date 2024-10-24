@@ -1,0 +1,1 @@
+- https://learn.microsoft.com/en-us/cli/azure/resource

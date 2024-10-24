@@ -11,9 +11,10 @@ identityName="myIdentity$RANDOM"
 az identity create -g $rgname --name $identityName
 
 # TBDc - To retrieve the properties of the identity
-identityClientId=$(az identity show -g $rgname -n $identityName --query clientId -otsv)
-identityPrincipalId=$(az identity show -g $rgname -n $identityName --query principalId -otsv)
-identityUri=$(az identity show -g $rgname --name $identityName --query id -otsv)
+userIdentityClientId=$(az identity show -g $rgname -n $identityName --query clientId -otsv)
+userIdentityName=$(az identity show -g $rgname -n $identityName --query name -otsv)
+userIdentityPrincipalId=$(az identity show -g $rgname -n $identityName --query principalId -otsv)
+userIdentityUri=$(az identity show -g $rgname --name $identityName --query id -otsv)
 ```
 
 The managed user identity can be used to create an AKS cluster as indicated in https://learn.microsoft.com/en-us/azure/aks/use-managed-identity.
@@ -21,7 +22,7 @@ The managed user identity can be used to create an AKS cluster as indicated in h
 ```
 # To create an AKS cluster using the specified identity
 clustername=aksmsiuser
-az aks create -g $rgname -n $clustername --enable-managed-identity --assign-identity $identityUri
+az aks create -g $rgname -n $clustername --enable-managed-identity --assign-identity $userIdentityUri
 ```
 
 ```

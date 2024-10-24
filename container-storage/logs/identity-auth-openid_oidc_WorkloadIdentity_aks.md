@@ -72,6 +72,8 @@ EOF
 ```
 
 ```
+userIdentityId=$(az identity show --resource-group "${RESOURCE_GROUP}" --name "${USER_ASSIGNED_IDENTITY_NAME}" --query id -otsv); echo $userIdentityId
+
 az aks show -g $rg -n akswork --query oidcIssuerProfile
 The behavior of this command has been altered by the following extension: aks-preview
 {

@@ -300,35 +300,7 @@ az acr repository delete -n $registry --repository nginx -y # Are you sure you w
 
 ## k8s-aks-acr.repository.token
 
-- https://learn.microsoft.com/en-us/azure/container-registry/container-registry-repository-scoped-permissions: By creating tokens, a registry owner can provide users or services with scoped, time-limited access to repositories to pull or push images or perform other actions.
-
-## k8s-aks-acr.login
-
 ```
-# earlier
-az acr login -n $registry
-You may want to use 'az acr login -n imageshack --expose-token' to get an access token, which does not require Docker to be installed.
-2024-10-22 18:23:44.394058 An error occurred: DOCKER_COMMAND_ERROR
-Cannot connect to the Docker daemon at unix:///var/run/docker.sock. Is the docker daemon running?
-```
-
-```
-az acr login -n $registry --expose-token
-You can perform manual login using the provided access token below, for example: 'docker login loginServer -u 00000000-0000-0000-0000-000000000000 -p accessToken'
-{
-  "accessToken": "eyredacted_bhqA",
-  "loginServer": "imageshack.azurecr.io"
-}
-
-accessToken="eyredacted_bhqA"
-acrLoginServer=$(az acr show -g $rgname -n $registry --query loginServer -otsv); echo $acrLoginServer # imageshack.azurecr.io
-docker login $acrLoginServer -u 00000000-0000-0000-0000-000000000000 -p $accessToken
-# Login Succeeded
-```
-
-```
-# See the section on crictl.image.creds
-
 az acr token create --registry $registry --name MyToken --repository library/nginx content/write content/read --output json
 Please store your generated credentials safely. Meanwhile you can use it through "docker login imageshack.azurecr.io -u MyToken -p 7oredacted".
 {
@@ -367,6 +339,32 @@ Please store your generated credentials safely. Meanwhile you can use it through
   },
   "type": "Microsoft.ContainerRegistry/registries/tokens"
 }
+```
+
+- https://learn.microsoft.com/en-us/azure/container-registry/container-registry-repository-scoped-permissions: By creating tokens, a registry owner can provide users or services with scoped, time-limited access to repositories to pull or push images or perform other actions.
+
+## k8s-aks-acr.login
+
+```
+# earlier
+az acr login -n $registry
+You may want to use 'az acr login -n imageshack --expose-token' to get an access token, which does not require Docker to be installed.
+2024-10-22 18:23:44.394058 An error occurred: DOCKER_COMMAND_ERROR
+Cannot connect to the Docker daemon at unix:///var/run/docker.sock. Is the docker daemon running?
+```
+
+```
+az acr login -n $registry --expose-token
+You can perform manual login using the provided access token below, for example: 'docker login loginServer -u 00000000-0000-0000-0000-000000000000 -p accessToken'
+{
+  "accessToken": "eyredacted_bhqA",
+  "loginServer": "imageshack.azurecr.io"
+}
+
+accessToken="eyredacted_bhqA"
+acrLoginServer=$(az acr show -g $rgname -n $registry --query loginServer -otsv); echo $acrLoginServer # imageshack.azurecr.io
+docker login $acrLoginServer -u 00000000-0000-0000-0000-000000000000 -p $accessToken
+# Login Succeeded
 ```
 
 - https://learn.microsoft.com/en-us/azure/container-registry/container-registry-authentication?tabs=azure-cli

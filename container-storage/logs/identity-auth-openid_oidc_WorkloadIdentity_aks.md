@@ -69,6 +69,9 @@ spec:
   nodeSelector:
     kubernetes.io/os: linux
 EOF
+sleep 5
+kubectl logs quick-start
+kubectl get po quick-start
 ```
 
 ```

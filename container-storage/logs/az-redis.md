@@ -20,6 +20,7 @@ az redis delete -g $rg -n $redis -y
 - https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-how-to-scale#scaling-faq
 - https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-planning-faq
 - https://redis.io/docs/latest/operate/oss_and_stack/management/config/
+- https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/scripts/create-manage-cache
 
 ## redis.app.k8s
 

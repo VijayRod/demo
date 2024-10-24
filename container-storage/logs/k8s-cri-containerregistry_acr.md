@@ -14,6 +14,7 @@ az acr create -g $rgname -n $registry --sku basic
 
 # To create a cluster
 az aks create -g $rgname -n $clustername --attach-acr $registry -s $vmsize -c 2
+# az aks update -g $rgname -n $clustername --attach-acr $registry
 az aks get-credentials -g $rgname -n $clustername
 
 # To deploy a pod with an image from the registry

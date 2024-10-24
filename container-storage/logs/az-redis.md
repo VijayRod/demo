@@ -25,18 +25,28 @@ az redis delete -g $rg -n $redis -y
 ## redis.app.k8s
 
 ```
+# https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-tutorial-aks-get-started#set-up-an-azure-cache-for-redis-instance
 rg=rgredis
+redis="redis$RANDOM"
 az group create -n $rg -l $loc
-az aks create -g $rg -n aks -s $vmsize --enable-asm -c 1
-az aks get-credentials -g $rg -n aks --overwrite-existing
-# az aks mesh enable -g $rg -n aks
+az redis create -g $rg -n $redis -l $loc --sku Basic --vm-size c0
+
+# https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-tutorial-aks-get-started#configure-your-aks-cluster
+# Set up an AKS cluster with OIDC and workload identity. This includes creating a user assigned managed identity, setting up a service account with this identity, and establishing a federated identity credential.
+
+# https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-tutorial-aks-get-started#set-up-an-azure-cache-for-redis-instance
+userIdentityName=$(az identity show --resource-group "${RESOURCE_GROUP}" --name "${USER_ASSIGNED_IDENTITY_NAME}" --query name -otsv); echo $userIdentityName
+userIdentityPrincipalId=$(az identity show --resource-group "${RESOURCE_GROUP}" --name "${USER_ASSIGNED_IDENTITY_NAME}" --query principalId -otsv); echo $userIdentityPrincipalId
+az redis access-policy-assignment create -g $rg -n $redis --access-policy-name "Data Owner" --object-id $userIdentityPrincipalId --object-id-alias $userIdentityName --policy-assignment-name $userIdentityPrincipalId
+# az redis access-policy-assignment list -g $rg -n $redis
 ```
 
 - https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-best-practices-kubernetes
+- https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-tutorial-aks-get-started
 
 ## redis.app.k8s.example
 
-- https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-tutorial-aks-get-started
+
 
 ## redis.debug
 
@@ -106,6 +116,48 @@ az redis show -g $rg -n $redis
 ## redis.spec.cluster
 
 - https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/scripts/create-manage-premium-cache-cluster: two shards (--shard-count 2)
+
+## redis.spec.other.access-policy
+
+```
+az redis access-policy list -g $rg -n $redis
+az redis access-policy list -g $rg -n $redis -otable
+Name              Permissions                                                              ProvisioningState    ResourceGroup    TypePropertiesType
+----------------  -----------------------------------------------------------------------  -------------------  ---------------  --------------------
+Data Owner        +@all allkeys                                                            Succeeded            rgredis          BuiltIn
+Data Contributor  +@all -@dangerous +cluster|info +cluster|nodes +cluster|slots allkeys    Succeeded            rgredis          BuiltIn
+Data Reader       +@read +@connection +cluster|info +cluster|nodes +cluster|slots allkeys  Succeeded            rgredis          BuiltIn
+```
+
+- https://learn.microsoft.com/en-us/cli/azure/redis/access-policy
+- https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-configure-role-based-access-control
+
+## redis.spec.other.access-policy.assignment
+
+```
+# Azure Portal: redis, Settings, Authentication, Microsoft Entra Authentication.
+
+userIdentityName=$(az identity show --resource-group "${RESOURCE_GROUP}" --name "${USER_ASSIGNED_IDENTITY_NAME}" --query name -otsv); echo $userIdentityName
+userIdentityPrincipalId=$(az identity show --resource-group "${RESOURCE_GROUP}" --name "${USER_ASSIGNED_IDENTITY_NAME}" --query principalId -otsv); echo $userIdentityPrincipalId
+az redis access-policy-assignment create -g $rg -n $redis --access-policy-name "Data Owner" --object-id $userIdentityPrincipalId --object-id-alias $userIdentityName --policy-assignment-name $userIdentityPrincipalId
+# az redis access-policy-assignment delete -g $rg -n $redis --policy-assignment-name $userIdentityPrincipalId
+
+az redis access-policy-assignment list -g $rg -n $redis
+[
+  {
+    "accessPolicyName": "Data Owner",
+    "id": "/subscriptions/redacts-1111-1111-1111-111111111111/resourceGroups/rgredis/providers/Microsoft.Cache/Redis/redis20262/accessPolicyAssignments/3b019cde-7176-4100-8f7a-60388d9fcfd7",
+    "name": "3b019cde-7176-4100-8f7a-60388d9fcfd7",
+    "objectId": "3b019cde-7176-4100-8f7a-60388d9fcfd7",
+    "objectIdAlias": "myIdentitywork",
+    "provisioningState": "Succeeded",
+    "resourceGroup": "rgredis",
+    "type": "Microsoft.Cache/Redis/accessPolicyAssignments"
+  }
+]
+```
+
+- https://learn.microsoft.com/en-us/cli/azure/redis/access-policy-assignment#az-redis-access-policy-assignment-list
 
 ## redis.spec.sku aka tier
 

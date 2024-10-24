@@ -1,3 +1,0 @@
-- https://cloud-provider-azure.sigs.k8s.io/install/
-- https://cloud-provider-azure.sigs.k8s.io/topics/
-- https://github.com/kubernetes-sigs/cloud-provider-azure

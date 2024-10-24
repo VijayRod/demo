@@ -10,6 +10,10 @@ wsl.exe --list --online # Displays a list of available distributions for install
   
 -- https://learn.microsoft.com/en-us/windows/wsl/basic-commands
 
+## wsl.debug
+
+- https://askubuntu.com/questions/1379425/system-has-not-been-booted-with-systemd-as-init-system-pid-1-cant-operate
+  
 ## wsl.os.mariner
 
 - https://github.com/microsoft/azurelinux/issues/1159: WSL now includes a CBL-Mariner by default... question is about to the availability of Mariner in the list of supported distribution for WSL, including from the online store : wsl --list --online... Mariner does not officially support WSL at this time.

@@ -1,3 +1,13 @@
+## identity-auth-openid_oidc_WorkloadIdentity.aks
+
+```
+```
+
+- https://learn.microsoft.com/en-us/azure/aks/learn/tutorial-kubernetes-workload-identity
+- https://azure.github.io/azure-workload-identity/docs/installation/managed-clusters.html
+
+### identity-auth-openid_oidc_WorkloadIdentity.aks (earlier)
+
 This uses steps in https://learn.microsoft.com/en-us/azure/aks/learn/tutorial-kubernetes-workload-identity.
 
 ```

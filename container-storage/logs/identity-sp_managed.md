@@ -2,7 +2,7 @@ This creates a managed user identity.
 
 ```
 # Replace the below with appropriate values
-rgname=
+rgname=$rg
 userIdentityName="userIdentity$RANDOM"
 ```
 

@@ -29,6 +29,8 @@ redis3942.redis.cache.windows.net
 ## redis.app.k8s.example.connect-from-aks
 
 ```
+# If there's no specific need for workload identity, you might want to go with connect-from-aks.simple as your go-to option.
+
 # https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-tutorial-aks-get-started#set-up-an-azure-cache-for-redis-instance
 rg=rgredis
 redis="redis$RANDOM"
@@ -57,7 +59,7 @@ az acr create -g $rg -n $registry --sku basic
 az aks update -g $rg -n $CLUSTER_NAME --attach-acr $registry
 acrLoginServer=$(az acr show -g $rg -n $registry --query loginServer -otsv); echo $acrLoginServer
 acrAccessToken=$(az acr login -n $registry --expose-token | jq .accessToken); echo $acrAccessToken
-docker login $acrLoginServer -u 00000000-0000-0000-0000-000000000000 # copy the value of $acrAccessToken (leave out the double quotes) and hit Enter
+docker login $acrLoginServer -u 00000000-0000-0000-0000-000000000000 #### This step needs you to paste the password. Copy the value of $acrAccessToken (leave out the double quotes) and hit Enter
 az acr build --registry $registry --image redis-sample .
 
 # https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-tutorial-aks-get-started#run-your-workload

@@ -18,7 +18,7 @@ FROM nginx:latest
 EOF
 # cat /tmp/docker/Docker
 # See the section on `az acr login -n imageshack --expose-token`
-az acr build --registry $registry --image nginx .
+az acr build --registry $registry --image nginx . # Run ID: dt1 was successful after 47s
 ```
 
 - https://learn.microsoft.com/en-us/azure/container-registry/container-registry-tutorial-quick-task

@@ -210,6 +210,84 @@ kubectl logs entrademo-pod # Connecting to {cacheHostName} with an access key.. 
 kubectl get po entrademo-pod
 ```
 
+redis.app.k8s.example.connect-from-aks.simple.istio|clustered
+
+```
+# This example demonstrates a simpler method of connecting an AKS pod to the redis cache using an access key, bypassing the need for a workload identity. The AKS cluster is set up with Istio, and there's one pod equipped with the Istio sidecar and another without it. Plus, the Redis cache we're using is of the premium, sharded (clustered) variety.
+
+az redis delete -g $rg -n $redis -y
+az redis create -g $rg -n $redis -l $loc --sku premium --vm-size P1 --shard-count 2 # Premium P1 (6 GB) Redis cache configuration with clustering enabled, and it's setup with 2 shards, bringing the total capacity to 12 GB
+redisHostName=$(az redis show -g $rg -n $redis --query hostName -otsv); echo $redisHostName
+redisKey=$(az redis list-keys -g $rg -n $redis | jq .primaryKey)
+
+az aks mesh enable -g $rg -n aks # Istio
+kubectl delete po --all
+
+po=redis-sample
+ns=default
+kubectl delete po $po
+cat << EOF | kubectl create -f -
+apiVersion: v1
+kind: Pod
+metadata:
+ name: $po
+ namespace: $ns
+spec:
+ containers:
+ - name: redis-sample
+   image: $acrLoginServer/redis-sample
+   imagePullPolicy: Always
+   command: ["dotnet", "ConnectFromAKS.dll"] 
+   env:
+   - name: AUTHENTICATION_TYPE
+     value: "ACCESS_KEY" # change to ACCESS_KEY to authenticate using access key
+   - name: REDIS_HOSTNAME
+     value: $redisHostName
+   - name: REDIS_ACCESSKEY
+     value: $redisKey 
+   - name: REDIS_PORT
+     value: "6380"
+ restartPolicy: Never
+EOF
+sleep 30
+kubectl logs -n $ns $po # Connecting to {cacheHostName} with an access key.. Retrieved value from Redis: Hello, Redis!
+kubectl get po -n $ns $po
+
+po=redis-sample-istio
+ns=istio-ns
+istioRevision=$(az aks show -g $rg -n aks --query serviceMeshProfile.istio.revisions -otsv); echo $istioRevision
+kubectl delete po $po
+kubectl delete ns $ns
+kubectl create ns $ns
+kubectl label namespace $ns istio.io/rev=$istioRevision
+cat << EOF | kubectl create -f -
+apiVersion: v1
+kind: Pod
+metadata:
+ name: $po
+ namespace: $ns
+spec:
+ containers:
+ - name: redis-sample
+   image: $acrLoginServer/redis-sample
+   imagePullPolicy: Always
+   command: ["dotnet", "ConnectFromAKS.dll"] 
+   env:
+   - name: AUTHENTICATION_TYPE
+     value: "ACCESS_KEY" # change to ACCESS_KEY to authenticate using access key
+   - name: REDIS_HOSTNAME
+     value: $redisHostName
+   - name: REDIS_ACCESSKEY
+     value: $redisKey 
+   - name: REDIS_PORT
+     value: "6380"
+ restartPolicy: Never
+EOF
+sleep 30
+kubectl logs -n $ns $po -c redis-sample # RedisConnectionException
+kubectl get po -n $ns $po
+```
+
 ## redis.debug
 
 ```

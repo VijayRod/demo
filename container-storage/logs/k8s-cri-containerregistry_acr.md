@@ -3,7 +3,7 @@
 ```
 # Replace the below with appropriate values
 rgname=secureshack2
-registry=imageshack
+registry="registry$RANDOM"
 clustername=aksacr
 az group create -n $rgname -l $loc
 ```
@@ -212,7 +212,7 @@ Your cluster can pull images from imageshack.azurecr.io!
 
 ```
 rg=rg
-registry=imageshack
+registry="registry$RANDOM"
 clustername=aksacr
 az acr create -g $rg -n $registry --sku basic
 az aks create -g $rg -n aksprivateacr --enable-private-cluster --attach-acr $registry -s $vmsize -c 2 # success

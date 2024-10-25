@@ -298,6 +298,14 @@ az acr repository show-tags -n $registry --repository nginx -otable # latest
 az acr repository delete -n $registry --repository nginx -y # Are you sure you want to delete the repository 'nginx' and all images under it? (y/n)
 ```
 
+## k8s-aks-acr.repository.build aka custom image
+
+```
+# Check out the Dockerfile section for instructions on how to create and import a custom image.
+# This steps follows the az acr login and docker login
+az acr build --registry $registry --image image-sample . # Execute in the folder that contains the Dockerfile. # Run ID: dt1 was successful after 47s
+```
+
 ## k8s-aks-acr.repository.token
 
 ```

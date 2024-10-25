@@ -319,6 +319,215 @@ VolumeBindingMode:     Immediate
 Events:                <none>
 ```
 
+```
+# dynamic
+kubectl delete po mypod
+kubectl delete pvc pvc-azureblob-nfs
+cat << EOF | kubectl create -f -
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvc-azureblob-nfs
+spec:
+  accessModes:
+  - ReadWriteMany
+  storageClassName: azureblob-nfs-premium
+  resources:
+    requests:
+      storage: 5Gi
+---
+kind: Pod
+apiVersion: v1
+metadata:
+  name: mypod
+spec:
+  containers:
+  - name: mypod
+    image: nginx
+    volumeMounts:
+    - mountPath: /mnt/blob
+      name: volume
+  volumes:
+    - name: volume
+      persistentVolumeClaim:
+        claimName: pvc-azureblob-nfs
+EOF
+kubectl get po -owide -w
+
+k logs -n kube-system csi-blob-node-pznmj -c azureblob
+I1025 18:15:19.008517  163111 utils.go:104] GRPC call: /csi.v1.Node/NodeStageVolume
+I1025 18:15:19.008533  163111 utils.go:105] GRPC request: {"staging_target_path":"/var/lib/kubelet/plugins/kubernetes.io/csi/blob.csi.azure.com/9ddcfa027704f6953235d0aa781de2ea6546e3f18d3048cc2391b6dfd56dbc3c/globalmount","volume_capability":{"AccessType":{"Mount":{}},"access_mode":{"mode":5}},"volume_context":{"containername":"pvc-795461d9-2fe2-4e70-986b-295ca07c13bf","csi.storage.k8s.io/pv/name":"pvc-795461d9-2fe2-4e70-986b-295ca07c13bf","csi.storage.k8s.io/pvc/name":"pvc-azureblob-nfs","csi.storage.k8s.io/pvc/namespace":"default","protocol":"nfs","secretnamespace":"default","skuName":"Premium_LRS","storage.kubernetes.io/csiProvisionerIdentity":"1729876341804-4470-blob.csi.azure.com"},"volume_id":"MC_rg_aksnfs_swedencentral#nfs7914577893d242738351#pvc-795461d9-2fe2-4e70-986b-295ca07c13bf##default#"}
+I1025 18:15:19.008893  163111 blob.go:504] volumeID(MC_rg_aksnfs_swedencentral#nfs7914577893d242738351#pvc-795461d9-2fe2-4e70-986b-295ca07c13bf##default#) authEnv: []
+I1025 18:15:19.012265  163111 nodeserver.go:329] target /var/lib/kubelet/plugins/kubernetes.io/csi/blob.csi.azure.com/9ddcfa027704f6953235d0aa781de2ea6546e3f18d3048cc2391b6dfd56dbc3c/globalmount
+protocol nfs
+volumeId MC_rg_aksnfs_swedencentral#nfs7914577893d242738351#pvc-795461d9-2fe2-4e70-986b-295ca07c13bf##default#
+mountflags []
+serverAddress nfs7914577893d242738351.blob.core.windows.net
+I1025 18:15:19.012295  163111 nodeserver.go:339] set AZURE_ENDPOINT_OVERRIDE to windows.net
+I1025 18:15:19.012436  163111 mount_linux.go:243] Detected OS without systemd
+I1025 18:15:19.012445  163111 mount_linux.go:218] Mounting cmd (mount) with arguments (-t aznfs -o sec=sys,vers=3,nolock nfs7914577893d242738351.blob.core.windows.net:/nfs7914577893d242738351/pvc-795461d9-2fe2-4e70-986b-295ca07c13bf /var/lib/kubelet/plugins/kubernetes.io/csi/blob.csi.azure.com/9ddcfa027704f6953235d0aa781de2ea6546e3f18d3048cc2391b6dfd56dbc3c/globalmount)
+I1025 18:15:19.995136  163111 blob.go:1004] chmod targetPath(/var/lib/kubelet/plugins/kubernetes.io/csi/blob.csi.azure.com/9ddcfa027704f6953235d0aa781de2ea6546e3f18d3048cc2391b6dfd56dbc3c/globalmount, mode:020000000750) with permissions(0777)
+I1025 18:15:20.016195  163111 nodeserver.go:363] volume(MC_rg_aksnfs_swedencentral#nfs7914577893d242738351#pvc-795461d9-2fe2-4e70-986b-295ca07c13bf##default#) mount nfs7914577893d242738351.blob.core.windows.net:/nfs7914577893d242738351/pvc-795461d9-2fe2-4e70-986b-295ca07c13bf on /var/lib/kubelet/plugins/kubernetes.io/csi/blob.csi.azure.com/9ddcfa027704f6953235d0aa781de2ea6546e3f18d3048cc2391b6dfd56dbc3c/globalmount succeeded
+I1025 18:15:20.016217  163111 utils.go:111] GRPC response: {}
+I1025 18:15:20.037172  163111 utils.go:104] GRPC call: /csi.v1.Node/NodePublishVolume
+I1025 18:15:20.037188  163111 utils.go:105] GRPC request: {"staging_target_path":"/var/lib/kubelet/plugins/kubernetes.io/csi/blob.csi.azure.com/9ddcfa027704f6953235d0aa781de2ea6546e3f18d3048cc2391b6dfd56dbc3c/globalmount","target_path":"/var/lib/kubelet/pods/f89fe8c4-4542-4d4e-884c-2d75d9f6ce14/volumes/kubernetes.io~csi/pvc-795461d9-2fe2-4e70-986b-295ca07c13bf/mount","volume_capability":{"AccessType":{"Mount":{}},"access_mode":{"mode":5}},"volume_context":{"containername":"pvc-795461d9-2fe2-4e70-986b-295ca07c13bf","csi.storage.k8s.io/ephemeral":"false","csi.storage.k8s.io/pod.name":"mypod","csi.storage.k8s.io/pod.namespace":"default","csi.storage.k8s.io/pod.uid":"f89fe8c4-4542-4d4e-884c-2d75d9f6ce14","csi.storage.k8s.io/pv/name":"pvc-795461d9-2fe2-4e70-986b-295ca07c13bf","csi.storage.k8s.io/pvc/name":"pvc-azureblob-nfs","csi.storage.k8s.io/pvc/namespace":"default","csi.storage.k8s.io/serviceAccount.name":"default","csi.storage.k8s.io/serviceAccount.tokens":"***stripped***","protocol":"nfs","secretnamespace":"default","skuName":"Premium_LRS","storage.kubernetes.io/csiProvisionerIdentity":"1729876341804-4470-blob.csi.azure.com"},"volume_id":"MC_rg_aksnfs_swedencentral#nfs7914577893d242738351#pvc-795461d9-2fe2-4e70-986b-295ca07c13bf##default#"}
+I1025 18:15:20.037609  163111 nodeserver.go:139] NodePublishVolume: volume MC_rg_aksnfs_swedencentral#nfs7914577893d242738351#pvc-795461d9-2fe2-4e70-986b-295ca07c13bf##default# mounting /var/lib/kubelet/plugins/kubernetes.io/csi/blob.csi.azure.com/9ddcfa027704f6953235d0aa781de2ea6546e3f18d3048cc2391b6dfd56dbc3c/globalmount at /var/lib/kubelet/pods/f89fe8c4-4542-4d4e-884c-2d75d9f6ce14/volumes/kubernetes.io~csi/pvc-795461d9-2fe2-4e70-986b-295ca07c13bf/mount with mountOptions: [bind]
+I1025 18:15:20.037628  163111 mount_linux.go:218] Mounting cmd (mount) with arguments ( -o bind /var/lib/kubelet/plugins/kubernetes.io/csi/blob.csi.azure.com/9ddcfa027704f6953235d0aa781de2ea6546e3f18d3048cc2391b6dfd56dbc3c/globalmount /var/lib/kubelet/pods/f89fe8c4-4542-4d4e-884c-2d75d9f6ce14/volumes/kubernetes.io~csi/pvc-795461d9-2fe2-4e70-986b-295ca07c13bf/mount)
+I1025 18:15:20.042119  163111 mount_linux.go:218] Mounting cmd (mount) with arguments ( -o bind,remount /var/lib/kubelet/plugins/kubernetes.io/csi/blob.csi.azure.com/9ddcfa027704f6953235d0aa781de2ea6546e3f18d3048cc2391b6dfd56dbc3c/globalmount /var/lib/kubelet/pods/f89fe8c4-4542-4d4e-884c-2d75d9f6ce14/volumes/kubernetes.io~csi/pvc-795461d9-2fe2-4e70-986b-295ca07c13bf/mount)
+I1025 18:15:20.043596  163111 nodeserver.go:155] NodePublishVolume: volume MC_rg_aksnfs_swedencentral#nfs7914577893d242738351#pvc-795461d9-2fe2-4e70-986b-295ca07c13bf##default# mount /var/lib/kubelet/plugins/kubernetes.io/csi/blob.csi.azure.com/9ddcfa027704f6953235d0aa781de2ea6546e3f18d3048cc2391b6dfd56dbc3c/globalmount at /var/lib/kubelet/pods/f89fe8c4-4542-4d4e-884c-2d75d9f6ce14/volumes/kubernetes.io~csi/pvc-795461d9-2fe2-4e70-986b-295ca07c13bf/mount successfully
+I1025 18:15:20.043612  163111 utils.go:111] GRPC response: {}
+
+root@aks-nodepool1-13337413-vmss000000:/# mount | grep nfs
+10.161.100.100:/nfs7914577893d242738351/pvc-795461d9-2fe2-4e70-986b-295ca07c13bf on /var/lib/kubelet/plugins/kubernetes.io/csi/blob.csi.azure.com/9ddcfa027704f6953235d0aa781de2ea6546e3f18d3048cc2391b6dfd56dbc3c/globalmount type nfs (rw,relatime,vers=3,rsize=1048576,wsize=1048576,namlen=255,hard,nolock,proto=tcp,port=2048,timeo=600,retrans=6,sec=sys,mountaddr=10.161.100.100,mountvers=3,mountport=2048,mountproto=tcp,local_lock=all,addr=10.161.100.100)
+10.161.100.100:/nfs7914577893d242738351/pvc-795461d9-2fe2-4e70-986b-295ca07c13bf on /var/lib/kubelet/pods/f89fe8c4-4542-4d4e-884c-2d75d9f6ce14/volumes/kubernetes.io~csi/pvc-795461d9-2fe2-4e70-986b-295ca07c13bf/mount type nfs (rw,relatime,vers=3,rsize=1048576,wsize=1048576,namlen=255,hard,nolock,proto=tcp,port=2048,timeo=600,retrans=6,sec=sys,mountaddr=10.161.100.100,mountvers=3,mountport=2048,mountproto=tcp,local_lock=all,addr=10.161.100.100)
+
+# https://ipinfo.io/10.161.100.100: Bogon IP Address
+# https://github.com/Azure/AZNFS-mount/blob/main/README.md: This will pick the IP addresses in the range 172.16.100.100 - 172.16.254.254 and 10.161.100.100 -
+
+nslookup nfs7914577893d242738351.blob.core.windows.net
+Non-authoritative answer:
+nfs7914577893d242738351.blob.core.windows.net   canonical name = blob.gvx01prdstf01a.store.core.windows.net.
+Name:   blob.gvx01prdstf01a.store.core.windows.net
+Address: 20.60.79.4
+
+# https://learn.microsoft.com/en-us/azure/storage/blobs/network-file-system-protocol-support: The NFS 3.0 protocol uses ports 111 and 2048.
+# https://learn.microsoft.com/en-us/azure/storage/files/storage-files-how-to-mount-nfs-shares: NFS version 4.1. port 2049
+
+root@aks-nodepool1-13337413-vmss000000:/# nc -v nfs7914577893d242738351.blob.core.windows.net 2048
+Connection to nfs7914577893d242738351.blob.core.windows.net 2048 port [tcp/*] succeeded!
+
+root@aks-nodepool1-13337413-vmss000000:/# nc -v nfs7914577893d242738351.blob.core.windows.net 111
+Connection to nfs7914577893d242738351.blob.core.windows.net 111 port [tcp/sunrpc] succeeded!
+
+root@aks-nodepool1-13337413-vmss000000:/# telnet nfs7914577893d242738351.blob.core.windows.net 2048
+Trying 20.60.79.4...
+Connected to blob.gvx01prdstf01a.store.core.windows.net.
+Escape character is '^]'.
+
+root@aks-nodepool1-13337413-vmss000000:/# telnet nfs7914577893d242738351.blob.core.windows.net 111
+Trying 20.60.79.4...
+Connected to blob.gvx01prdstf01a.store.core.windows.net.
+Escape character is '^]'.
+
+root@aks-nodepool1-13337413-vmss000000:/# nmap -PN nfs7914577893d242738351.blob.core.windows.net -p 2048,111
+Starting Nmap 7.80 ( https://nmap.org ) at 2024-10-25 18:29 UTC
+Nmap scan report for nfs7914577893d242738351.blob.core.windows.net (20.60.79.4)
+Host is up (0.0046s latency).
+PORT     STATE SERVICE
+111/tcp  open  rpcbind
+2048/tcp open  dls-monitor
+Nmap done: 1 IP address (1 host up) scanned in 0.39 seconds
+
+az storage account show -n nfs7914577893d242738351
+{
+  "accessTier": null,
+  "accountMigrationInProgress": null,
+  "allowBlobPublicAccess": false,
+  "allowCrossTenantReplication": false,
+  "allowSharedKeyAccess": null,
+  "allowedCopyScope": null,
+  "azureFilesIdentityBasedAuthentication": null,
+  "blobRestoreStatus": null,
+  "creationTime": "2024-10-25T18:14:51.468323+00:00",
+  "customDomain": null,
+  "defaultToOAuthAuthentication": null,
+  "dnsEndpointType": null,
+  "enableExtendedGroups": null,
+  "enableHttpsTrafficOnly": true,
+  "enableNfsV3": true,
+  "encryption": {
+    "encryptionIdentity": null,
+    "keySource": "Microsoft.Storage",
+    "keyVaultProperties": null,
+    "requireInfrastructureEncryption": null,
+    "services": {
+      "blob": {
+        "enabled": true,
+        "keyType": "Account",
+        "lastEnabledTime": "2024-10-25T18:14:51.546448+00:00"
+      },
+      "file": {
+        "enabled": true,
+        "keyType": "Account",
+        "lastEnabledTime": "2024-10-25T18:14:51.546448+00:00"
+      },
+      "queue": null,
+      "table": null
+    }
+  },
+  "extendedLocation": null,
+  "failoverInProgress": null,
+  "geoReplicationStats": null,
+  "id": "/subscriptions/redacts-1111-1111-1111-111111111111/resourceGroups/MC_rg_aksnfs_swedencentral/providers/Microsoft.Storage/storageAccounts/nfs7914577893d242738351",
+  "identity": null,
+  "immutableStorageWithVersioning": null,
+  "isHnsEnabled": true,
+  "isLocalUserEnabled": null,
+  "isSftpEnabled": null,
+  "isSkuConversionBlocked": null,
+  "keyCreationTime": {
+    "key1": "2024-10-25T18:14:51.546448+00:00",
+    "key2": "2024-10-25T18:14:51.546448+00:00"
+  },
+  "keyPolicy": null,
+  "kind": "BlockBlobStorage",
+  "largeFileSharesState": null,
+  "lastGeoFailoverTime": null,
+  "location": "swedencentral",
+  "minimumTlsVersion": "TLS1_2",
+  "name": "nfs7914577893d242738351",
+  "networkRuleSet": {
+    "bypass": "AzureServices",
+    "defaultAction": "Deny",
+    "ipRules": [],
+    "ipv6Rules": [],
+    "resourceAccessRules": null,
+    "virtualNetworkRules": [
+      {
+        "action": "Allow",
+        "state": "Succeeded",
+        "virtualNetworkResourceId": "/subscriptions/redacts-1111-1111-1111-111111111111/resourceGroups/MC_rg_aksnfs_swedencentral/providers/Microsoft.Network/virtualNetworks/aks-vnet-28978068/subnets/aks-subnet"
+      }
+    ]
+  },
+  "primaryEndpoints": {
+    "blob": "https://nfs7914577893d242738351.blob.core.windows.net/",
+    "dfs": "https://nfs7914577893d242738351.dfs.core.windows.net/",
+    "file": null,
+    "internetEndpoints": null,
+    "microsoftEndpoints": null,
+    "queue": null,
+    "table": null,
+    "web": "https://nfs7914577893d242738351.z1.web.core.windows.net/"
+  },
+  "primaryLocation": "swedencentral",
+  "privateEndpointConnections": [],
+  "provisioningState": "Succeeded",
+  "publicNetworkAccess": null,
+  "resourceGroup": "MC_rg_aksnfs_swedencentral",
+  "routingPreference": null,
+  "sasPolicy": null,
+  "secondaryEndpoints": null,
+  "secondaryLocation": null,
+  "sku": {
+    "name": "Premium_LRS",
+    "tier": "Premium"
+  },
+  "statusOfPrimary": "available",
+  "statusOfSecondary": null,
+  "storageAccountSkuConversionStatus": null,
+  "tags": {
+    "k8s-azure-created-by": "azure"
+  },
+  "type": "Microsoft.Storage/storageAccounts"
+}
+```
+
+```
+# static
+# See the section on azureblob.driver.parameter.nodeStageSecretRef
+```
+
 ## azureblob.driver.parameter.protocol.nfs.debug
 
 - https://learn.microsoft.com/en-us/azure/storage/blobs/network-file-system-protocol-support-how-to#step-2-configure-network-security: The NFS 3.0 protocol uses ports 111 and 2048.

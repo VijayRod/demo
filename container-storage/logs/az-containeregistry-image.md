@@ -1,6 +1,6 @@
 ```
 # Replace the below with appropriate values
-registry=imageshack
+registry="registry$RANDOM"
 ```
 
 ```

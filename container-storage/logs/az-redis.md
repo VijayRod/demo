@@ -96,9 +96,8 @@ spec:
  restartPolicy: Never
 EOF
 sleep 30
-kubectl logs entrademo-pod
+kubectl logs entrademo-pod # Connecting to {cacheHostName} with an access key.. Retrieved value from Redis: Hello, Redis!
 kubectl get po entrademo-pod
-# Connecting to {cacheHostName} with an access key.. Retrieved value from Redis: Hello, Redis!
 
 tbd
 kubectl delete po entrademo-pod
@@ -135,8 +134,8 @@ spec:
  restartPolicy: Never
 EOF
 sleep 30
-kubectl logs entrademo-pod
-kubectl get po entrademo-pod # Invalid authentication type!
+kubectl logs entrademo-pod # Invalid authentication type!
+kubectl get po entrademo-pod
 ```
 
 - https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-tutorial-aks-get-started

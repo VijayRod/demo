@@ -12,7 +12,7 @@ STOPSIGNAL SIGTERM
 CMD ["nginx", "-g", "daemon off;"]
 
 # To build, upload, and deploy an image
-registry=imageshack
+registry="registry$RANDOM"
 imagename=image23g
 docker build -t $imagename .
 docker tag $imagename $registry.azurecr.io/samples/$imagename

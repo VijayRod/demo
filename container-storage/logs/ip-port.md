@@ -78,4 +78,14 @@ ss -anlp # apt-get update && apt-get install iproute2 -y
 
 ```
 # See the sections about azureblob and azurefile CSI debug
+
+nc -zvvw2 8.8.8.8 53 # Connection to 8.8.8.8 53 port [tcp/domain] succeeded!
+nc -zvvw2 dns.google.com 53 # Connection to dns.google.com (8.8.8.8) 53 port [tcp/domain] succeeded!
+
+netstat -anp | grep port # to find out which ports services are listening on
+netstat -antpl | grep port
+
+lsof -p 2741 # the PID comes from the netstat command. Lists open files, including those opened by processes, directories, users, ports, and protocols
+
+tbd find grep # https://stackoverflow.com/questions/16956810/find-all-files-containing-a-specific-text-string-on-linux
 ```

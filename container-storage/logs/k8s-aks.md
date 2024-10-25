@@ -67,9 +67,20 @@ az network vnet create -g $rg --name vnet --address-prefixes 10.0.0.0/8 -o none
 az network vnet subnet create -g $rg --vnet-name vnet -n akssubnet --address-prefixes 10.240.0.0/16 -o none 
 subnetId=$(az network vnet subnet show -g $rg --vnet-name vnet -n akssubnet --query id -otsv)
 # az aks create -g $rg -n aksauto --vnet-subnet-id $subnetId --sku automatic # (OnlySupportedOnUserAssignedMSICluster) System-assigned managed identity not supported for custom resource VirtualNetworks. Please use user-assigned managed identity.
+userIdentityName="userIdentity$RANDOM"
+az identity create -g $rg -n $userIdentityName
+userIdentityUri=$(az identity show -g $rg --name $userIdentityName --query id -otsv); echo $userIdentityUri
+# az aks create -g $rg -n aksauto --vnet-subnet-id $subnetId --sku automatic --enable-managed-identity --assign-identity $userIdentityUri # (InvalidParameter) Outbound type is managedNATGateway but agent pool 'nodepool1' is using custom VNet, which is not allowed.
+userIdentityUri=$(az identity show -g $rg --name $userIdentityName --query id -otsv); echo $userIdentityUri
+az network public-ip create -g $rg -n natIp --sku standard
+az network nat gateway create -g $rg -n natGateway --public-ip-addresses natIp
+az network vnet subnet update --ids $subnetId --nat-gateway natGateway
+# az network vnet subnet create -g $rg --vnet-name vnet -n akssubnet --address-prefixes 10.240.0.0/16 --nat-gateway natGateway
+az aks create -g $rg -n aksauto --vnet-subnet-id $subnetId --sku automatic --enable-managed-identity --assign-identity $userIdentityUri --outbound-type userAssignedNATGateway # (BadRequest) Managed cluster 'Automatic' SKU should enable 'OutboundType' feature with recommended values; Managed cluster 'Automatic' should only allow cluster with managed identity to be created.
 az aks get-credentials -g $rg -n aks --overwrite-existing
 ```
 
+- https://azure.microsoft.com/en-us/updates/public-preview-aks-automatic/
 - https://learn.microsoft.com/en-us/azure/aks/intro-aks-automatic
 - https://learn.microsoft.com/en-us/azure/aks/learn/quick-kubernetes-automatic-deploy
 

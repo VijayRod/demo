@@ -284,7 +284,7 @@ az aks check-acr -g $rgname -n $clustername --acr $registry # Validating image p
 ## k8s-aks-acr.repository aka image
 
 ```
-# Check out the Dockerfile section for instructions on how to create and import a custom image.
+# Check out the Dockerfile section (az acr build) for instructions on how to create and import a custom image.
 
 az acr import -n $registry --source docker.io/library/nginx # Imports an image from another Container Registry. Import removes the need to docker pull, docker tag, docker push.
 

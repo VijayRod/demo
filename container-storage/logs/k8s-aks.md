@@ -45,5 +45,33 @@ for i in {2..100}; do az aks nodepool delete -g $rg --cluster-name aks -n nodepo
 - https://github.com/Azure/AKS/
 - https://issuetracker.google.com/savedsearches/559746: Open Kubernetes Engine Issues
 
+## aks.spec.agentPool.vmSize
+
+- https://learn.microsoft.com/en-us/azure/aks/quotas-skus-regions#supported-vm-sizes
+
+## aks.spec.sku.Automatic
+
+```
+# create
+az aks create -g $rg -n aksauto --sku automatic
+az aks get-credentials -g $rg -n aksauto --overwrite-existing
+
+# misc
+az aks show -g $rg -n aks --query kind # "Automatic"
+az aks show -g $rg -n aks --query sku.name # "Automatic"
+
+# create.custom-vnet
+rg=rgvnet
+az group create -n $rg -l $loc
+az network vnet create -g $rg --name vnet --address-prefixes 10.0.0.0/8 -o none 
+az network vnet subnet create -g $rg --vnet-name vnet -n akssubnet --address-prefixes 10.240.0.0/16 -o none 
+subnetId=$(az network vnet subnet show -g $rg --vnet-name vnet -n akssubnet --query id -otsv)
+# az aks create -g $rg -n aksauto --vnet-subnet-id $subnetId --sku automatic # (OnlySupportedOnUserAssignedMSICluster) System-assigned managed identity not supported for custom resource VirtualNetworks. Please use user-assigned managed identity.
+az aks get-credentials -g $rg -n aks --overwrite-existing
+```
+
+- https://learn.microsoft.com/en-us/azure/aks/intro-aks-automatic
+- https://learn.microsoft.com/en-us/azure/aks/learn/quick-kubernetes-automatic-deploy
+
 ## aks.scale
 - https://learn.microsoft.com/en-us/azure/aks/best-practices-performance-scale-large

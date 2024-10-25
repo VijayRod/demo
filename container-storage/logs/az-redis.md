@@ -144,7 +144,7 @@ kubectl get po entrademo-pod
 ## redis.app.k8s.example.connect-from-aks.simple
 
 ```
-# This example demonstrates a simpler method of connecting an AKS pod to the redis cache using an access key, rather than utilizing a workload identity.
+# This example demonstrates a simpler method of connecting an AKS pod to the redis cache using an access key, rather than utilizing a Microsoft Entra (workload) identity.
 
 rg=rgredis
 redis="redis$RANDOM"

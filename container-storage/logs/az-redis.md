@@ -335,6 +335,21 @@ redisKey=$(az redis list-keys -g $rg -n $redis | jq .primaryKey); # echo redisKe
 - https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-overview#choosing-the-right-tier
 - https://azure.microsoft.com/en-us/pricing/details/cache/
 
+## redis.spec.sku-scaling
+
+```
+# Recreating the Redis cache using the necessary SKU might actually be faster
+
+# https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-how-to-scale#prerequisiteslimitations-of-scaling-azure-cache-for-redis: You can't scale from a Basic cache directly to a Premium cache. First, scale from Basic to Standard
+redis="redis$RANDOM"
+az redis create -g $rg -n $redis -l $loc --sku Basic --vm-size c0
+az redis update -g $rg -n $redis --sku standard
+tbd redisProvisionState=Scaling; while [[ $redisProvisionState -eq "Scaling" ]]; do sleep 5; redisProvisionState=$(az redis show -g $rg -n $redis --query provisioningState -otsv); echo $(date) - $redisProvisionState; done
+tbd az redis update -g $rg -n $redis --set "sku.name"="Premium" "sku.capacity"="1" "sku.family"="P"
+```
+
+- https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-how-to-scale#prerequisiteslimitations-of-scaling-azure-cache-for-redis
+
 ## redis.spec.vm-size
 
 - https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-how-to-scale#what-is-the-largest-cache-size-i-can-create

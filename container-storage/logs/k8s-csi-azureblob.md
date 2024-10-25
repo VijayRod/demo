@@ -521,6 +521,10 @@ az storage account show -n nfs7914577893d242738351
   },
   "type": "Microsoft.Storage/storageAccounts"
 }
+
+# https://github.com/kubernetes-sigs/blob-csi-driver/blob/master/docs/csi-debug.md
+mkdir /tmp/test
+mount -v -t nfs -o sec=sys,vers=3,nolock accountname.blob.core.windows.net:/accountname/container-name /tmp/test
 ```
 
 ```

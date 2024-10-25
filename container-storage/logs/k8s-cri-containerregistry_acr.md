@@ -365,6 +365,11 @@ accessToken="eyredacted_bhqA"
 acrLoginServer=$(az acr show -g $rgname -n $registry --query loginServer -otsv); echo $acrLoginServer # imageshack.azurecr.io
 docker login $acrLoginServer -u 00000000-0000-0000-0000-000000000000 -p $accessToken
 # Login Succeeded
+
+tbd unauthorized
+az acr login -n $registry --expose-token | jq .accessToken | docker login $acrLoginServer -u 00000000-0000-0000-0000-000000000000 --password-stdin
+acrAccessToken=$(az acr login -n $registry --expose-token | jq .accessToken); echo $acrAccessToken | docker login $acrLoginServer -u 00000000-0000-0000-0000-000000000000 --password-stdin
+acrAccessToken=$(az acr login -n $registry --expose-token | jq .accessToken); docker login $acrLoginServer -u 00000000-0000-0000-0000-000000000000 -p $acrAccessToken
 ```
 
 - https://learn.microsoft.com/en-us/azure/container-registry/container-registry-authentication?tabs=azure-cli

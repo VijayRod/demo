@@ -47,6 +47,7 @@ az redis access-policy-assignment create -g $rg -n $redis --access-policy-name "
 # https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-tutorial-aks-get-started#run-sample-locally
 # https://github.com/Azure-Samples/azure-cache-redis-samples/tree/main/tutorial/connect-from-aks/ConnectFromAKS
 cd /tmp
+rm -rf /tmp/azure-cache-redis-samples
 git clone https://github.com/Azure-Samples/azure-cache-redis-samples.git
 cd /tmp/azure-cache-redis-samples/tutorial/connect-from-aks/ConnectFromAKS
 
@@ -140,9 +141,72 @@ kubectl get po entrademo-pod
 
 - https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-tutorial-aks-get-started
 
+## redis.app.k8s.example.connect-from-aks.simple
 
+```
+# This example demonstrates a simpler method of connecting an AKS pod to the redis cache using an access key, rather than utilizing a workload identity.
 
+rg=rgredis
+redis="redis$RANDOM"
+az group create -n $rg -l $loc
+az redis create -g $rg -n $redis -l $loc --sku Basic --vm-size c0
 
+az aks create -g $rg -n aks -s $vmsize -c 2
+az aks get-credentials -g $rg -n aks --overwrite-existing
+
+# https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-tutorial-aks-get-started#run-sample-locally
+# https://github.com/Azure-Samples/azure-cache-redis-samples/tree/main/tutorial/connect-from-aks/ConnectFromAKS
+cd /tmp
+rm -rf /tmp/azure-cache-redis-samples
+git clone https://github.com/Azure-Samples/azure-cache-redis-samples.git
+cd /tmp/azure-cache-redis-samples/tutorial/connect-from-aks/ConnectFromAKS
+
+# https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-tutorial-aks-get-started#configure-your-workload-that-connects-to-azure-cache-for-redis
+registry="registry$RANDOM"
+az acr create -g $rg -n $registry --sku basic
+az aks update -g $rg -n aks --attach-acr $registry
+acrLoginServer=$(az acr show -g $rg -n $registry --query loginServer -otsv); echo $acrLoginServer
+acrAccessToken=$(az acr login -n $registry --expose-token | jq .accessToken); echo $acrAccessToken
+docker login $acrLoginServer -u 00000000-0000-0000-0000-000000000000 # copy the value of $acrAccessToken (leave out the double quotes) and hit Enter
+az acr build --registry $registry --image redis-sample .
+
+# https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-tutorial-aks-get-started#run-your-workload
+redisHostName=$(az redis show -g $rg -n $redis --query hostName -otsv); echo $redisHostName
+redisKey=$(az redis list-keys -g $rg -n $redis | jq .primaryKey)
+kubectl delete po entrademo-pod
+cat << EOF | kubectl create -f -
+apiVersion: v1
+kind: Pod
+metadata:
+ name: entrademo-pod
+spec:
+ containers:
+ - name: entrademo-container
+   image: $acrLoginServer/redis-sample
+   imagePullPolicy: Always
+   command: ["dotnet", "ConnectFromAKS.dll"] 
+   resources:
+     limits:
+       memory: "256Mi"
+       cpu: "500m"
+     requests:
+       memory: "128Mi"
+       cpu: "250m"
+   env:
+   - name: AUTHENTICATION_TYPE
+     value: "ACCESS_KEY" # change to ACCESS_KEY to authenticate using access key
+   - name: REDIS_HOSTNAME
+     value: $redisHostName
+   - name: REDIS_ACCESSKEY
+     value: $redisKey 
+   - name: REDIS_PORT
+     value: "6380"
+ restartPolicy: Never
+EOF
+sleep 30
+kubectl logs entrademo-pod # Connecting to {cacheHostName} with an access key.. Retrieved value from Redis: Hello, Redis!
+kubectl get po entrademo-pod
+```
 
 ## redis.debug
 

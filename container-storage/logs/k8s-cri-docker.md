@@ -1,8 +1,9 @@
-## docker.install
+## docker
 
 ```
-# Execute it in a laptop instead of a containerd worker node
-apt update && apt install docker.io -y
+apt update && apt install docker.io -y # Execute it in a laptop instead of a containerd worker node
+
+$HOME/.docker/config.json
 ```
 
 ### docker.install.error The following packages have unmet dependencies: moby-containerd : Conflicts: containerd

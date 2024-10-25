@@ -88,4 +88,13 @@ netstat -antpl | grep port
 lsof -p 2741 # the PID comes from the netstat command. Lists open files, including those opened by processes, directories, users, ports, and protocols
 
 tbd find grep # https://stackoverflow.com/questions/16956810/find-all-files-containing-a-specific-text-string-on-linux
+
+# nc -v nfs7914577893d242738351.blob.core.windows.net 2048
+# telnet nfs7914577893d242738351.blob.core.windows.net 2048
+tcpdump host 20.60.79.4 # nfs7914577893d242738351.blob.core.windows.net
+tcpdump: verbose output suppressed, use -v[v]... for full protocol decode
+listening on eth0, link-type EN10MB (Ethernet), snapshot length 262144 bytes
+19:54:27.373036 IP aks-nodepool1-13337413-vmss000000.internal.cloudapp.net.52090 > 20.60.79.4.2048: Flags [S], seq 138131897, win 64240, options [mss 1460,sackOK,TS val 2963820743 ecr 0,nop,wscale 7], length 0
+19:54:27.374209 IP 20.60.79.4.2048 > aks-nodepool1-13337413-vmss000000.internal.cloudapp.net.52090: Flags [S.], seq 3829096321, ack 138131898, win 65535, options [mss 1440,nop,wscale 8,sackOK,TS val 3907516489 ecr 2963820743], length 0
+19:54:27.374227 IP aks-nodepool1-13337413-vmss000000.internal.cloudapp.net.52090 > 20.60.79.4.2048: Flags [.], ack 1, win 502, options [nop,nop,TS val 2963820745 ecr 3907516489], length 0
 ```

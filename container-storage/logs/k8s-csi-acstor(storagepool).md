@@ -73,6 +73,8 @@ az aks get-credentials -g $rg -n akseph --overwrite-existing
 ##  k8s-csi-acstor.storagepool.type.ephemeralDisk.NVMe.replication
 
 - https://learn.microsoft.com/en-us/azure/storage/container-storage/use-container-storage-with-local-nvme-replication
+- tbd https://learn.microsoft.com/en-us/azure/virtual-machines/nvme-overview
+- tbd https://learn.microsoft.com/en-us/azure/virtual-machines/enable-nvme-faqs
 
 ##  k8s-csi-acstor.storagepool.type.ephemeralDisk.TempSSD
 

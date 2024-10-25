@@ -24,6 +24,10 @@ redis3942.redis.cache.windows.net
 
 ## redis.app.k8s
 
+- https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-best-practices-kubernetes
+
+## redis.app.k8s.example.connect-from-aks
+
 ```
 # https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-tutorial-aks-get-started#set-up-an-azure-cache-for-redis-instance
 rg=rgredis
@@ -39,12 +43,105 @@ userIdentityName=$(az identity show --resource-group "${RESOURCE_GROUP}" --name 
 userIdentityPrincipalId=$(az identity show --resource-group "${RESOURCE_GROUP}" --name "${USER_ASSIGNED_IDENTITY_NAME}" --query principalId -otsv); echo $userIdentityPrincipalId
 az redis access-policy-assignment create -g $rg -n $redis --access-policy-name "Data Owner" --object-id $userIdentityPrincipalId --object-id-alias $userIdentityName --policy-assignment-name $userIdentityPrincipalId
 # az redis access-policy-assignment list -g $rg -n $redis
+
+# https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-tutorial-aks-get-started#run-sample-locally
+# https://github.com/Azure-Samples/azure-cache-redis-samples/tree/main/tutorial/connect-from-aks/ConnectFromAKS
+cd /tmp
+git clone https://github.com/Azure-Samples/azure-cache-redis-samples.git
+cd /tmp/azure-cache-redis-samples/tutorial/connect-from-aks/ConnectFromAKS
+
+# https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-tutorial-aks-get-started#configure-your-workload-that-connects-to-azure-cache-for-redis
+registry=imageshack
+az acr create -g $rg -n $registry --sku basic
+az aks update -g $rg -n $CLUSTER_NAME --attach-acr $registry
+acrLoginServer=$(az acr show -g $rg -n $registry --query loginServer -otsv); echo $acrLoginServer
+acrAccessToken=$(az acr login -n $registry --expose-token | jq .accessToken); echo $acrAccessToken
+docker login $acrLoginServer -u 00000000-0000-0000-0000-000000000000 # copy the value of $acrAccessToken (leave out the double quotes) and hit Enter
+az acr build --registry $registry --image redis-sample .
+
+# https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-tutorial-aks-get-started#run-your-workload
+redisHostName=$(az redis show -g $rg -n $redis --query hostName -otsv); echo $redisHostName
+redisKey=$(az redis list-keys -g $rg -n $redis | jq .primaryKey)
+kubectl delete po entrademo-pod
+cat << EOF | kubectl create -f -
+apiVersion: v1
+kind: Pod
+metadata:
+ name: entrademo-pod
+ labels:
+   azure.workload.identity/use: "true"  # Required. Only pods with this label can use workload identity.
+spec:
+ serviceAccountName: workload-identity-sa
+ containers:
+ - name: entrademo-container
+   image: $acrLoginServer/redis-sample
+   imagePullPolicy: Always
+   command: ["dotnet", "ConnectFromAKS.dll"] 
+   resources:
+     limits:
+       memory: "256Mi"
+       cpu: "500m"
+     requests:
+       memory: "128Mi"
+       cpu: "250m"
+   env:
+   - name: AUTHENTICATION_TYPE
+     value: "ACCESS_KEY" # change to ACCESS_KEY to authenticate using access key
+   - name: REDIS_HOSTNAME
+     value: $redisHostName
+   - name: REDIS_ACCESSKEY
+     value: $redisKey 
+   - name: REDIS_PORT
+     value: "6380"
+ restartPolicy: Never
+EOF
+sleep 30
+kubectl logs entrademo-pod
+kubectl get po entrademo-pod
+# Connecting to {cacheHostName} with an access key.. Retrieved value from Redis: Hello, Redis!
+
+tbd
+kubectl delete po entrademo-pod
+cat << EOF | kubectl create -f -
+apiVersion: v1
+kind: Pod
+metadata:
+ name: entrademo-pod
+ labels:
+   azure.workload.identity/use: "true"  # Required. Only pods with this label can use workload identity.
+spec:
+ serviceAccountName: workload-identity-sa
+ containers:
+ - name: entrademo-container
+   image: $acrLoginServer/redis-sample
+   imagePullPolicy: Always
+   command: ["dotnet", "ConnectFromAKS.dll"] 
+   resources:
+     limits:
+       memory: "256Mi"
+       cpu: "500m"
+     requests:
+       memory: "128Mi"
+       cpu: "250m"
+   env:
+   - name: AUTHENTICATION_TYPE
+     value: "MANAGED_IDENTITY" # change to ACCESS_KEY to authenticate using access key
+   - name: REDIS_HOSTNAME
+     value: $redisHostName
+   - name: REDIS_ACCESSKEY
+     value: "your access key" 
+   - name: REDIS_PORT
+     value: "6380"
+ restartPolicy: Never
+EOF
+sleep 30
+kubectl logs entrademo-pod
+kubectl get po entrademo-pod # Invalid authentication type!
 ```
 
-- https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-best-practices-kubernetes
 - https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-tutorial-aks-get-started
 
-## redis.app.k8s.example
+
 
 
 

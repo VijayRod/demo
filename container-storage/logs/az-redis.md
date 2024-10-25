@@ -256,6 +256,14 @@ az redis access-policy-assignment list -g $rg -n $redis
 
 - https://learn.microsoft.com/en-us/cli/azure/redis/access-policy-assignment#az-redis-access-policy-assignment-list
 
+## redis.spec.other.key
+
+```
+# Apps have the option to connect to Redis by using either a user-assigned managed identity or an access key
+
+redisKey=$(az redis list-keys -g $rg -n $redis | jq .primaryKey); # echo redisKey
+```
+
 ## redis.spec.sku aka tier
 
 ```

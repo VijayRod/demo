@@ -51,7 +51,7 @@ git clone https://github.com/Azure-Samples/azure-cache-redis-samples.git
 cd /tmp/azure-cache-redis-samples/tutorial/connect-from-aks/ConnectFromAKS
 
 # https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-tutorial-aks-get-started#configure-your-workload-that-connects-to-azure-cache-for-redis
-registry=imageshack
+registry="registry$RANDOM"
 az acr create -g $rg -n $registry --sku basic
 az aks update -g $rg -n $CLUSTER_NAME --attach-acr $registry
 acrLoginServer=$(az acr show -g $rg -n $registry --query loginServer -otsv); echo $acrLoginServer

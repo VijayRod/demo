@@ -366,7 +366,12 @@ acrLoginServer=$(az acr show -g $rgname -n $registry --query loginServer -otsv);
 docker login $acrLoginServer -u 00000000-0000-0000-0000-000000000000 -p $accessToken
 # Login Succeeded
 
-tbd unauthorized
+# Or
+acrLoginServer=$(az acr show -g $rg -n $registry --query loginServer -otsv); echo $acrLoginServer
+acrAccessToken=$(az acr login -n $registry --expose-token | jq .accessToken); echo $acrAccessToken
+docker login $acrLoginServer -u 00000000-0000-0000-0000-000000000000 # copy the value of $acrAccessToken (leave out the double quotes) and hit Enter
+
+# Or tbd unauthorized
 az acr login -n $registry --expose-token | jq .accessToken | docker login $acrLoginServer -u 00000000-0000-0000-0000-000000000000 --password-stdin
 acrAccessToken=$(az acr login -n $registry --expose-token | jq .accessToken); echo $acrAccessToken | docker login $acrLoginServer -u 00000000-0000-0000-0000-000000000000 --password-stdin
 acrAccessToken=$(az acr login -n $registry --expose-token | jq .accessToken); docker login $acrLoginServer -u 00000000-0000-0000-0000-000000000000 -p $acrAccessToken

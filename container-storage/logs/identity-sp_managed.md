@@ -8,7 +8,7 @@ userIdentityName="userIdentity$RANDOM"
 
 ```
 # To create the managed user identity
-az identity create -g $rgname --name $userIdentity
+az identity create -g $rgname -n $userIdentityName
 
 # misc
 userIdentityClientId=$(az identity show -g $rgname -n $userIdentityName --query clientId -otsv); echo $userIdentityClientId

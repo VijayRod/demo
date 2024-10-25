@@ -76,3 +76,6 @@ ss -anlp # apt-get update && apt-get install iproute2 -y
 
 ## ip.port.debug
 
+```
+# See the sections about azureblob and azurefile CSI debug
+```

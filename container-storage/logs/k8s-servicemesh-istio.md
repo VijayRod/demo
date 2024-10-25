@@ -96,4 +96,36 @@ kubectl describe validatingwebhookconfiguration istio-validator-asm-1-21-aks-ist
 
 ## k8s-servicemesh-istio.app.redis
 
+```
+# kubectl logs while attempting to connect a pod to the Redis cache in a namespace labeled for Istio: RedisConnectionException
+```
+
 - https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-best-practices-kubernetes#potential-connection-collision-with-istioenvoy
+- https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-troubleshoot-connectivity#kubernetes-hosted-applications: If you're using Istio or any other service mesh, check that your service mesh proxy reserves port 13000-13019 or 15000-15019. These ports are used by clients to communicate with a clustered Azure Cache For Redis nodes and could cause connectivity issues on those ports.
+- tbd https://discuss.istio.io/t/istio-in-azure-aks-outbound-traffic-issues-over-15001-port-while-connecting-to-azure-redis-cache/10412/2
+
+## k8s-servicemesh-istio.debug
+
+- https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/extensions/istio-add-on-general-troubleshooting
+
+## k8s-servicemesh-istio.example
+
+```
+po=nginx
+ns=istio-ns
+istioRevision=$(az aks show -g $rg -n aks --query serviceMeshProfile.istio.revisions -otsv); echo $istioRevision
+kubectl delete po $po
+kubectl delete ns $ns
+kubectl create ns $ns
+kubectl label namespace $ns istio.io/rev=$istioRevision
+kubectl run $po -n $ns --image=nginx
+sleep 10
+kubectl get po $po -n $ns
+# kubectl get po nginx -n istio-ns
+
+kubectl describe po $po -n $ns | grep istio-
+  istio-init:
+    Image:         mcr.microsoft.com/oss/istio/proxyv2:1.22.5-distroless
+  istio-proxy:
+    Image:         mcr.microsoft.com/oss/istio/proxyv2:1.22.5-distroless
+```

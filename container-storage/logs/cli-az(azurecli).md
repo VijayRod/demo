@@ -7,10 +7,12 @@ curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
 ## sudo -su
 sudo az aks install-cli
 az extension add --name aks-preview
+## az extension add --source https://raw.githubusercontent.com/andyzhangx/demo/master/aks/rotate-tokens/aks_preview-0.5.0-py2.py3-none-any.whl -y
+
+# update
+sudo az aks install-cli
 az extension update --name aks-preview
 ## extension update specific version
-az extension remove --name aks-preview
-## az extension add --source https://raw.githubusercontent.com/andyzhangx/demo/master/aks/rotate-tokens/aks_preview-0.5.0-py2.py3-none-any.whl -y
 
 # Login.
 az login
@@ -22,6 +24,9 @@ az account show -s $subId --query isDefault
 az aks show -g $rg -n aks --query nodeResourceGroup -o tsv
 az network private-link-service list -g $noderg --query "[].id" -o tsv
 az network private-link-service list -g $noderg --query "[].{Name:name,Alias:alias}" -o table
+
+# misc
+az extension remove --name aks-preview
 ```
 
 - https://docs.microsoft.com/en-us/cli/azure

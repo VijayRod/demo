@@ -4,8 +4,10 @@ Here are steps from https://learn.microsoft.com/en-us/azure/aks/azure-blob-csi t
       
 ```
 rg=rgblob
-az group create -g $rg -l swedencentral
+az group create -g $rg -l $loc
 az aks create -g $rg -n aks --enable-blob-driver -s $vmsize -c 2
+# az aks update -g $rg -n aks --enable-blob-driver -y # Please make sure there is no open-source Blob CSI driver installed before enabling. (y/N)
+# az aks update -g $rg -n aks --disable-blob-driver
 
 az aks show -g $rg -n aks --query storageProfile.blobCsiDriver -otsv
 True

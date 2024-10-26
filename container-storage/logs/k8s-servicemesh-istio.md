@@ -104,7 +104,9 @@ kubectl describe validatingwebhookconfiguration istio-validator-asm-1-21-aks-ist
 
 - https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-best-practices-kubernetes#potential-connection-collision-with-istioenvoy
 - https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-troubleshoot-connectivity#kubernetes-hosted-applications: If you're using Istio or any other service mesh, check that your service mesh proxy reserves port 13000-13019 or 15000-15019. These ports are used by clients to communicate with a clustered Azure Cache For Redis nodes and could cause connectivity issues on those ports.
-- tbd https://discuss.istio.io/t/istio-in-azure-aks-outbound-traffic-issues-over-15001-port-while-connecting-to-azure-redis-cache/10412/2
+- https://discuss.istio.io/t/istio-in-azure-aks-outbound-traffic-issues-over-15001-port-while-connecting-to-azure-redis-cache/10412/2: istio-iptables -p
+- https://github.com/istio/cni/blob/master/tools/packaging/common/istio-iptables.sh: -p: Specify the envoy port to which redirect all TCP traffic (default $ENVOY_PORT = 15001). -z: Port to which all inbound TCP traffic to the pod/VM should be redirected to. For REDIRECT only (default $INBOUND_CAPTURE_PORT = 15006)
+- https://istio.io/latest/docs/reference/commands/pilot-agent/: 150*
 
 ## k8s-servicemesh-istio.debug
 

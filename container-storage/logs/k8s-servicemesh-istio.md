@@ -23,6 +23,8 @@ az aks show -g $rg -n aks  --query 'serviceMeshProfile'
   "mode": "Istio"
 }
 
+istioRevision=$(az aks show -g $rg -n aks --query serviceMeshProfile.istio.revisions -otsv); echo $istioRevision # asm-1-17
+
 kubectl get all -n aks-istio-egress
 No resources found in aks-istio-egress namespace.
 
@@ -129,3 +131,38 @@ kubectl describe po $po -n $ns | grep istio-
   istio-proxy:
     Image:         mcr.microsoft.com/oss/istio/proxyv2:1.22.5-distroless
 ```
+
+## k8s-servicemesh-istio.spec.other.configmap
+
+```
+istioRevision=$(az aks show -g $rg -n aks --query serviceMeshProfile.istio.revisions -otsv); echo $istioRevision
+kubectl delete cm -n aks-istio-system istio-shared-configmap-$istioRevision
+cat << EOF | kubectl create -f -
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: istio-shared-configmap-$istioRevision
+  namespace: aks-istio-system
+data:
+  mesh: |-
+    accessLogFile: /dev/stdout
+    defaultConfig:
+      holdApplicationUntilProxyStarts: true
+EOF
+kubectl describe cm -n aks-istio-system istio-shared-configmap-$istioRevision
+kubectl get cm -n aks-istio-system | grep istio-shared-configmap
+
+kubectl get cm -A | grep istio
+```
+
+- https://learn.microsoft.com/en-us/azure/aks/istio-meshconfig#set-up-configuration-on-cluster
+
+## k8s-servicemesh-istio.spec.other.configmap.MeshConfig
+
+https://learn.microsoft.com/en-us/azure/aks/istio-meshconfig#meshconfig
+https://istio.io/latest/docs/reference/config/istio.mesh.v1alpha1/: MeshConfig defines mesh-wide settings for the Istio service mesh.
+
+## k8s-servicemesh-istio.spec.other.configmap.ProxyConfig
+
+https://learn.microsoft.com/en-us/azure/aks/istio-meshconfig#proxyconfig-meshconfigdefaultconfig
+https://istio.io/latest/docs/reference/config/istio.mesh.v1alpha1/#ProxyConfig: ProxyConfig defines variables for individual Envoy instances. This can be configured on a per-workload basis as well as by the mesh-wide defaults. To set the mesh wide defaults, configure the defaultConfig section of meshConfig. 

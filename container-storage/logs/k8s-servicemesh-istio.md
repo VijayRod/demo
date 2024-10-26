@@ -159,10 +159,10 @@ kubectl get cm -A | grep istio
 
 ## k8s-servicemesh-istio.spec.other.configmap.MeshConfig
 
-https://learn.microsoft.com/en-us/azure/aks/istio-meshconfig#meshconfig
-https://istio.io/latest/docs/reference/config/istio.mesh.v1alpha1/: MeshConfig defines mesh-wide settings for the Istio service mesh.
+- https://learn.microsoft.com/en-us/azure/aks/istio-meshconfig#meshconfig
+- https://istio.io/latest/docs/reference/config/istio.mesh.v1alpha1/: MeshConfig defines mesh-wide settings for the Istio service mesh.
 
 ## k8s-servicemesh-istio.spec.other.configmap.ProxyConfig
 
-https://learn.microsoft.com/en-us/azure/aks/istio-meshconfig#proxyconfig-meshconfigdefaultconfig
-https://istio.io/latest/docs/reference/config/istio.mesh.v1alpha1/#ProxyConfig: ProxyConfig defines variables for individual Envoy instances. This can be configured on a per-workload basis as well as by the mesh-wide defaults. To set the mesh wide defaults, configure the defaultConfig section of meshConfig. 
+- https://learn.microsoft.com/en-us/azure/aks/istio-meshconfig#proxyconfig-meshconfigdefaultconfig
+- https://istio.io/latest/docs/reference/config/istio.mesh.v1alpha1/#ProxyConfig: ProxyConfig defines variables for individual Envoy instances. This can be configured on a per-workload basis as well as by the mesh-wide defaults. To set the mesh wide defaults, configure the defaultConfig section of meshConfig. 

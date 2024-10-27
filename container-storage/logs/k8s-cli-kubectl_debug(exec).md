@@ -23,3 +23,6 @@ kubectl exec -it mypod -- sh
 
 kubectl debug mypod -it --image=busybox
 ```
+
+- https://kubernetes.io/docs/tasks/debug/debug-application/get-shell-running-container/
+- https://kubernetes.io/docs/reference/kubectl/generated/kubectl_exec/

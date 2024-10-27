@@ -170,6 +170,7 @@ kubectl get cm -A | grep istio
 ## k8s-servicemesh-istio.spec.other.configmap.MeshConfig
 
 - https://learn.microsoft.com/en-us/azure/aks/istio-meshconfig#meshconfig
+- https://learn.microsoft.com/en-us/azure/aks/istio-meshconfig#common-errors-and-troubleshooting-tips
 - https://istio.io/latest/docs/reference/config/istio.mesh.v1alpha1/: MeshConfig defines mesh-wide settings for the Istio service mesh.
 
 ## k8s-servicemesh-istio.spec.other.configmap.ProxyConfig

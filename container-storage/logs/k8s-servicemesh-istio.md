@@ -112,6 +112,11 @@ kubectl describe validatingwebhookconfiguration istio-validator-asm-1-21-aks-ist
 
 - https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/extensions/istio-add-on-general-troubleshooting
 
+## k8s-servicemesh-istio.debug.internals
+
+- https://github.com/istio/istio/wiki/Understanding-IPTables-snapshot: 1337 - uid and gid used to distinguish between traffic originating from proxy vs the applications.
+- https://jimmysong.io/en/blog/sidecar-injection-iptables-and-traffic-routing/
+
 ## k8s-servicemesh-istio.example
 
 ```
@@ -158,6 +163,7 @@ kubectl get cm -A | grep istio
 ```
 
 - https://learn.microsoft.com/en-us/azure/aks/istio-meshconfig#set-up-configuration-on-cluster
+- https://learn.microsoft.com/en-us/azure/aks/istio-meshconfig#meshconfig: The values under defaultConfig are mesh-wide settings applied for Envoy sidecar proxy.
 
 ## k8s-servicemesh-istio.spec.other.configmap.MeshConfig
 

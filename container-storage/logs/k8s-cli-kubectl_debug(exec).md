@@ -1,3 +1,4 @@
+## kubectl.debug.node
 ```
 kubectl debug node/aks-nodepool1-37663765-vmss000000 -it --image=busybox
 
@@ -13,3 +14,12 @@ kubectl debug node/aks-nodepool1-37663765-vmss000000 -it --image=ubuntu # apt up
 - https://kubernetes.io/docs/tasks/debug/debug-cluster/kubectl-node-debug/
 - https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#debug
 - https://learn.microsoft.com/en-us/azure/aks/node-access
+
+## kubectl.debug.pod
+
+```
+kubectl exec -it mypod -- /bin/bash
+kubectl exec -it mypod -- sh
+
+kubectl debug mypod -it --image=busybox
+```

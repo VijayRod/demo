@@ -111,12 +111,13 @@ kubectl describe validatingwebhookconfiguration istio-validator-asm-1-21-aks-ist
 ## k8s-servicemesh-istio.debug
 
 - https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/extensions/istio-add-on-general-troubleshooting
-
-## k8s-servicemesh-istio.debug.internals
-
 - https://istio.io/latest/docs/reference/commands/pilot-agent/: ads, all, ca, cache, citadelclient, default, dns, gcecred, grpc, healthcheck, iptables, klog, mockcred, monitoring, sds, security, spiffe, validation, wasm, xdsproxy
+
+## k8s-servicemesh-istio.debug.iptables
+
 - https://github.com/istio/istio/wiki/Understanding-IPTables-snapshot: 1337 - uid and gid used to distinguish between traffic originating from proxy vs the applications.
 - https://jimmysong.io/en/blog/sidecar-injection-iptables-and-traffic-routing/
+- https://github.com/istio/cni/blob/master/tools/packaging/common/istio-iptables.sh
 
 ## k8s-servicemesh-istio.example
 

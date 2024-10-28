@@ -125,7 +125,7 @@ kubectl describe validatingwebhookconfiguration istio-validator-asm-1-21-aks-ist
 po=nginx
 ns=istio-ns
 istioRevision=$(az aks show -g $rg -n aks --query serviceMeshProfile.istio.revisions -otsv); echo $istioRevision
-kubectl delete po $po
+kubectl delete po -ns $ns $po
 kubectl delete ns $ns
 kubectl create ns $ns
 kubectl label namespace $ns istio.io/rev=$istioRevision

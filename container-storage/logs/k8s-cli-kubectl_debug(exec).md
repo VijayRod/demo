@@ -28,7 +28,8 @@ kubectl delete po node-debugger-{node-name-xxxx} # Once you have gathered the lo
 kubectl exec -it mypod -- /bin/bash
 kubectl exec -it mypod -- sh
 
-kubectl debug mypod -it --image=busybox
+kubectl debug mypod -it --image=busybox # sh
+kubectl debug mypod -it --image=debian:latest # bash
 ```
 
 - https://kubernetes.io/docs/tasks/debug/debug-application/get-shell-running-container/

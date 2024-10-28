@@ -14,11 +14,16 @@ sudo az aks install-cli
 az extension update --name aks-preview
 ## extension update specific version
 
-# Login.
+# login
 az login
 subId=
 az account set -s $subId
 az account show -s $subId --query isDefault
+# az account subscription list -otable
+
+# login - tenant
+az account tenant list
+az login -t redactt-1111-1111-1111-111111111111 # --use-device-code # tenant ID
 
 # query
 az aks show -g $rg -n aks --query nodeResourceGroup -o tsv # MC_rgredis12_aks_swedencentral

@@ -26,10 +26,158 @@ redis3942.redis.cache.windows.net
 
 - https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-best-practices-kubernetes
 
-## redis.app.k8s.example.connect-from-aks
+## redis.app.k8s.example.connect-from-aks.accesskey
 
 ```
-# If there's no specific need for workload identity, you might want to go with connect-from-aks.simple as your go-to option.
+# This example demonstrates a simpler method of connecting an AKS pod to the redis cache using an access key, rather than utilizing a Microsoft Entra (workload) identity.
+
+rg=rgredis
+redis="redis$RANDOM"
+az group create -n $rg -l $loc
+az redis create -g $rg -n $redis -l $loc --sku Basic --vm-size c0
+
+az aks create -g $rg -n aks -s $vmsize -c 2
+az aks get-credentials -g $rg -n aks --overwrite-existing
+
+# https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-tutorial-aks-get-started#run-sample-locally
+# https://github.com/Azure-Samples/azure-cache-redis-samples/tree/main/tutorial/connect-from-aks/ConnectFromAKS
+cd /tmp
+rm -rf /tmp/azure-cache-redis-samples
+git clone https://github.com/Azure-Samples/azure-cache-redis-samples.git
+cd /tmp/azure-cache-redis-samples/tutorial/connect-from-aks/ConnectFromAKS
+
+# https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-tutorial-aks-get-started#configure-your-workload-that-connects-to-azure-cache-for-redis
+registry="registry$RANDOM"
+az acr create -g $rg -n $registry --sku basic
+az aks update -g $rg -n aks --attach-acr $registry
+acrLoginServer=$(az acr show -g $rg -n $registry --query loginServer -otsv); echo $acrLoginServer
+acrAccessToken=$(az acr login -n $registry --expose-token | jq .accessToken); echo $acrAccessToken
+docker login $acrLoginServer -u 00000000-0000-0000-0000-000000000000 # copy the value of $acrAccessToken (leave out the double quotes) and hit Enter
+az acr build --registry $registry --image redis-sample .
+
+# https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-tutorial-aks-get-started#run-your-workload
+redisHostName=$(az redis show -g $rg -n $redis --query hostName -otsv); echo $redisHostName
+redisKey=$(az redis list-keys -g $rg -n $redis | jq .primaryKey)
+echo $rg, $redis - $redisHostName, $registry - $acrLoginServer # , $redisKey
+kubectl delete po entrademo-pod
+cat << EOF | kubectl create -f -
+apiVersion: v1
+kind: Pod
+metadata:
+ name: entrademo-pod
+spec:
+ containers:
+ - name: entrademo-container
+   image: $acrLoginServer/redis-sample
+   imagePullPolicy: Always
+   command: ["dotnet", "ConnectFromAKS.dll"] 
+   resources:
+     limits:
+       memory: "256Mi"
+       cpu: "500m"
+     requests:
+       memory: "128Mi"
+       cpu: "250m"
+   env:
+   - name: AUTHENTICATION_TYPE
+     value: "ACCESS_KEY" # change to ACCESS_KEY to authenticate using access key
+   - name: REDIS_HOSTNAME
+     value: $redisHostName
+   - name: REDIS_ACCESSKEY
+     value: $redisKey 
+   - name: REDIS_PORT
+     value: "6380"
+ restartPolicy: Never
+EOF
+sleep 30
+kubectl logs entrademo-pod # Connecting to {cacheHostName} with an access key.. Retrieved value from Redis: Hello, Redis!
+kubectl get po entrademo-pod
+```
+
+redis.app.k8s.example.connect-from-aks.accesskey.istio|clustered
+
+```
+# This example demonstrates a simpler method of connecting an AKS pod to the redis cache using an access key, bypassing the need for a workload identity. The AKS cluster is set up with Istio, and there's one pod equipped with the Istio sidecar and another without it. Plus, the Redis cache we're using is of the premium, sharded (clustered) variety.
+
+az redis delete -g $rg -n $redis -y
+az redis create -g $rg -n $redis -l $loc --sku premium --vm-size P1 --shard-count 2 # Premium P1 (6 GB) Redis cache configuration with clustering enabled, and it's setup with 2 shards, bringing the total capacity to 12 GB
+redisHostName=$(az redis show -g $rg -n $redis --query hostName -otsv); echo $redisHostName
+redisKey=$(az redis list-keys -g $rg -n $redis | jq .primaryKey)
+
+az aks mesh enable -g $rg -n aks # Istio
+kubectl delete po --all
+
+echo $rg, $redis - $redisHostName, $registry - $acrLoginServer # , $redisKey
+po=redis-sample
+ns=default
+kubectl delete po $po
+cat << EOF | kubectl create -f -
+apiVersion: v1
+kind: Pod
+metadata:
+ name: $po
+ namespace: $ns
+spec:
+ containers:
+ - name: redis-sample
+   image: $acrLoginServer/redis-sample
+   imagePullPolicy: Always
+   command: ["dotnet", "ConnectFromAKS.dll"] 
+   env:
+   - name: AUTHENTICATION_TYPE
+     value: "ACCESS_KEY" # change to ACCESS_KEY to authenticate using access key
+   - name: REDIS_HOSTNAME
+     value: $redisHostName
+   - name: REDIS_ACCESSKEY
+     value: $redisKey 
+   - name: REDIS_PORT
+     value: "6380"
+ restartPolicy: Never
+EOF
+sleep 30
+kubectl logs -n $ns $po # Connecting to {cacheHostName} with an access key.. Retrieved value from Redis: Hello, Redis!
+kubectl get po -n $ns $po
+
+echo $rg, $redis - $redisHostName, $registry - $acrLoginServer # , $redisKey
+po=redis-sample-istio
+ns=istio-ns
+istioRevision=$(az aks show -g $rg -n aks --query serviceMeshProfile.istio.revisions -otsv); echo $istioRevision
+kubectl delete po $po
+kubectl delete ns $ns
+kubectl create ns $ns
+kubectl label namespace $ns istio.io/rev=$istioRevision
+cat << EOF | kubectl create -f -
+apiVersion: v1
+kind: Pod
+metadata:
+ name: $po
+ namespace: $ns
+spec:
+ containers:
+ - name: redis-sample
+   image: $acrLoginServer/redis-sample
+   imagePullPolicy: Always
+   command: ["dotnet", "ConnectFromAKS.dll"] 
+   env:
+   - name: AUTHENTICATION_TYPE
+     value: "ACCESS_KEY" # change to ACCESS_KEY to authenticate using access key
+   - name: REDIS_HOSTNAME
+     value: $redisHostName
+   - name: REDIS_ACCESSKEY
+     value: $redisKey 
+   - name: REDIS_PORT
+     value: "6380"
+ restartPolicy: Never
+EOF
+sleep 30
+kubectl logs -n $ns $po -c redis-sample # RedisConnectionException
+kubectl get po -n $ns $po
+```
+
+## redis.app.k8s.example.connect-from-aks.managedidentity
+
+```
+# If there's no specific need for managed identity (workload identity), you might want to go with connect-from-aks.accesskey as your go-to option.
 
 # https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-tutorial-aks-get-started#set-up-an-azure-cache-for-redis-instance
 rg=rgredis
@@ -142,151 +290,6 @@ kubectl get po entrademo-pod
 ```
 
 - https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-tutorial-aks-get-started
-
-## redis.app.k8s.example.connect-from-aks.simple
-
-```
-# This example demonstrates a simpler method of connecting an AKS pod to the redis cache using an access key, rather than utilizing a Microsoft Entra (workload) identity.
-
-rg=rgredis
-redis="redis$RANDOM"
-az group create -n $rg -l $loc
-az redis create -g $rg -n $redis -l $loc --sku Basic --vm-size c0
-
-az aks create -g $rg -n aks -s $vmsize -c 2
-az aks get-credentials -g $rg -n aks --overwrite-existing
-
-# https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-tutorial-aks-get-started#run-sample-locally
-# https://github.com/Azure-Samples/azure-cache-redis-samples/tree/main/tutorial/connect-from-aks/ConnectFromAKS
-cd /tmp
-rm -rf /tmp/azure-cache-redis-samples
-git clone https://github.com/Azure-Samples/azure-cache-redis-samples.git
-cd /tmp/azure-cache-redis-samples/tutorial/connect-from-aks/ConnectFromAKS
-
-# https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-tutorial-aks-get-started#configure-your-workload-that-connects-to-azure-cache-for-redis
-registry="registry$RANDOM"
-az acr create -g $rg -n $registry --sku basic
-az aks update -g $rg -n aks --attach-acr $registry
-acrLoginServer=$(az acr show -g $rg -n $registry --query loginServer -otsv); echo $acrLoginServer
-acrAccessToken=$(az acr login -n $registry --expose-token | jq .accessToken); echo $acrAccessToken
-docker login $acrLoginServer -u 00000000-0000-0000-0000-000000000000 # copy the value of $acrAccessToken (leave out the double quotes) and hit Enter
-az acr build --registry $registry --image redis-sample .
-
-# https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-tutorial-aks-get-started#run-your-workload
-redisHostName=$(az redis show -g $rg -n $redis --query hostName -otsv); echo $redisHostName
-redisKey=$(az redis list-keys -g $rg -n $redis | jq .primaryKey)
-kubectl delete po entrademo-pod
-cat << EOF | kubectl create -f -
-apiVersion: v1
-kind: Pod
-metadata:
- name: entrademo-pod
-spec:
- containers:
- - name: entrademo-container
-   image: $acrLoginServer/redis-sample
-   imagePullPolicy: Always
-   command: ["dotnet", "ConnectFromAKS.dll"] 
-   resources:
-     limits:
-       memory: "256Mi"
-       cpu: "500m"
-     requests:
-       memory: "128Mi"
-       cpu: "250m"
-   env:
-   - name: AUTHENTICATION_TYPE
-     value: "ACCESS_KEY" # change to ACCESS_KEY to authenticate using access key
-   - name: REDIS_HOSTNAME
-     value: $redisHostName
-   - name: REDIS_ACCESSKEY
-     value: $redisKey 
-   - name: REDIS_PORT
-     value: "6380"
- restartPolicy: Never
-EOF
-sleep 30
-kubectl logs entrademo-pod # Connecting to {cacheHostName} with an access key.. Retrieved value from Redis: Hello, Redis!
-kubectl get po entrademo-pod
-```
-
-redis.app.k8s.example.connect-from-aks.simple.istio|clustered
-
-```
-# This example demonstrates a simpler method of connecting an AKS pod to the redis cache using an access key, bypassing the need for a workload identity. The AKS cluster is set up with Istio, and there's one pod equipped with the Istio sidecar and another without it. Plus, the Redis cache we're using is of the premium, sharded (clustered) variety.
-
-az redis delete -g $rg -n $redis -y
-az redis create -g $rg -n $redis -l $loc --sku premium --vm-size P1 --shard-count 2 # Premium P1 (6 GB) Redis cache configuration with clustering enabled, and it's setup with 2 shards, bringing the total capacity to 12 GB
-redisHostName=$(az redis show -g $rg -n $redis --query hostName -otsv); echo $redisHostName
-redisKey=$(az redis list-keys -g $rg -n $redis | jq .primaryKey)
-
-az aks mesh enable -g $rg -n aks # Istio
-kubectl delete po --all
-
-po=redis-sample
-ns=default
-kubectl delete po $po
-cat << EOF | kubectl create -f -
-apiVersion: v1
-kind: Pod
-metadata:
- name: $po
- namespace: $ns
-spec:
- containers:
- - name: redis-sample
-   image: $acrLoginServer/redis-sample
-   imagePullPolicy: Always
-   command: ["dotnet", "ConnectFromAKS.dll"] 
-   env:
-   - name: AUTHENTICATION_TYPE
-     value: "ACCESS_KEY" # change to ACCESS_KEY to authenticate using access key
-   - name: REDIS_HOSTNAME
-     value: $redisHostName
-   - name: REDIS_ACCESSKEY
-     value: $redisKey 
-   - name: REDIS_PORT
-     value: "6380"
- restartPolicy: Never
-EOF
-sleep 30
-kubectl logs -n $ns $po # Connecting to {cacheHostName} with an access key.. Retrieved value from Redis: Hello, Redis!
-kubectl get po -n $ns $po
-
-po=redis-sample-istio
-ns=istio-ns
-istioRevision=$(az aks show -g $rg -n aks --query serviceMeshProfile.istio.revisions -otsv); echo $istioRevision
-kubectl delete po $po
-kubectl delete ns $ns
-kubectl create ns $ns
-kubectl label namespace $ns istio.io/rev=$istioRevision
-cat << EOF | kubectl create -f -
-apiVersion: v1
-kind: Pod
-metadata:
- name: $po
- namespace: $ns
-spec:
- containers:
- - name: redis-sample
-   image: $acrLoginServer/redis-sample
-   imagePullPolicy: Always
-   command: ["dotnet", "ConnectFromAKS.dll"] 
-   env:
-   - name: AUTHENTICATION_TYPE
-     value: "ACCESS_KEY" # change to ACCESS_KEY to authenticate using access key
-   - name: REDIS_HOSTNAME
-     value: $redisHostName
-   - name: REDIS_ACCESSKEY
-     value: $redisKey 
-   - name: REDIS_PORT
-     value: "6380"
- restartPolicy: Never
-EOF
-sleep 30
-kubectl logs -n $ns $po -c redis-sample # RedisConnectionException
-kubectl get po -n $ns $po
-```
 
 ## redis.debug
 

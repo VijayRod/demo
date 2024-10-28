@@ -134,6 +134,10 @@ sleep 10
 kubectl get po $po -n $ns
 # kubectl get po nginx -n istio-ns
 
+# /2
+NAME    READY   STATUS    RESTARTS   AGE
+nginx   2/2     Running   0          10s
+
 kubectl describe po $po -n $ns | grep istio-
   istio-init:
     Image:         mcr.microsoft.com/oss/istio/proxyv2:1.22.5-distroless

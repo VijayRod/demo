@@ -142,7 +142,7 @@ echo $rg, $redis - $redisHostName, $registry - $acrLoginServer # , $redisKey
 po=redis-sample-istio
 ns=istio-ns
 istioRevision=$(az aks show -g $rg -n aks --query serviceMeshProfile.istio.revisions -otsv); echo $istioRevision
-kubectl delete po $po
+kubectl delete po -ns $ns $po
 kubectl delete ns $ns
 kubectl create ns $ns
 kubectl label namespace $ns istio.io/rev=$istioRevision

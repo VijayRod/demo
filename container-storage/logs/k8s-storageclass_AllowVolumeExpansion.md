@@ -1,3 +1,5 @@
+## k8s-storageclass.allowVolumeExpansion
+
 ```
 kubectl delete po nginx-azuredisk
 kubectl delete pvc pvc-azuredisk
@@ -55,3 +57,5 @@ Error from server (Forbidden): persistentvolumeclaims "pvc-azuredisk" is forbidd
   
 - https://kubernetes.io/docs/concepts/storage/persistent-volumes/: You can only expand a PVC if its storage class's allowVolumeExpansion field is set to true.
 - https://kubernetes.io/docs/concepts/storage/persistent-volumes/#csi-volume-expansion
+- https://github.com/kubernetes-sigs/azurefile-csi-driver/issues/573: you should resize pvc instead of pv
+- https://kubernetes.io/blog/2022/05/05/volume-expansion-ga/#storage-driver-support

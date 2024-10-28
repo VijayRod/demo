@@ -21,9 +21,20 @@ az account set -s $subId
 az account show -s $subId --query isDefault
 
 # query
-az aks show -g $rg -n aks --query nodeResourceGroup -o tsv
+az aks show -g $rg -n aks --query nodeResourceGroup -o tsv # MC_rgredis12_aks_swedencentral
+az aks show -g $rg -n aks | jq .nodeResourceGroup # "MC_rgredis12_aks_swedencentral"
+az aks show -g $rg -n aks | jq .agentPoolProfiles[0] # az aks show -g $rg -n aks --query agentPoolProfiles[0]
+{
+  "artifactStreamingProfile": null,
+  "availabilityZones": null,
+  "capacityReservationGroupId": null,
+  "count": 2,
+...
+az aks show -g $rg -n aks | jq .agentPoolProfiles[0].count # az aks show -g $rg -n aks --query agentPoolProfiles[0].count # 2
 az network private-link-service list -g $noderg --query "[].id" -o tsv
 az network private-link-service list -g $noderg --query "[].{Name:name,Alias:alias}" -o table
+az acr login -n $registry --expose-token | jq .accessToken
+az aks show -g $rg -n aks | jq .accessToken
 
 # misc
 az extension remove --name aks-preview

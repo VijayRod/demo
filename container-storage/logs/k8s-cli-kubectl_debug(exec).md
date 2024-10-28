@@ -22,7 +22,7 @@ kubectl delete po node-debugger-{node-name-xxxx} # Once you have gathered the lo
 - https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#debug
 - https://learn.microsoft.com/en-us/azure/aks/node-access
 
-## kubectl.debug.pod
+### kubectl.debug.pod
 
 ```
 kubectl exec -it mypod -- /bin/bash

@@ -98,6 +98,7 @@ redis.app.k8s.example.connect-from-aks.accesskey.istio|clustered
 
 ```
 # This example demonstrates a simpler method of connecting an AKS pod to the redis cache using an access key, bypassing the need for a workload identity. The AKS cluster is set up with Istio, and there's one pod equipped with the Istio sidecar and another without it. Plus, the Redis cache we're using is of the premium, sharded (clustered) variety.
+# See the section on k8s-servicemesh-istio.app.redis
 
 az redis delete -g $rg -n $redis -y
 az redis create -g $rg -n $redis -l $loc --sku premium --vm-size P1 --shard-count 2 # Premium P1 (6 GB) Redis cache configuration with clustering enabled, and it's setup with 2 shards, bringing the total capacity to 12 GB

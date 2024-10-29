@@ -3,23 +3,43 @@
 - https://www.gnu.org/software/bash/manual/bash.html
 - https://www.gnu.org/software/coreutils/manual/coreutils.html
 
-## bash.spec.other.bashrc
+## bash.spec.other.env
 
 ```
-# cp ~/.bashrc ~/.bashrc-old
-echo 'loc=swedencentral; rg=rg; vmsize=Standard_B2ms; subId=redacted; tenantId="redacted"' >> ~/.bashrc
-echo 'echo $(date),$HOME,$loc,$rg,$vmsize,sub $subId,tenant $tenantId' >> ~/.bashrc
-echo 'cd /tmp' >> ~/.bashrc
-echo 'alias k=kubectl' >> ~/.bashrc
-source ~/.bashrc
-cat .bashrc | tail -n 10
-# vi ~/.bashrc
+env # | grep PATH
+```
+- https://unix.stackexchange.com/questions/26047/how-to-correctly-add-a-path-to-path
+
+## bash.spec.other.env.bash_profile
+
+```
+# cp ~/.bash_profile ~/.bash_profile-old # No such file or directory
+echo 'loc=swedencentral; rg=rg; vmsize=Standard_B2ms; subId=redacted; tenantId="redacted"' >> ~/.bash_profile
+echo 'echo $(date),$HOME,$loc,$rg,$vmsize,sub $subId,tenant $tenantId' >> ~/.bash_profile
+echo 'cd /tmp' >> ~/.bash_profile
+echo 'alias k=kubectl' >> ~/.bash_profile
+echo 'export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"' >> ~/.bash_profile
+source ~/.bash_profile
+cat ~/.bash_profile | tail -n 10
+# vi ~/.bash_profile
+```
+
+## bash.spec.other.env.bashrc
+
+```
+
 ```
 
 - https://askubuntu.com/questions/127056/where-is-bashrc: don't create a .bashrc if it's just for this, create or modify ~/.bash_profile
 - https://askubuntu.com/questions/121413/understanding-bashrc-and-bash-profile
 - https://cloudzy.com/blog/linux-bashrc/
 - https://www.digitalocean.com/community/tutorials/bashrc-file-in-linux
+
+add bash.spec.other.env.profile
+
+```
+cat ~/.profile # This file is not read by bash(1), if ~/.bash_profile or ~/.bash_login
+```
 
 ## bash.spec.other.loop.while
 

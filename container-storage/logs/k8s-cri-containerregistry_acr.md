@@ -172,7 +172,121 @@ kubectl run mynginx --image=imageshack.azurecr.io/library/nginx:latest # Success
 - https://learn.microsoft.com/en-us/azure/container-registry/container-registry-troubleshoot-login
 - https://learn.microsoft.com/en-us/azure/architecture/operator-guides/aks/aks-triage-container-registry: Verify the connection to the container registry
   
-## k8s-aks-acr.check-acr
+## k8s-aks-acr.spec.repository aka image
+
+```
+# Check out the Dockerfile section (az acr build --registry $registry --image image-sample .) for instructions on how to create and import a custom image.
+
+az acr import -n $registry --source docker.io/library/nginx # Imports an image from another Container Registry. Import removes the need to docker pull, docker tag, docker push.
+
+tbd root@aks-nodepool1-74128781-vmss000000:/# crictl pull imageshack.azurecr.io/library/nginx:latest # GET request to https://imageshack.azurecr.io/oauth2/token?scope=repository%3Alibrary%2Fnginx%3Apull&service=imageshack.azurecr.io: 401 Unauthorized
+k run mynginx --image=imageshack.azurecr.io/library/nginx:latest # kubelet  Successfully pulled image "imageshack.azurecr.io/library/nginx:latest"
+
+az acr repository list -n $registry -otable # library/nginx
+
+az acr repository show-tags -n $registry --repository nginx -otable # latest
+
+az acr repository delete -n $registry --repository nginx -y # Are you sure you want to delete the repository 'nginx' and all images under it? (y/n)
+```
+
+- https://learn.microsoft.com/en-us/azure/container-registry/container-registry-concepts: About registries, repositories, and artifacts
+
+## k8s-aks-acr.spec.repository.build aka custom image
+
+```
+# Check out the Dockerfile section for instructions on how to create and import a custom image.
+# This steps follows the az acr login and docker login
+az acr build --registry $registry --image image-sample . # Execute in the folder that contains the Dockerfile. # Run ID: dt1 was successful after 47s
+```
+
+## k8s-aks-acr.spec.repository.format (image format)
+
+- https://learn.microsoft.com/en-us/azure/container-registry/container-registry-image-formats
+
+## k8s-aks-acr.spec.repository.token
+
+```
+az acr token create --registry $registry --name MyToken --repository library/nginx content/write content/read --output json
+Please store your generated credentials safely. Meanwhile you can use it through "docker login imageshack.azurecr.io -u MyToken -p 7oredacted".
+{
+  "creationDate": "2024-10-23T18:47:32.351014+00:00",
+  "credentials": {
+    "certificates": null,
+    "passwords": [
+      {
+        "creationTime": "2024-10-23T18:47:44.493948+00:00",
+        "expiry": null,
+        "name": "password1",
+        "value": "7oredacted"
+      },
+      {
+        "creationTime": "2024-10-23T18:47:44.493966+00:00",
+        "expiry": null,
+        "name": "password2",
+        "value": "Fcredacted"
+      }
+    ],
+    "username": "MyToken"
+  },
+  "id": "/subscriptions/redacts-1111-1111-1111-111111111111/resourceGroups/rg/providers/Microsoft.ContainerRegistry/registries/imageshack/tokens/MyToken",
+  "name": "MyToken",
+  "provisioningState": "Succeeded",
+  "resourceGroup": "rg",
+  "scopeMapId": "/subscriptions/redacts-1111-1111-1111-111111111111/resourceGroups/rg/providers/Microsoft.ContainerRegistry/registries/imageshack/scopeMaps/MyToken-scope-map",
+  "status": "enabled",
+  "systemData": {
+    "createdAt": "2024-10-23T18:47:32.258021+00:00",
+    "createdBy": "email@email.com",
+    "createdByType": "User",
+    "lastModifiedAt": "2024-10-23T18:47:32.258021+00:00",
+    "lastModifiedBy": "email@email.com",
+    "lastModifiedByType": "User"
+  },
+  "type": "Microsoft.ContainerRegistry/registries/tokens"
+}
+```
+
+- https://learn.microsoft.com/en-us/azure/container-registry/container-registry-repository-scoped-permissions: By creating tokens, a registry owner can provide users or services with scoped, time-limited access to repositories to pull or push images or perform other actions.
+
+## k8s-aks-acr.spec.other.login
+
+```
+# earlier
+az acr login -n $registry
+You may want to use 'az acr login -n imageshack --expose-token' to get an access token, which does not require Docker to be installed.
+2024-10-22 18:23:44.394058 An error occurred: DOCKER_COMMAND_ERROR
+Cannot connect to the Docker daemon at unix:///var/run/docker.sock. Is the docker daemon running?
+```
+
+```
+az acr login -n $registry --expose-token
+You can perform manual login using the provided access token below, for example: 'docker login loginServer -u 00000000-0000-0000-0000-000000000000 -p accessToken'
+{
+  "accessToken": "eyredacted_bhqA",
+  "loginServer": "imageshack.azurecr.io"
+}
+
+accessToken="eyredacted_bhqA"
+acrLoginServer=$(az acr show -g $rgname -n $registry --query loginServer -otsv); echo $acrLoginServer # imageshack.azurecr.io
+docker login $acrLoginServer -u 00000000-0000-0000-0000-000000000000 -p $accessToken
+# Login Succeeded
+
+# Or
+acrLoginServer=$(az acr show -g $rg -n $registry --query loginServer -otsv); echo $acrLoginServer
+acrAccessToken=$(az acr login -n $registry --expose-token | jq .accessToken); echo $acrAccessToken
+docker login $acrLoginServer -u 00000000-0000-0000-0000-000000000000 # copy the value of $acrAccessToken (leave out the double quotes) and hit Enter
+
+# Or tbd unauthorized
+az acr login -n $registry --expose-token | jq .accessToken | docker login $acrLoginServer -u 00000000-0000-0000-0000-000000000000 --password-stdin
+acrAccessToken=$(az acr login -n $registry --expose-token | jq .accessToken); echo $acrAccessToken | docker login $acrLoginServer -u 00000000-0000-0000-0000-000000000000 --password-stdin
+acrAccessToken=$(az acr login -n $registry --expose-token | jq .accessToken); docker login $acrLoginServer -u 00000000-0000-0000-0000-000000000000 -p $acrAccessToken
+```
+
+- https://learn.microsoft.com/en-us/azure/container-registry/container-registry-authentication?tabs=azure-cli
+- https://learn.microsoft.com/en-us/troubleshoot/azure/azure-container-registry/acr-authentication-errors: The az acr login command calls the docker login command and uses the Microsoft Entra access token to authenticate against the ACR. It requires the Docker client and Docker daemon to be installed on the machine where you execute the command. When the Docker daemon doesn't run in your environment, if you need to authenticate with ACR, use the az acr login command with the --expose-token parameter. This command is helpful when you need to run scripts that don't require the Docker daemon but only the Docker CLI
+- https://azure.github.io/acr/AAD-OAuth.html#overview
+
+## k8s-aks-acr.tool.check-acr
 
 ```
 # az aks check-acr -g $rgname -n $clustername --acr $registry
@@ -203,12 +317,12 @@ The login server endpoint suffix '.azurecr.io' is automatically appended.
 Your cluster can pull images from imageshack.azurecr.io!
 ```
 
-## k8s-aks-acr.check-acr.canipull
+## k8s-aks-acr.tool.check-acr.canipull
 
 - https://github.com/Azure/aks-canipull
 - https://github.com/andyzhangx/demo/blob/master/aks/canipull/README.md - "deprecation: please use az aks check-acr (--node-name) command to throubleshoot ACR connection issue on specific AKS node"
 
-## k8s-aks-acr.check-acr.privatecluster
+## k8s-aks-acr.tool.check-acr.privatecluster
 
 ```
 rg=rg
@@ -260,7 +374,7 @@ az aks command invoke -g $rg -n aksprivateacr2 --command "kubectl get po" # myng
 az aks command invoke -g $rg -n aksprivateacr2 --command "kubectl describe po" # Successfully pulled image "imageshack.azurecr.io/library/nginx:latest"
 ```
 
-## k8s-aks-acr.check-acr.error.Validating image pull permission: FAILED
+## k8s-aks-acr.tool.check-acr.error.Validating image pull permission: FAILED
 
 ```
 ASSIGNEE=$(az aks show -g $rgname -n $clustername --query identityProfile.kubeletidentity.clientId -otsv)
@@ -280,111 +394,3 @@ az aks check-acr -g $rgname -n $clustername --acr $registry
 az role assignment create --role AcrPull --assignee $ASSIGNEE --scope $acrId
 az aks check-acr -g $rgname -n $clustername --acr $registry # Validating image pull permission: SUCCEEDED
 ```
-
-## k8s-aks-acr.repository aka image
-
-```
-# Check out the Dockerfile section (az acr build --registry $registry --image image-sample .) for instructions on how to create and import a custom image.
-
-az acr import -n $registry --source docker.io/library/nginx # Imports an image from another Container Registry. Import removes the need to docker pull, docker tag, docker push.
-
-tbd root@aks-nodepool1-74128781-vmss000000:/# crictl pull imageshack.azurecr.io/library/nginx:latest # GET request to https://imageshack.azurecr.io/oauth2/token?scope=repository%3Alibrary%2Fnginx%3Apull&service=imageshack.azurecr.io: 401 Unauthorized
-k run mynginx --image=imageshack.azurecr.io/library/nginx:latest # kubelet  Successfully pulled image "imageshack.azurecr.io/library/nginx:latest"
-
-az acr repository list -n $registry -otable # library/nginx
-
-az acr repository show-tags -n $registry --repository nginx -otable # latest
-
-az acr repository delete -n $registry --repository nginx -y # Are you sure you want to delete the repository 'nginx' and all images under it? (y/n)
-```
-
-## k8s-aks-acr.repository.build aka custom image
-
-```
-# Check out the Dockerfile section for instructions on how to create and import a custom image.
-# This steps follows the az acr login and docker login
-az acr build --registry $registry --image image-sample . # Execute in the folder that contains the Dockerfile. # Run ID: dt1 was successful after 47s
-```
-
-## k8s-aks-acr.repository.token
-
-```
-az acr token create --registry $registry --name MyToken --repository library/nginx content/write content/read --output json
-Please store your generated credentials safely. Meanwhile you can use it through "docker login imageshack.azurecr.io -u MyToken -p 7oredacted".
-{
-  "creationDate": "2024-10-23T18:47:32.351014+00:00",
-  "credentials": {
-    "certificates": null,
-    "passwords": [
-      {
-        "creationTime": "2024-10-23T18:47:44.493948+00:00",
-        "expiry": null,
-        "name": "password1",
-        "value": "7oredacted"
-      },
-      {
-        "creationTime": "2024-10-23T18:47:44.493966+00:00",
-        "expiry": null,
-        "name": "password2",
-        "value": "Fcredacted"
-      }
-    ],
-    "username": "MyToken"
-  },
-  "id": "/subscriptions/redacts-1111-1111-1111-111111111111/resourceGroups/rg/providers/Microsoft.ContainerRegistry/registries/imageshack/tokens/MyToken",
-  "name": "MyToken",
-  "provisioningState": "Succeeded",
-  "resourceGroup": "rg",
-  "scopeMapId": "/subscriptions/redacts-1111-1111-1111-111111111111/resourceGroups/rg/providers/Microsoft.ContainerRegistry/registries/imageshack/scopeMaps/MyToken-scope-map",
-  "status": "enabled",
-  "systemData": {
-    "createdAt": "2024-10-23T18:47:32.258021+00:00",
-    "createdBy": "email@email.com",
-    "createdByType": "User",
-    "lastModifiedAt": "2024-10-23T18:47:32.258021+00:00",
-    "lastModifiedBy": "email@email.com",
-    "lastModifiedByType": "User"
-  },
-  "type": "Microsoft.ContainerRegistry/registries/tokens"
-}
-```
-
-- https://learn.microsoft.com/en-us/azure/container-registry/container-registry-repository-scoped-permissions: By creating tokens, a registry owner can provide users or services with scoped, time-limited access to repositories to pull or push images or perform other actions.
-
-## k8s-aks-acr.login
-
-```
-# earlier
-az acr login -n $registry
-You may want to use 'az acr login -n imageshack --expose-token' to get an access token, which does not require Docker to be installed.
-2024-10-22 18:23:44.394058 An error occurred: DOCKER_COMMAND_ERROR
-Cannot connect to the Docker daemon at unix:///var/run/docker.sock. Is the docker daemon running?
-```
-
-```
-az acr login -n $registry --expose-token
-You can perform manual login using the provided access token below, for example: 'docker login loginServer -u 00000000-0000-0000-0000-000000000000 -p accessToken'
-{
-  "accessToken": "eyredacted_bhqA",
-  "loginServer": "imageshack.azurecr.io"
-}
-
-accessToken="eyredacted_bhqA"
-acrLoginServer=$(az acr show -g $rgname -n $registry --query loginServer -otsv); echo $acrLoginServer # imageshack.azurecr.io
-docker login $acrLoginServer -u 00000000-0000-0000-0000-000000000000 -p $accessToken
-# Login Succeeded
-
-# Or
-acrLoginServer=$(az acr show -g $rg -n $registry --query loginServer -otsv); echo $acrLoginServer
-acrAccessToken=$(az acr login -n $registry --expose-token | jq .accessToken); echo $acrAccessToken
-docker login $acrLoginServer -u 00000000-0000-0000-0000-000000000000 # copy the value of $acrAccessToken (leave out the double quotes) and hit Enter
-
-# Or tbd unauthorized
-az acr login -n $registry --expose-token | jq .accessToken | docker login $acrLoginServer -u 00000000-0000-0000-0000-000000000000 --password-stdin
-acrAccessToken=$(az acr login -n $registry --expose-token | jq .accessToken); echo $acrAccessToken | docker login $acrLoginServer -u 00000000-0000-0000-0000-000000000000 --password-stdin
-acrAccessToken=$(az acr login -n $registry --expose-token | jq .accessToken); docker login $acrLoginServer -u 00000000-0000-0000-0000-000000000000 -p $acrAccessToken
-```
-
-- https://learn.microsoft.com/en-us/azure/container-registry/container-registry-authentication?tabs=azure-cli
-- https://learn.microsoft.com/en-us/troubleshoot/azure/azure-container-registry/acr-authentication-errors: The az acr login command calls the docker login command and uses the Microsoft Entra access token to authenticate against the ACR. It requires the Docker client and Docker daemon to be installed on the machine where you execute the command. When the Docker daemon doesn't run in your environment, if you need to authenticate with ACR, use the az acr login command with the --expose-token parameter. This command is helpful when you need to run scripts that don't require the Docker daemon but only the Docker CLI
-- https://azure.github.io/acr/AAD-OAuth.html#overview

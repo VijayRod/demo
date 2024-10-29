@@ -107,7 +107,8 @@ kubectl describe validatingwebhookconfiguration istio-validator-asm-1-21-aks-ist
 - https://discuss.istio.io/t/istio-in-azure-aks-outbound-traffic-issues-over-15001-port-while-connecting-to-azure-redis-cache/10412/2: istio-iptables -p
 - https://github.com/istio/cni/blob/master/tools/packaging/common/istio-iptables.sh: -p: Specify the envoy port to which redirect all TCP traffic (default $ENVOY_PORT = 15001). -z: Port to which all inbound TCP traffic to the pod/VM should be redirected to. For REDIRECT only (default $INBOUND_CAPTURE_PORT = 15006)
 - https://istio.io/latest/docs/reference/commands/pilot-agent/: 150*
-
+- https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-best-practices-kubernetes#potential-connection-collision-with-istioenvoy: When using Istio with an Azure Cache for Redis cluster, consider excluding the potential collision ports with an istio annotation. annotations: traffic.sidecar.istio.io/excludeOutboundPorts: "15000,15001,15004,15006,15008,15009,15020"
+  
 ## k8s-servicemesh-istio.debug
 
 - https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/extensions/istio-add-on-general-troubleshooting
@@ -210,3 +211,7 @@ NAME                               READY   STATUS    RESTARTS   AGE   IP        
 istiod-asm-1-22-5d6d4f8b44-2k7q5   1/1     Running   0          14h   10.244.0.7    aks-nodepool1-33835024-vmss000005   <none>           <none>
 istiod-asm-1-22-5d6d4f8b44-95llg   1/1     Running   0          14h   10.244.0.10   aks-nodepool1-33835024-vmss000005   <none>           <none>
 ```
+
+- https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-best-practices-kubernetes#potential-connection-collision-with-istioenvoy: When using Istio with an Azure Cache for Redis cluster, consider excluding the potential collision ports with an istio annotation. annotations: traffic.sidecar.istio.io/excludeOutboundPorts: "15000,15001,15004,15006,15008,15009,15020"
+- https://istio.io/latest/docs/reference/config/annotations/#SidecarTrafficExcludeOutboundPorts
+- https://istio.io/latest/docs/ops/deployment/application-requirements/#ports-used-by-istio

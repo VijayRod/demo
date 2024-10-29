@@ -108,6 +108,7 @@ kubectl describe validatingwebhookconfiguration istio-validator-asm-1-21-aks-ist
 - https://github.com/istio/cni/blob/master/tools/packaging/common/istio-iptables.sh: -p: Specify the envoy port to which redirect all TCP traffic (default $ENVOY_PORT = 15001). -z: Port to which all inbound TCP traffic to the pod/VM should be redirected to. For REDIRECT only (default $INBOUND_CAPTURE_PORT = 15006)
 - https://istio.io/latest/docs/reference/commands/pilot-agent/: 150*
 - https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-best-practices-kubernetes#potential-connection-collision-with-istioenvoy: When using Istio with an Azure Cache for Redis cluster, consider excluding the potential collision ports with an istio annotation. annotations: traffic.sidecar.istio.io/excludeOutboundPorts: "15000,15001,15004,15006,15008,15009,15020"
+- https://github.com/istio/istio/issues/43655: Make port 15006 configurable. we may need to make all ports configurable long-term
   
 ## k8s-servicemesh-istio.debug
 

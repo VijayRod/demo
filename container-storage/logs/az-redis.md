@@ -94,7 +94,7 @@ kubectl logs entrademo-pod # Connecting to {cacheHostName} with an access key.. 
 kubectl get po entrademo-pod
 ```
 
-redis.app.k8s.example.connect-from-aks.accesskey.istio|clustered
+## redis.app.k8s.example.connect-from-aks.accesskey.istio|clustered
 
 ```
 # This example demonstrates a simpler method of connecting an AKS pod to the redis cache using an access key, bypassing the need for a workload identity. The AKS cluster is set up with Istio, and there's one pod equipped with the Istio sidecar and another without it. Plus, the Redis cache we're using is of the premium, sharded (clustered) variety.

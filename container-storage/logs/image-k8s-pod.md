@@ -21,6 +21,8 @@ apt-get update -y && apt-get install net-tools strace -y # install multiple pack
 apt-get update -y && apt-get install iputils-ping -y # includes ping, not netstat. ping 10.224.0.4
 apt-get update -y && apt-get install net-tools -y # includes netstat, tbd ping. netstat -atunp | grep -E "10.224.0.4|10.224.0.5"
 apt-get update -y && apt-get install strace -y # strace -s 99 -ffp 8302
+apt update -y && apt install bind9-dnsutils -y # nslookup
+apt update -y && apt install inetutils-telnet -y # telnet
 ```
 
 - https://kubernetes.io/docs/concepts/containers/images/

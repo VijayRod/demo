@@ -185,6 +185,8 @@ kubectl get cm -A | grep istio
 ## k8s-servicemesh-istio.spec.other.ports
 
 ```
+# See the section on k8s-servicemesh-istio.app.redis to see the ports 15000-15019 utilized by Azure Cache for Redis
+
 root@aks-nodepool1-33835024-vmss000004:/# iptables-save | grep 150
 -A KUBE-SEP-C5BHK5WAW35LL4WX -p tcp -m comment --comment "aks-istio-system/istiod-asm-1-22:https-webhook" -m tcp -j DNAT --to-destination 10.244.0.7:15017
 -A KUBE-SEP-FVL7C3WAQGHN5DAN -p tcp -m comment --comment "aks-istio-system/istiod-asm-1-22:https-dns" -m tcp -j DNAT --to-destination 10.244.0.10:15012

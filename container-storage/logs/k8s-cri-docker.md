@@ -35,9 +35,11 @@ The following packages have unmet dependencies:
 E: Error, pkgProblemResolver::Resolve generated breaks, this may be caused by held packages.
 ```
 
-## docker.error.Cannot connect to the Docker daemon at unix:///var/run/docker.sock. Is the docker daemon running
+## docker.spec.daemon.error.Cannot connect to the Docker daemon at unix:///var/run/docker.sock. Is the docker daemon running
 
 ```
+# For those who only need Docker installed for login purposes and don't need the Docker daemon to be running, see the section on az acr login -n imageshack --expose-token
+
 docker version
 Client:
  Version:           24.0.7
@@ -70,4 +72,14 @@ errors pretty printing info
 tbd Run the Docker daemon using the 'docker start' command.
 ```
 
-# If you don't need docker, see the section on az acr login -n imageshack --expose-token
+## docker.spec.image.build.acr
+
+```
+# For those who only need Docker installed for login purposes and don't need the Docker daemon to be running, see the section on az acr login -n imageshack --expose-token
+```
+
+## docker.spec.image.build.VisualStudio
+
+```
+# Open the .sln file in Visual Studio, right click Dockerfile, Build Docker Image
+```

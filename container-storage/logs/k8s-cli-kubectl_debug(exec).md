@@ -1,6 +1,7 @@
 ## kubectl.debug.node
 ```
-# kubectl node-shell aks-nodepool1-37663765-vmss000000
+# See the section on runcommand
+# See the section on kubectl.debug.tools.kubectlnodeshell
 
 kubectl debug node/aks-nodepool1-37663765-vmss000000 -it --image=busybox
 
@@ -16,6 +17,9 @@ kubectl cp node-debugger-{node-name-xxxx}:/host/var/log/messages /tmp/messages
 kubectl cp node-debugger-{node-name-xxxx}:/host/var/log/syslog /tmp/syslog
 kubectl cp node-debugger-{node-name-xxxx}:/host/var/log/kern.log /tmp/kern.log
 kubectl delete po node-debugger-{node-name-xxxx} # Once you have gathered the logs, feel free to remove the debug pod
+
+# log files - copy
+kubectl cp nsenter-es99e8:/tmp/capture_file_nodeC.pcap /tmp/capture_file_nodeC.pcap --retries=10
 ```
 
 - https://kubernetes.io/docs/tasks/debug/debug-cluster/kubectl-node-debug/

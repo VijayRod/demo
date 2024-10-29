@@ -14,8 +14,6 @@ az ssh vm -g $rgname -n $vm
 
 ```
 # See the section on kubectl debug/exec
-
-kubectl cp nsenter-es99e8:/tmp/capture_file_nodeC.pcap /tmp/capture_file_nodeC.pcap --retries=10
 ```
 
 - https://learn.microsoft.com/en-us/azure/aks/node-access

@@ -8,6 +8,10 @@ clusters:
 az aks get-credentials -g $rg -n aks --overwrite-existing
 The behavior of this command has been altered by the following extension: aks-preview
 Merged "aks" as current context in /root/.kube/config
+# Merged "aks" as current context in /home/vijayrod/.kube/config
+ls -l ~/.kube
+drwxr-x--- 4 userredacted userredacted 4096 Oct 28 18:44 cache
+-rw-r--r-- 1 userredacted userredacted 9660 Oct 29 19:14 config
 ```
 
 ```

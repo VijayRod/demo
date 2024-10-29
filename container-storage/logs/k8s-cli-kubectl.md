@@ -13,7 +13,7 @@ sudo az aks install-cli
 - https://learn.microsoft.com/en-us/azure/aks/tutorial-kubernetes-deploy-cluster?tabs=azure-cli#install-the-kubernetes-cli
 - https://learn.microsoft.com/en-us/cli/azure/aks?view=azure-cli-latest#az-aks-install-cli
 
-## kubectl.discovery/memcache
+## kubectl.spec.discovery/memcache
 ```
 # stopped the cluster
 
@@ -29,7 +29,43 @@ Address:        10.255.255.254#53
 
 - https://github.com/kubernetes/kubernetes/blob/master/staging/src/k8s.io/client-go/discovery/cached/memory/memcache.go
 
-## kubectl.get-credentials
+## kubectl.spec.other.annotate
+
+```
+kubectl delete po nginx
+kubectl run nginx --image=nginx
+kubectl annotate pod nginx app=nginx # pod/nginx annotated
+kubectl describe po nginx | grep Annot # Annotations:      app: nginx
+kubectl annotate pod --overwrite nginx app=nginx,app2=nginx2 # pod/nginx annotated
+kubectl describe po nginx | grep Annot # Annotations:      app: nginx,app2=nginx2
+kubectl annotate pod nginx app- app2- # pod/nginx annotated
+kubectl describe po nginx | grep Annot # Annotations:      <none>
+
+kubectl delete po nginx
+cat << EOF | kubectl create -f -
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    app: nginx
+  creationTimestamp: null
+  labels:
+    run: nginx
+  name: nginx
+spec:
+  containers:
+  - image: nginx
+    name: nginx
+    resources: {}
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+EOF
+kubectl describe po nginx | grep Annot
+```
+  
+- https://kubernetes.io/docs/reference/kubectl/generated/kubectl_annotate/
+
+## kubectl.spec.other.get-credentials
 
 ```
 az aks get-credentials -g $rg -n aks

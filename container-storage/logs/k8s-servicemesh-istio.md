@@ -123,6 +123,7 @@ kubectl describe validatingwebhookconfiguration istio-validator-asm-1-21-aks-ist
 ## k8s-servicemesh-istio.example
 
 ```
+echo $rg
 po=nginx
 ns=istio-ns
 istioRevision=$(az aks show -g $rg -n aks --query serviceMeshProfile.istio.revisions -otsv); echo $istioRevision
@@ -149,6 +150,7 @@ kubectl describe po $po -n $ns | grep istio-
 ## k8s-servicemesh-istio.spec.other.configmap
 
 ```
+echo $rg
 istioRevision=$(az aks show -g $rg -n aks --query serviceMeshProfile.istio.revisions -otsv); echo $istioRevision
 kubectl delete cm -n aks-istio-system istio-shared-configmap-$istioRevision
 cat << EOF | kubectl create -f -

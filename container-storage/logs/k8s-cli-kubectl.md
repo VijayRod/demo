@@ -56,6 +56,12 @@ kube-system       Active   21h
 ```
 
 ## kubectl.tools
+
+```
+# See the section on kubectl debug (exec) for additional tools
+# See the section on images for additional tools
+```
+
 - https://collabnix.github.io/kubetools/, Cluster with Core CLI tools
 
 ### kubectl.tools.fubectl

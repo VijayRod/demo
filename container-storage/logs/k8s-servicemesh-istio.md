@@ -181,3 +181,30 @@ kubectl get cm -A | grep istio
 
 - https://learn.microsoft.com/en-us/azure/aks/istio-meshconfig#proxyconfig-meshconfigdefaultconfig
 - https://istio.io/latest/docs/reference/config/istio.mesh.v1alpha1/#ProxyConfig: ProxyConfig defines variables for individual Envoy instances. This can be configured on a per-workload basis as well as by the mesh-wide defaults. To set the mesh wide defaults, configure the defaultConfig section of meshConfig. 
+
+## k8s-servicemesh-istio.spec.other.ports
+
+```
+root@aks-nodepool1-33835024-vmss000004:/# iptables-save | grep 150
+-A KUBE-SEP-C5BHK5WAW35LL4WX -p tcp -m comment --comment "aks-istio-system/istiod-asm-1-22:https-webhook" -m tcp -j DNAT --to-destination 10.244.0.7:15017
+-A KUBE-SEP-FVL7C3WAQGHN5DAN -p tcp -m comment --comment "aks-istio-system/istiod-asm-1-22:https-dns" -m tcp -j DNAT --to-destination 10.244.0.10:15012
+-A KUBE-SEP-H54KZ5GUNOAKYPID -p tcp -m comment --comment "aks-istio-system/istiod-asm-1-22:grpc-xds" -m tcp -j DNAT --to-destination 10.244.0.7:15010
+-A KUBE-SEP-LXXYVRSWACZZN2HZ -p tcp -m comment --comment "aks-istio-system/istiod-asm-1-22:grpc-xds" -m tcp -j DNAT --to-destination 10.244.0.10:15010
+-A KUBE-SEP-NRRV3CFSTOI47WX5 -p tcp -m comment --comment "aks-istio-system/istiod-asm-1-22:https-dns" -m tcp -j DNAT --to-destination 10.244.0.7:15012
+-A KUBE-SEP-RYPLX3PIOV7KXRLS -p tcp -m comment --comment "aks-istio-system/istiod-asm-1-22:http-monitoring" -m tcp -j DNAT --to-destination 10.244.0.7:15014
+-A KUBE-SEP-UDR3XRFX2TD4H2DU -p tcp -m comment --comment "aks-istio-system/istiod-asm-1-22:http-monitoring" -m tcp -j DNAT --to-destination 10.244.0.10:15014
+-A KUBE-SEP-VLQ4Z6JDWV4JRKNA -p tcp -m comment --comment "aks-istio-system/istiod-asm-1-22:https-webhook" -m tcp -j DNAT --to-destination 10.244.0.10:15017
+-A KUBE-SVC-6KERD2IN6AEBO2WW -m comment --comment "aks-istio-system/istiod-asm-1-22:grpc-xds -> 10.244.0.10:15010" -m statistic --mode random --probability 0.50000000000 -j KUBE-SEP-LXXYVRSWACZZN2HZ
+-A KUBE-SVC-6KERD2IN6AEBO2WW -m comment --comment "aks-istio-system/istiod-asm-1-22:grpc-xds -> 10.244.0.7:15010" -j KUBE-SEP-H54KZ5GUNOAKYPID
+-A KUBE-SVC-GK3BZPKCWUFYCJHE -m comment --comment "aks-istio-system/istiod-asm-1-22:https-dns -> 10.244.0.10:15012" -m statistic --mode random --probability 0.50000000000 -j KUBE-SEP-FVL7C3WAQGHN5DAN
+-A KUBE-SVC-GK3BZPKCWUFYCJHE -m comment --comment "aks-istio-system/istiod-asm-1-22:https-dns -> 10.244.0.7:15012" -j KUBE-SEP-NRRV3CFSTOI47WX5
+-A KUBE-SVC-R6ANSUKRPKVTBBNX -m comment --comment "aks-istio-system/istiod-asm-1-22:http-monitoring -> 10.244.0.10:15014" -m statistic --mode random --probability 0.50000000000 -j KUBE-SEP-UDR3XRFX2TD4H2DU
+-A KUBE-SVC-R6ANSUKRPKVTBBNX -m comment --comment "aks-istio-system/istiod-asm-1-22:http-monitoring -> 10.244.0.7:15014" -j KUBE-SEP-RYPLX3PIOV7KXRLS
+-A KUBE-SVC-X5AB4RUXCTLOCO67 -m comment --comment "aks-istio-system/istiod-asm-1-22:https-webhook -> 10.244.0.10:1517" -m statistic --mode random --probability 0.50000000000 -j KUBE-SEP-VLQ4Z6JDWV4JRKNA
+-A KUBE-SVC-X5AB4RUXCTLOCO67 -m comment --comment "aks-istio-system/istiod-asm-1-22:https-webhook -> 10.244.0.7:15017" -j KUBE-SEP-C5BHK5WAW35LL4WX
+kubectl get po -n aks-istio-system -owide
+NAME                               READY   STATUS    RESTARTS   AGE   IP            NODE
+    NOMINATED NODE   READINESS GATES
+istiod-asm-1-22-5d6d4f8b44-2k7q5   1/1     Running   0          14h   10.244.0.7    aks-nodepool1-33835024-vmss000005   <none>           <none>
+istiod-asm-1-22-5d6d4f8b44-95llg   1/1     Running   0          14h   10.244.0.10   aks-nodepool1-33835024-vmss000005   <none>           <none>
+```

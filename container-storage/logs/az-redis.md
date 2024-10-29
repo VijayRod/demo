@@ -56,8 +56,10 @@ docker login $acrLoginServer -u 00000000-0000-0000-0000-000000000000 # copy the 
 az acr build --registry $registry --image redis-sample .
 
 # https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-tutorial-aks-get-started#run-your-workload
+# rg=; redis=; registry=
 redisHostName=$(az redis show -g $rg -n $redis --query hostName -otsv); echo $redisHostName
 redisKey=$(az redis list-keys -g $rg -n $redis | jq .primaryKey)
+acrLoginServer=$(az acr show -g $rg -n $registry --query loginServer -otsv); echo $acrLoginServer
 echo $rg, $redis - $redisHostName, $registry - $acrLoginServer # , $redisKey
 kubectl delete po entrademo-pod
 cat << EOF | kubectl create -f -
@@ -108,6 +110,10 @@ redisKey=$(az redis list-keys -g $rg -n $redis | jq .primaryKey)
 az aks mesh enable -g $rg -n aks # Istio
 kubectl delete po --all
 
+# rg=; redis=; registry=
+redisHostName=$(az redis show -g $rg -n $redis --query hostName -otsv); echo $redisHostName
+redisKey=$(az redis list-keys -g $rg -n $redis | jq .primaryKey)
+acrLoginServer=$(az acr show -g $rg -n $registry --query loginServer -otsv); echo $acrLoginServer
 echo $rg, $redis - $redisHostName, $registry - $acrLoginServer # , $redisKey
 po=redis-sample
 ns=default
@@ -139,6 +145,10 @@ sleep 30
 kubectl logs -n $ns $po # Connecting to {cacheHostName} with an access key.. Retrieved value from Redis: Hello, Redis!
 kubectl get po -n $ns $po
 
+# rg=; redis=; registry=
+redisHostName=$(az redis show -g $rg -n $redis --query hostName -otsv); echo $redisHostName
+redisKey=$(az redis list-keys -g $rg -n $redis | jq .primaryKey)
+acrLoginServer=$(az acr show -g $rg -n $registry --query loginServer -otsv); echo $acrLoginServer
 echo $rg, $redis - $redisHostName, $registry - $acrLoginServer # , $redisKey
 po=redis-sample-istio
 ns=istio-ns
@@ -151,6 +161,8 @@ cat << EOF | kubectl create -f -
 apiVersion: v1
 kind: Pod
 metadata:
+ annotations:
+   traffic.sidecar.istio.io/excludeOutboundPorts: "15000,15001,15004,15006,15008,15009,15020"
  name: $po
  namespace: $ns
 spec:
@@ -212,8 +224,11 @@ docker login $acrLoginServer -u 00000000-0000-0000-0000-000000000000 #### This s
 az acr build --registry $registry --image redis-sample .
 
 # https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-tutorial-aks-get-started#run-your-workload
+# rg=; redis=; registry=
 redisHostName=$(az redis show -g $rg -n $redis --query hostName -otsv); echo $redisHostName
 redisKey=$(az redis list-keys -g $rg -n $redis | jq .primaryKey)
+acrLoginServer=$(az acr show -g $rg -n $registry --query loginServer -otsv); echo $acrLoginServer
+echo $rg, $redis - $redisHostName, $registry - $acrLoginServer # , $redisKey
 kubectl delete po entrademo-pod
 cat << EOF | kubectl create -f -
 apiVersion: v1
@@ -251,7 +266,7 @@ sleep 30
 kubectl logs entrademo-pod # Connecting to {cacheHostName} with an access key.. Retrieved value from Redis: Hello, Redis!
 kubectl get po entrademo-pod
 
-tbd
+tbd (Invalid authentication type!)
 kubectl delete po entrademo-pod
 cat << EOF | kubectl create -f -
 apiVersion: v1

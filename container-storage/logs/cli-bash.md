@@ -35,7 +35,7 @@ cat ~/.bash_profile | tail -n 10
 - https://cloudzy.com/blog/linux-bashrc/
 - https://www.digitalocean.com/community/tutorials/bashrc-file-in-linux
 
-add bash.spec.other.env.profile
+## bash.spec.other.env.profile
 
 ```
 cat ~/.profile # This file is not read by bash(1), if ~/.bash_profile or ~/.bash_login

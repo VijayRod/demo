@@ -77,7 +77,8 @@ az network public-ip create -g $rg -n natIp --sku standard
 az network nat gateway create -g $rg -n natGateway --public-ip-addresses natIp
 az network vnet subnet update --ids $subnetId --nat-gateway natGateway
 # az network vnet subnet create -g $rg --vnet-name vnet -n akssubnet --address-prefixes 10.240.0.0/16 --nat-gateway natGateway
-az aks create -g $rg -n aksauto --vnet-subnet-id $subnetId --sku automatic --enable-managed-identity --assign-identity $userIdentityUri --outbound-type userAssignedNATGateway # (BadRequest) Managed cluster 'Automatic' SKU should enable 'OutboundType' feature with recommended values; Managed cluster 'Automatic' should only allow cluster with managed identity to be created.
+az aks create -g $rg -n aksauto --vnet-subnet-id $subnetId --sku automatic --enable-managed-identity --assign-identity $userIdentityUri --outbound-type userAssignedNATGateway
+# (BadRequest) Managed cluster 'Automatic' SKU should enable 'OutboundType' feature with recommended values; Managed cluster 'Automatic' should only allow cluster with managed identity to be created.
 az aks get-credentials -g $rg -n aks --overwrite-existing
 ```
 

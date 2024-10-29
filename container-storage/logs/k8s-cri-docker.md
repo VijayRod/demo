@@ -9,13 +9,19 @@ $HOME/.docker/config.json
 ### docker.install.wsl
 
 ```
-docker login $acrLoginServer -u 00000000-0000-0000-0000-000000000000 # wsl/Ubuntu
+wsl/Ubuntu: docker
 The command 'docker' could not be found in this WSL 2 distro.
 We recommend to activate the WSL integration in Docker Desktop settings.
 For details about using Docker Desktop with WSL 2, visit:
 https://docs.docker.com/go/wsl2/
 
-Windows, Start Menu, Docker Desktop app
+# To install Docker Desktop, follow the steps on this guide https://docs.docker.com/go/wsl2/
+# Then, open the Docker Desktop app from the Start Menu.
+# Right-click on Docker Desktop in the notification area to the right, select Resources, and then WSL Integration. Make sure to enable integration for both the default distros and Ubuntu. This will restart Docker Desktop, but you won't need to restart WSL.
+
+wsl/Ubuntu: docker
+Usage:  docker [OPTIONS] COMMAND
+...
 ```
 
 ### docker.install.error The following packages have unmet dependencies: moby-containerd : Conflicts: containerd

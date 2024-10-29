@@ -292,6 +292,16 @@ kubectl get po entrademo-pod
 
 - https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-tutorial-aks-get-started
 
+## redis.app.k8s.example.opensource
+
+```
+helm repo add bitnami https://charts.bitnami.com/bitnami
+helm install my-redis bitnami/redis-cluster
+export REDIS_PASSWORD=$(kubectl get secret --namespace "default" my-redis-redis-cluster -o jsonpath="{.data.redis-password}" | base64 --decode)
+```
+
+- https://techcommunity.microsoft.com/t5/apps-on-azure-blog/run-scalable-and-resilient-redis-with-kubernetes-and-azure/ba-p/3247956
+  
 ## redis.debug
 
 ```

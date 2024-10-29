@@ -1,4 +1,6 @@
 ```
+# tcpdump while executing the mount command from the node until the mount failure is encountered (start tcpdump, execute the mount command and wait for the failure, then stop tcpdump).
+
 tcpdump
 tcpdump -w - # to write binary data to stdout
 tcpdump -w /tmp/tcpdump/capture

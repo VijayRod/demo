@@ -9,6 +9,7 @@ $HOME/.docker/config.json
 ### docker.install.wsl
 
 ```
+# initial
 wsl/Ubuntu: docker
 The command 'docker' could not be found in this WSL 2 distro.
 We recommend to activate the WSL integration in Docker Desktop settings.
@@ -19,6 +20,7 @@ https://docs.docker.com/go/wsl2/
 # Then, open the Docker Desktop app from the Start Menu.
 # Right-click on Docker Desktop in the notification area to the right, select Resources, and then WSL Integration. Make sure to enable integration for both the default distros and Ubuntu. This will restart Docker Desktop, but you won't need to restart WSL.
 
+# after the installation of Docker Desktop and integration with wsl
 wsl/Ubuntu: docker
 Usage:  docker [OPTIONS] COMMAND
 ...

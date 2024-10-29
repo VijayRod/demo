@@ -61,7 +61,7 @@ az aks show -g $rg -n aks --query kind # "Automatic"
 az aks show -g $rg -n aks --query sku.name # "Automatic"
 
 # create.custom-vnet
-tbd
+tbd BadRequest
 rg=rgvnet
 az group create -n $rg -l $loc
 az network vnet create -g $rg --name vnet --address-prefixes 10.0.0.0/8 -o none 

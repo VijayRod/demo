@@ -7,8 +7,8 @@
 
 ```
 # cp ~/.bashrc ~/.bashrc-old
-echo 'rg=rg; loc=swedencentral; subId=redacted; tenantId="redacted"' >> ~/.bashrc
-echo 'echo $(date),$HOME,$rg,$loc,sub $subId,tenant $tenantId' >> ~/.bashrc
+echo 'loc=swedencentral; rg=rg; vmsize=Standard_B2ms; subId=redacted; tenantId="redacted"' >> ~/.bashrc
+echo 'echo $(date),$HOME,$loc,$rg,$vmsize,sub $subId,tenant $tenantId' >> ~/.bashrc
 echo 'cd /tmp' >> ~/.bashrc
 echo 'alias k=kubectl' >> ~/.bashrc
 source ~/.bashrc

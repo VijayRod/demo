@@ -34,6 +34,9 @@ wsl --system -e cat /etc/issue # Welcome to CBL-Mariner 2.0.n (x86_64) - Kernel 
 wsl.exe --list --online # Displays a list of available distributions for install with 'wsl.exe --install'
 
 # home directory
+\\wsl.localhost\ # Or \\wsl$
+\\wsl.localhost\Ubuntu\tmp
+\\wsl.localhost\Ubuntu\home\userredacted
 # https://superuser.com/questions/1791373/location-of-wsl-home-directory-in-windows
 
 # install

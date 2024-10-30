@@ -251,14 +251,10 @@ Please store your generated credentials safely. Meanwhile you can use it through
 ## k8s-aks-acr.spec.other.login
 
 ```
-# earlier
-az acr login -n $registry
-You may want to use 'az acr login -n imageshack --expose-token' to get an access token, which does not require Docker to be installed.
-2024-10-22 18:23:44.394058 An error occurred: DOCKER_COMMAND_ERROR
-Cannot connect to the Docker daemon at unix:///var/run/docker.sock. Is the docker daemon running?
-```
+# First, execute `az acr login -n $registry --expose-token` to get the access token (password) and the login server.
+# Next, use `docker login $acrLoginServer -u 00000000-0000-0000-0000-000000000000`.
+# Finally, run `az acr build --registry $registry --image image-sample .` in the Dockerfile location to build and upload the image. 
 
-```
 az acr login -n $registry --expose-token
 You can perform manual login using the provided access token below, for example: 'docker login loginServer -u 00000000-0000-0000-0000-000000000000 -p accessToken'
 {
@@ -285,6 +281,14 @@ acrAccessToken=$(az acr login -n $registry --expose-token | jq .accessToken); do
 - https://learn.microsoft.com/en-us/azure/container-registry/container-registry-authentication?tabs=azure-cli
 - https://learn.microsoft.com/en-us/troubleshoot/azure/azure-container-registry/acr-authentication-errors: The az acr login command calls the docker login command and uses the Microsoft Entra access token to authenticate against the ACR. It requires the Docker client and Docker daemon to be installed on the machine where you execute the command. When the Docker daemon doesn't run in your environment, if you need to authenticate with ACR, use the az acr login command with the --expose-token parameter. This command is helpful when you need to run scripts that don't require the Docker daemon but only the Docker CLI
 - https://azure.github.io/acr/AAD-OAuth.html#overview
+
+```
+# earlier
+az acr login -n $registry
+You may want to use 'az acr login -n imageshack --expose-token' to get an access token, which does not require Docker to be installed.
+2024-10-22 18:23:44.394058 An error occurred: DOCKER_COMMAND_ERROR
+Cannot connect to the Docker daemon at unix:///var/run/docker.sock. Is the docker daemon running?
+```
 
 ## k8s-aks-acr.tool.check-acr
 

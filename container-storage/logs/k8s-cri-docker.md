@@ -75,7 +75,10 @@ tbd Run the Docker daemon using the 'docker start' command.
 ## docker.spec.image.build.acr
 
 ```
-# For those who only need Docker installed for login purposes and don't need the Docker daemon to be running, see the section on az acr login -n imageshack --expose-token
+# For those who only need Docker installed for login purposes and don't need the Docker daemon to be running:
+# First, execute `az acr login -n $registry --expose-token` to get the access token (password) and the login server.
+# Next, use `docker login $acrLoginServer -u 00000000-0000-0000-0000-000000000000`.
+# Finally, run `az acr build --registry $registry --image image-sample .` in the Dockerfile location to build and upload the image. 
 ```
 
 ## docker.spec.image.build.VisualStudio

@@ -110,8 +110,7 @@ az afd origin create -g $rg --profile-name fdprofile --origin-group-name fdorigi
 ## fd.spec.request.header.RefString aka x-msedge-ref
 
 ```
-curl -v https://mcr.microsoft.com
-< x-msedge-ref: Ref A: CDE3F8BB7DBE4F539F58D4B6DA24FF96 Ref B: LON212050714011 Ref C: 2024-10-30T18:22:05Z
+curl -v https://mcr.microsoft.com # x-msedge-ref: Ref A: CDE3F8BB7DBE4F539F58D4B6DA24FF96 Ref B: LON212050714011 Ref C: 2024-10-30T18:22:05Z
 # Or Browser, F12, Network, click on a row under the Name column, Headers tab has the x-msedge-ref
 ```
 

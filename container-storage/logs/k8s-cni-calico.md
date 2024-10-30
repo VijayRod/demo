@@ -1,3 +1,5 @@
+## k8s-cni-calico
+
 ```
 akscal
 aks-nodepool1-36628055-vmss000000:/# ps -aux | grep calico
@@ -26,6 +28,7 @@ root        6396  0.7  0.7 2205400 64148 ?       Sl   04:17   0:10 calico-node -
 
 ```
 kubectl get installation default -o go-template --template {{.spec.cni.ipam.type}} # HostLocal
+# kubectl get installations.operator.tigera.io default -o yaml
 
 kubectl api-resources | grep install
 installations                                           operator.tigera.io/v1                  false        Installation
@@ -242,3 +245,43 @@ calico-system     calico-typha-78fc59998c-8flzt              1/1     Running   0
 ```
 
 - https://www.tigera.io/blog/byocni-introducing-calico-cni-for-azure-aks/
+
+## k8s-cni-calico.spec.ippool
+
+```
+k api-resources
+ippools                                                 crd.projectcalico.org/v1               false        IPPool
+k get installation default -oyaml
+spec:
+  calicoNetwork:
+    bgp: Disabled
+    ipPools: []
+k get ippool
+No resources found
+
+cat << EOF | kubectl create -f -
+apiVersion: crd.projectcalico.org/v1
+kind: IPPool
+metadata:
+  name: myippool
+spec:
+  cidr: 10.1.0.0/16
+  ipipMode: CrossSubnet
+  natOutgoing: true
+  disabled: false
+  nodeSelector: all()
+  allowedUses:
+    - Workload
+    - Tunnel
+EOF
+k get installation default -oyaml
+spec:
+  calicoNetwork:
+    bgp: Disabled
+    ipPools: []
+k get ippool
+NAME       AGE
+myippool   55s
+```
+    
+- https://docs.tigera.io/calico/latest/reference/resources/ippool

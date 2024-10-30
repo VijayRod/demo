@@ -43,7 +43,7 @@ X-Cache: CONFIG_NOCACHE
 - https://learn.microsoft.com/en-us/azure/frontdoor/front-door-faq#when-should-i-deploy-an-application-gateway-behind-front-door-
 - https://learn.microsoft.com/en-us/azure/frontdoor/create-front-door-cli
 
-## fd.aks
+## fd.app.aks
 
 ```
 tbd
@@ -106,3 +106,15 @@ az afd origin create -g $rg --profile-name fdprofile --origin-group-name fdorigi
 
 - tbd https://learn.microsoft.com/en-us/azure/openshift/howto-secure-openshift-with-front-door
   - tbd https://cloud.redhat.com/experts/aro/frontdoor/
+  
+## fd.spec.request.header.RefString aka x-msedge-ref
+
+```
+curl -v https://mcr.microsoft.com
+< x-msedge-ref: Ref A: CDE3F8BB7DBE4F539F58D4B6DA24FF96 Ref B: LON212050714011 Ref C: 2024-10-30T18:22:05Z
+# Or Browser, F12, Network, click on a row under the Name column, Headers tab has the x-msedge-ref
+```
+
+- https://learn.microsoft.com/en-us/azure/frontdoor/refstring#what-is-a-refstring: A RefString is a short string appended by Azure Front Door to the HTTP response headers of each request. It provides details on how the request was processed, including the point of presence (POP) and backend status. RefStrings can help you troubleshoot and resolve issues with Azure Front Door.
+- https://learn.microsoft.com/en-in/azure/frontdoor/front-door-http-headers-protocol#from-the-front-door-to-the-client: X-Azure-Ref. This is a unique reference string that identifies a request served by Front Door, which is critical for troubleshooting as it's used to search access logs.
+- https://techcommunity.microsoft.com/t5/fasttrack-for-azure/end-to-end-logging-with-azure-front-door-application-gateway-and/ba-p/3673671: Application Gateway injects a "x-appgw-trace-id" header. Front Door inserts an x-azure-ref header. Both services inject the headers into the requests leaving the service.

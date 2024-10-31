@@ -222,22 +222,41 @@ istiod-asm-1-22-5d6d4f8b44-95llg   1/1     Running   0          14h   10.244.0.1
 
 ## k8s-servicemesh-istio.spec.other.proxy.Envoy
 
-1. The istio-proxy container is the Envoy sidecar injected by Istio.
-   
-   1a. The sidecar containers are injected using a mutating admission webhook seen with `kubectl get mutatingwebhookconfigurations | grep istio-sidecar-injector`.
-   
-   1b. Use `istioctl proxy-status -i aks-istio-system` to retrieve the proxy sync status for all Envoys in a mesh. Each row in the output denotes an Envoy proxy in each pod in the cluster.
-   
-      1b.i. `CDS`, `LDS`, `EDS`, `RDS`, and `ECDS`, seen in the output of the above command, are Envoy (the proxy underpinning Istio) services mentioned [here](https://github.com/istio/istio/issues/34139#issuecomment-1064377239) and [here](https://www.envoyproxy.io/docs/envoy/latest/intro/arch_overview/operations/dynamic_configuration).
-       
-      1b.ii. `SYNCED` and `NOT SENT` statuses are usually seen, `STALE` usually indicates a networking issue between Envoy and Istiod as indicated [here](https://istio.io/latest/docs/ops/diagnostic-tools/proxy-cmd/).
-       
-      1b.iii. The Istio service mesh architecture includes the proxy underpinning Istio, as shown [here](https://istio.io/latest/docs/ops/deployment/architecture/).
+- https://istio.io/latest/docs/ops/deployment/architecture/: The data plane is composed of a set of intelligent proxies (Envoy) deployed as sidecars. These proxies mediate and control all network communication between microservices. They also collect and report telemetry on all mesh traffic. The control plane manages and configures the proxies to route traffic.
+- https://istio.io/latest/docs/ops/deployment/architecture/#envoy
 
+## k8s-servicemesh-istio.spec.other.proxy.Envoy.debug
+
+```
+# sidecar
+# The istio-proxy container is the Envoy sidecar injected by Istio.
+kubectl run nginx --image=nginx -n istio-ns
+kubectl describe po nginx -n istio-ns | grep proxy # mcr.microsoft.com/oss/istio/proxyv2:1.22.5-distroless
+
+# webhook
+# The sidecar containers are injected using a mutating admission webhook seen with `kubectl get mutatingwebhookconfigurations | grep istio-sidecar-injector`.
+kubectl get mutatingwebhookconfigurations --show-labels | grep istio-sidecar-injector
+istio-sidecar-injector-asm-1-22-aks-istio-system   3          6d8h   admissions.enforcer/disabled=true,app.kubernetes.io/managed-by=Helm,app=sidecar-injector,helm.toolkit.fluxcd.io/name=azure-service-mesh-istio-discovery-helmrelease,helm.toolkit.fluxcd.io/namespace=671b6f9eecf8e1000192e150,install.operator.istio.io/owning-resource=unknown,istio.io/rev=asm-1-22,operator.istio.io/component=Pilot,release=azure-service-mesh-istio-discovery
+# kubectl describe mutatingwebhookconfigurations -l app=sidecar-injector
+
+# debug proxy-status
+# If an envoy (application pod) is missing from the output, it means that it is not currently connected to an Istio Pilot instance and thus will not receive any configuration.
+kubectl run nginx --image=nginx -n istio-ns
+istioctl proxy-status -i aks-istio-system
+NAME                  CLUSTER        CDS        LDS        EDS        RDS        ECDS         ISTIOD                               VERSION
+nginx.istio-ns        Kubernetes     SYNCED     SYNCED     SYNCED     SYNCED     NOT SENT     istiod-asm-1-22-5d6d4f8b44-9xbl2     1.22-dev
+# To retrieve information about proxy configuration from an Envoy instance, run `istioctl proxy-config -i aks-istio-system all -o json hello -n default` for example for pod 'hello' in namespace 'default'. Instead of 'all', one of 'clusters|listeners|routes|endpoints|bootstrap|log|secret' can be used.
+istioctl proxy-config -i aks-istio-system all -o json -n istio-ns nginx
+```
+
+- `CDS`, `LDS`, `EDS`, `RDS`, and `ECDS`, seen in the output of the above command, are Envoy (the proxy underpinning Istio) services mentioned [here](https://github.com/istio/istio/issues/34139#issuecomment-1064377239) and [here](https://www.envoyproxy.io/docs/envoy/latest/intro/arch_overview/operations/dynamic_configuration
+- `SYNCED` and `NOT SENT` statuses are usually seen, `STALE` usually indicates a networking issue between Envoy and Istiod as indicated [here](https://istio.io/latest/docs/ops/diagnostic-tools/proxy-cmd/).
 
 ## k8s-servicemesh-istio.tool.istioctl
 
 ```
+# See the section on Envoy.debug (istioctl proxy-status)
+
 # install
 cd /tmp
 curl -L https://istio.io/downloadIstio | sh -
@@ -250,22 +269,7 @@ istioctl x precheck # -n default
 
 # debug
 istioctl x precheck --vklog=9 # > istioctl_logs.txt
-
-# debug proxy-status
-# If an envoy (application pod) is missing from the output, it means that it is not currently connected to an Istio Pilot instance and thus will not receive any configuration.
-kubectl run nginx --image=nginx -n istio-ns
-istioctl proxy-status -i aks-istio-system
-NAME                  CLUSTER        CDS        LDS        EDS        RDS        ECDS         ISTIOD                               VERSION
-nginx.istio-ns        Kubernetes     SYNCED     SYNCED     SYNCED     SYNCED     NOT SENT     istiod-asm-1-22-5d6d4f8b44-9xbl2     1.22-dev
-
 ```
-
-   
-   2b. `SYNCED` and `NOT SENT` are usually seen in the output. `STALE` indicates a networking issue between Envoy and Istiod or the Istio Pilot needs to be scaled.
-   
-   2c. Refer to the advanced user note [above](#for-advanced-users) for further information about the output if required.
-
-3. To retrieve information about proxy configuration from an Envoy instance, run `istioctl proxy-config -i aks-istio-system all -o json hello -n default` for example for pod 'hello' in namespace 'default'. Instead of 'all', one of 'clusters|listeners|routes|endpoints|bootstrap|log|secret' can be used.
 
 - https://istio.io/latest/docs/setup/getting-started/#download
 

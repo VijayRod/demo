@@ -29,17 +29,21 @@ kubectl cp nsenter-es99e8:/tmp/capture_file_nodeC.pcap /tmp/capture_file_nodeC.p
 ### kubectl.debug.pod
 
 ```
-kubectl exec -it mypod -- /bin/bash
-kubectl exec -it mypod -- sh
-
 kubectl debug -it --image=busybox mypod # sh
 kubectl debug -it --image=debian:latest mypod # bash. apt update -y && apt install dnsutils -y && apt install curl -y
 # Session ended, the ephemeral container will not be restarted but may be reattached using 'kubectl attach nginx -c debugger-gvgsf -i -t' if it is still running
 ```
 
+### kubectl.debug.pod.exec
+
+```
+kubectl exec -it mypod -- /bin/bash
+kubectl exec -it mypod -- sh
+```
+
 - https://kubernetes.io/docs/tasks/debug/debug-application/get-shell-running-container/
 - https://kubernetes.io/docs/reference/kubectl/generated/kubectl_exec/
-
+  
 ## kubectl.debug.tools.kubectlenter
 
 ```

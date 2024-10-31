@@ -73,6 +73,103 @@ kubectl cluster-info dump
 kubectl cluster-info dump | grep -m 1 cluster-cidr
 ```
 
+## kubectl.spec.command.cp
+```
+kubectl cp ~/.ssh/id_rsa pod-name:/id_rsa # --retries=10
+kubectl cp nsenter-es99e8:/tmp/capture_file_nodeC.pcap /tmp/capture_file_nodeC.pcap
+```
+
+## kubectl.spec.command.create
+
+```
+# create
+kubectl create deploy nginx --image=nginx
+
+# run
+kubectl run nginx --image=nginx
+kubectl run busybox --image=busybox --command -- sh -c 'sleep 1d' # sleep 1d or sleep 100000 or sleep infinity
+
+# yaml
+kubectl create deploy nginx --image=nginx -oyaml --dry-run=client
+kubectl run nginx --image=nginx -oyaml --dry-run=client
+```
+
+- https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#create
+
+## kubectl.spec.command.delete
+
+```
+kubectl delete pods --all # -A
+```
+
+```
+kubectl create deploy nginx --image=nginx
+sleep 10; kubectl get po | grep nginx
+kubectl delete deploy nginx --cascade=foreground
+```
+
+- https://kubernetes.io/docs/reference/kubectl/cheatsheet/#deleting-resources
+
+## kubectl.spec.command.expose
+
+```
+kubectl run --image=nginx nginx --port=80
+kubectl expose po nginx --type=LoadBalancer ##--name=public-svc
+# kubectl expose po nginx --port=80 # curl ip
+# kubectl expose po nginx --port=8080 --target-port=80 # curl ip:8080
+```
+
+```
+kubectl create deploy nginx --image=nginx --port=80 --replicas=2
+kubectl scale deploy nginx --replicas=3
+kubectl expose deploy nginx --type=LoadBalancer
+```
+
+## kubectl.spec.command.events
+
+Events aren’t saved to the Kubernetes logs and usually get deleted after only an hour, although this is configurable with the –event-ttl flag when you start the Kubernetes API server. It’s best to stream events to a dedicated observability tool so you can retain them for longer time periods and get alerted to failures.
+
+```
+kubectl describe po nginx
+
+kubectl get events
+kubectl get events -n default
+kubectl get events -l run=nginx -A
+kubectl get events -w
+```
+
+- https://kubernetes.io/docs/reference/command-line-tools-reference/kube-apiserver/: --event-ttl duration     Default: 1h0m0s. Amount of time to retain events.
+- https://github.com/kubernetes/kubernetes/issues/52521
+
+## kubectl.spec.command.get
+
+```
+kubectl get po -A --show-labels
+kubectl get po -A -l k8s-app=kube-dns
+kubectl get all -n kube-system --show-labels
+
+# Retrieve the name
+kubectl get pods --no-headers -o custom-columns=":metadata.name" # nginx
+kubectl get pods -o=name # pod/nginx
+var=$(kubectl get po -n kube-system -l k8s-app=kube-dns --no-headers=true | head -n 1 | awk '{print $1}'); echo $var # nginx
+```
+
+- https://kubernetes.io/docs/reference/kubectl/cheatsheet/#viewing-and-finding-resources
+- https://kubernetes.io/docs/tasks/access-application-cluster/list-all-running-container-images/
+- https://stackoverflow.com/questions/35797906/kubernetes-list-all-running-pods-name
+- https://stackoverflow.com/questions/51611868/how-do-i-get-a-single-pod-name-for-kubernetes
+
+## kubectl.spec.output
+
+```
+kubectl get po nginx -oyaml
+
+kubectl get po nginx -ojson
+kubectl get po nginx -ojsonpath={.spec.dnsPolicy}
+```
+
+- https://kubernetes.io/docs/reference/kubectl/jsonpath/
+
 ## kubectl.tools
 
 ```

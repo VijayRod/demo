@@ -237,31 +237,29 @@ istiod-asm-1-22-5d6d4f8b44-95llg   1/1     Running   0          14h   10.244.0.1
 
 ## k8s-servicemesh-istio.tool.istioctl
 
-1. To verify that [`istioctl`](https://istio.io/latest/docs/setup/getting-started/#download) can connect to the cluster, run the command `istioctl x precheck`. A successful run should display the following message: 
+```
+# install
+cd /tmp
+curl -L https://istio.io/downloadIstio | sh -
+export PATH="$PATH:/tmp/istio-1.23.2/bin"
 
-   ```
-   No issues found when checking the cluster. Istio is safe to install or upgrade!
-   ```
+# precheck
+istioctl x precheck # -n default
+✔ No issues found when checking the cluster. Istio is safe to install or upgrade!
+  To get started, check out https://istio.io/latest/docs/setup/getting-started/
 
-   1a. If the command returns an error like the one below, ensure that `kubectl` works from the same console by running `kubectl get namespace`. You may need to obtain access credentials for the cluster using the command `az aks get-credentials -g myResourceGroupName -n myClusterName`.
-   
-   ```
-   Error: unable to retrieve Pods: the server has asked for the client to provide credentials (get pods)
-   ```
+# debug
+istioctl x precheck --vklog=9 # > istioctl_logs.txt
 
-   1b. For any other error, re-run the istioctl command with `--vklog=9` for higher log level verbosity. 
-   
-   1c. To save the output to a file, add `> istioctl_logs.txt` to the command.
-   
-2. To retrieve the proxy sync status for all Envoys in a mesh, run the command `istioctl proxy-status -i aks-istio-system`, or istioctl x precheck -n default to only check a single namespace "default". This will return one row for each pod that has the proxy.
+# debug proxy-status
+# If an envoy (application pod) is missing from the output, it means that it is not currently connected to an Istio Pilot instance and thus will not receive any configuration.
+kubectl run nginx --image=nginx -n istio-ns
+istioctl proxy-status -i aks-istio-system
+NAME                  CLUSTER        CDS        LDS        EDS        RDS        ECDS         ISTIOD                               VERSION
+nginx.istio-ns        Kubernetes     SYNCED     SYNCED     SYNCED     SYNCED     NOT SENT     istiod-asm-1-22-5d6d4f8b44-9xbl2     1.22-dev
 
-   ```
-   NAME               CLUSTER        CDS        LDS        EDS        RDS        ECDS         ISTIOD                               VERSION
-   hello.default      Kubernetes     SYNCED     SYNCED     SYNCED     SYNCED     NOT SENT     istiod-asm-1-17-67f9f55ccb-j85bk     1.17.1-distroless
-   nginx.default      Kubernetes     SYNCED     SYNCED     SYNCED     SYNCED     NOT SENT     istiod-asm-1-17-67f9f55ccb-j85bk     1.17.1-distroless
-   ```
+```
 
-   2a. If an envoy/pod is missing from the above output, it means that it is not currently connected to an Istio Pilot instance and thus will not receive any configuration.
    
    2b. `SYNCED` and `NOT SENT` are usually seen in the output. `STALE` indicates a networking issue between Envoy and Istiod or the Istio Pilot needs to be scaled.
    

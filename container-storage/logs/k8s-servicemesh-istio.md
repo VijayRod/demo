@@ -308,6 +308,16 @@ istioctl x precheck # -n default
 
 # debug
 istioctl x precheck --vklog=9 # > istioctl_logs.txt
+
+istioctl admin log -i aks-istio-egress --level ads:debug,authorization:debug # Error: no pods found
+istioctl admin log -i aks-istio-system --reset # Error: no pods found
+
+istioctl bug-report -i aks-istio-system
+...
+Creating an archive at /tmp/bug-report.tar.gz.
+Time used for creating the tar file is 87.176402ms.
+Cleaning up temporary files in /tmp/bug-report.
+Done.
 ```
 
 - https://istio.io/latest/docs/setup/getting-started/#download

@@ -32,8 +32,8 @@ kubectl cp nsenter-es99e8:/tmp/capture_file_nodeC.pcap /tmp/capture_file_nodeC.p
 kubectl exec -it mypod -- /bin/bash
 kubectl exec -it mypod -- sh
 
-kubectl debug mypod -it --image=busybox # sh
-kubectl debug mypod -it --image=debian:latest # bash
+kubectl debug -it --image=busybox mypod # sh
+kubectl debug -it --image=debian:latest mypod # bash
 ```
 
 - https://kubernetes.io/docs/tasks/debug/debug-application/get-shell-running-container/

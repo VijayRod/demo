@@ -33,7 +33,8 @@ kubectl exec -it mypod -- /bin/bash
 kubectl exec -it mypod -- sh
 
 kubectl debug -it --image=busybox mypod # sh
-kubectl debug -it --image=debian:latest mypod # bash
+kubectl debug -it --image=debian:latest mypod # bash. apt update -y && apt install dnsutils -y && apt install curl -y
+# Session ended, the ephemeral container will not be restarted but may be reattached using 'kubectl attach nginx -c debugger-gvgsf -i -t' if it is still running
 ```
 
 - https://kubernetes.io/docs/tasks/debug/debug-application/get-shell-running-container/

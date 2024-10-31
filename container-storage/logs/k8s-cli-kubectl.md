@@ -159,9 +159,49 @@ var=$(kubectl get po -n kube-system -l k8s-app=kube-dns --no-headers=true | head
 - https://stackoverflow.com/questions/35797906/kubernetes-list-all-running-pods-name
 - https://stackoverflow.com/questions/51611868/how-do-i-get-a-single-pod-name-for-kubernetes
 
+## kubectl.spec.command.patch
+
+- https://kubernetes.io/docs/tasks/manage-kubernetes-objects/update-api-object-kubectl-patch/
+- TBD https://stackoverflow.com/questions/64355902/is-there-a-way-in-kubectl-patch-to-delete-a-specific-object-in-an-array-withou
+
+## kubectl.spec.command.rollout
+
+```
+kubectl create deploy nginx --image=nginx
+kubectl rollout restart deploy nginx # ds, statefulset
+kubectl rollout restart deploy -l app=nginx
+kubectl rollout status deploy -l app=nginx # deployment "nginx" successfully rolled out
+
+kubectl rollout restart deploy -n kube-system ama-metrics
+```
+
+- https://kubernetes.io/docs/tutorials/kubernetes-basics/update/update-intro/: Performing a Rolling Update
+
+## kubectl.spec.command.scale
+
+```
+kubectl scale deploy nginx --replicas=2
+```
+
+- https://learn.microsoft.com/en-us/azure/aks/tutorial-kubernetes-scale?tabs=azure-cli#manually-scale-pods
+
+## kubectl.spec.command.token
+
+```
+fqdn=redacted.hcp.swedencentral.azmk8s.io
+kubectl create sa k8sadmin
+token=$(kubectl create token k8sadmin)
+curl --header "Authorization: Bearer $token" https://$fqdn -k # ok
+# kubectl delete sa k8sadmin
+```
+
+- https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/#manually-create-an-api-token-for-a-serviceaccount
+  
 ## kubectl.spec.output
 
 ```
+## See the section on jq
+
 kubectl get po nginx -oyaml
 
 kubectl get po nginx -ojson

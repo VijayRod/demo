@@ -259,19 +259,31 @@ istioctl proxy-config -i aks-istio-system all -o json -n istio-ns nginx
 
 ```
 # The fastest method involves using curl if it's supported by the application image.
-kubectl delete po -n istio-ns nginx
-kubectl run --image=nginx -n istio-ns nginx
+# kubectl delete po -n istio-ns nginx; kubectl run --image=nginx -n istio-ns nginx
 kubectl exec -n istio-ns nginx -c istio-proxy -- curl -XPOST http://localhost:15000/logging?level=debug
-# kubectl logs -n istio-ns nginx -c istio-proxy # proxy logs from the same pod
+# kubectl logs -n istio-ns nginx -c istio-proxy # (debug) proxy logs from the same pod
 
 # Another option is using a debug pod.
-kubectl delete po -n istio-ns nginx
-kubectl run --image=nginx -n istio-ns nginx
+# kubectl delete po -n istio-ns nginx; kubectl run --image=nginx -n istio-ns nginx
 kubectl debug -it --image=debian:latest -n istio-ns nginx
-apt-get update -y && apt-get install dnsutils -y && apt-get install curl -y
+apt-get update -y && apt-get install curl -y
 # curl -XPOST http://localhost:9901/logging?level=debug # curl: (7) Failed to connect to localhost port 9901 after 0 ms: Couldn't connect to server
 curl -XPOST http://localhost:15000/logging?level=debug # active loggers: admin: debug...
-# kubectl logs -n istio-ns nginx -c istio-proxy # proxy logs from the same pod
+# kubectl logs -n istio-ns nginx -c istio-proxy # (debug) proxy logs from the same pod
+
+# Another option is using a debug pod - one-liner to set the envoy proxy's verbosity level to debug
+# kubectl debug -it --image=debian:latest -n istio-ns nginx
+apt update -y && apt install curl -y && curl -XPOST http://localhost:15000/logging?level=debug
+# kubectl logs -n istio-ns nginx -c istio-proxy
+2024-10-31T22:48:01.361008Z     info    envoy misc external/envoy/source/common/common/logger.cc:220    change all log levels: level='debug'        thread=25
+...
+
+# Another option is using a debug pod - one-liner to set the envoy proxy's verbosity level to info (default)
+# kubectl debug -it --image=debian:latest -n istio-ns nginx
+apt update -y && apt install curl -y && curl -XPOST http://localhost:15000/logging?level=info
+# kubectl logs -n istio-ns nginx -c istio-proxy
+2024-10-31T22:45:57.528118Z     debug   envoy admin external/envoy/source/server/admin/admin_filter.cc:85       [Tags: "ConnectionId":"374","StreamId":"15789722398203259145"] request complete: path: /logging?level=info  thread=25
+2024-10-31T22:45:57.528133Z     info    envoy misc external/envoy/source/common/common/logger.cc:220    change all log levels: level='info' thread=25
 ```
 
 - https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/extensions/istio-add-on-general-troubleshooting#step-6-get-more-information-about-the-envoy-configuration: -- curl -s localhost:15000/clusters

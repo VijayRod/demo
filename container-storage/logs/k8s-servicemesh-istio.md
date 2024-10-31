@@ -254,8 +254,28 @@ istioctl proxy-config -i aks-istio-system all -o json -n istio-ns nginx
 - `SYNCED` and `NOT SENT` statuses are usually seen, `STALE` usually indicates a networking issue between Envoy and Istiod as indicated [here](https://istio.io/latest/docs/ops/diagnostic-tools/proxy-cmd/).
 - https://www.envoyproxy.io/docs/envoy/latest/start/quick-start/run-envoy#debugging-envoy
 - https://istio.io/latest/docs/ops/diagnostic-tools/proxy-cmd/#deep-dive-into-envoy-configuration
-- tbd https://layer5.io/blog/service-mesh/debug-envoy-proxy
-- tbd https://stackoverflow.com/questions/77134294/how-to-change-log-level-of-envoy-proxy-with-environment-variable
+
+## k8s-servicemesh-istio.spec.other.proxy.Envoy.debug.level=debug
+
+```
+# The fastest method involves using curl if it's supported by the application image.
+kubectl delete po -n istio-ns nginx
+kubectl run --image=nginx -n istio-ns nginx
+kubectl exec -n istio-ns nginx -c istio-proxy -- curl -XPOST http://localhost:15000/logging?level=debug
+# kubectl logs -n istio-ns nginx -c istio-proxy # proxy logs from the same pod
+
+# Another option is using a debug pod.
+kubectl delete po -n istio-ns nginx
+kubectl run --image=nginx -n istio-ns nginx
+kubectl debug -it --image=debian:latest -n istio-ns nginx
+apt-get update -y && apt-get install dnsutils -y && apt-get install curl -y
+# curl -XPOST http://localhost:9901/logging?level=debug # curl: (7) Failed to connect to localhost port 9901 after 0 ms: Couldn't connect to server
+curl -XPOST http://localhost:15000/logging?level=debug # active loggers: admin: debug...
+# kubectl logs -n istio-ns nginx -c istio-proxy # proxy logs from the same pod
+```
+
+- https://layer5.io/blog/service-mesh/debug-envoy-proxy: curl -X POST \ http://localhost:15000/logging?level=debug
+- https://stackoverflow.com/questions/77134294/how-to-change-log-level-of-envoy-proxy-with-environment-variable: curl -XPOST http://localhost:9901/logging?level=debug
 
 ## k8s-servicemesh-istio.tool.istioctl
 

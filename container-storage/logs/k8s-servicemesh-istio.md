@@ -274,6 +274,8 @@ curl -XPOST http://localhost:15000/logging?level=debug # active loggers: admin: 
 # kubectl logs -n istio-ns nginx -c istio-proxy # proxy logs from the same pod
 ```
 
+- https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/extensions/istio-add-on-general-troubleshooting#step-6-get-more-information-about-the-envoy-configuration: -- curl -s localhost:15000/clusters
+- https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/extensions/istio-add-on-general-troubleshooting#step-7-get-the-sidecar-logs-for-the-source-and-destination-sidecars: kubectl logs <pod-name> --namespace <pod-namespace> --container istio-proxy
 - https://layer5.io/blog/service-mesh/debug-envoy-proxy: curl -X POST \ http://localhost:15000/logging?level=debug
 - https://stackoverflow.com/questions/77134294/how-to-change-log-level-of-envoy-proxy-with-environment-variable: curl -XPOST http://localhost:9901/logging?level=debug
 

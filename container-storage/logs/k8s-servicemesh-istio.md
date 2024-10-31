@@ -269,3 +269,5 @@ istiod-asm-1-22-5d6d4f8b44-95llg   1/1     Running   0          14h   10.244.0.1
 
 3. To retrieve information about proxy configuration from an Envoy instance, run `istioctl proxy-config -i aks-istio-system all -o json hello -n default` for example for pod 'hello' in namespace 'default'. Instead of 'all', one of 'clusters|listeners|routes|endpoints|bootstrap|log|secret' can be used.
 
+- https://istio.io/latest/docs/setup/getting-started/#download
+

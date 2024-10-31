@@ -225,8 +225,6 @@ istiod-asm-1-22-5d6d4f8b44-95llg   1/1     Running   0          14h   10.244.0.1
 - https://istio.io/latest/docs/ops/deployment/architecture/: The data plane is composed of a set of intelligent proxies (Envoy) deployed as sidecars. These proxies mediate and control all network communication between microservices. They also collect and report telemetry on all mesh traffic. The control plane manages and configures the proxies to route traffic.
 - https://istio.io/latest/docs/ops/deployment/architecture/#envoy
 - https://www.envoyproxy.io/docs/envoy/latest/
-- tbd https://layer5.io/blog/service-mesh/debug-envoy-proxy
-- tbd https://stackoverflow.com/questions/77134294/how-to-change-log-level-of-envoy-proxy-with-environment-variable
 
 ## k8s-servicemesh-istio.spec.other.proxy.Envoy.debug
 
@@ -256,6 +254,8 @@ istioctl proxy-config -i aks-istio-system all -o json -n istio-ns nginx
 - `SYNCED` and `NOT SENT` statuses are usually seen, `STALE` usually indicates a networking issue between Envoy and Istiod as indicated [here](https://istio.io/latest/docs/ops/diagnostic-tools/proxy-cmd/).
 - https://www.envoyproxy.io/docs/envoy/latest/start/quick-start/run-envoy#debugging-envoy
 - https://istio.io/latest/docs/ops/diagnostic-tools/proxy-cmd/#deep-dive-into-envoy-configuration
+- tbd https://layer5.io/blog/service-mesh/debug-envoy-proxy
+- tbd https://stackoverflow.com/questions/77134294/how-to-change-log-level-of-envoy-proxy-with-environment-variable
 
 ## k8s-servicemesh-istio.tool.istioctl
 

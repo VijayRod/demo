@@ -95,6 +95,7 @@ kubectl describe validatingwebhookconfiguration istio-validator-asm-1-21-aks-ist
 - https://learn.microsoft.com/en-us/azure/aks/istio-about
 - https://istio.io/latest/docs/
 - https://github.com/VijayRod/demo/blob/master/aks/servicemesh-istio
+- https://istio.io/latest/docs/ops/deployment/architecture/
 
 ## k8s-servicemesh-istio.app.redis
 
@@ -218,3 +219,53 @@ istiod-asm-1-22-5d6d4f8b44-95llg   1/1     Running   0          14h   10.244.0.1
 - https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-best-practices-kubernetes#potential-connection-collision-with-istioenvoy: When using Istio with an Azure Cache for Redis cluster, consider excluding the potential collision ports with an istio annotation. annotations: traffic.sidecar.istio.io/excludeOutboundPorts: "15000,15001,15004,15006,15008,15009,15020"
 - https://istio.io/latest/docs/reference/config/annotations/#SidecarTrafficExcludeOutboundPorts
 - https://istio.io/latest/docs/ops/deployment/application-requirements/#ports-used-by-istio
+
+## k8s-servicemesh-istio.spec.other.proxy.Envoy
+
+1. The istio-proxy container is the Envoy sidecar injected by Istio.
+   
+   1a. The sidecar containers are injected using a mutating admission webhook seen with `kubectl get mutatingwebhookconfigurations | grep istio-sidecar-injector`.
+   
+   1b. Use `istioctl proxy-status -i aks-istio-system` to retrieve the proxy sync status for all Envoys in a mesh. Each row in the output denotes an Envoy proxy in each pod in the cluster.
+   
+      1b.i. `CDS`, `LDS`, `EDS`, `RDS`, and `ECDS`, seen in the output of the above command, are Envoy (the proxy underpinning Istio) services mentioned [here](https://github.com/istio/istio/issues/34139#issuecomment-1064377239) and [here](https://www.envoyproxy.io/docs/envoy/latest/intro/arch_overview/operations/dynamic_configuration).
+       
+      1b.ii. `SYNCED` and `NOT SENT` statuses are usually seen, `STALE` usually indicates a networking issue between Envoy and Istiod as indicated [here](https://istio.io/latest/docs/ops/diagnostic-tools/proxy-cmd/).
+       
+      1b.iii. The Istio service mesh architecture includes the proxy underpinning Istio, as shown [here](https://istio.io/latest/docs/ops/deployment/architecture/).
+
+
+## k8s-servicemesh-istio.tool.istioctl
+
+1. To verify that [`istioctl`](https://istio.io/latest/docs/setup/getting-started/#download) can connect to the cluster, run the command `istioctl x precheck`. A successful run should display the following message: 
+
+   ```
+   No issues found when checking the cluster. Istio is safe to install or upgrade!
+   ```
+
+   1a. If the command returns an error like the one below, ensure that `kubectl` works from the same console by running `kubectl get namespace`. You may need to obtain access credentials for the cluster using the command `az aks get-credentials -g myResourceGroupName -n myClusterName`.
+   
+   ```
+   Error: unable to retrieve Pods: the server has asked for the client to provide credentials (get pods)
+   ```
+
+   1b. For any other error, re-run the istioctl command with `--vklog=9` for higher log level verbosity. 
+   
+   1c. To save the output to a file, add `> istioctl_logs.txt` to the command.
+   
+2. To retrieve the proxy sync status for all Envoys in a mesh, run the command `istioctl proxy-status -i aks-istio-system`, or istioctl x precheck -n default to only check a single namespace "default". This will return one row for each pod that has the proxy.
+
+   ```
+   NAME               CLUSTER        CDS        LDS        EDS        RDS        ECDS         ISTIOD                               VERSION
+   hello.default      Kubernetes     SYNCED     SYNCED     SYNCED     SYNCED     NOT SENT     istiod-asm-1-17-67f9f55ccb-j85bk     1.17.1-distroless
+   nginx.default      Kubernetes     SYNCED     SYNCED     SYNCED     SYNCED     NOT SENT     istiod-asm-1-17-67f9f55ccb-j85bk     1.17.1-distroless
+   ```
+
+   2a. If an envoy/pod is missing from the above output, it means that it is not currently connected to an Istio Pilot instance and thus will not receive any configuration.
+   
+   2b. `SYNCED` and `NOT SENT` are usually seen in the output. `STALE` indicates a networking issue between Envoy and Istiod or the Istio Pilot needs to be scaled.
+   
+   2c. Refer to the advanced user note [above](#for-advanced-users) for further information about the output if required.
+
+3. To retrieve information about proxy configuration from an Envoy instance, run `istioctl proxy-config -i aks-istio-system all -o json hello -n default` for example for pod 'hello' in namespace 'default'. Instead of 'all', one of 'clusters|listeners|routes|endpoints|bootstrap|log|secret' can be used.
+

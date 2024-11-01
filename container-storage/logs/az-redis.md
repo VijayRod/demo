@@ -21,6 +21,7 @@ redis3942.redis.cache.windows.net
 - https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-planning-faq
 - https://redis.io/docs/latest/operate/oss_and_stack/management/config/
 - https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/scripts/create-manage-cache
+- https://stackexchange.github.io/StackExchange.Redis/Basics.html
 
 ## redis.app.k8s
 
@@ -316,7 +317,12 @@ export REDIS_PASSWORD=$(kubectl get secret --namespace "default" my-redis-redis-
 ```
 
 - https://techcommunity.microsoft.com/t5/apps-on-azure-blog/run-scalable-and-resilient-redis-with-kubernetes-and-azure/ba-p/3247956
-  
+
+## redis.app.net
+
+- https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-dotnet-core-quickstart
+- https://stackexchange.github.io/StackExchange.Redis/Basics.html
+
 ## redis.debug
 
 ```
@@ -381,6 +387,16 @@ az redis show -g $rg -n $redis
 - https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-troubleshoot-connectivity
 - https://techcommunity.microsoft.com/t5/azure-paas-blog/troubleshooting-azure-redis-connectivity-issues/ba-p/1450361: non-SSL port 6379 and SSL port 6380 using REDIS CLI tool. To test the connectivity to non-SSL port, kindly use (redis-cli)
 - https://techcommunity.microsoft.com/t5/azure-paas-blog/azure-redis-timeouts-network-issues/ba-p/2022222
+
+## redis.debug.connect
+
+```
+Azure portal: navigate to the Azure Cache for Redis resource, Keys, Show Access Keys. This has the conection strings with port numbers.
+```
+
+- https://stackexchange.github.io/StackExchange.Redis/Basics.html: default port (6379)
+- https://stackexchange.github.io/StackExchange.Redis/Configuration.html: Endpoints without an explicit port will use 6379 if ssl is not enabled, and 6380 if ssl is enabled.
+- https://techcommunity.microsoft.com/t5/azure-paas-blog/troubleshooting-azure-redis-connectivity-issues/ba-p/1450361: non-SSL port 6379 and SSL port 6380
 
 ## redis.spec.cluster
 
@@ -463,3 +479,15 @@ tbd az redis update -g $rg -n $redis --set "sku.name"="Premium" "sku.capacity"="
 
 - https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-how-to-scale#what-is-the-largest-cache-size-i-can-create
 - https://azure.microsoft.com/en-us/pricing/details/cache/
+
+## redis.tools.redis-cli
+
+```
+apt update -y && apt install redis-tools -y
+
+redis-cli -h
+redis-cli -h redis3697.redis.cache.windows.net -p 6380 # redis3697.redis.cache.windows.net:6380>
+```
+
+- https://techcommunity.microsoft.com/t5/azure-paas-blog/troubleshooting-azure-redis-connectivity-issues/ba-p/1450361
+- https://techcommunity.microsoft.com/t5/azure-paas-blog/connect-to-azure-cache-for-redis-using-ssl-port-6380-from-linux/ba-p/1186109

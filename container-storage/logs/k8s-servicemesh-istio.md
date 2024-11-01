@@ -111,6 +111,7 @@ kubectl describe validatingwebhookconfiguration istio-validator-asm-1-21-aks-ist
 - https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-best-practices-kubernetes#potential-connection-collision-with-istioenvoy: When using Istio with an Azure Cache for Redis cluster, consider excluding the potential collision ports with an istio annotation. annotations: traffic.sidecar.istio.io/excludeOutboundPorts: "15000,15001,15004,15006,15008,15009,15020"
 - https://github.com/istio/istio/issues/43655: Make port 15006 configurable. we may need to make all ports configurable long-term
 - https://stackoverflow.com/questions/67394030/istio-in-azure-aks-connection-issues-over-15001-port-while-connecting-to-azure: I could not see any entry in istio-proxy logs when trying from 15001 port. However when trying for other ports we can see entry
+- - https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-how-to-scale?#can-i-directly-connect-to-the-individual-shards-of-my-cache: For non-TLS Premium tier caches, ports are available in the 130XX range. For TLS enabled Premium tier caches, ports are available in the 150XX range
   
 ## k8s-servicemesh-istio.debug
 

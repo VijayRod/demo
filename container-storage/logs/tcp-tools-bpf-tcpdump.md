@@ -51,8 +51,8 @@ kubectl dumpy capture pod nginx
 
 # kubectl dumpy get dumpy-43945520
 kubectl dumpy export dumpy-43945520 /tmp/tcpdump
-kubectl dumpy stop dumpy-43945520
-kubectl dumpy delete dumpy-43945520
+# kubectl dumpy stop dumpy-43945520
+kubectl dumpy delete dumpy-43945520 # Or k delete po --all # pod "sniffer-dumpy-59308185-2320" deleted
 ls /tmp/tcpdump/dumpy*
 
 

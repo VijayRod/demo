@@ -22,6 +22,8 @@ redis3942.redis.cache.windows.net
 - https://redis.io/docs/latest/operate/oss_and_stack/management/config/
 - https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/scripts/create-manage-cache
 - https://stackexchange.github.io/StackExchange.Redis/Basics.html
+- https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-management-faq
+- https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-best-practices-enterprise-tiers
 
 ## redis.app.k8s
 
@@ -400,6 +402,8 @@ Connection to redis3697.redis.cache.windows.net (135.225.122.181) 6380 port [tcp
 - https://stackexchange.github.io/StackExchange.Redis/Basics.html: default port (6379)
 - https://stackexchange.github.io/StackExchange.Redis/Configuration.html: Endpoints without an explicit port will use 6379 if ssl is not enabled, and 6380 if ssl is enabled.
 - https://techcommunity.microsoft.com/t5/azure-paas-blog/troubleshooting-azure-redis-connectivity-issues/ba-p/1450361: non-SSL port 6379 and SSL port 6380
+- https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-how-to-scale#how-do-i-connect-to-my-cache-when-clustering-is-enabled: You can connect to your cache using the same endpoints, ports, and keys that you use when connecting to a cache that doesn't have clustering enabled. Redis manages the clustering on the backend so you don't have to manage it from your client.
+- https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-how-to-scale?#can-i-directly-connect-to-the-individual-shards-of-my-cache: For non-TLS Premium tier caches, ports are available in the 130XX range. For TLS enabled Premium tier caches, ports are available in the 150XX range
 
 ## redis.spec.cluster
 

@@ -392,6 +392,9 @@ az redis show -g $rg -n $redis
 
 ```
 Azure portal: navigate to the Azure Cache for Redis resource, Keys, Show Access Keys. This has the conection strings with port numbers.
+
+nc -v redis3697.redis.cache.windows.net 6380
+Connection to redis3697.redis.cache.windows.net (135.225.122.181) 6380 port [tcp/*] succeeded!
 ```
 
 - https://stackexchange.github.io/StackExchange.Redis/Basics.html: default port (6379)
@@ -486,7 +489,7 @@ tbd az redis update -g $rg -n $redis --set "sku.name"="Premium" "sku.capacity"="
 apt update -y && apt install redis-tools -y
 
 redis-cli -h
-redis-cli -h redis3697.redis.cache.windows.net -p 6380 # redis3697.redis.cache.windows.net:6380>
+redis-cli -h redis3697.redis.cache.windows.net -p 6380 # redis3697.redis.cache.windows.net:6380> # quit/exit
 ```
 
 - https://techcommunity.microsoft.com/t5/azure-paas-blog/troubleshooting-azure-redis-connectivity-issues/ba-p/1450361

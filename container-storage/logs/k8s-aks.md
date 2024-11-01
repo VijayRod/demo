@@ -48,6 +48,8 @@ for i in {2..100}; do az aks nodepool delete -g $rg --cluster-name aks -n nodepo
 ## aks.spec.agentPool.vmSize
 
 - https://learn.microsoft.com/en-us/azure/aks/quotas-skus-regions#supported-vm-sizes
+- https://learn.microsoft.com/en-us/azure/aks/gpu-cluster?#supported-gpu-enabled-vms
+- https://aka.ms/aks/restricted-skus
 
 ## aks.spec.sku.Automatic
 

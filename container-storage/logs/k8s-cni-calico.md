@@ -287,3 +287,11 @@ myippool   55s
 - https://docs.tigera.io/calico/latest/reference/resources/ippool
 - https://docs.tigera.io/calico-enterprise/latest/networking/ipam/initial-ippool
 - https://docs.tigera.io/calico/latest/getting-started/kubernetes/hardway/configure-ip-pools
+
+## k8s-cni-calico.spec.other.opensource
+
+```
+kubectl apply -f https://docs.projectcalico.org/v3.14/manifests/calico.yaml
+```
+
+- https://docs.projectcalico.org/v3.14/manifests/calico.yaml

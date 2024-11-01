@@ -325,6 +325,10 @@ export REDIS_PASSWORD=$(kubectl get secret --namespace "default" my-redis-redis-
 - https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-dotnet-core-quickstart
 - https://stackexchange.github.io/StackExchange.Redis/Basics.html
 
+## redis.billing
+
+- https://azure.microsoft.com/en-us/pricing/details/cache/
+  
 ## redis.debug
 
 ```

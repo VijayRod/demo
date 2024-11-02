@@ -22,6 +22,14 @@
 
 - https://learn.microsoft.com/en-us/dotnet/core/runtime-discovery/troubleshoot-app-launch
 
+## vs.spec.dependency.package.NuGet
+
+```
+# To add a package like StackExchange.Redis: Right-click the Solution for a solution-wide scope, or the Project for a specific project, or Packages within Project/Dependencies. Choose Browse, search for the package you need, and hit Install.
+# View the installed package under Project/Dependencies/Packages.
+# Include it in your cs file like this: using StackExchange.Redis;
+```
+
 ## vs.spec.project
 
 - https://aka.ms/new-console-template

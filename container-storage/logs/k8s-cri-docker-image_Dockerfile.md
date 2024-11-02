@@ -1,6 +1,8 @@
 ## Dockerfile
 
 ```
+# See the secion on vs.app.console.container.Dockerfile
+
 # Dockerfile
 FROM debian:latest
 WORKDIR /app
@@ -29,6 +31,8 @@ COPY default /etc/nginx/sites-available/default
 EXPOSE 80/tcp
 CMD ["/usr/sbin/nginx", "-g", "daemon off;"]
 ```
+
+- https://docs.docker.com/reference/dockerfile/
 - https://docs.docker.com/engine/reference/builder/
 
 ## Dockerfile.build.AzureContainerRegistry

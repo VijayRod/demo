@@ -254,7 +254,6 @@ istioctl proxy-config -i aks-istio-system all -o json -n istio-ns nginx
 
 - `CDS`, `LDS`, `EDS`, `RDS`, and `ECDS`, seen in the output of the above command, are Envoy (the proxy underpinning Istio) services mentioned [here](https://github.com/istio/istio/issues/34139#issuecomment-1064377239) and [here](https://www.envoyproxy.io/docs/envoy/latest/intro/arch_overview/operations/dynamic_configuration
 - `SYNCED` and `NOT SENT` statuses are usually seen, `STALE` usually indicates a networking issue between Envoy and Istiod as indicated [here](https://istio.io/latest/docs/ops/diagnostic-tools/proxy-cmd/).
-- https://www.envoyproxy.io/docs/envoy/latest/start/quick-start/run-envoy#debugging-envoy
 - https://istio.io/latest/docs/ops/diagnostic-tools/proxy-cmd/#deep-dive-into-envoy-configuration
 
 ## k8s-servicemesh-istio.spec.other.proxy.Envoy.debug.level=debug
@@ -288,10 +287,23 @@ apt update -y && apt install curl -y && curl -XPOST http://localhost:15000/loggi
 2024-10-31T22:45:57.528133Z     info    envoy misc external/envoy/source/common/common/logger.cc:220    change all log levels: level='info' thread=25
 ```
 
+```
+/logging?level=info
+[2024-10-31T23:17:18.912Z] "- - -" 0 - - - "-" 150559686 86191 62101 - "-" "-" "-" "-" "135.225.122.191:15002" PassthroughCluster 10.244.1.24:54872 135.225.122.191:15002 10.244.1.24:54864 - -
+[2024-10-31T23:17:18.929Z] "- - -" 0 - - - "-" 116660592 72350 62085 - "-" "-" "-" "-" "135.225.122.191:15000" PassthroughCluster 10.244.1.24:33578 135.225.122.191:15000 10.244.1.24:33566 - -
+
+/logging?level=debug
+2024-10-31T23:13:26.000076Z     debug   envoy filter external/envoy/source/extensions/filters/listener/original_dst/original_dst.cc:69      original_dst: set destination to 135.225.122.191:15001  thread=32
+2024-10-31T23:13:26.000176Z     debug   envoy upstream external/envoy/source/common/upstream/cluster_manager_impl.cc:2143   no healthy host for TCP connection pool thread=32
+2024-10-31T23:13:26.000184Z     debug   envoy connection external/envoy/source/common/network/connection_impl.cc:149[Tags: "ConnectionId":"267"] closing data_to_write=0 type=1     thread=32
+...
+```
+
 - https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/extensions/istio-add-on-general-troubleshooting#step-6-get-more-information-about-the-envoy-configuration: -- curl -s localhost:15000/clusters
 - https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/extensions/istio-add-on-general-troubleshooting#step-7-get-the-sidecar-logs-for-the-source-and-destination-sidecars: kubectl logs <pod-name> --namespace <pod-namespace> --container istio-proxy
 - https://layer5.io/blog/service-mesh/debug-envoy-proxy: curl -X POST \ http://localhost:15000/logging?level=debug
 - https://stackoverflow.com/questions/77134294/how-to-change-log-level-of-envoy-proxy-with-environment-variable: curl -XPOST http://localhost:9901/logging?level=debug
+- https://www.envoyproxy.io/docs/envoy/latest/start/quick-start/run-envoy#debugging-envoy
 
 ## k8s-servicemesh-istio.tool.istioctl
 

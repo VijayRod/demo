@@ -491,7 +491,12 @@ tbd az redis update -g $rg -n $redis --set "sku.name"="Premium" "sku.capacity"="
 - https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-how-to-scale#what-is-the-largest-cache-size-i-can-create
 - https://azure.microsoft.com/en-us/pricing/details/cache/
 
-## redis.tools.redis-cli
+## redis.tools.client
+
+- https://aka.ms/redisclients
+- https://redis.io/docs/latest/develop/connect/clients/
+
+## redis.tools.client.redis-cli
 
 ```
 apt update -y && apt install redis-tools -y

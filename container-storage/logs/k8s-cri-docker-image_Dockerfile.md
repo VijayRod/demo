@@ -66,8 +66,14 @@ az acr build --registry $registry --image nginx . # Run ID: dt1 was successful a
 ## Dockerfile.build.VisualStudio
 
 ```
+# See the section on vs.app.console.container.
+
 # It's best to first compile the project and run it locally using F5, which will launch it in a Docker container and display the kubectl logs.
 # Solution Explorer: Right-click on the project, Publish, Target=Azure, Azure Container Registry, pick you sub, Container build = Docker Desktop (Dockerfile required), hit Close. Publish.
 
 # Image name: The image name is the same as the project name. To have a different image name, create a copy of the project, for instance, by using an exported template. # Attempting to add it as a separate project in the same solution but under a different name didn’t work out (same image name as earlier). Try creating a copy of the solution.
 ```
+
+## Dockerfile.dynamic
+
+- https://www.baeldung.com/ops/dockerfile-env-variable

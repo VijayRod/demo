@@ -15,7 +15,7 @@
 ## vs.app.console.container
 
 ```
-## See the section on Dockerfile.build.VisualStudio.console.container
+# See the section on Dockerfile.build.VisualStudio.console.container
 ```
 
 ## vs.debug

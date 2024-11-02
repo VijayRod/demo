@@ -86,6 +86,8 @@ k get po -owide # consoleapp1   0/1     Completed   2 (25s ago)   27s
 k logs consoleapp1 -c consoleapp1 -f # 11/02/2024 14:24:36 +00:00: Hello, World!
 ```
 
+- tbd https://www.paraesthesia.com/archive/2019/06/18/tips-on-container-tools-for-visual-studio/
+
 ## Dockerfile.build.VisualStudio.console.container.Dockerfile
 
 ```

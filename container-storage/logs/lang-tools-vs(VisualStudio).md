@@ -12,15 +12,19 @@
 
 - https://learn.microsoft.com/en-us/dotnet/core/runtime-discovery/troubleshoot-app-launch
 
-# vs.spec.project.copy
+# vs.spec.project.copy.ExportTemplate
 
 ```
-# Export Template - This includes the correct references for the new project name.
+# This includes the correct references for the new project name.
 # Open the solution and go to the Project menu at the top, then choose Export Template. Type = 'Project Template' and pick the right source project. Then the name for the new template.
 # You can find the template zip at C:\Users\userredacted\Documents\Visual Studio 2022\My Exported Templates. 
 # To use the template, right-click on the Solution, select Add, then New Project, and either search for or select the template directly. This creates a new project with the given name.
-# To build the project container image, choose the project from the dropdown next to the Docker button in the ribbon and then select the project in the Docker button dropdown.
-# To publish the project image, simply right-click on the project within Solution Explorer, select Publish, and then click Publish once more.
+# To build the project, right-click on it and select either Build or Rebuild.
+
+# This is reltaed to a container image project
+# Ensure the Dockerfile in the project is correct as it's used for Publish. Right click the Dockerfile, Build Docker Image.
+# To debug the project, choose it from the dropdown located in the top ribbon.
+# To publish the project image, right-click on the project in Solution Explorer, choose Publish, and then click Publish again.
 ```
 
 - https://stackoverflow.com/questions/884255/visual-studio-copy-project

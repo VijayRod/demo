@@ -121,6 +121,7 @@ k logs consoleapp1 -c consoleapp1 -f # 11/02/2024 15:39:16 +00:00: Hello, World!
 - tbd https://www.digitalocean.com/community/tutorials/commands-and-arguments-kubernetes#1-using-env-variables-to-define-arguments
 - tbd https://www.slingacademy.com/article/dynamic-configuration-in-kubernetes-using-configmap-with-examples/#Accessing_ConfigMap_Values_in_Pods
 - https://stackoverflow.com/questions/52933055/vs2017-adding-environment-variables-to-docker-container-for-debugging: add a line to the PropertyGroup which also has your TargetFramework tag with the tag DockerfileRunEnvironmentFiles
+- https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#use-environment-variables-to-define-arguments
 
 ## Dockerfile.build.VisualStudio.console.container.dynamic.envsubst
 

@@ -65,18 +65,18 @@ kubectl describe po nginx | grep Annot
   
 - https://kubernetes.io/docs/reference/kubectl/generated/kubectl_annotate/
 
+## kubectl.spec.command.cp
+```
+kubectl cp ~/.ssh/id_rsa pod-name:/id_rsa # --retries=10
+kubectl cp nsenter-es99e8:/tmp/capture_file_nodeC.pcap /tmp/capture_file_nodeC.pcap
+```
+
 ## kubectl.spec.command.cluster-info
 
 ```
 kubectl cluster-info
 kubectl cluster-info dump
 kubectl cluster-info dump | grep -m 1 cluster-cidr
-```
-
-## kubectl.spec.command.cp
-```
-kubectl cp ~/.ssh/id_rsa pod-name:/id_rsa # --retries=10
-kubectl cp nsenter-es99e8:/tmp/capture_file_nodeC.pcap /tmp/capture_file_nodeC.pcap
 ```
 
 ## kubectl.spec.command.create
@@ -95,6 +95,7 @@ kubectl run nginx --image=nginx -oyaml --dry-run=client
 ```
 
 - https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#create
+- https://kubernetes.io/docs/reference/kubectl/generated/kubectl_create/
 
 ## kubectl.spec.command.delete
 

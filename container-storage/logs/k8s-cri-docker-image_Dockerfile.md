@@ -1,8 +1,6 @@
 ## Dockerfile
 
 ```
-# See the secion on vs.app.console.container.Dockerfile
-
 # Dockerfile
 FROM debian:latest
 WORKDIR /app
@@ -103,9 +101,24 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 
 ```
 # In addition to environment variables, we can similarly process values through ConfigMaps and Secrets.
+
+# System environment variable
+Program.cs: Console.WriteLine(DateTimeOffset.UtcNow + ": Hello, World!" + Environment.GetEnvironmentVariable("HOSTNAME"));
+k logs consoleapp1 -c consoleapp1 -f # 11/02/2024 15:33:16 +00:00: Hello, World!fada77427588
+
+# Custom environment variable
+Solution Explorer: Navigate to \Properties\PublishProfiles\registry13959.pubxml and include "<DockerfileRunEnvironmentFiles>Dockerfile.env</DockerfileRunEnvironmentFiles>" in the PropertyGroup section. Remember, you can use any file name, just don't include the quotes
+Solution Explorer: Right-click the project to add a new Item with this file name. Once created, open this file and insert "conn=test", omitting the quotes.
+Console.WriteLine(DateTimeOffset.UtcNow + ": Hello, World!" + Environment.GetEnvironmentVariable("conn"));
+k logs consoleapp1 -c consoleapp1 -f # 11/02/2024 15:39:16 +00:00: Hello, World!test
 ```
 
 - https://www.baeldung.com/ops/dockerfile-env-variable
+- https://stackoverflow.com/questions/52370812/passing-environment-variables-to-docker-container-when-running-in-visual-studio: DockerfileRunEnvironmentFiles
+- https://learn.microsoft.com/en-us/visualstudio/containers/container-msbuild-properties: DockerfileRunEnvironmentFiles
+- tbd https://www.digitalocean.com/community/tutorials/commands-and-arguments-kubernetes#1-using-env-variables-to-define-arguments
+- tbd https://www.slingacademy.com/article/dynamic-configuration-in-kubernetes-using-configmap-with-examples/#Accessing_ConfigMap_Values_in_Pods
+- https://stackoverflow.com/questions/52933055/vs2017-adding-environment-variables-to-docker-container-for-debugging: add a line to the PropertyGroup which also has your TargetFramework tag with the tag DockerfileRunEnvironmentFiles
 
 ## Dockerfile.build.VisualStudio.console.container.dynamic.envsubst
 

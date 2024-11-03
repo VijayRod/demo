@@ -322,6 +322,78 @@ export REDIS_PASSWORD=$(kubectl get secret --namespace "default" my-redis-redis-
 
 ## redis.app.client.net (StackExchange.Redis)
 
+```
+# Project\PublishProfiles\registry13959.pubxml
+<DockerfileRunEnvironmentFiles>Dockerfile.env</DockerfileRunEnvironmentFiles>
+
+# Dockerfile.env
+conn=RedisConnectionString
+
+# Project\Dependencies\Packages
+Add the NuGet package StackExchange.Redis
+
+# Project\Program.cs
+global using StackExchange.Redis; // Add the NuGet package
+
+String conn = Environment.GetEnvironmentVariable("conn");
+Console.WriteLine(DateTimeOffset.UtcNow + " conn: " + conn);
+ConnectionMultiplexer redis = ConnectionMultiplexer.Connect(conn);
+Console.WriteLine(DateTimeOffset.UtcNow + ": Successfully created a connection multiplexer instance. Now accessing the Azure Cache for Redis database.");
+
+string cacheCommand = "PING";
+IDatabase db = redis.GetDatabase();
+Console.WriteLine("Cache reply: " + db.Execute(cacheCommand).ToString() + "\n"); // Cache reply: PONG
+
+int maxKeys = 100;
+Random random = new Random();
+for (int i = 1; i <= maxKeys; i++)
+{
+    byte[] data = new Byte[1 * 1024 * 100];
+
+    random.NextBytes(data);
+
+    string value = Convert.ToBase64String(data);
+    string keyname = random.Next().ToString();
+    db.StringSetAsync("Key" + keyname, value);
+    Console.WriteLine(DateTimeOffset.UtcNow + "Cache reply: " + value + "\n");
+    Console.WriteLine("key" + keyname + " written successfully!");
+
+}
+Console.WriteLine("Just an update: we've successfully added 100 keys to Redis!");
+
+Console.WriteLine("-----------------------------------------------------------");
+
+# pod
+conn="redis3696.redis.cache.windows.net:6380,password=redacted,ssl=True,abortConnect=False"
+kubectl delete secret redis-key
+kubectl delete po consoleapp1
+kubectl create secret generic redis-key --from-literal=conn=$conn
+cat << EOF | kubectl create -f -
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: consoleapp1
+  name: consoleapp1
+spec:
+  containers:
+  - image: registry13959.azurecr.io/consoleapp1:latest
+    name: consoleapp1
+    resources: {}
+    env:
+    - name: conn
+      valueFrom:
+        secretKeyRef:
+          name: redis-key
+          key: conn
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+EOF
+sleep 20
+k get po -A -owide | grep app1
+k logs consoleapp1 -c consoleapp1 -f
+```
+
 - https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-dotnet-core-quickstart
 - https://stackexchange.github.io/StackExchange.Redis/Basics.html
 - https://stackexchange.github.io/StackExchange.Redis/Server: StackExchange.Redis is a client library that connects to an existing redis server

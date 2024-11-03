@@ -10,6 +10,8 @@ tcpdump – version
 man tcpdump
 
 curl ifconfig.me # ip a
+
+apt update -y && apt install tcpdump -y && tcpdump host redis3696.redis.cache.windows.net
 ```
 
 - https://www.tcpdump.org/
@@ -176,6 +178,7 @@ dumpy capture dumpy-09671733 successfully deleted
 
 ```
 tcpdump host 1.1.1.1 # Source or destination
+tcpdump host fqdn
 tcpdump port 443
 tcpdump host $(nslookup api.loganalytics.io | awk '/^Address: / {print $2}') -w /tmp/tcpdump-keda-law.pcap # Execute TCPDump with a filter targetting the LAW endpoint and let it run until the issue occurs again
 

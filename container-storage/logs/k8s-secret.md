@@ -35,6 +35,34 @@ bXl1c2VybmFtZQ==
 
 ## k8s-secret.pod.environment-variable
 
+```
+conn="redacted"
+kubectl delete secret redis-key -n istio-ns
+kubectl delete po consoleapp1 -n istio-ns
+kubectl create secret generic redis-key --from-literal=conn=$conn
+cat << EOF | kubectl create -f -
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: consoleapp1
+  name: consoleapp1
+spec:
+  containers:
+  - image: registry13959.azurecr.io/consoleapp1:latest
+    name: consoleapp1
+    resources: {}
+    env:
+    - name: conn
+      valueFrom:
+        secretKeyRef:
+          name: redis-key
+          key: conn
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+EOF
+```
+
 - https://kubernetes.io/docs/concepts/configuration/secret/#using-secrets-as-environment-variables
 - https://kubernetes.io/docs/tasks/inject-data-application/distribute-credentials-secure/#define-container-environment-variables-using-secret-data
 

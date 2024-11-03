@@ -292,7 +292,7 @@ apt update -y && apt install curl -y && curl -XPOST http://localhost:15000/loggi
 [2024-10-31T23:17:18.912Z] "- - -" 0 - - - "-" 150559686 86191 62101 - "-" "-" "-" "-" "135.225.122.191:15002" PassthroughCluster 10.244.1.24:54872 135.225.122.191:15002 10.244.1.24:54864 - -
 [2024-10-31T23:17:18.929Z] "- - -" 0 - - - "-" 116660592 72350 62085 - "-" "-" "-" "-" "135.225.122.191:15000" PassthroughCluster 10.244.1.24:33578 135.225.122.191:15000 10.244.1.24:33566 - -
 
-/logging?level=debug
+/logging?level=debug (in addition to the /logging?level=info logs)
 2024-10-31T23:13:26.000076Z     debug   envoy filter external/envoy/source/extensions/filters/listener/original_dst/original_dst.cc:69      original_dst: set destination to 135.225.122.191:15001  thread=32
 2024-10-31T23:13:26.000176Z     debug   envoy upstream external/envoy/source/common/upstream/cluster_manager_impl.cc:2143   no healthy host for TCP connection pool thread=32
 2024-10-31T23:13:26.000184Z     debug   envoy connection external/envoy/source/common/network/connection_impl.cc:149[Tags: "ConnectionId":"267"] closing data_to_write=0 type=1     thread=32

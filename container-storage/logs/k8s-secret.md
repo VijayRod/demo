@@ -1,3 +1,5 @@
+## k8s-secret
+
 ```
 # kubectl create secret generic db-user-pass --from-literal=key=myusername --from-literal=pass=mytestpwd
 secret/db-user-pass created
@@ -30,3 +32,32 @@ bXl1c2VybmFtZQ==
 <br>
 
 - https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/file-share-mount-failures-azure-files: Manually update the azurestorageaccountkey field in an Azure file secret...
+
+## k8s-secret.pod
+
+```
+conn="redacted"
+kubectl create secret generic redis-key --from-literal=conn=$conn
+cat << EOF | kubectl create -f -
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: consoleapp1
+  name: consoleapp1
+  namespace: istio-ns
+spec:
+  containers:
+  - image: registry13959.azurecr.io/consoleapp1:latest
+    name: consoleapp1
+    resources: {}
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+  volumes:
+  - name: redis-key
+    secret:
+      secretName: redis-key
+EOF
+```
+
+- https://kubernetes.io/docs/concepts/configuration/secret/

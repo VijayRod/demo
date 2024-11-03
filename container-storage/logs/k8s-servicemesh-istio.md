@@ -101,6 +101,55 @@ kubectl describe validatingwebhookconfiguration istio-validator-asm-1-21-aks-ist
 
 ```
 # kubectl logs while attempting to connect a pod to the Redis cache in a namespace labeled for Istio: RedisConnectionException
+
+To reproduce the issue, change the port number in the Redis connection string to 15001 from the usual 6380. Also, make sure to deploy the app in the Istio labelled namespace without adding the excludeOutboundPorts mitigation annotation.
+
+Non-working environment: NO traffic observed to Azure Cache for Redis in tcpdump taken in the Kubernetes worker node that runs the app pod with the proxy container - tcpdump host redisfqdn
+Non-working environment: NO entry in either the default (info) or debug logs for the istio-proxy container logs - k logs consoleapp115001 -n istio-ns -c istio-proxy -f
+
+Working environment: When using the excludeOutboundPorts annotation, or in a namespace not labelled for Istio, or within a non-clustered Redis environment, the Istio proxy container's logs in the app pod are referencing the redis IP: 
+
+Non-working environment RedisConnectionException in the app logs:
+Ping test:PING 10/31/2024 22:20:28 +00:00
+Unhandled exception. StackExchange.Redis.RedisConnectionException: The message timed out in the backlog attempting to send because no connection became available (5000ms) - Last Connection Exception: SocketFailure on redis3696.redis.cache.windows.net:15001/Interactive, Initializing/NotStarted, last: NONE, origin: ConnectedAsync, outstanding: 0, last-read: 0s ago, last-write: 0s ago, keep-alive: 60s, state: Connecting, mgr: 10 of 10 available, last-heartbeat: never, global: 0s ago, v: 2.6.116.40240, command=UNKNOWN, timeout: 5000, inst: 0, qu: 1, qs: 0, aw: False, bw: SpinningDown, last-in: 0, cur-in: 0, sync-ops: 1, async-ops: 1, serverEndpoint: redis3696.redis.cache.windows.net:15001, conn-sec: n/a, aoc: 0, mc: 1/1/0, mgr: 10 of 10 available, clientName: l300app1(SE.Redis-v2.6.116.40240), IOCP: (Busy=0,Free=1000,Min=1,Max=1000), WORKER: (Busy=1,Free=32766,Min=2,Max=32767), POOL: (Threads=5,QueuedItems=0,CompletedItems=171), v: 2.6.116.40240 (Please take a look at this article for some common client-side issues that can cause timeouts: https://stackexchange.github.io/StackExchange.Redis/Timeouts)
+ ---> StackExchange.Redis.RedisConnectionException: SocketFailure on redis3696.redis.cache.windows.net:15001/Interactive, Initializing/NotStarted, last: NONE, origin: ConnectedAsync, outstanding: 0, last-read: 0s ago, last-write: 0s ago, keep-alive: 60s, state: Connecting, mgr: 10 of 10 available, last-heartbeat: never, global: 0s ago, v: 2.6.116.40240
+ ---> System.IO.IOException:  Received an unexpected EOF or 0 bytes from the transport stream.
+   at System.Net.Security.SslStream.ReceiveBlobAsync[TIOAdapter](CancellationToken cancellationToken)
+   at System.Net.Security.SslStream.ForceAuthenticationAsync[TIOAdapter](Boolean receiveFirst, Byte[] reAuthenticationData, CancellationToken cancellationToken)
+   at System.Net.Security.SslStream.AuthenticateAsClient(SslClientAuthenticationOptions sslClientAuthenticationOptions)
+   at StackExchange.Redis.ExtensionMethods.AuthenticateAsClientUsingDefaultProtocols(SslStream ssl, String host) in /_/src/StackExchange.Redis/ExtensionMethods.cs:line 206
+   at StackExchange.Redis.ExtensionMethods.AuthenticateAsClient(SslStream ssl, String host, Nullable`1 allowedProtocols, Boolean checkCertificateRevocation) in /_/src/StackExchange.Redis/ExtensionMethods.cs:line 196
+   at StackExchange.Redis.PhysicalConnection.ConnectedAsync(Socket socket, LogProxy log, SocketManager manager) in /_/src/StackExchange.Redis/PhysicalConnection.cs:line 1500
+   --- End of inner exception stack trace ---
+   --- End of inner exception stack trace ---
+   at StackExchange.Redis.ConnectionMultiplexer.ExecuteSyncImpl[T](Message message, ResultProcessor`1 processor, ServerEndPoint server, T defaultValue) in /_/src/StackExchange.Redis/ConnectionMultiplexer.cs:line 2093
+   at StackExchange.Redis.RedisBase.ExecuteSync[T](Message message, ResultProcessor`1 processor, ServerEndPoint server, T defaultValue) in /_/src/StackExchange.Redis/RedisBase.cs:line 62
+   at StackExchange.Redis.RedisDatabase.Execute(String command, ICollection`1 args, CommandFlags flags) in /_/src/StackExchange.Redis/RedisDatabase.cs:line 1502
+   at StackExchange.Redis.RedisDatabase.Execute(String command, Object[] args) in /_/src/StackExchange.Redis/RedisDatabase.cs:line 1497
+   at RedisConnectionTest.Program.Main() in /src/l300app1/Program.cs:line 60
+   at RedisConnectionTest.Program.<Main>()
+
+Working environment default (/logging?level=info) logs: kubectl logs -n istio-ns l300app1 -c istio-proxy # 135.225.122.191 is IP for Redis, and the IP for the app pod is 10.244.1.24
+[2024-10-31T23:17:18.912Z] "- - -" 0 - - - "-" 150559686 86191 62101 - "-" "-" "-" "-" "135.225.122.191:15002" PassthroughCluster 10.244.1.24:54872 135.225.122.191:15002 10.244.1.24:54864 - -
+[2024-10-31T23:17:18.929Z] "- - -" 0 - - - "-" 116660592 72350 62085 - "-" "-" "-" "-" "135.225.122.191:15000" PassthroughCluster 10.244.1.24:33578 135.225.122.191:15000 10.244.1.24:33566 - -
+[2024-10-31T23:17:18.927Z] "- - -" 0 - - - "-" 1243 6468 62095 - "-" "-" "-" "-" "135.225.122.191:15002" PassthroughCluster 10.244.1.24:54890 135.225.122.191:15002 10.244.1.24:54876 - -
+[2024-10-31T23:17:18.755Z] "- - -" 0 - - - "-" 1265 6490 62268 - "-" "-" "-" "-" "135.225.122.191:6380" PassthroughCluster 10.244.1.24:38440 135.225.122.191:6380 10.244.1.24:38430 - -
+
+Working environment - /logging?level=debug for the Envoy proxy logs (in addition to the /logging?level=info logs): kubectl logs -n istio-ns l300app1 -c istio-proxy | grep 13:26
+2024-10-31T23:13:26.000076Z     debug   envoy filter external/envoy/source/extensions/filters/listener/original_dst/original_dst.cc:69      original_dst: set destination to 135.225.122.191:15001  thread=32
+2024-10-31T23:13:26.000105Z     debug   envoy filter external/envoy/source/extensions/filters/listener/original_dst/original_dst.cc:69      original_dst: set destination to 135.225.122.191:15001  thread=32
+2024-10-31T23:13:26.000143Z     debug   envoy filter external/envoy/source/common/tcp_proxy/tcp_proxy.cc:264    [Tags: "ConnectionId":"267"] new tcp proxy session  thread=32
+2024-10-31T23:13:26.000160Z     debug   envoy filter external/envoy/source/common/tcp_proxy/tcp_proxy.cc:459    [Tags: "ConnectionId":"267"] Creating connection to cluster BlackHoleCluster        thread=32
+2024-10-31T23:13:26.000176Z     debug   envoy upstream external/envoy/source/common/upstream/cluster_manager_impl.cc:2143   no healthy host for TCP connection pool thread=32
+2024-10-31T23:13:26.000184Z     debug   envoy connection external/envoy/source/common/network/connection_impl.cc:149[Tags: "ConnectionId":"267"] closing data_to_write=0 type=1     thread=32
+2024-10-31T23:13:26.000189Z     debug   envoy connection external/envoy/source/common/network/connection_impl.cc:281[Tags: "ConnectionId":"267"] closing socket: 1  thread=32
+2024-10-31T23:13:26.000677Z     debug   envoy filter external/envoy/source/extensions/filters/listener/original_dst/original_dst.cc:69      original_dst: set destination to 135.225.122.191:15001  thread=33
+2024-10-31T23:13:26.000700Z     debug   envoy filter external/envoy/source/extensions/filters/listener/original_dst/original_dst.cc:69      original_dst: set destination to 135.225.122.191:15001  thread=33
+2024-10-31T23:13:26.000730Z     debug   envoy filter external/envoy/source/common/tcp_proxy/tcp_proxy.cc:264    [Tags: "ConnectionId":"268"] new tcp proxy session  thread=33
+2024-10-31T23:13:26.000745Z     debug   envoy filter external/envoy/source/common/tcp_proxy/tcp_proxy.cc:459    [Tags: "ConnectionId":"268"] Creating connection to cluster BlackHoleCluster        thread=33
+2024-10-31T23:13:26.000757Z     debug   envoy upstream external/envoy/source/common/upstream/cluster_manager_impl.cc:2143   no healthy host for TCP connection pool thread=33
+2024-10-31T23:13:26.000763Z     debug   envoy connection external/envoy/source/common/network/connection_impl.cc:149[Tags: "ConnectionId":"268"] closing data_to_write=0 type=1     thread=33
+2024-10-31T23:13:26.000767Z     debug   envoy connection external/envoy/source/common/network/connection_impl.cc:281[Tags: "ConnectionId":"268"] closing socket: 1  thread=33
 ```
 
 - https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-best-practices-kubernetes#potential-connection-collision-with-istioenvoy

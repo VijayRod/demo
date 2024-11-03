@@ -33,7 +33,12 @@ bXl1c2VybmFtZQ==
 
 - https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/file-share-mount-failures-azure-files: Manually update the azurestorageaccountkey field in an Azure file secret...
 
-## k8s-secret.pod
+## k8s-secret.pod.environment-variable
+
+- https://kubernetes.io/docs/concepts/configuration/secret/#using-secrets-as-environment-variables
+- https://kubernetes.io/docs/tasks/inject-data-application/distribute-credentials-secure/#define-container-environment-variables-using-secret-data
+
+## k8s-secret.pod.volume
 
 ```
 conn="redacted"
@@ -60,3 +65,4 @@ EOF
 ```
 
 - https://kubernetes.io/docs/concepts/configuration/secret/
+- https://kubernetes.io/docs/tasks/inject-data-application/distribute-credentials-secure/#create-a-pod-that-has-access-to-the-secret-data-through-a-volume

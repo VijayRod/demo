@@ -113,6 +113,9 @@ Solution Explorer: Navigate to \Properties\PublishProfiles\registry13959.pubxml 
 Solution Explorer: Right-click the project to add a new Item with this file name. Once created, open this file and insert "conn=test", omitting the quotes.
 Console.WriteLine(DateTimeOffset.UtcNow + ": Hello, World!" + Environment.GetEnvironmentVariable("conn"));
 k logs consoleapp1 -c consoleapp1 -f # 11/02/2024 15:39:16 +00:00: Hello, World!test
+
+# secret
+See the section in redis.app.client.net (StackExchange.Redis)
 ```
 
 - https://www.baeldung.com/ops/dockerfile-env-variable

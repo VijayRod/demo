@@ -323,6 +323,8 @@ export REDIS_PASSWORD=$(kubectl get secret --namespace "default" my-redis-redis-
 ## redis.app.client.net (StackExchange.Redis)
 
 ```
+# See the section on Dockerfile.build.VisualStudio.console.container for guidance on creating a solution
+
 # Project\PublishProfiles\registry13959.pubxml
 <DockerfileRunEnvironmentFiles>Dockerfile.env</DockerfileRunEnvironmentFiles>
 

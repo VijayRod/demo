@@ -363,6 +363,8 @@ Console.WriteLine("Just an update: we've successfully added 100 keys to Redis!")
 
 Console.WriteLine("-----------------------------------------------------------");
 
+# publish the project to an Azure Container Registry
+
 # pod
 conn="redis3696.redis.cache.windows.net:6380,password=redacted,ssl=True,abortConnect=False"
 kubectl delete secret redis-key

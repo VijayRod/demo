@@ -45,7 +45,6 @@ metadata:
   labels:
     run: consoleapp1
   name: consoleapp1
-  namespace: istio-ns
 spec:
   containers:
   - image: registry13959.azurecr.io/consoleapp1:latest

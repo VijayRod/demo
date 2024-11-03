@@ -64,8 +64,6 @@ az acr build --registry $registry --image nginx . # Run ID: dt1 was successful a
 ## Dockerfile.build.VisualStudio
 
 ```
-# See the section on vs.app.console.container.
-
 # It's best to first compile the project and run it locally using F5, which will launch it in a Docker container and display the kubectl logs.
 # Solution Explorer: Right-click on the project, Publish, Target=Azure, Azure Container Registry, pick you sub, Container build = Docker Desktop (Dockerfile required), hit Close. Publish.
 

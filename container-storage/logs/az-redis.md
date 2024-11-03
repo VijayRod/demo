@@ -25,11 +25,11 @@ redis3942.redis.cache.windows.net
 - https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-management-faq
 - https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-best-practices-enterprise-tiers
 
-## redis.app.k8s
+## redis.app.client.k8s
 
 - https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-best-practices-kubernetes
 
-## redis.app.k8s.example.connect-from-aks.accesskey
+## redis.app.client.k8s.example.connect-from-aks.accesskey
 
 ```
 # This example demonstrates a simpler method of connecting an AKS pod to the redis cache using an access key, rather than utilizing a Microsoft Entra (workload) identity.
@@ -99,7 +99,7 @@ kubectl logs entrademo-pod # Connecting to {cacheHostName} with an access key.. 
 kubectl get po entrademo-pod
 ```
 
-## redis.app.k8s.example.connect-from-aks.accesskey.istio|clustered
+## redis.app.client.k8s.example.connect-from-aks.accesskey.istio|clustered
 
 ```
 # This example demonstrates a simpler method of connecting an AKS pod to the redis cache using an access key, bypassing the need for a workload identity. The AKS cluster is set up with Istio, and there's one pod equipped with the Istio sidecar and another without it. Plus, the Redis cache we're using is of the premium, sharded (clustered) variety.
@@ -190,7 +190,7 @@ kubectl logs -n $ns $po -c redis-sample # RedisConnectionException
 kubectl get po -n $ns $po
 ```
 
-## redis.app.k8s.example.connect-from-aks.managedidentity
+## redis.app.client.k8s.example.connect-from-aks.managedidentity
 
 ```
 # If there's no specific need for managed identity (workload identity), you might want to go with connect-from-aks.accesskey as your go-to option.
@@ -310,7 +310,7 @@ kubectl get po entrademo-pod
 
 - https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-tutorial-aks-get-started
 
-## redis.app.k8s.example.opensource
+## redis.app.client.k8s.example.opensource
 
 ```
 helm repo add bitnami https://charts.bitnami.com/bitnami
@@ -320,10 +320,16 @@ export REDIS_PASSWORD=$(kubectl get secret --namespace "default" my-redis-redis-
 
 - https://techcommunity.microsoft.com/t5/apps-on-azure-blog/run-scalable-and-resilient-redis-with-kubernetes-and-azure/ba-p/3247956
 
-## redis.app.net
+## redis.app.client.net (StackExchange.Redis)
 
 - https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-dotnet-core-quickstart
 - https://stackexchange.github.io/StackExchange.Redis/Basics.html
+- https://stackexchange.github.io/StackExchange.Redis/Server: StackExchange.Redis is a client library that connects to an existing redis server
+  
+## redis.app.server (redis-server)
+
+- https://hub.docker.com/_/redis/
+- https://stackexchange.github.io/StackExchange.Redis/Server
 
 ## redis.billing
 

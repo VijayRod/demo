@@ -2,6 +2,8 @@
 
 ```
 CURRENT_IP=$(dig +short "myip.opendns.com" "@resolver1.opendns.com")
+
+ip addr show # apt update -y && apt install iproute2 -y
 ```
 
 ## ip.spec.type.bogon

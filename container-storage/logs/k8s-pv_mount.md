@@ -61,5 +61,9 @@ mount | grep pvc
 
 ## k8s-pv.mount.debug.mode.readonly
 
+```
+Log: output from the mount command on the node, along with the syslog and messages files with events during the issue time.
+```
+
 - https://github.com/kubernetes-sigs/azurefile-csi-driver/issues/2141: AKS Azure Fileshare CSI PV/PVC Suddenly producing "Read-Only" errors. the data path does not go through csi driver(, it's the issue between cifs driver and azure file server, pls file a support ticket to azure file team)
 - tbd https://www.addictivetips.com/ubuntu-linux-tips/mount-file-systems-as-read-only-on-linux/

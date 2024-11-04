@@ -246,6 +246,44 @@ calico-system     calico-typha-78fc59998c-8flzt              1/1     Running   0
 
 - https://www.tigera.io/blog/byocni-introducing-calico-cni-for-azure-aks/
 
+## k8s-cni-calico.spec.installation
+
+```
+k logs -n tigera-operator -l k8s-app=tigera-operator
+
+k get installation # kubectl get installations.operator.tigera.io
+NAME      AGE
+default   70s
+
+k get installation -oyaml
+    conditions:
+    - lastTransitionTime: "2024-11-04T18:57:50Z"
+      message: DaemonSet "calico-system/calico-node" is not available (awaiting 1
+        nodes)
+      observedGeneration: 2
+      reason: ResourceNotReady
+      status: "True"
+      type: Progressing
+    - lastTransitionTime: "2024-11-04T18:57:50Z"
+      message: ""
+      observedGeneration: 2
+      reason: Unknown
+      status: "False"
+      type: Degraded
+    - lastTransitionTime: "2024-11-04T18:57:50Z"
+      message: ""
+      observedGeneration: 2
+      reason: Unknown
+      status: "False"
+      type: Ready
+    mtu: 1500
+    variant: Calico
+
+
+k get ippool
+No resources found
+```
+
 ## k8s-cni-calico.spec.ippool
 
 ```

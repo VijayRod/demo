@@ -87,6 +87,7 @@ az aks get-credentials -g $rg -n aks --overwrite-existing
 - https://azure.microsoft.com/en-us/updates/public-preview-aks-automatic/
 - https://learn.microsoft.com/en-us/azure/aks/intro-aks-automatic
 - https://learn.microsoft.com/en-us/azure/aks/learn/quick-kubernetes-automatic-deploy
+- https://azure.github.io/AKS/2024/05/22/aks-automatic
 
 ## aks.scale
 - https://learn.microsoft.com/en-us/azure/aks/best-practices-performance-scale-large

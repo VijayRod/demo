@@ -151,7 +151,7 @@ Working environment - /logging?level=debug for the Envoy proxy logs (in addition
 2024-10-31T23:13:26.000763Z     debug   envoy connection external/envoy/source/common/network/connection_impl.cc:149[Tags: "ConnectionId":"268"] closing data_to_write=0 type=1     thread=33
 2024-10-31T23:13:26.000767Z     debug   envoy connection external/envoy/source/common/network/connection_impl.cc:281[Tags: "ConnectionId":"268"] closing socket: 1  thread=33
 
-Non-working environment - running tcpdump on the worker node that hosts the app pod (which includes the connection string 15001) along with its istio-envoy container i.e. no TCP requests to Redis.
+Non-working environment - running tcpdump on the worker node that hosts the app pod (10.244.0.5) (which includes the connection string 15001) along with its istio-envoy container i.e. no TCP requests to Redis.
 No	Time				Source		Destination  Protocol	Length	Identification	Interface index 	Type	Name
 30672	2024-11-04 23:10:00.247690	10.244.0.5	10.244.1.6	DNS	99	0xb6a1 (46753)	3	A	redis3696.redis.cache.windows.net
 30673	2024-11-04 23:10:00.247701	10.244.0.5	10.244.1.6	DNS	99	0xb6a1 (46753)	2	A	redis3696.redis.cache.windows.net

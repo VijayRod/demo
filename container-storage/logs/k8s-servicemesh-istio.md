@@ -150,6 +150,39 @@ Working environment - /logging?level=debug for the Envoy proxy logs (in addition
 2024-10-31T23:13:26.000757Z     debug   envoy upstream external/envoy/source/common/upstream/cluster_manager_impl.cc:2143   no healthy host for TCP connection pool thread=33
 2024-10-31T23:13:26.000763Z     debug   envoy connection external/envoy/source/common/network/connection_impl.cc:149[Tags: "ConnectionId":"268"] closing data_to_write=0 type=1     thread=33
 2024-10-31T23:13:26.000767Z     debug   envoy connection external/envoy/source/common/network/connection_impl.cc:281[Tags: "ConnectionId":"268"] closing socket: 1  thread=33
+
+Non-working environment - running tcpdump on the worker node that hosts the app pod (which includes the connection string 15001) along with its istio-envoy container i.e. no TCP requests to Redis.
+No	Time				Source		Destination  Protocol	Length	Identification	Interface index 	Type	Name
+30672	2024-11-04 23:10:00.247690	10.244.0.5	10.244.1.6	DNS	99	0xb6a1 (46753)	3	A	redis3696.redis.cache.windows.net
+30673	2024-11-04 23:10:00.247701	10.244.0.5	10.244.1.6	DNS	99	0xb6a1 (46753)	2	A	redis3696.redis.cache.windows.net
+30675	2024-11-04 23:10:00.247706	10.244.0.5	10.244.1.6	DNS	99	0xb6a2 (46754)	3	AAAA	redis3696.redis.cache.windows.net
+30676	2024-11-04 23:10:00.247710	10.244.0.5	10.244.1.6	DNS	99	0xb6a2 (46754)	2	AAAA	redis3696.redis.cache.windows.net
+30677	2024-11-04 23:10:00.248643	10.244.1.6	10.244.0.5	DNS	194	0xe167 (57703)	2	AAAA	redis3696.redis.cache.windows.net
+30678	2024-11-04 23:10:00.248643	10.244.1.6	10.244.0.5	DNS	258	0xe168 (57704)	2	A	redis3696.redis.cache.windows.net
+
+Non-working environment - When running tcpdump in the app pod (which includes the connection string 15001) along with its istio-envoy container, we're consistently only observing repeated DNS queries similar to the ones below i.e. no TCP requests to Redis.
+23:27:28.383652 IP consoleapp115001.59880 > kube-dns.kube-system.svc.cluster.local.53: 1521+ PTR? 10.0.0.10.in-addr.arpa. (40)
+23:27:28.386150 IP kube-dns.kube-system.svc.cluster.local.53 > consoleapp115001.59880: 1521*- 1/0/0 PTR kube-dns.kube-system.svc.cluster.local. (114)
+23:27:29.331417 IP consoleapp115001.47342 > kube-dns.kube-system.svc.cluster.local.53: 63079+ A? redis3696.redis.cache.windows.net.istio-ns.svc.cluster.local. (78)
+23:27:29.331494 IP consoleapp115001.47342 > kube-dns.kube-system.svc.cluster.local.53: 8803+ AAAA? redis3696.redis.cache.windows.net.istio-ns.svc.cluster.local. (78)
+23:27:29.332714 IP kube-dns.kube-system.svc.cluster.local.53 > consoleapp115001.47342: 8803 NXDomain*- 0/1/0 (171)
+23:27:29.332718 IP kube-dns.kube-system.svc.cluster.local.53 > consoleapp115001.47342: 63079 NXDomain*- 0/1/0 (171)
+23:27:29.332814 IP consoleapp115001.50027 > kube-dns.kube-system.svc.cluster.local.53: 31868+ A? redis3696.redis.cache.windows.net.svc.cluster.local. (69)
+23:27:29.332860 IP consoleapp115001.50027 > kube-dns.kube-system.svc.cluster.local.53: 16251+ AAAA? redis3696.redis.cache.windows.net.svc.cluster.local. (69)
+23:27:29.333775 IP kube-dns.kube-system.svc.cluster.local.53 > consoleapp115001.50027: 16251 NXDomain*- 0/1/0 (162)
+23:27:29.333779 IP kube-dns.kube-system.svc.cluster.local.53 > consoleapp115001.50027: 31868 NXDomain*- 0/1/0 (162)
+23:27:29.333845 IP consoleapp115001.45092 > kube-dns.kube-system.svc.cluster.local.53: 13825+ A? redis3696.redis.cache.windows.net.cluster.local. (65)
+23:27:29.333868 IP consoleapp115001.45092 > kube-dns.kube-system.svc.cluster.local.53: 61471+ AAAA? redis3696.redis.cache.windows.net.cluster.local. (65)
+23:27:29.334654 IP kube-dns.kube-system.svc.cluster.local.53 > consoleapp115001.45092: 61471 NXDomain*- 0/1/0 (158)
+23:27:29.334657 IP kube-dns.kube-system.svc.cluster.local.53 > consoleapp115001.45092: 13825 NXDomain*- 0/1/0 (158)
+23:27:29.334716 IP consoleapp115001.39706 > kube-dns.kube-system.svc.cluster.local.53: 62384+ A? redis3696.redis.cache.windows.net.iadvu1gt1enejea4k3is5a0h3d.gvxx.internal.cloudapp.net. (105)
+23:27:29.334736 IP consoleapp115001.39706 > kube-dns.kube-system.svc.cluster.local.53: 54965+ AAAA? redis3696.redis.cache.windows.net.iadvu1gt1enejea4k3is5a0h3d.gvxx.internal.cloudapp.net. (105)
+23:27:29.335635 IP kube-dns.kube-system.svc.cluster.local.53 > consoleapp115001.39706: 54965 NXDomain* 0/1/0 (215)
+23:27:29.335639 IP kube-dns.kube-system.svc.cluster.local.53 > consoleapp115001.39706: 62384 NXDomain* 0/1/0 (215)
+23:27:29.335693 IP consoleapp115001.42641 > kube-dns.kube-system.svc.cluster.local.53: 46017+ A? redis3696.redis.cache.windows.net. (51)
+23:27:29.335711 IP consoleapp115001.42641 > kube-dns.kube-system.svc.cluster.local.53: 9414+ AAAA? redis3696.redis.cache.windows.net. (51)
+23:27:29.337259 IP kube-dns.kube-system.svc.cluster.local.53 > consoleapp115001.42641: 9414* 1/0/0 CNAME sec-49880-762198531.vnet.redis.cache.windows.net. (146)
+23:27:29.337263 IP kube-dns.kube-system.svc.cluster.local.53 > consoleapp115001.42641: 46017* 2/0/0 CNAME sec-49880-762198531.vnet.redis.cache.windows.net., A 135.225.122.191 (210)
 ```
 
 - https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-best-practices-kubernetes#potential-connection-collision-with-istioenvoy

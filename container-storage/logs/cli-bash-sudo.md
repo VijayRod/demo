@@ -1,4 +1,6 @@
 ```
+# apt update -y && apt install sudo -y
+
 sudo command
 sudo su
 sudo bash script.sh

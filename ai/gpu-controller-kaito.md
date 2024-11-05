@@ -268,3 +268,4 @@ kubectl logs -n kube-system kaito-gpu-provisioner-774556d85c-2npps | tail
 - https://github.com/Azure/kaito/issues?q=is%3Aissue+is%3Aopen+label%3Aenhancement
 - https://azure.microsoft.com/en-us/updates/public-preview-kubernetes-ai-toolchain-operator-kaito-addon-for-aks/
 - https://learn.microsoft.com/en-us/azure/aks/ai-toolchain-operator
+- https://azure.github.io/AKS/2024/08/23/fine-tuning-language-models-with-kaito

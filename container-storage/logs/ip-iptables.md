@@ -1,6 +1,7 @@
 ## iptables
 
 ```
+# apt update -y && apt install iptables -y
 iptables-save > /tmp/iptables
 cat /tmp/iptables
 ```

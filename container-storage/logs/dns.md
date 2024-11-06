@@ -73,3 +73,7 @@ Address: 2a00:1450:400f:80c::200e
 ```
 
 - https://www.digwebinterface.com/: type the fqdn, and press Dig. It will display the IP if the full fqdn can be resolved publicly, even if its linked to a private IP, like those used in AKS private clusters. If not, , it will show the part of the fqdn that can be resolved by the dns server.
+
+## dns.spec.record
+
+- https://learn.microsoft.com/en-us/azure/dns/dns-zones-records#dns-records

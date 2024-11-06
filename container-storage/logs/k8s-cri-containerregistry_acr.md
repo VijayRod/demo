@@ -165,6 +165,10 @@ az role assignment list --scope $acrId
 az acr show -g $rgname -n $registry --query publicNetworkAccess # "Enabled"
 # Azure Portal: ACR, Settings, Network.
 
+root@aks-nodepool1-26220731-vmss000000:/# ps auxw | grep kubelet
+root        2683  2.0  1.5 1633396 128108 ?      Ssl  08:42   8:42 --azure-container-registry-config=/etc/kubernetes/azure.json
+# tbd /etc/kubernetes/azure.json didn't include the registry URL, so perhaps needed for auth
+
 tbd crictl pull imageshack.azurecr.io/library/nginx:latest # 401 Unauthorized
 kubectl run mynginx --image=imageshack.azurecr.io/library/nginx:latest # Success
 ```

@@ -1,4 +1,6 @@
 ```
+## See the section on k8s-cni
+
 rg=rgcal
 az group create -n $rg -l $loc
 az aks create -g $rg -n aks --network-plugin azure --network-policy calico -s $vmsize -c 1

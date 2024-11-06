@@ -18,6 +18,12 @@ kubectl delete po nginx # hung
 ```
 
 ```
+k describe po nginx | grep final # no results
+k get po nginx -oyaml | grep final
+      {"apiVersion":"v1","kind":"Pod","metadata":{"annotations":{},"finalizers":["finalizer.extensions/v1beta1"],"name":"nginx","namespace":"default"},"spec":{"containers":[{"image":"nginx","name":"nginx","resources":{}}],"dnsPolicy":"ClusterFirst","restartPolicy":"Always"}}
+  finalizers:
+  - finalizer.extensions/v1beta1
+
 kubectl get po nginx -oyaml | grep deletion
 metadata:
   deletionGracePeriodSeconds: 0

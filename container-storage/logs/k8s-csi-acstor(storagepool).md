@@ -64,7 +64,7 @@ az aks get-credentials -g $rg -n akssan --overwrite-existing
 az extension add --upgrade --name k8s-extension
 rg=rg
 az group create -n $rg -l $loc
-az aks create -g $rg -n aksnvme -s Standard_D4s_v3 --enable-azure-container-storage ephemeralDisk --storage-pool-option NVMe
+az aks create -g $rg -n aksnvme -s standard_l8s_v3 --enable-azure-container-storage ephemeralDisk --storage-pool-option NVMe # Alternatively, you can use the same command with Standard_D4s_v3 if you're running tests without NVMe
 az aks get-credentials -g $rg -n akseph --overwrite-existing
 ```
 

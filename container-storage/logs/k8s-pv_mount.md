@@ -25,19 +25,41 @@ cat /proc/fs/cifs/Stats
 cat /var/log/syslog | Or cat /var/log/messages | grep kernel
 ```
 
-## k8s-pv.mount.debug.SCSI.device
+## k8s-pv.mount.debug.SCSI
 
 - https://docs.kernel.org/driver-api/scsi.html: Small Computer Systems Interface. SCSI commands can be transported over just about any kind of bus, and are the default protocol for storage devices attached to USB, SATA, SAS, Fibre Channel, FireWire, and ATAPI devices. SCSI packets are also commonly exchanged over Infiniband, TCP/IP (iSCSI), even Parallel ports.
 - https://www.kernel.org/doc/html/v4.13/driver-api/scsi.html
 
-## k8s-pv.mount.debug.SCSI.device.disk
+## k8s-pv.mount.debug.SCSI.device
 
 ```
 # SCSI subsystem: smart-bus.devices(/dev)(max 15).type.character/block
-#   block-device.type.harddisk/USB/nvme
+#   block-device.type.harddisk/USB/nvme.filesystem
 #     harddisk(/dev/sd[a-z])(major-number 8).partition(/dev/sda1)(max 15)
 #     nvme(major-number 259)
+# filesystem.ext4/fat/ntfs
+```
 
+- https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/admin-guide/devices.txt
+  - (major number 8) 8 block. SCSI disk devices (0-15).
+  - (major number 259) 259 block. Block Extended Major
+- https://git.kernel.org/pub/scm/utils/util-linux/util-linux.git/tree/disk-utils/fdisk.8.adoc: _/dev/sd*_ (SCSI)
+- https://unix.stackexchange.com/questions/392701/drive-name-what-is-the-correct-term-for-the-sda-part-of-dev-sda: /dev/sd* (SCSI).
+  - /dev/sda1 is the first partition on the first hard disk in the system
+- https://www.baeldung.com/linux/dev-sda
+  - When we list the content of /dev (i.e., with the ls command), we realize that most of the files listed are either block or character devices. However, apart from these two, other types of device files also exist in the /dev directory.
+  - disk devices have a major number of 8, which assigns them as SCSI block devices
+  - sd[a-z] is the most used way to refer to hard disks.
+  - SCSI is a microprocessor-controlled smart bus. It allows us to add up to 15 peripheral devices to the computer. These devices include hard drives, scanners, USB, printers, and many other devices. It stands for small computer system interface. 
+  - /dev/sda, which is a block device in the /dev directory. 
+  - If we have multiple partitions in the hard disk, the system consecutively appended a number starting from sda1 to sda15. In a single hard disk, we can only have a maximum of 15 partitions.
+- https://www.baeldung.com/linux/dev-directory
+  - a driver accesses data from block devices through a cache. Moreover, a driver communicates with a block device by sending an entire block of data.
+  - For example, character devices are sound cards or serial ports, whereas block devices are hard disks or USBs
+    
+## k8s-pv.mount.debug.SCSI.device.type.disk
+
+```
 root@aks-nodepool1-57299033-vmss000000:/# ls -l /dev | grep sda
 brw-rw---- 1 root disk      8,   0 Nov  7 10:28 sda
 brw-rw---- 1 root disk      8,   1 Nov  7 10:28 sda1
@@ -108,26 +130,48 @@ tmpfs            61G   12K   61G   1% /var/lib/kubelet/pods/75e8808a-bb68-4776-8
 ```
 
 - https://linuxconfig.org/introduction-to-the-lsblk-command
-<br>
 
-- https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/admin-guide/devices.txt
-  - (major number 8) 8 block. SCSI disk devices (0-15).
-  - (major number 259) 259 block. Block Extended Major
-- https://git.kernel.org/pub/scm/utils/util-linux/util-linux.git/tree/disk-utils/fdisk.8.adoc: _/dev/sd*_ (SCSI)
-- https://unix.stackexchange.com/questions/392701/drive-name-what-is-the-correct-term-for-the-sda-part-of-dev-sda: /dev/sd* (SCSI).
-  - /dev/sda1 is the first partition on the first hard disk in the system
-- https://www.baeldung.com/linux/dev-sda
-  - When we list the content of /dev (i.e., with the ls command), we realize that most of the files listed are either block or character devices. However, apart from these two, other types of device files also exist in the /dev directory.
-  - disk devices have a major number of 8, which assigns them as SCSI block devices
-  - sd[a-z] is the most used way to refer to hard disks.
-  - SCSI is a microprocessor-controlled smart bus. It allows us to add up to 15 peripheral devices to the computer. These devices include hard drives, scanners, USB, printers, and many other devices. It stands for small computer system interface. 
-  - /dev/sda, which is a block device in the /dev directory. 
-  - If we have multiple partitions in the hard disk, the system consecutively appended a number starting from sda1 to sda15. In a single hard disk, we can only have a maximum of 15 partitions.
-- https://www.baeldung.com/linux/dev-directory
-  - a driver accesses data from block devices through a cache. Moreover, a driver communicates with a block device by sending an entire block of data.
-  - For example, character devices are sound cards or serial ports, whereas block devices are hard disks or USBs
+## k8s-pv.mount.debug.SCSI.device.type.disk.filesystem
 
-## k8s-pv.mount.debug.SCSI.device.NVMe
+```
+root@aks-nodepool1-57299033-vmss000000:/# lsblk --output NAME,FSTYPE
+NAME    FSTYPE
+sda
+|-sda1  ext4
+|-sda14
+`-sda15 vfat
+sdb
+`-sdb1  ext4
+sr0
+nvme0n1
+```
+
+- https://docs.kernel.org/filesystems/index.html
+
+```
+mkfs.ext4
+```
+
+## k8s-pv.mount.debug.SCSI.device.type.disk.filesystem.type.ext4
+
+```
+mkfs.fat
+mkfs.vfat
+```
+
+- https://opensource.com/article/18/4/ext4-filesystem: brings large filesystem support, improved resistance to fragmentation, higher performance, and improved timestamps. Ext4 vs ext3
+- https://docs.kernel.org/filesystems/ext4/overview.html
+- https://www.baeldung.com/linux/usb-drive-format#1-ext4: ext4 (Extended File System) using the mkfs.ext4 utility
+- https://en.m.wikipedia.org/wiki/Ext4: ext4 (fourth extended filesystem)
+
+## k8s-pv.mount.debug.SCSI.device.type.disk.filesystem.type.fat
+- https://www.baeldung.com/linux/usb-drive-format#3-fat-fat16-vfat-and-fat32: FAT16 is an upgrade over the original FAT that provides larger partitions and file sizes. In addition, VFAT is an extension to the original FAT that allows for longer filenames. On the other hand, FAT32 overcomes the limitations of both FAT and FAT16. It supports larger partition sizes, file sizes, and long filenames.
+
+## k8s-pv.mount.debug.SCSI.device.type.disk.filesystem.type.ntfs
+
+- https://www.baeldung.com/linux/usb-drive-format#2-ntfs: NTFS (New Technology File System)
+
+## k8s-pv.mount.debug.SCSI.device.type.NVMe
 
 ```
 # Ensure you select a VM size with NVMe, like the standard_l8s_v3
@@ -151,7 +195,7 @@ major minor  #blocks  name
 - https://askubuntu.com/questions/1367342/major-number-259-on-ubuntu-20-04-3-lts: 259 means the device type is 'Block Extended Major'. NVMe device
 - https://learn.microsoft.com/en-us/azure/virtual-machines/nvme-overview
   
-## k8s-pv.mount.debug.SCSI.device.NVMe.nvme-cli
+## k8s-pv.mount.debug.SCSI.device.type.NVMe.nvme-cli
 
 ```
 # https://github.com/Azure/AKS/blob/master/vhd-notes/aks-ubuntu/AKSUbuntu-2204/202409.30.0.txt: nvme-cli/jammy-updates,now 1.16-3ubuntu0.3 amd64 [installed]

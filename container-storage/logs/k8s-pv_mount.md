@@ -37,7 +37,7 @@ cat /var/log/syslog | Or cat /var/log/messages | grep kernel
 #   block-device.type.harddisk/USB/nvme.filesystem
 #     harddisk(/dev/sd[a-z])(major-number 8).partition(/dev/sda1)(max 15)
 #     nvme(major-number 259)
-# filesystem.ext4/fat/ntfs
+#    filesystem.ext4/fat/ntfs
 ```
 
 - https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/admin-guide/devices.txt

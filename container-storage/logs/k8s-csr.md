@@ -1,5 +1,11 @@
 ```
-# kubectl get csr mutateme.default.svc -o yaml
+k api-resources
+certificatesigningrequests          csr                 certificates.k8s.io/v1                 false        CertificateSigningRequest
+
+kubectl get Issuers,ClusterIssuers,Certificates,CertificateRequests,Orders,Challenges --all-namespaces
+No resources found
+
+kubectl get csr mutateme.default.svc -o yaml
 status:
   conditions:
   - lastTransitionTime: "2023-08-04T21:17:37Z"
@@ -17,3 +23,4 @@ status:
 ```
 
 - https://kubernetes.io/docs/reference/access-authn-authz/certificate-signing-requests/
+- https://kubernetes.io/docs/tasks/tls/managing-tls-in-a-cluster/: certificates.k8s.io API

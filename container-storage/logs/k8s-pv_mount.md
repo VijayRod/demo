@@ -15,6 +15,18 @@ UUID=C83D-C1E5  /boot/efi       vfat    umask=0077      0 1	/dev/disk/cloud/azur
 ## k8s-pv.mount.debug
 
 ```
+root@aks-nodepool1-57299033-vmss000000:/# lsblk
+NAME    MAJ:MIN RM   SIZE RO TYPE MOUNTPOINTS
+sda       8:0    0   128G  0 disk
+|-sda1    8:1    0 127.9G  0 part /var/lib/kubelet
+|                                 /
+|-sda14   8:14   0     4M  0 part
+`-sda15   8:15   0   106M  0 part /boot/efi
+sdb       8:16   0    80G  0 disk
+`-sdb1    8:17   0    80G  0 part /mnt
+sr0      11:0    1   774K  0 rom
+nvme0n1 259:0    0   1.7T  0 disk
+
 mount # list
 # mount -a # mount all filesystems mentioned in fstab
 mount -v

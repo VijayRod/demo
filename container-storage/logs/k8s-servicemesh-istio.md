@@ -107,7 +107,8 @@ To reproduce the issue, change the port number in the Redis connection string to
 Non-working environment: NO traffic observed to Azure Cache for Redis in tcpdump taken in the Kubernetes worker node that runs the app pod with the proxy container - tcpdump host redisfqdn
 Non-working environment: NO entry in either the default (info) or debug logs for the istio-proxy container logs - k logs consoleapp115001 -n istio-ns -c istio-proxy -f
 
-Working environment: When using the excludeOutboundPorts annotation, or in a namespace not labelled for Istio, or within a non-clustered Redis environment, the Istio proxy container's logs in the app pod are referencing the redis IP: 
+Working environment: When using the excludeOutboundPorts annotation, or in a namespace not labelled for Istio, or within a non-clustered Redis environment, the Istio proxy container's logs in the app pod are referencing the redis IP.
+What's the difference between a functional and a non-functional environment? In a non-functional environment, the Redis connection string uses port 15001 instead of the default 6380, it doesn't incorporate the excludeOutboundPorts mitigation in the pod annotation, and it operates within an Istio labeled namespace, which is necessary for injecting the Istio side-car. 
 
 Non-working environment RedisConnectionException in the app logs:
 Ping test:PING 10/31/2024 22:20:28 +00:00

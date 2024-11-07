@@ -25,12 +25,18 @@ cat /proc/fs/cifs/Stats
 cat /var/log/syslog | Or cat /var/log/messages | grep kernel
 ```
 
-## k8s-pv.mount.debug.device
+## k8s-pv.mount.debug.SCSI.device
+
+- https://docs.kernel.org/driver-api/scsi.html: Small Computer Systems Interface. SCSI commands can be transported over just about any kind of bus, and are the default protocol for storage devices attached to USB, SATA, SAS, Fibre Channel, FireWire, and ATAPI devices. SCSI packets are also commonly exchanged over Infiniband, TCP/IP (iSCSI), even Parallel ports.
+- https://www.kernel.org/doc/html/v4.13/driver-api/scsi.html
+
+## k8s-pv.mount.debug.SCSI.device.disk
 
 ```
 # SCSI subsystem: smart-bus.devices(/dev)(max 15).type.character/block
-#   block-device.type.harddisk/USB
-#     harddisk(/dev/sd[a-z])(major-number 8).partition(/dev/sda1)
+#   block-device.type.harddisk/USB/nvme
+#     harddisk(/dev/sd[a-z])(major-number 8).partition(/dev/sda1)(max 15)
+#     nvme(major-number 259)
 
 root@aks-nodepool1-57299033-vmss000000:/# ls -l /dev | grep sda
 brw-rw---- 1 root disk      8,   0 Nov  7 10:28 sda
@@ -64,6 +70,18 @@ sr0                                                                 brw-rw----
 nvme0n1                                                             brw-rw----
 # b=block
 
+root@aks-nodepool1-57299033-vmss000000:/# lsblk -i # ascii
+NAME    MAJ:MIN RM   SIZE RO TYPE MOUNTPOINTS
+sda       8:0    0   128G  0 disk
+|-sda1    8:1    0 127.9G  0 part /var/lib/kubelet
+|                                 /
+|-sda14   8:14   0     4M  0 part
+`-sda15   8:15   0   106M  0 part /boot/efi
+sdb       8:16   0    80G  0 disk
+`-sdb1    8:17   0    80G  0 part /mnt
+sr0      11:0    1   774K  0 rom
+nvme0n1 259:0    0   1.7T  0 disk
+
 root@aks-nodepool1-57299033-vmss000000:/# lsblk -p # path
 NAME         MAJ:MIN RM   SIZE RO TYPE MOUNTPOINTS
 /dev/sda       8:0    0   128G  0 disk
@@ -89,7 +107,12 @@ tmpfs            61G   12K   61G   1% /var/lib/kubelet/pods/75e8808a-bb68-4776-8
 ...
 ```
 
-- https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/admin-guide/devices.txt: /dev/...
+- https://linuxconfig.org/introduction-to-the-lsblk-command
+<br>
+
+- https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/admin-guide/devices.txt
+  - (major number 8) 8 block. SCSI disk devices (0-15).
+  - (major number 259) 259 block. Block Extended Major
 - https://git.kernel.org/pub/scm/utils/util-linux/util-linux.git/tree/disk-utils/fdisk.8.adoc: _/dev/sd*_ (SCSI)
 - https://unix.stackexchange.com/questions/392701/drive-name-what-is-the-correct-term-for-the-sda-part-of-dev-sda: /dev/sd* (SCSI).
   - /dev/sda1 is the first partition on the first hard disk in the system
@@ -104,10 +127,52 @@ tmpfs            61G   12K   61G   1% /var/lib/kubelet/pods/75e8808a-bb68-4776-8
   - a driver accesses data from block devices through a cache. Moreover, a driver communicates with a block device by sending an entire block of data.
   - For example, character devices are sound cards or serial ports, whereas block devices are hard disks or USBs
 
-## k8s-pv.mount.debug.device.SCSI
+## k8s-pv.mount.debug.SCSI.device.NVMe
 
-- https://docs.kernel.org/driver-api/scsi.html: Small Computer Systems Interface. SCSI commands can be transported over just about any kind of bus, and are the default protocol for storage devices attached to USB, SATA, SAS, Fibre Channel, FireWire, and ATAPI devices. SCSI packets are also commonly exchanged over Infiniband, TCP/IP (iSCSI), even Parallel ports.
-- https://www.kernel.org/doc/html/v4.13/driver-api/scsi.html
+```
+# Ensure you select a VM size with NVMe, like the standard_l8s_v3
+
+root@aks-nodepool1-57299033-vmss000000:/# lsmod|grep nvme # list the kernel modules
+nvme_fabrics           24576  0
+
+root@aks-nodepool1-57299033-vmss000000:/# lsblk
+NAME    MAJ:MIN RM   SIZE RO TYPE MOUNTPOINTS
+...
+nvme0n1 259:0    0   1.7T  0 disk
+
+root@aks-nodepool1-57299033-vmss000000:/# ls /sys/block/|grep nvme
+nvme0n1
+
+root@aks-nodepool1-57299033-vmss000000:/# cat /proc/partitions |grep -e nvme -e major
+major minor  #blocks  name
+ 259        0 1875374424 nvme0n1
+```
+
+- https://askubuntu.com/questions/1367342/major-number-259-on-ubuntu-20-04-3-lts: 259 means the device type is 'Block Extended Major'. NVMe device
+- https://learn.microsoft.com/en-us/azure/virtual-machines/nvme-overview
+  
+## k8s-pv.mount.debug.SCSI.device.NVMe.nvme-cli
+
+```
+# https://github.com/Azure/AKS/blob/master/vhd-notes/aks-ubuntu/AKSUbuntu-2204/202409.30.0.txt: nvme-cli/jammy-updates,now 1.16-3ubuntu0.3 amd64 [installed]
+# else apt install nvme-cli
+
+root@aks-nodepool1-57299033-vmss000000:/# nvme list
+Node                  SN                   Model                                    Namespace Usage
+     Format           FW Rev
+--------------------- -------------------- ---------------------------------------- --------- -------------------------- ---------------- --------
+/dev/nvme0n1          c513e8dd1a6100000001 Microsoft NVMe Direct Disk               1           0.00   B /   1.92  TB    512   B +  0 B   NVMDV001
+root@aks-nodepool1-57299033-vmss000000:/# nvme list-subsys
+nvme-subsys0 - NQN=nqn.2024-04.com.skhynix:nvme:nvm-subsystem-sn-1824ASD4N5214I270V0D
+\
+ +- nvme0 pcie 0bb0:00:00.0 live
+
+root@aks-nodepool1-57299033-vmss000000:/# nvme version
+nvme version 1.16
+```
+
+- https://www.linuxjournal.com/content/data-flash-part-ii-using-nvme-drives-and-creating-nvme-over-fabrics-network: (NVMe) drive management utility called nvme-cli. This utility is defined and maintained by the very same NVM Express committee that defined the NVMe specification. The nvme-cli source code is hosted on GitHub
+- https://github.com/linux-nvme/nvme-cli
   
 ## k8s-pv.mount.debug.file.mode
 

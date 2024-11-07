@@ -15,6 +15,30 @@ UUID=C83D-C1E5  /boot/efi       vfat    umask=0077      0 1	/dev/disk/cloud/azur
 ## k8s-pv.mount.debug
 
 ```
+mount # list
+# mount -a # mount all filesystems mentioned in fstab
+mount -v
+
+cat /etc/fstab
+cat /proc/fs/cifs/Stats
+
+cat /var/log/syslog | Or cat /var/log/messages | grep kernel
+```
+
+## k8s-pv.mount.debug.device
+
+```
+# SCSI subsystem: smart-bus.devices(/dev)(max 15).type.character/block
+#   block-device.type.harddisk/USB
+#     harddisk(/dev/sd[a-z])(major-number 8).partition(/dev/sda1)
+
+root@aks-nodepool1-57299033-vmss000000:/# ls -l /dev | grep sda
+brw-rw---- 1 root disk      8,   0 Nov  7 10:28 sda
+brw-rw---- 1 root disk      8,   1 Nov  7 10:28 sda1
+brw-rw---- 1 root disk      8,  14 Nov  7 10:28 sda14
+brw-rw---- 1 root disk      8,  15 Nov  7 10:28 sda15
+# b=block (device), disk (major-number 8)
+
 root@aks-nodepool1-57299033-vmss000000:/# lsblk
 NAME    MAJ:MIN RM   SIZE RO TYPE MOUNTPOINTS
 sda       8:0    0   128G  0 disk
@@ -26,18 +50,66 @@ sdb       8:16   0    80G  0 disk
 `-sdb1    8:17   0    80G  0 part /mnt
 sr0      11:0    1   774K  0 rom
 nvme0n1 259:0    0   1.7T  0 disk
+# major-number 8 (disk)
 
-mount # list
-# mount -a # mount all filesystems mentioned in fstab
-mount -v
+root@aks-nodepool1-57299033-vmss000000:/# lsblk --output NAME,FSTYPE,LABEL,UUID,MODE
+NAME    FSTYPE LABEL           UUID                                 MODE
+sda                                                                 brw-rw----
+|-sda1  ext4   cloudimg-rootfs 0b58668a-ba2e-4a00-b89a-3354b7a547d4 brw-rw----
+|-sda14                                                             brw-rw----
+`-sda15 vfat   UEFI            C83D-C1E5                            brw-rw----
+sdb                                                                 brw-rw----
+`-sdb1  ext4                   6e123474-a306-4386-8c1a-911ab8754171 brw-rw----
+sr0                                                                 brw-rw----
+nvme0n1                                                             brw-rw----
+# b=block
 
-cat /etc/fstab
-cat /proc/fs/cifs/Stats
+root@aks-nodepool1-57299033-vmss000000:/# lsblk -p # path
+NAME         MAJ:MIN RM   SIZE RO TYPE MOUNTPOINTS
+/dev/sda       8:0    0   128G  0 disk
+|-/dev/sda1    8:1    0 127.9G  0 part /var/lib/kubelet
+|                                      /
+|-/dev/sda14   8:14   0     4M  0 part
+`-/dev/sda15   8:15   0   106M  0 part /boot/efi
+/dev/sdb       8:16   0    80G  0 disk
+`-/dev/sdb1    8:17   0    80G  0 part /mnt
+/dev/sr0      11:0    1   774K  0 rom
+/dev/nvme0n1 259:0    0   1.7T  0 disk
 
-cat /var/log/syslog | Or cat /var/log/messages | grep kernel
+root@aks-nodepool1-57299033-vmss000000:/# df -h
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/root       124G   24G  101G  20% /
+tmpfs            32G     0   32G   0% /dev/shm
+tmpfs            13G  4.8M   13G   1% /run
+tmpfs           5.0M     0  5.0M   0% /run/lock
+/dev/sda15      105M  6.1M   99M   6% /boot/efi
+/dev/sdb1        79G   28K   75G   1% /mnt
+tmpfs           250M  4.0K  250M   1% /var/lib/kubelet/pods/b9430ccf-8644-4fcc-92ea-4949bb0a2178/volumes/kubernetes.io~projected/azure-ip-masq-agent-config-volume
+tmpfs            61G   12K   61G   1% /var/lib/kubelet/pods/75e8808a-bb68-4776-80d5-ab41d773e88a/volumes/kubernetes.io~projected/kube-api-access-tbmgt
+...
 ```
 
-## k8s-pv.mount.debug.mode
+- https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/admin-guide/devices.txt: /dev/...
+- https://git.kernel.org/pub/scm/utils/util-linux/util-linux.git/tree/disk-utils/fdisk.8.adoc: _/dev/sd*_ (SCSI)
+- https://unix.stackexchange.com/questions/392701/drive-name-what-is-the-correct-term-for-the-sda-part-of-dev-sda: /dev/sd* (SCSI).
+  - /dev/sda1 is the first partition on the first hard disk in the system
+- https://www.baeldung.com/linux/dev-sda
+  - When we list the content of /dev (i.e., with the ls command), we realize that most of the files listed are either block or character devices. However, apart from these two, other types of device files also exist in the /dev directory.
+  - disk devices have a major number of 8, which assigns them as SCSI block devices
+  - sd[a-z] is the most used way to refer to hard disks.
+  - SCSI is a microprocessor-controlled smart bus. It allows us to add up to 15 peripheral devices to the computer. These devices include hard drives, scanners, USB, printers, and many other devices. It stands for small computer system interface. 
+  - /dev/sda, which is a block device in the /dev directory. 
+  - If we have multiple partitions in the hard disk, the system consecutively appended a number starting from sda1 to sda15. In a single hard disk, we can only have a maximum of 15 partitions.
+- https://www.baeldung.com/linux/dev-directory
+  - a driver accesses data from block devices through a cache. Moreover, a driver communicates with a block device by sending an entire block of data.
+  - For example, character devices are sound cards or serial ports, whereas block devices are hard disks or USBs
+
+## k8s-pv.mount.debug.device.SCSI
+
+- https://docs.kernel.org/driver-api/scsi.html: Small Computer Systems Interface. SCSI commands can be transported over just about any kind of bus, and are the default protocol for storage devices attached to USB, SATA, SAS, Fibre Channel, FireWire, and ATAPI devices. SCSI packets are also commonly exchanged over Infiniband, TCP/IP (iSCSI), even Parallel ports.
+- https://www.kernel.org/doc/html/v4.13/driver-api/scsi.html
+  
+## k8s-pv.mount.debug.file.mode
 
 ```
 kind: StorageClass

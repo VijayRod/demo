@@ -63,5 +63,5 @@ Use --debug for more information
 ```
 
 - https://docs.microsoft.com/en-us/cli/azure
-- https://github.com/azure/azure-cli/releases: for the most recent version of azure-cli and when it became publicly available as an upgrade (in azure-cli).
+- https://github.com/azure/azure-cli/releases: for the most recent version of azure-cli and approximately when it became publicly available as an upgrade (in azure-cli).
 - https://github.com/MicrosoftDocs/azure-docs-cli/pulls?q=is%3Apr+is%3Aopen+release+note: PR detailing the fixes that have been included for the upcoming release

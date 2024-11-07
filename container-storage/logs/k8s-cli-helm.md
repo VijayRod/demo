@@ -1,17 +1,21 @@
 ## k8s.cli.helm
 
 ```
-# helm version
+# https://helm.sh/docs/intro/install/#from-script
+curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+help help
+
+helm version
 version.BuildInfo{Version:"v3.11.3", GitCommit:"323249351482b3bbfc9f5004f65d400aa70f9ae7", GitTreeState:"clean", GoVersion:"go1.20.3"}
 ```
 
 ```
-# To add a Helm repo
-helm repo add application-gateway-kubernetes-ingress https://appgwingress.blob.core.windows.net/ingress-azure-helm-package/
+helm repo add application-gateway-kubernetes-ingress https://appgwingress.blob.core.windows.net/ingress-azure-helm-package/ # To add a Helm repo
 helm repo update
 
-# To list Helm repos
-helm repo list
+helm repo list # To list Helm repos
+
+helm repo remove dynatrace
 ```
 
 ```

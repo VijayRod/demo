@@ -1,8 +1,7 @@
 ## tls-k8s-certificate
 
 ```
-# kubectl get Issuers,ClusterIssuers,Certificates,CertificateRequests,Orders,Challenges --all-namespaces
-No resources found
+
 ```
 
 ## tls-k8s-certificate.spec.cluster
@@ -58,6 +57,7 @@ cat: /host/var/lib/kubelet/bootstrap-kubeconfig: No such file or directory
 ```
 
 - https://learn.microsoft.com/en-us/azure/aks/certificate-rotation#how-to-check-whether-current-agent-node-pool-is-tls-bootstrapping-enabled
+- https://kubernetes.io/docs/tasks/tls/certificate-rotation/: The kubelet process accepts an argument --rotate-certificates that controls if the kubelet will automatically request a new certificate. When a kubelet starts up, if it is configured to bootstrap (using the --bootstrap-kubeconfig flag)
 
 ## tls-k8s-certificate.spec.cluster.node.tls.rotation.auto
 
@@ -71,6 +71,7 @@ root        2683  2.0  1.5 1633396 128108 ?      Ssl  08:42   8:42 /usr/local/bi
 ## tls-k8s-certificate.spec.cluster.node.tls.rotation.manual
 
 - https://learn.microsoft.com/en-us/azure/aks/certificate-rotation#manually-rotate-your-cluster-certificates
+- https://kubernetes.io/docs/tasks/tls/manual-rotation-of-ca-certificates/
 
 ## tls-k8s-certificate.spec.cluster.node.type.vmas
 

@@ -1,5 +1,9 @@
 ## cs
 
+```
+# See the section on .net
+```
+
 - https://learn.microsoft.com/en-us/dotnet/csharp/fundamentals/program-structure/main-command-line
 - https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/
 - https://www.w3schools.com/cs/index.php

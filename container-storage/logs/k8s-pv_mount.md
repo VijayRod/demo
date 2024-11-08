@@ -154,13 +154,37 @@ nvme0n1
 - https://www.baeldung.com/linux/filesystem-guide
 - https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/7/html/system_administrators_guide/ch-file_and_print_servers
 
+## k8s-pv.mount.debug.SCSI.device.type.disk.filesystem.error.space
+
 ```
-mkfs.ext4
+df / -h # Disk free space
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/root       124G   21G  104G  17% /
+
+sudo du -shx --exclude='/proc' --exclude='/sys' /* | sort -hr # Disk usage breakdown for directories
+17G     /var
+2.5G    /usr
+...
 ```
+
+```
+kubectl logs # Delete the pod to remove its associated log
+
+logrotate # Remove log files
+
+crictl rmi -prune # Remove unused container images
+Deleted: mcr.microsoft.com/azure-policy/policy-kubernetes-addon-prod:1.0.1
+Deleted: mcr.microsoft.com/oss/kubernetes/azure-cloud-node-manager:v1.25.12
+...
+```
+
+- https://stackoverflow.com/questions/257844/quickly-create-a-large-file-on-a-linux-system
 
 ## k8s-pv.mount.debug.SCSI.device.type.disk.filesystem.type.ext4
 
 ```
+mkfs.ext4
+
 # shows the metadata contained in the superblock, as well as data about each of the first two cylinder groups in the filesystem
 # man dumpe2fs: dump ext2/ext3/ext4 file system information
 dumpe2fs /dev/sda1

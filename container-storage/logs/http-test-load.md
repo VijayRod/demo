@@ -1,0 +1,5 @@
+- tbd https://www.testscenario.com/what-is-load-testing/
+- tbd https://grafana.com/load-testing/load-testing-examples/
+- tbd https://www.marcobehler.com/guides/load-testing
+- tbd https://grafana.com/blog/2024/01/30/api-load-testing/
+- tbd https://www.radview.com/blog/4-types-of-load-testing-and-when-each-should-be-used/

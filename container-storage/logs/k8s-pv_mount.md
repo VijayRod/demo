@@ -130,7 +130,10 @@ tmpfs            61G   12K   61G   1% /var/lib/kubelet/pods/75e8808a-bb68-4776-8
 ```
 
 - https://linuxconfig.org/introduction-to-the-lsblk-command
-
+- https://learn.microsoft.com/en-us/azure/virtual-machines/linux/tutorial-manage-disks: The OS disk is labeled /dev/sda by default.
+- https://learn.microsoft.com/en-us/azure/virtual-machines/linux/tutorial-manage-disks: Temporary disks are labeled /dev/sdb and have a mountpoint of /mnt.
+- https://learn.microsoft.com/en-us/azure/virtual-machines/azure-vms-no-temp-disk
+  
 ## k8s-pv.mount.debug.SCSI.device.type.disk.filesystem
 
 ```
@@ -147,6 +150,9 @@ nvme0n1
 ```
 
 - https://docs.kernel.org/filesystems/index.html
+- https://wiki.archlinux.org/title/Category:File_systems
+- https://www.baeldung.com/linux/filesystem-guide
+- https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/7/html/system_administrators_guide/ch-file_and_print_servers
 
 ```
 mkfs.ext4

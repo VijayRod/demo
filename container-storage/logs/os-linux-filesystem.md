@@ -1,3 +1,0 @@
-- https://wiki.archlinux.org/title/Category:File_systems
-- https://www.baeldung.com/linux/filesystem-guide
-- https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/7/html/system_administrators_guide/ch-file_and_print_servers

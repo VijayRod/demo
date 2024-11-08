@@ -19,6 +19,14 @@
 - https://www.baeldung.com/cs/async-vs-multi-threading
 - https://learn.microsoft.com/en-in/windows/win32/procthread/scheduling
 - https://learn.microsoft.com/en-in/archive/blogs/microsoft_press/new-book-windows-internals-seventh-edition-part-1
+- https://www.codecademy.com/courses/fundamentals-of-operating-systems/informationals/intro-fundamentals-of-operating-systems-course (click on the Syllabus link for more pages)
+- https://www.codecademy.com/learn/fundamentals-of-operating-systems/modules/introduction-to-operating-systems/cheatsheet
+- https://www.codecademy.com/courses/fundamentals-of-operating-systems/lessons/os-processes-and-threads (click on the Syllabus link for more pages)
+- https://www.codecademy.com/learn/fundamentals-of-operating-systems/modules/os-processes-and-threads/cheatsheet
+- https://www.codecademy.com/courses/fundamentals-of-operating-systems/lessons/os-process-scheduling (click on the Syllabus link for more pages)
+- https://www.codecademy.com/learn/fundamentals-of-operating-systems/modules/os-process-scheduling/cheatsheet
+- https://www.codecademy.com/courses/fundamentals-of-operating-systems/lessons/os-synchronization (click on the Syllabus link for more pages)
+- https://www.codecademy.com/learn/fundamentals-of-operating-systems/modules/os-synchronization/cheatsheet
 
 ## cpu.irqbalance(UnbalancedIRQs)
 

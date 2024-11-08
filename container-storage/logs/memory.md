@@ -1,4 +1,10 @@
-## os-linux-memory.error.OOMKilled
+## memory
+
+- https://www.itprotoday.com/networking-security/how-windows-nt-dispatches-processes-and-threads
+  - processor's cache memory stores the most commonly used instructions
+- https://www.itprotoday.com/it-infrastructure/windows-nt-architecture-part-2: 32-bit (4GB) address space; however, applications can directly access only the first 2GB
+  
+## memory.error.OOMKilled
 
 ```
 tail /dev/zero
@@ -17,12 +23,12 @@ Killed
 - https://www.kernel.org/doc/gorman/html/understand/understand016.html: Chapter?13??Out Of Memory Management
 - tbd https://sysctl-explorer.net/vm/oom_dump_tasks/
   
-## os-linux-memory.error.OOMKilled.k8s
+## memory.error.OOMKilled.k8s
 
 - https://komodor.com/learn/how-to-fix-oomkilled-exit-code-137/
 - add tbd https://mihai-albert.com/2022/02/13/out-of-memory-oom-in-kubernetes-part-2-the-oom-killer-and-application-runtime-implications/
 
-## os-linux-memory.page-cache
+## memory.page-cache
 
 ```
 # After the system starts, it takes just a few minutes for my memory cache to fill up, at which point the system starts using the swap

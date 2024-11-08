@@ -56,6 +56,8 @@ cat /var/log/syslog | Or cat /var/log/messages | grep kernel
 - https://www.baeldung.com/linux/dev-directory
   - a driver accesses data from block devices through a cache. Moreover, a driver communicates with a block device by sending an entire block of data.
   - For example, character devices are sound cards or serial ports, whereas block devices are hard disks or USBs
+- https://www.codecademy.com/courses/fundamentals-of-operating-systems/articles/introduction-to-io-systems (click on the Syllabus link for more pages) 
+- https://www.codecademy.com/learn/fundamentals-of-operating-systems/modules/os-io-systems/cheatsheet
     
 ## k8s-pv.mount.debug.SCSI.device.type.disk
 
@@ -153,6 +155,8 @@ nvme0n1
 - https://wiki.archlinux.org/title/Category:File_systems
 - https://www.baeldung.com/linux/filesystem-guide
 - https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/7/html/system_administrators_guide/ch-file_and_print_servers
+- https://www.codecademy.com/courses/fundamentals-of-operating-systems/lessons/os-filesystems/exercises/introduction-to-filesystems (click on the Syllabus link for more pages)
+- https://www.codecademy.com/learn/fundamentals-of-operating-systems/modules/os-filesystems/cheatsheet
 
 ## k8s-pv.mount.debug.SCSI.device.type.disk.filesystem.error.space
 

@@ -1,1 +1,0 @@
-- https://learn.microsoft.com/en-us/azure/virtual-machines/azure-vms-no-temp-disk

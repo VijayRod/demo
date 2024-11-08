@@ -11,9 +11,10 @@
   - network/[k8s-cni(networkplugin)](https://github.com/VijayRod/demo/blob/master/container-storage/logs/k8s-cni(networkplugin).md)
   - identity -
   - security - [certificate](https://github.com/VijayRod/demo/blob/master/container-storage/logs/k8s-csr-certificate.md), 
-  - load - 
+  - test/[load](https://github.com/VijayRod/demo/blob/master/container-storage/logs/http-test-load.md) - 
   - [k8s](https://github.com/VijayRod/demo/blob/master/container-storage/logs/k8s.md) - k8s-*,
-  - [ai](https://github.com/VijayRod/demo/tree/master/ai) - 
+  - [ai](https://github.com/VijayRod/demo/tree/master/ai) -
+  - lang - [.net](https://github.com/VijayRod/demo/blob/master/container-storage/logs/lang-dotnet(.net).md),
 
 
 

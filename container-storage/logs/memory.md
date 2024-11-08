@@ -3,6 +3,8 @@
 - https://www.itprotoday.com/networking-security/how-windows-nt-dispatches-processes-and-threads
   - processor's cache memory stores the most commonly used instructions
 - https://www.itprotoday.com/it-infrastructure/windows-nt-architecture-part-2: 32-bit (4GB) address space; however, applications can directly access only the first 2GB
+- https://www.codecademy.com/courses/fundamentals-of-operating-systems/lessons/os-memory-management (click on the Syllabus link for more pages)
+- https://www.codecademy.com/learn/fundamentals-of-operating-systems/modules/os-memory-management/cheatsheet
   
 ## memory.error.OOMKilled
 

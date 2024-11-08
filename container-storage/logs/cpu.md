@@ -16,7 +16,9 @@
 - https://students.cs.byu.edu/~cs345ta/reference/NT%20Scheduling.doc
   - SMP systems contain more than one processor
   - Starvation Prevention
-- https://www.baeldung.com/cs/async-vs-multi-threading 
+- https://www.baeldung.com/cs/async-vs-multi-threading
+- https://learn.microsoft.com/en-in/windows/win32/procthread/scheduling
+- https://learn.microsoft.com/en-in/archive/blogs/microsoft_press/new-book-windows-internals-seventh-edition-part-1
 
 ## cpu.irqbalance(UnbalancedIRQs)
 

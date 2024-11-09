@@ -1,3 +1,5 @@
+## k8s.cri.containerd
+
 ```
 # kubectl get no -owide
 NAME                                STATUS   ROLES   AGE    VERSION   INTERNAL-IP    EXTERNAL-IP   OS-IMAGE                KERNEL-VERSION      CONTAINER-RUNTIME
@@ -38,6 +40,21 @@ Oct 23 19:25:39 aks-nodepool1-74128781-vmss000000 containerd[2707]: time="2024-1
 ...
 ```
 
+```
+systemctl restart containerd
+```
+
 - https://azure.microsoft.com/en-us/updates/azure-kubernetes-service-aks-support-for-containerd-runtime-is-in-preview/
 - https://learn.microsoft.com/en-us/azure/aks/cluster-configuration#container-runtime-configuration
 - https://learn.microsoft.com/en-us/azure/aks/learn/quick-windows-container-deploy-cli#connect-to-the-cluster
+- https://docs.docker.com/desktop/features/containerd/#what-is-containerd
+
+## k8s.cri.containerd.containerd-shim
+
+```
+root@aks-nodepool1-33178142-vmss000000:/# df -h
+shm              64M     0   64M   0% /run/containerd/io.containerd.grpc.v1.cri/sandboxes/2a1be93f6966eb4a720ccadb38c09d4d773302f6d153faf92b131803e41989e0/shm
+shm              64M     0   64M   0% /run/containerd/io.containerd.grpc.v1.cri/sandboxes/2a19e574f2fb1960534b43dc64437f1ec9f941d494103c2018592838a5ae1a0b/shm
+```
+
+- https://github.com/containerd/containerd/issues/370: Can containerd be restarted and recover all running containers? yes. Every container has a containerd-shim to supervise the container, even if the containerd stop, the container can keep on running, and once containerd restart, it can recover all running contaners by restore the /run/docker/libcontainerd

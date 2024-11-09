@@ -45,6 +45,17 @@ for i in {2..100}; do az aks nodepool delete -g $rg --cluster-name aks -n nodepo
 - https://github.com/Azure/AKS/
 - https://issuetracker.google.com/savedsearches/559746: Open Kubernetes Engine Issues
 
+## aks.core.reconcile
+
+```
+k describe ds -n kube-system csi-azuredisk-node | grep Limits: -A 1.
+kubectl set resources daemonset csi-azuredisk-node -c=azuredisk --limits=memory=1200Mi -n kube-system # AKS quickly reverts back my change
+```
+
+## aks.core.remediator
+
+- https://learn.microsoft.com/en-us/azure/aks/node-auto-repair: AKS initiates repair operations with the user account aks-remediator.
+
 ## aks.spec.agentPool.vmSize
 
 - https://learn.microsoft.com/en-us/azure/aks/quotas-skus-regions#supported-vm-sizes

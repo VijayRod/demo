@@ -1,5 +1,7 @@
 ## network.proxy
 
+- https://stackoverflow.com/questions/10173096/how-proxy-server-works-with-tcp-http-connections: After processing the CONNECT command, a proxy just copies bytes in both directions. 
+- https://stackoverflow.com/questions/48127953/difference-between-https-reverse-proxy-tcp-proxy-socks5-proxy
 
 ## network.proxy.http
 
@@ -15,3 +17,4 @@
   
 ## network.proxy.tls
 
+- https://learn.microsoft.com/en-us/azure/application-gateway/tcp-tls-proxy-overview

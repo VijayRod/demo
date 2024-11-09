@@ -1,4 +1,4 @@
-## docker
+## k8s.cri.docker
 
 ```
 apt update && apt install docker.io -y # Execute it in a laptop instead of a containerd worker node
@@ -6,7 +6,9 @@ apt update && apt install docker.io -y # Execute it in a laptop instead of a con
 $HOME/.docker/config.json
 ```
 
-### docker.install.wsl
+- https://docs.docker.com/get-started/docker-concepts/the-basics/what-is-a-container/
+  
+### k8s.cri.docker.install.wsl
 
 ```
 # initial
@@ -26,7 +28,7 @@ Usage:  docker [OPTIONS] COMMAND
 ...
 ```
 
-### docker.install.error The following packages have unmet dependencies: moby-containerd : Conflicts: containerd
+### k8s.cri.docker.install.error The following packages have unmet dependencies: moby-containerd : Conflicts: containerd
 
 ```
 # Execute it in a laptop instead of a containerd worker node, else get the docker install error:
@@ -35,7 +37,7 @@ The following packages have unmet dependencies:
 E: Error, pkgProblemResolver::Resolve generated breaks, this may be caused by held packages.
 ```
 
-## docker.spec.daemon.error.Cannot connect to the Docker daemon at unix:///var/run/docker.sock. Is the docker daemon running
+## k8s.cri.docker.spec.daemon.error.Cannot connect to the Docker daemon at unix:///var/run/docker.sock. Is the docker daemon running
 
 ```
 # For those who only need Docker installed for login purposes and don't need the Docker daemon to be running, see the section on az acr login -n imageshack --expose-token
@@ -72,7 +74,7 @@ errors pretty printing info
 tbd Run the Docker daemon using the 'docker start' command.
 ```
 
-## docker.spec.image.build.acr
+## k8s.cri.docker.spec.image.build.acr
 
 ```
 # For those who only need Docker installed for login purposes and don't need the Docker daemon to be running:
@@ -81,7 +83,7 @@ tbd Run the Docker daemon using the 'docker start' command.
 # Finally, run `az acr build --registry $registry --image image-sample .` in the Dockerfile location to build and upload the image. 
 ```
 
-## docker.spec.image.build.VisualStudio
+## k8s.cri.docker.spec.image.build.VisualStudio
 
 ```
 # Open the .sln file in Visual Studio, right click Dockerfile, Build Docker Image

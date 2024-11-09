@@ -27,6 +27,7 @@
 - https://www.codecademy.com/learn/fundamentals-of-operating-systems/modules/os-process-scheduling/cheatsheet
 - https://www.codecademy.com/courses/fundamentals-of-operating-systems/lessons/os-synchronization (click on the Syllabus link for more pages)
 - https://www.codecademy.com/learn/fundamentals-of-operating-systems/modules/os-synchronization/cheatsheet
+- https://www.geeksforgeeks.org/computer-network-concepts-a-software-engineer-should-learn/#computer-network-concepts-should-a-software-engineer-learn
 
 ## cpu.irqbalance(UnbalancedIRQs)
 
@@ -55,3 +56,9 @@ systemctl restart irqbalance.service
 - https://github.com/Azure/AKS/blob/master/vhd-notes/aks-ubuntu/AKSUbuntu-2204/202310.09.0.txt: irqbalance
 - https://github.com/Irqbalance/irqbalance/
 - https://zmalik.dev/posts/packet-drop
+
+## cpu.OS (operating system)
+
+- https://jameskle.com/writes/operating-systems
+- https://www.geeksforgeeks.org/prepare-cs-core-subjects-for-placements/
+- https://www.educative.io/blog/operating-systems-crashcourse

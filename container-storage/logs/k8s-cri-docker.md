@@ -1,6 +1,8 @@
 ## k8s.cri.docker
 
 ```
+# See the section on SCSI.device.type.disk.filesystem.type.k8s.overlayfs
+
 apt update && apt install docker.io -y # Execute it in a laptop instead of a containerd worker node
 
 $HOME/.docker/config.json

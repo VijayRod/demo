@@ -1,14 +1,29 @@
-## storage.snapshot.disk
+## storage.snapshot.azuredisk
 
 ```
+rg=rg
+az group create -n $rg -l swedencentral
+az disk create -g $rg -n myDataDisk --size-gb 100
+diskId=$(az disk show -g $rg -n myDataDisk --query id -o tsv)
+
+az snapshot create -g $rg -n snap --source $diskId # --incremental true
+az snapshot show -g $rg -n snap
+
 # https://learn.microsoft.com/en-us/azure/virtual-machines/disks-incremental-snapshots?tabs=azure-cli#create-incremental-snapshots
 az snapshot create 
 ```
 
 - https://aka.ms/snapshot-status
-- https://learn.microsoft.com/en-us/azure/virtual-machines/disks-incremental-snapshots?tabs=azure-cli#check-status-of-snapshots-or-disks
+- https://learn.microsoft.com/en-us/azure/virtual-machines/disks-incremental-snapshots#check-status-of-snapshots-or-disks
+- https://learn.microsoft.com/en-us/azure/virtual-machines/snapshot-copy-managed-disk
+- https://learn.microsoft.com/en-us/azure/virtual-machines/disks-incremental-snapshots
+  
+## storage.snapshot.k8s.csi
 
-## storage.snapshot.k8s.volumesnapshot
+- https://github.com/kubernetes-csi/external-snapshotter
+- https://github.com/kubernetes-csi/external-snapshotter/issues/646: snapshot.storage.k8s.io/v1alpha1
+
+## storage.snapshot.k8s.csi.volumesnapshot
 
 ```
 rg=rg
@@ -36,7 +51,7 @@ k get vsclass # no results
 - https://www.alibabacloud.com/help/en/ack/ack-managed-and-ack-dedicated/user-guide/use-volume-snapshots-created-from-disks
 - https://cloud.google.com/kubernetes-engine/docs/how-to/persistent-volumes/volume-snapshots
 
-## storage.snapshot.k8s.volumesnapshot.debug.error.SnapshotContentCreationFailed.cannot get claim from snapshot
+## storage.snapshot.k8s.csi.volumesnapshot.debug.error.SnapshotContentCreationFailed.cannot get claim from snapshot
 
 ```
 # Creating a volume snapshot without a prior claim (PVC) results in an error. You can confirm this by executing `kubectl get pvc`. 
@@ -70,11 +85,11 @@ Events:
   Warning  SnapshotContentCreationFailed  45s   snapshot-controller  Failed to create snapshot content with error snapshot controller failed to update azuredisk-volume-snapshot on API server: cannot get claim from snapshot
 ```
 
-## storage.snapshot.k8s.volumesnapshot.volumesnapshotclass
+## storage.snapshot.k8s.csi.volumesnapshot.volumesnapshotclass
 
 - https://kubernetes.io/docs/concepts/storage/volume-snapshot-classes/
 
-## storage.snapshot.k8s.volumesnapshot.volumesnapshotclass.driver.azuredisk
+## storage.snapshot.k8s.csi.volumesnapshot.volumesnapshotclass.driver.azuredisk
 
 ```
 # https://learn.microsoft.com/en-us/azure/aks/azure-disk-csi#create-a-volume-snapshot
@@ -283,7 +298,7 @@ I0920 13:02:19.865534       1 controllerserver.go:1003] create snapshot(snapshot
 - https://github.com/kubernetes-sigs/azuredisk-csi-driver/tree/master/deploy/example/snapshot
 - https://github.com/kubernetes-sigs/azuredisk-csi-driver/blob/master/docs/driver-parameters.md#volumesnapshotclass
 
-## storage.snapshot.k8s.volumesnapshot.volumesnapshotclass.driver.azuredisk.restore
+## storage.snapshot.k8s.csi.volumesnapshot.volumesnapshotclass.driver.azuredisk.restore
 
 ```
 # https://learn.microsoft.com/en-us/azure/aks/azure-disk-csi#create-a-new-pvc-based-on-a-volume-snapshot
@@ -337,11 +352,11 @@ outfile
 test.txt
 ```
 
-## storage.snapshot.k8s.volumesnapshot.volumesnapshotclass.driver.azuredisk.app.azurebackup
+## storage.snapshot.k8s.csi.volumesnapshot.volumesnapshotclass.driver.azuredisk.app.azurebackup
 
 - https://learn.microsoft.com/en-us/azure/backup/azure-kubernetes-service-backup-overview: The Backup Extension installed in the AKS cluster first takes the backup by taking Volume snapshots via CSI Driver
 - https://learn.microsoft.com/en-us/azure/backup/azure-kubernetes-service-cluster-backup-support-matrix#limitations (snapshot)
 
-## storage.snapshot.k8s.volumesnapshot.volumesnapshotclass.driver.containerstorage(acstor)
+## storage.snapshot.k8s.csi.volumesnapshot.volumesnapshotclass.driver.containerstorage (acstor)
 
 - https://learn.microsoft.com/en-us/azure/storage/container-storage/volume-snapshot-restore

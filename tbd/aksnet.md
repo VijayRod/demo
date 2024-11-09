@@ -2,7 +2,7 @@
   - [core](https://www.baeldung.com/cs/category/core-concepts)
   - [cpu](https://github.com/VijayRod/demo/blob/master/container-storage/logs/cpu.md) -
   - [memory](https://github.com/VijayRod/demo/blob/master/container-storage/logs/memory.md) -
-  - storage - [device /dev](https://github.com/VijayRod/demo/blob/master/container-storage/logs/k8s-pv_mount.md#k8s-pvmountdebugscsidevice), [filesystem](https://github.com/VijayRod/demo/blob/master/container-storage/logs/k8s-pv_mount.md#k8s-pvmountdebugscsidevicetypediskfilesystem),
+  - storage - [device /dev](https://github.com/VijayRod/demo/blob/master/container-storage/logs/storage-device.md), [filesystem](https://github.com/VijayRod/demo/blob/master/container-storage/logs/storage-device-filesystem.md),
   - storage/[database](https://github.com/VijayRod/demo/blob/master/container-storage/logs/db(database).md) -
   - storage/distributed - split-brain
   - storage/[k8s-csi](https://github.com/VijayRod/demo/blob/master/container-storage/logs/k8s-csi.md)

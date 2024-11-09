@@ -14,7 +14,7 @@
   - identity -
   - security - [certificate](https://github.com/VijayRod/demo/blob/master/container-storage/logs/k8s-csr-certificate.md), 
   - test/[load](https://github.com/VijayRod/demo/blob/master/container-storage/logs/http-test-load.md) - 
-  - [ai](https://github.com/VijayRod/demo/tree/master/ai) -
+  - [ai](https://github.com/VijayRod/demo/blob/master/ai/ai.md) -
   - lang - [.net](https://github.com/VijayRod/demo/blob/master/container-storage/logs/lang-dotnet(.net).md),
   - virtualization(hyperv) - [vm](https://github.com/VijayRod/demo/blob/master/container-storage/logs/az-virtualmachine(vm).md)
 

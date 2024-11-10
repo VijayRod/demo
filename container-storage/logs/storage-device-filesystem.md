@@ -13,7 +13,9 @@ sr0
 nvme0n1
 ```
 
+- https://lwn.net/Kernel/Index/#Filesystems
 - https://docs.kernel.org/filesystems/index.html
+- https://www.kernel.org/doc/html/latest/filesystems/index.html
 - https://wiki.archlinux.org/title/Category:File_systems
 - https://www.baeldung.com/linux/filesystem-guide
 - https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/7/html/system_administrators_guide/ch-file_and_print_servers

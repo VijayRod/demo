@@ -1,5 +1,8 @@
 ## cpu
 
+- https://lwn.net/Kernel/Index/#cpufreq
+- https://lwn.net/Kernel/Index/#CPUhog
+- https://lwn.net/Kernel/Index/#Cpusets
 - https://www.itprotoday.com/it-infrastructure/inside-the-windows-nt-scheduler-part-1
   - The basic scheduling unit in NT is a thread.
   - Processes consist of a virtual address spacethat includes executable instructions, a set of resources such as file handles,and one or more threads that execute within its address space.

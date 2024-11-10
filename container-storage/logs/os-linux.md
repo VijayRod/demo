@@ -4,6 +4,7 @@
 - https://kernelnewbies.org/Documents
 - https://kernelnewbies.org/Linux_6.6
   - https://kernelnewbies.org/Linux_5.15
+- https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/
     
 ## os-linux.components
 - https://docs.kernel.org/subsystem-apis.html#core-subsystems

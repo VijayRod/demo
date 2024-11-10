@@ -1,3 +1,13 @@
+## azurelinux
+
+```
+# See the section on azurelinux.version.mariner
+```
+
+## azurelinux.app.k8s
+
+- https://learn.microsoft.com/en-us/azure/aks/create-node-pools#azure-linux-node-pools
+  
 ## azurelinux.version.mariner
 
 - https://learn.microsoft.com/en-us/azure/azure-linux/intro-azure-linux: Microsoft maintains the Azure Linux Container Host and based it on CBL-Mariner, an open-source Linux distribution created by Microsoft.

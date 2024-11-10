@@ -144,8 +144,9 @@ kubectl get po -w
 - https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/scenarios/app-platform/aks/storage: (Volume refers to a) Static or dynamically created file share (not a storage account)
 - https://learn.microsoft.com/en-us/azure/aks/azure-files-csi
 - https://learn.microsoft.com/en-us/azure/aks/azure-csi-files-storage-provision
-- https://github.com/kubernetes-sigs/azurefile-csi-driver/tree/master/deploy/example
+- https://github.com/kubernetes-sigs/azurefile-csi-driver/blob/master/pkg/azurefileplugin/Dockerfile
 - https://github.com/kubernetes-sigs/azurefile-csi-driver/blob/master/charts/latest/azurefile-csi-driver/values.yaml
+- https://github.com/kubernetes-sigs/azurefile-csi-driver/tree/master/deploy/example
 - https://github.com/kubernetes-sigs/azurefile-csi-driver/blob/master/deploy/csi-azurefile-controller.yaml
 
 ## azurefile-csi.driver.parameter

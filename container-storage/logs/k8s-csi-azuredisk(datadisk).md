@@ -57,6 +57,7 @@ csi-azuredisk-node-win       0         0         0       0            0         
 ```
 
 - https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/scenarios/app-platform/aks/storage: (Volume refers to a) managed disks
+- https://github.com/kubernetes-sigs/azuredisk-csi-driver/blob/master/pkg/azurediskplugin/Dockerfile
   
 ## azuredisk-csi.driver.parameter
 

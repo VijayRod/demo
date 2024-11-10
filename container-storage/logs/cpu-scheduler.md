@@ -13,6 +13,10 @@
 
 ## cpu.scheduler.app.sql
 
+```
+# SOS scheduler refers to the SQL OS scheduler
+```
+
 - https://www.sqlskills.com/wp-content/uploads/2014/04/sql-server-performance-tuning-using-wait-statistics-whitepaper.pdf:  The SQLOS scheduler and thread scheduling
 - https://techcommunity.microsoft.com/blog/sqlserversupport/how-it-works-sql-server-2012-database-engine-task-scheduling/317778
 - https://techcommunity.microsoft.com/blog/sqlserver/how-it-works-sql-server-scheduler-affinity/3121015

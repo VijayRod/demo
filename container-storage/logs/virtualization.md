@@ -1,12 +1,6 @@
-## virtualization.hyperv.container
+## virtualization
 
-- https://learn.microsoft.com/en-us/virtualization/windowscontainers/manage-containers/hyperv-container#hyper-v-isolation
-
-## virtualization.hyperv.container.windows(HNS|HostNetworkingService)
-
-- https://github.com/kubernetes/enhancements/tree/master/keps/sig-windows/1981-windows-privileged-container-support
-- https://learn.microsoft.com/en-us/virtualization/windowscontainers/container-networking/architecture#container-network-management-with-host-network-service
-- https://kubernetes.io/docs/concepts/services-networking/windows-networking/
+- https://lwn.net/Kernel/Index/#Virtualization
 
 ## virtualization.hyperv.virtualswitch.hvnetvsc
 

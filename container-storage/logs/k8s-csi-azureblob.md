@@ -60,6 +60,7 @@ kubectl get po -n kube-system csi-blob-node-wvn8q -oyaml | grep image: | grep bl
 #    image: mcr.microsoft.com/oss/kubernetes-csi/blob-csi:v1.19.5
 ```
 
+- https://github.com/kubernetes-sigs/blob-csi-driver/blob/master/pkg/blobplugin/Dockerfile
 - https://github.com/kubernetes-sigs/blob-csi-driver/blob/master/pkg/blob/nodeserver.go
 - https://github.com/kubernetes-sigs/blob-csi-driver#usage (features)
 - https://github.com/kubernetes-sigs/blob-csi-driver/blob/master/docs/csi-debug.md

@@ -24,6 +24,8 @@ Pass 1: Checking inodes, blocks, and sizes
 - https://www.baeldung.com/linux/usb-drive-format#1-ext4: ext4 (Extended File System) using the mkfs.ext4 utility
 - https://en.m.wikipedia.org/wiki/Ext4: ext4 (fourth extended filesystem)
 - https://opensource.com/article/17/5/introduction-ext4-filesystem: dumpe2fs /dev/sda1. fsck -fn.
+- https://wiki.archlinux.org/title/Ext4
+- https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/could-not-change-permissions-azure-files: For the ext3 or ext4 disk type, there's a lost+found directory after the disk is formatted.
 
 ## storage.SCSI.device.type.disk.filesystem.type.ext4.Inode 
 

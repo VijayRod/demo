@@ -13,6 +13,7 @@
 #    filesystem.ext4/fat/ntfs
 ```
 
+- https://lwn.net/Kernel/Index/#Block_layer
 - https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/admin-guide/devices.txt
   - (major number 8) 8 block. SCSI disk devices (0-15).
   - (major number 259) 259 block. Block Extended Major

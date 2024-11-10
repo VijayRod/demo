@@ -1,5 +1,6 @@
 ## cpu.gpu
 
+- https://lwn.net/Kernel/Index/#Device_drivers-Accelerators
 - https://learn.microsoft.com/en-us/azure/virtual-machines/sizes-gpu
 
 ## cpu.gpu.app.aks

@@ -1,7 +1,7 @@
 ## k8s.cri.containerd
 
 ```
-# See the section on storage-device-filesystem.SCSI.device.type.disk.filesystem.type.k8s.overlayfs
+# See the section on storage-device-filesystem_overlayfs
 
 kubectl get no -owide
 NAME                                STATUS   ROLES   AGE    VERSION   INTERNAL-IP    EXTERNAL-IP   OS-IMAGE                KERNEL-VERSION      CONTAINER-RUNTIME

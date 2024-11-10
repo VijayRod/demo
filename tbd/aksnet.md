@@ -12,6 +12,7 @@
   - network/k8s - [tcp-k8s-aks](/container-storage/logs/tcp-k8s-aks.md), [dns-k8s-coredns_cm_log](/container-storage/logs/dns-k8s-coredns_cm_log.md), [dns-k8s-coredns_cm_monitor(logging)](/container-storage/logs/dns-k8s-coredns_cm_monitor(logging).md), [tcp-k8s-service_2](/container-storage/logs/tcp-k8s-service_2.md), [http-applicationgateway-aks_agic_sample_aspnetapp.md](/container-storage/logs/http-applicationgateway-aks_agic_sample_aspnetapp.md), [http-applicationgateway-aks_agc_sample_mtls](/container-storage/logs/http-applicationgateway-aks_agc_sample_mtls.md),
   - network/[k8s-cni(networkplugin)](https://github.com/VijayRod/demo/blob/master/container-storage/logs/k8s-cni(networkplugin).md) - [iptable](https://github.com/VijayRod/demo/blob/master/container-storage/logs/ip-iptables.md), [ip-netns](https://github.com/VijayRod/demo/blob/master/container-storage/logs/ip-netns.md) (network namespace),
   - identity -
+  - scale - 
   - security - [certificate](https://github.com/VijayRod/demo/blob/master/container-storage/logs/k8s-csr-certificate.md), 
   - test/[load](https://github.com/VijayRod/demo/blob/master/container-storage/logs/http-test-load.md) - 
   - [ai](https://github.com/VijayRod/demo/blob/master/ai/ai.md) -

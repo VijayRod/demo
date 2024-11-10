@@ -7,5 +7,6 @@
 - https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/
     
 ## os-linux.components
+- https://lwn.net/Kernel/Index/
 - https://docs.kernel.org/subsystem-apis.html#core-subsystems
 - https://www.kernel.org/doc/html/latest/subsystem-apis.html

@@ -1,7 +1,7 @@
 ```
 kubectl delete po nginx
 kubectl delete svc nginx
-kubectl run nginx --image=nginx --port=80 # --dry-run=client -oyaml # containerPort: 80
+kubectl run nginx --image=nginx --port=80 # --dry-run=client -oyaml # containerPort: 80 # --type=LoadBalancer
 kubectl expose po nginx
 
 # Or

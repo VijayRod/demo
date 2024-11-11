@@ -9,6 +9,11 @@
     
 ## os-linux.components
 - https://lwn.net/Kernel/Index/
-- https://tldp.org/LDP/tlk/kernel/kernel.html
 - https://docs.kernel.org/subsystem-apis.html#core-subsystems
 - https://www.kernel.org/doc/html/latest/subsystem-apis.html
+
+## os-linux.components.kernel
+
+- https://tldp.org/LDP/tlk/kernel/kernel.html
+- https://tldp.org/LDP/tlk/modules/modules.html
+- https://tldp.org/LDP/tlk/sources/sources.html: How The Kernel Sources Are Arranged

@@ -1,3 +1,4 @@
 - https://cilium.io/use-cases/cni/
 - https://ubuntu.com/kubernetes/docs/cni-cilium
 - https://github.com/cilium
+- https://cloud.google.com/kubernetes-engine/docs/concepts/dataplane-v2: GKE Dataplane V2 is implemented using Cilium. The legacy dataplane for GKE is implemented using Calico. Both of these technologies manage Kubernetes NetworkPolicy. Cilium uses eBPF and the Calico Container Network Interface (CNI) uses iptables in the Linux kernel.

@@ -1,4 +1,4 @@
-## calico
+## calico.networkpolicy
 
 ```
 ## See the section on k8s-cni

@@ -1,0 +1,2 @@
+- https://lwn.net/Kernel/Index/#Device_drivers
+- https://tldp.org/LDP/tlk/dd/drivers.html

@@ -1,5 +1,6 @@
 ```
 curl ipinfo.io/8.8.8.8
+# curl -v ipconfig.io/8.8.8.8
 {
   "ip": "8.8.8.8",
   "hostname": "dns.google",

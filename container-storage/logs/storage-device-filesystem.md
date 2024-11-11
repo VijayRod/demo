@@ -14,6 +14,7 @@ nvme0n1
 ```
 
 - https://lwn.net/Kernel/Index/#Filesystems
+- https://tldp.org/LDP/tlk/fs/filesystem.html
 - https://docs.kernel.org/filesystems/index.html
 - https://www.kernel.org/doc/html/latest/filesystems/index.html
 - https://wiki.archlinux.org/title/Category:File_systems

@@ -1,5 +1,7 @@
 ## memory
 
+- https://lwn.net/Kernel/Index/#Memory_management
+- https://tldp.org/LDP/tlk/mm/memory.html
 - https://www.itprotoday.com/networking-security/how-windows-nt-dispatches-processes-and-threads
   - processor's cache memory stores the most commonly used instructions
 - https://www.itprotoday.com/it-infrastructure/windows-nt-architecture-part-2: 32-bit (4GB) address space; however, applications can directly access only the first 2GB

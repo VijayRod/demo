@@ -15,6 +15,15 @@
 
 ## os-linux.components.kernel
 
+- https://lwn.net/Kernel/Index/#Kernel
+- https://lwn.net/Kernel/Index/#Kernel_Hackers_Bookshelf
+- https://lwn.net/Kernel/Index/#Kernel_markers
+- https://lwn.net/Kernel/Index/#Kernel_messages
+- https://lwn.net/Kernel/Index/#Kernel.org
+- https://lwn.net/Kernel/Index/#Kernel_stack
+- https://lwn.net/Kernel/Index/#Kernel_Summit
+- https://lwn.net/Kernel/Index/#Kernel_threads
 - https://tldp.org/LDP/tlk/kernel/kernel.html
 - https://tldp.org/LDP/tlk/modules/modules.html
 - https://tldp.org/LDP/tlk/sources/sources.html: How The Kernel Sources Are Arranged
+- https://www.dit.upm.es/~jmseyas/linux/kernel/hackers-docs.html

@@ -1,7 +1,8 @@
 - [/container-storage/logs](/container-storage/logs)/dns,http,ip,network*,ssh,ssl,tcp*. k8s-cni,
-  - [core](https://www.baeldung.com/cs/category/core-concepts)
-  - [cpu](https://github.com/VijayRod/demo/blob/master/container-storage/logs/cpu.md) -
-  - [memory](https://github.com/VijayRod/demo/blob/master/container-storage/logs/memory.md) -
+  - core 
+  - cpu
+  - process 
+  - memory
   - storage - device /dev, filesystem, snapshot,
   - storage/[database](https://github.com/VijayRod/demo/blob/master/container-storage/logs/db(database).md) -
   - storage/distributed - split-brain

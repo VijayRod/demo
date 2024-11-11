@@ -39,3 +39,4 @@ kubectl get po -w
 - https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
 - https://kubernetes.io/docs/tasks/run-application/run-stateless-application-deployment/
 - https://kubernetes.io/docs/tutorials/kubernetes-basics/deploy-app/deploy-intro/
+- https://bsky.app/profile/thock.in/post/3lacgl4hqln2r: how to do deployment updates without serving errors (internals)

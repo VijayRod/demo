@@ -1,2 +1,3 @@
 - https://lwn.net/Kernel/Index/#Device_drivers
 - https://tldp.org/LDP/tlk/dd/drivers.html
+- https://www.xml.com/ldd/chapter/book/index.html: Linux Device Drivers, 2nd Edition. O'Reilly

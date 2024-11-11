@@ -1,0 +1,1 @@
+- https://tldp.org/LDP/tlk/basics/hw.html

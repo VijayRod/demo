@@ -1,3 +1,5 @@
+## tcpdump
+
 ```
 # tcpdump while executing the mount command from the node until the mount failure is encountered (start tcpdump, execute the mount command and wait for the failure, then stop tcpdump).
 
@@ -17,11 +19,14 @@ apt update -y && apt install tcpdump -y && tcpdump host redis3696.redis.cache.wi
 - https://www.tcpdump.org/
 - https://www.tcpdump.org/manpages/tcpdump.1.html
 - https://man.archlinux.org/man/tcpdump.1
-- https://danielmiessler.com/p/tcpdump
+- https://danielmiessler.com/p/tcpdump: tutorial
+- https://danielmiessler.com/p/tcpflags/: tutorial
+- https://hackertarget.com/tcpdump-examples/
 - https://wiki.archlinux.org/title/Network_Debugging: Tcpdump
-- https://wizardzines.com/zines/tcpdump/
+- https://wizardzines.com/zines/tcpdump/: tutorial
 - https://superuser.com/questions/925286/does-tcpdump-bypass-iptables: tcpdump is the first software found after the wire (and the NIC, if you will) on the way IN, and the last one on the way OUT....
-<br>
+
+### tcpdump.faqs
 
 - Frequently Asked Questions
   - tbd https://linuxconfig.org/how-to-use-tcpdump-command-on-linux
@@ -29,7 +34,8 @@ apt update -y && apt install tcpdump -y && tcpdump host redis3696.redis.cache.wi
   - https://stackoverflow.com/questions/25603831/how-can-i-have-tcpdump-write-to-file-and-standard-output-the-appropriate-data
   - https://superuser.com/questions/273489/how-do-i-make-tcpdump-to-write-to-file-for-each-packet-it-captures
   - https://stackoverflow.com/questions/19808483/tcpdump-resolve-ip-and-skip-resolving-ports
-<br>
+
+## tcpdump.app.k8s.kubectl_debug
 
 ```
 kubectl debug node/aks-nodepool1-14217322-vmss000000 -it --image=mcr.microsoft.com/cbl-mariner/busybox:2.0
@@ -41,6 +47,8 @@ kubectl get po --show-labels
 node-debugger-aks-nodepool1-14217322-vmss000000-n6rvn   1/1     Running   0          2m44s   <none>
 ```
 - https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/logs/capture-tcp-dump-linux-node-aks
+
+## tcpdump.app.k8s.dumpy
 
 ```
 kubectl krew install dumpy
@@ -172,14 +180,14 @@ dumpy capture dumpy-09671733 successfully deleted
 ```
 
 - https://github.com/larryTheSlap/dumpy
-<br>
 
-- capture filters
+## tcpdump.filters.capture.filters
 
 ```
 tcpdump host 1.1.1.1 # Source or destination
 tcpdump host fqdn
 tcpdump port 443
+tcpdump port 80 -w /tmp/capture_file
 tcpdump host $(nslookup api.loganalytics.io | awk '/^Address: / {print $2}') -w /tmp/tcpdump-keda-law.pcap # Execute TCPDump with a filter targetting the LAW endpoint and let it run until the issue occurs again
 
 # Use tcpdump to exclude traffic from specific IP addresses
@@ -187,14 +195,16 @@ tcpdump 'not net 168.63.129.16' # Alternatively, you can use tcpdump 'not net 16
 tcpdump 'not net 168.63.129.16 and not net 169.254.169.254'
 tcpdump 'host 10.224.0.69 and not net 168.63.129.16 and not net 10.255.0.0/16'
 tcpdump 'not net 168.63.129.16 and not net 169.254.169.254 and not port 10250 and not net 13.87.229.75' # aks fqdn
+
+# wireshark
+ip.addr!=169.254.169.254 && ip.addr!=168.63.129.16
 ```
 
 - https://wiki.wireshark.org/CaptureFilters
 - https://www.tcpdump.org/manpages/pcap-filter.7.html
 - https://blog.wains.be/2007/2007-10-01-tcpdump-advanced-filters/
-<br>
 
-- http
+## tcpdump.filters.capture.filters.http
 
 ```
 tcpdump tcp port http # tcpdump port 80 # tcpdump port http
@@ -232,16 +242,15 @@ tcpdump 'tcp[((tcp[12:1] & 0xf0) >> 2):4] = 0x48454144' # HEAD
 - tbd https://www.middlewareinventory.com/blog/tcpdump-capture-http-get-post-requests-apache-weblogic-websphere/
 - https://stackoverflow.com/questions/9241391/how-to-capture-all-the-http-packets-using-tcpdump
 - https://stackoverflow.com/questions/39012132/how-to-capture-only-http-with-tcpdump-with-linux
-<br>
 
-- https
+## tcpdump.filters.capture.filters.https
 
 ```
 tcpdump tcp port https
 
 ```
 
-- ip
+## tcpdump.filters.capture.filters.ip
 
 ```
 tcpdump ip

@@ -1,6 +1,7 @@
 ## os-linux
 - https://lwn.net/Kernel/Index/
 - https://tldp.org/LDP/tlk/tlk.html
+- https://tldp.org/LDP/tlk/ds/ds.html
 - https://www.kernel.org/doc/html/latest/
 - https://kernelnewbies.org/Documents
 - https://kernelnewbies.org/Linux_6.6

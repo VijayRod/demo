@@ -6,6 +6,7 @@ iptables-save > /tmp/iptables
 cat /tmp/iptables
 ```
 
+- https://unix.stackexchange.com/questions/694562/which-layer-does-netfilter-and-iptables-works-on-in-the-osi-model: nftables (or the combination of iptables + arptables + ebtables) can affect just about any OSI layer except the physical one.
 - https://www.frozentux.net/iptables-tutorial/iptables-tutorial.html
   - https://www.frozentux.net/iptables-tutorial/chunkyhtml/
 - https://wiki.centos.org/HowTos/Network/IPTables

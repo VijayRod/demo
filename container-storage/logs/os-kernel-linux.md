@@ -27,3 +27,7 @@
 - https://tldp.org/LDP/tlk/modules/modules.html
 - https://tldp.org/LDP/tlk/sources/sources.html: How The Kernel Sources Are Arranged
 - https://www.dit.upm.es/~jmseyas/linux/kernel/hackers-docs.html
+- https://www.semanticscholar.org/paper/Conceptual-Architecture-of-the-Linux-Kernel-Bowman/bdc752351adf6b73bdb4a06e480be82da2652b88
+  - http://www.staroceans.org/kernel-and-driver/Conceptual%20Architecture%20of%20the%20Linux%20Kernel.pdf
+  - https://plg.uwaterloo.ca/~holt/cs/446/08/slides/linux-bowman-hindle.pdf: slides
+  - https://dl.acm.org/doi/10.1145/302405.302691: Linux as a case study: its extracted software architecture (paper)

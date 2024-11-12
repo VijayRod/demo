@@ -12,6 +12,11 @@
 - https://learn.microsoft.com/en-us/azure/storage/common/storage-private-endpoints: When you create a private endpoint, the DNS CNAME resource record for the storage account is updated to an alias in a subdomain with the prefix privatelink
   - Use the same connection string to connect to the storage account using private endpoints as you'd use otherwise. Please don't connect to the storage account using its privatelink subdomain URL.
 
+## privateendpoint.app.csi.k8s
+
+- https://github.com/kubernetes-sigs/azurefile-csi-driver/blob/master/docs/driver-parameters.md: private endpoint
+- https://learn.microsoft.com/en-us/azure/aks/azure-csi-blob-storage-provision: private endpoint
+
 ## privateendpoint.app.storage
 
 - https://learn.microsoft.com/en-us/azure/storage/common/storage-private-endpoints

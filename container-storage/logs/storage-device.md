@@ -8,11 +8,22 @@
   - SCSI devices (e.g. disks).
   - Each SCSI device can contain multiple Logical Unit Numbers (LUNs). These are typically used by sophisticated tape and cdrom units that support multiple media.
 
+## device.bus.type
+
+- https://tldp.org/HOWTO/SCSI-2.4-HOWTO/scsibus.html: Appendix A. Common bus types (SCSI and other)
+
 ## device.bus.type.SCSI
 
 - https://tldp.org/HOWTO/SCSI-2.4-HOWTO/index.html
 - https://tldp.org/HOWTO/SCSI-2.4-HOWTO/scsibus.html: Appendix A. Common bus types (SCSI and other)
   - SCSI. The original SCSI 1 standard (ANSI specification X3.131-1986) introduced an 8 bit parallel bus that was able to do asynchronous transfers at 1.5 MegaBytes/sec and synchronous transfers up to 5 MB/sec. SCSI commands are sent at the asynchronous rate. SCSI data is transferred either at the asynchronous rate (worst case) or a negotiated synchronous rate (with 5 MB/sec being the best case).
+- https://tldp.org/HOWTO/SCSI-2.4-HOWTO/scsiaddr.html: SCSI Addressing. four level hierarchical addressing scheme for SCSI devices (Host:Bus:Target:LUN).
+  - "Bus" is used in preference to "channel".
+  - The SCSI adapter number is typically an arbitrary numbering of the adapter cards on the internal IO buses (e.g. PCI, PCMCIA, ISA etc) of the computer. Such adapters are sometimes termed as HBAs (host bus adapters). SCSI adapter numbers are issued by the kernel in ascending order starting with 0.
+  - Each HBA may control one or more SCSI buses
+  - Each SCSI bus can have multiple SCSI devices connected to it
+  - SCSI devices (e.g. disks).
+  - Each SCSI device can contain multiple Logical Unit Numbers (LUNs). These are typically used by sophisticated tape and cdrom units that support multiple media.
   
 ## storage.SCSI.device (/dev)
 

@@ -1,10 +1,16 @@
-## privateendpoint.debug
+## privateendpoint
 
 ```
-# Our test, which involved editing the host file on a cluster node to include the correct DNS record, allowed docker login to succeed, confirming our theory about the need for correct DNS record.
+# See the section on privateendpoint.app.webapp
 ```
 
-## privateendpoint.webapp
+- https://learn.microsoft.com/en-us/azure/private-link/create-private-endpoint-cli
+
+## privateendpoint.app.storage
+
+https://learn.microsoft.com/en-us/azure/storage/common/storage-private-endpoints: When you create a private endpoint, the DNS CNAME resource record for the storage account is updated to an alias in a subdomain with the prefix privatelink
+
+## privateendpoint.app.webapp
 
 ```
 rg=rgvnet
@@ -41,3 +47,9 @@ Address: 10.240.0.4
 ```
   
 - https://learn.microsoft.com/en-us/azure/private-link/create-private-endpoint-cli?tabs=dynamic-ip
+
+## privateendpoint.debug
+
+```
+# Our test, which involved editing the host file on a cluster node to include the correct DNS record, allowed docker login to succeed, confirming our theory about the need for correct DNS record.
+```

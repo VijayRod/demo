@@ -4,11 +4,17 @@
 # See the section on privateendpoint.app.webapp
 ```
 
+- https://learn.microsoft.com/en-us/azure/private-link/private-endpoint-overview: A private endpoint is a network interface that uses a private IP address from your virtual network.
 - https://learn.microsoft.com/en-us/azure/private-link/create-private-endpoint-cli
+- https://learn.microsoft.com/en-us/azure/private-link/private-link-faq
+- https://learn.microsoft.com/en-us/azure/well-architected/security/networking#connectivity-to-platform-as-a-service-paas-services
+- https://learn.microsoft.com/en-us/azure/well-architected/security/networking#private-endpoints
+- https://learn.microsoft.com/en-us/azure/storage/common/storage-private-endpoints: When you create a private endpoint, the DNS CNAME resource record for the storage account is updated to an alias in a subdomain with the prefix privatelink
+  - Use the same connection string to connect to the storage account using private endpoints as you'd use otherwise. Please don't connect to the storage account using its privatelink subdomain URL.
 
 ## privateendpoint.app.storage
 
-https://learn.microsoft.com/en-us/azure/storage/common/storage-private-endpoints: When you create a private endpoint, the DNS CNAME resource record for the storage account is updated to an alias in a subdomain with the prefix privatelink
+- https://learn.microsoft.com/en-us/azure/storage/common/storage-private-endpoints
 
 ## privateendpoint.app.webapp
 

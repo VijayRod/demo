@@ -3,8 +3,8 @@
 ```
 # See the section on SCSI
 
-# SCSI subsystem: smart-bus.devices(/dev)(max 15).type.character/block
-#   block-device.type.harddisk/USB/nvme.filesystem
+# SCSI subsystem: smart-bus(vmbus).devices(/dev)(max 15).type.lun.character/block
+#   block-device.type.harddisk/USB/nvme.lun.filesystem
 #     harddisk(/dev/sd[a-z])(major-number 8).partition(/dev/sda1)(max 15)
 #     nvme(major-number 259)
 #    filesystem.ext4/fat/ntfs
@@ -30,6 +30,118 @@
   - For example, character devices are sound cards or serial ports, whereas block devices are hard disks or USBs
 - https://www.codecademy.com/courses/fundamentals-of-operating-systems/articles/introduction-to-io-systems (click on the Syllabus link for more pages) 
 - https://www.codecademy.com/learn/fundamentals-of-operating-systems/modules/os-io-systems/cheatsheet
+
+## storage.SCSI.lun
+
+```
+# lun
+root@aks-nodepool1-24666711-vmss000000:/# cat /proc/scsi/scsi
+Attached devices:
+Host: scsi0 Channel: 00 Id: 00 Lun: 00
+  Vendor: Msft     Model: Virtual Disk     Rev: 1.0
+  Type:   Direct-Access                    ANSI  SCSI revision: 05
+Host: scsi0 Channel: 00 Id: 00 Lun: 01
+  Vendor: Msft     Model: Virtual Disk     Rev: 1.0
+  Type:   Direct-Access                    ANSI  SCSI revision: 05
+Host: scsi0 Channel: 00 Id: 00 Lun: 02
+  Vendor: Msft     Model: Virtual DVD-ROM  Rev: 1.0
+  Type:   CD-ROM                           ANSI  SCSI revision: 00
+  
+root@aks-nodepool1-24666711-vmss000000:/# iscsiadm
+Try `iscsiadm --help' for more information.
+
+# lun
+aks-nodepool1-24666711-vmss000000:/# ls /dev/disk/by-path/
+acpi-VMBUS:00-vmbus-f8b3781a1e824818a1c363d806ec15bb-lun-0
+acpi-VMBUS:00-vmbus-f8b3781a1e824818a1c363d806ec15bb-lun-0-part1
+acpi-VMBUS:00-vmbus-f8b3781a1e824818a1c363d806ec15bb-lun-0-part14
+acpi-VMBUS:00-vmbus-f8b3781a1e824818a1c363d806ec15bb-lun-0-part15
+acpi-VMBUS:00-vmbus-f8b3781a1e824818a1c363d806ec15bb-lun-1
+acpi-VMBUS:00-vmbus-f8b3781a1e824818a1c363d806ec15bb-lun-1-part1
+acpi-VMBUS:00-vmbus-f8b3781a1e824818a1c363d806ec15bb-lun-2
+
+# h:b:t:l = 0:0:0:0 i.e. (H:C:T:L – (Host:Bust:Target:LUN))
+root@aks-nodepool1-24666711-vmss000000:# dmesg | grep -i "attached "
+# root@aks-nodepool1-24666711-vmss000000:# cat /var/log/dmesg.0 | grep -i "attached "
+[    1.051162] kernel: sd 0:0:0:0: [sda] Attached SCSI disk
+[    1.064345] kernel: sd 0:0:0:1: [sdb] Attached SCSI disk
+
+# (H:C:T:L – (Host:Bust:Target:LUN))
+root@aks-nodepool1-24666711-vmss000001:/# multipath -v4 -ll
+445.833356 | loading //lib/multipath/libchecktur.so checker
+445.833456 | checker tur: message table size = 3
+445.833468 | loading //lib/multipath/libprioconst.so prioritizer
+445.833549 | _init_foreign: found libforeign-nvme.so
+445.833560 | _init_foreign: foreign library "nvme" is not enabled
+445.835454 | Discover device /sys/devices/LNXSYSTM:00/LNXSYBUS:00/ACPI0004:00/VMBUS:00/f8b3781a-1e82-4818-a1c3-63d806ec15bb/host0/target0:0:0/0:0:0:0/block/sda
+445.835533 | 8:0: dev_t not found in pathvec
+445.835569 | sda: mask = 0x27
+445.835576 | sda: dev_t = 8:0
+445.835584 | open '/sys/devices/LNXSYSTM:00/LNXSYBUS:00/ACPI0004:00/VMBUS:00/f8b3781a-1e82-4818-a1c3-63d806ec15bb/host0/target0:0:0/0:0:0:0/block/sda/size'
+445.835601 | sda: size = 268435456
+445.835726 | sda: vendor = Msft
+445.835745 | sda: product = Virtual Disk
+445.835763 | sda: rev = 1.0
+445.836282 | find_hwe: found 0 hwtable matches for Msft:Virtual Disk:1.0
+445.836291 | sda: h:b:t:l = 0:0:0:0
+
+# tbd disk n = lun n
+# scsi@0:0.0.0 i.e. (H:C:T:L – (Host:Bust:Target:LUN))
+root@aks-nodepool1-24666711-vmss000001:/# lshw -class disk
+  *-disk:0
+       description: SCSI Disk
+       product: Virtual Disk
+       vendor: Msft
+       physical id: 0.0.0
+       bus info: scsi@0:0.0.0
+       logical name: /dev/sda
+       version: 1.0
+       size: 128GiB (137GB)
+       capabilities: gpt-1.00 partitioned partitioned:gpt
+       configuration: ansiversion=5 guid=2f6f9f9a-b0e6-4fa5-91e4-296c9a37d69b logicalsectorsize=512 sectorsize=4096
+  *-disk:1
+       description: SCSI Disk
+       product: Virtual Disk
+       vendor: Msft
+       physical id: 0.0.1
+       bus info: scsi@0:0.0.1
+       logical name: /dev/sdb
+       version: 1.0
+       size: 16GiB (17GB)
+       capabilities: partitioned partitioned:dos
+       configuration: ansiversion=5 logicalsectorsize=512 sectorsize=4096 signature=7cda5bd8
+  *-cdrom
+       description: SCSI CD-ROM
+       product: Virtual DVD-ROM
+       vendor: Msft
+       physical id: 0.0.2
+       bus info: scsi@0:0.0.2
+       logical name: /dev/cdrom
+       logical name: /dev/sr0
+       version: 1.0
+       capabilities: removable audio
+       configuration: status=ready
+     *-medium
+          physical id: 0
+          logical name: /dev/cdrom
+          
+# The first column. (H:C:T:L – (Host:Bust:Target:LUN))
+root@aks-nodepool1-24666711-vmss000001:/# lsscsi # lsscsi --scsi # lsscsi --scsi --size
+[0:0:0:0]    disk    Msft     Virtual Disk     1.0   /dev/sda   14d534654202020208476f53924e8c8448c6e657d30e54d55
+[0:0:0:1]    disk    Msft     Virtual Disk     1.0   /dev/sdb   36002248094bfcf070909def97fd03eed
+[0:0:0:2]    cd/dvd  Msft     Virtual DVD-ROM  1.0   /dev/sr0   14d534654202020207305e3437703544694957d7ced624a7d
+...
+
+apt install smartmontools
+smartctl -a /dev/sdb
+```
+
+- https://linuxopsys.com/check-luns-in-linux
+- https://unix.stackexchange.com/questions/4561/how-do-i-find-out-what-hard-disks-are-in-the-system: lshw -class disk
+- https://www.fosstechi.com/find-san-disk-lun-number-linux/: lsscsi. The first column. (H:C:T:L – (Host:Bust:Target:LUN)). smartctl
+- https://tldp.org/HOWTO/SCSI-2.4-HOWTO/scsiaddr.html: SCSI Addressing. "Lun" is the common SCSI abbreviation of Logical Unit Number. The terms in brackets are the name conventions used by device pseudo file system (devfs). "Bus" is used in preference to "channel" in the description below. arbitrary numbering of the adapter cards on the internal IO buses (e.g. PCI, PCMCIA, ISA etc) of the computer.
+- https://en.wikipedia.org/wiki/Logical_unit_number: logical unit number, or LUN. device addressed by the SCSI protocol or by Storage Area Network protocols that encapsulate SCSI, such as Fibre Channel or iSCSI
+- https://superuser.com/questions/901817/what-is-the-maximum-scsi-lun-size
     
 ## storage.SCSI.device.type.disk
 

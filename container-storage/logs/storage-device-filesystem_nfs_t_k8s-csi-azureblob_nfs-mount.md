@@ -1,6 +1,27 @@
 These steps are to be followed after installing the Azure Blob CSI storage driver mentioned in https://learn.microsoft.com/en-us/azure/aks/azure-blob-csi.
 
 ```
+az aks create -g $rg -n aksblob --enable-blob-driver
+az aks get-credentials -g $rg -n aksblob
+
+k get sc
+NAME                     PROVISIONER          RECLAIMPOLICY   VOLUMEBINDINGMODE      ALLOWVOLUMEEXPANSION   AGE
+azureblob-nfs-premium    blob.csi.azure.com   Delete          Immediate              true                   2m21s
+
+k describe sc azureblob-nfs-premium
+Name:                  azureblob-nfs-premium
+IsDefaultClass:        No
+Annotations:           <none>
+Provisioner:           blob.csi.azure.com
+Parameters:            protocol=nfs,skuName=Premium_LRS
+AllowVolumeExpansion:  True
+MountOptions:          <none>
+ReclaimPolicy:         Delete
+VolumeBindingMode:     Immediate
+Events:                <none>
+```
+
+```
 # To create the resources
 cat << EOF | kubectl create -f -
 apiVersion: v1
@@ -108,6 +129,123 @@ I0725 10:40:45.485846    4116 mount_linux.go:219] Mounting cmd (mount) with argu
 I0725 10:40:45.487410    4116 mount_linux.go:219] Mounting cmd (mount) with arguments ( -o bind,remount /var/lib/kubelet/plugins/kubernetes.io/csi/blob.csi.azure.com/468bbce0eb7e82f6d2775d23ec1a5c6c8fd58d69a1fcc5bee2f15806101224f4/globalmount /var/lib/kubelet/pods/9702c0b1-570a-4f43-ad49-ad46b0a40acc/volumes/kubernetes.io~csi/pvc-b99827c6-a0d6-4841-b085-bb66f8c3c183/mount)
 I0725 10:40:45.488629    4116 nodeserver.go:143] NodePublishVolume: volume mc_secureshack2_aksblob_swedencentral#nfsd1e1b9f5405a439690cd#pvc-b99827c6-a0d6-4841-b085-bb66f8c3c183##default# mount /var/lib/kubelet/plugins/kubernetes.io/csi/blob.csi.azure.com/468bbce0eb7e82f6d2775d23ec1a5c6c8fd58d69a1fcc5bee2f15806101224f4/globalmount at /var/lib/kubelet/pods/9702c0b1-570a-4f43-ad49-ad46b0a40acc/volumes/kubernetes.io~csi/pvc-b99827c6-a0d6-4841-b085-bb66f8c3c183/mount successfully
 I0725 10:40:45.488642    4116 utils.go:82] GRPC response: {}
+```
+
+```
+noderg=$(az aks show -g $rg -n aksblob --query nodeResourceGroup -o tsv)   
+az storage account list -g $noderg
+
+[
+  {
+    "accessTier": null,
+    "accountMigrationInProgress": null,
+    "allowBlobPublicAccess": false,
+    "allowCrossTenantReplication": false,
+    "allowSharedKeyAccess": null,
+    "allowedCopyScope": null,
+    "azureFilesIdentityBasedAuthentication": null,
+    "blobRestoreStatus": null,
+    "creationTime": "2024-11-12T18:19:44.265196+00:00",
+    "customDomain": null,
+    "defaultToOAuthAuthentication": null,
+    "dnsEndpointType": null,
+    "enableExtendedGroups": null,
+    "enableHttpsTrafficOnly": true,
+    "enableNfsV3": true,
+    "encryption": {
+      "encryptionIdentity": null,
+      "keySource": "Microsoft.Storage",
+      "keyVaultProperties": null,
+      "requireInfrastructureEncryption": null,
+      "services": {
+        "blob": {
+          "enabled": true,
+          "keyType": "Account",
+          "lastEnabledTime": "2024-11-12T18:19:44.359001+00:00"
+        },
+        "file": {
+          "enabled": true,
+          "keyType": "Account",
+          "lastEnabledTime": "2024-11-12T18:19:44.359001+00:00"
+        },
+        "queue": null,
+        "table": null
+      }
+    },
+    "extendedLocation": null,
+    "failoverInProgress": null,
+    "geoReplicationStats": null,
+    "id": "/subscriptions/redacts-1111-1111-1111-111111111111/resourceGroups/MC_rg_aksblob_swedencentral/providers/Microsoft.Storage/storageAccounts/nfs81f80099ae0947aaaf75",
+    "identity": null,
+    "immutableStorageWithVersioning": null,
+    "isHnsEnabled": true,
+    "isLocalUserEnabled": null,
+    "isSftpEnabled": null,
+    "isSkuConversionBlocked": null,
+    "keyCreationTime": {
+      "key1": "2024-11-12T18:19:44.343375+00:00",
+      "key2": "2024-11-12T18:19:44.343375+00:00"
+    },
+    "keyPolicy": null,
+    "kind": "BlockBlobStorage",
+    "largeFileSharesState": null,
+    "lastGeoFailoverTime": null,
+    "location": "swedencentral",
+    "minimumTlsVersion": "TLS1_2",
+    "name": "nfs81f80099ae0947aaaf75",
+    "networkRuleSet": {
+      "bypass": "AzureServices",
+      "defaultAction": "Deny",
+      "ipRules": [],
+      "ipv6Rules": [],
+      "resourceAccessRules": null,
+      "virtualNetworkRules": [
+        {
+          "action": "Allow",
+          "state": "Succeeded",
+          "virtualNetworkResourceId": "/subscriptions/efec8e52-e1ad-4ae1-8598-f243e56e2b08/resourceGroups/MC_rg_aksblob_swedencentral/providers/Microsoft.Network/virtualNetworks/aks-vnet-25847871/subnets/aks-subnet"
+        }
+      ]
+    },
+    "primaryEndpoints": {
+      "blob": "https://nfs81f80099ae0947aaaf75.blob.core.windows.net/",
+      "dfs": "https://nfs81f80099ae0947aaaf75.dfs.core.windows.net/",
+      "file": null,
+      "internetEndpoints": null,
+      "microsoftEndpoints": null,
+      "queue": null,
+      "table": null,
+      "web": "https://nfs81f80099ae0947aaaf75.z1.web.core.windows.net/"
+    },
+    "primaryLocation": "swedencentral",
+    "privateEndpointConnections": [],
+    "provisioningState": "Succeeded",
+    "publicNetworkAccess": null,
+    "resourceGroup": "MC_rg_aksblob_swedencentral",
+    "routingPreference": null,
+    "sasPolicy": null,
+    "secondaryEndpoints": null,
+    "secondaryLocation": null,
+    "sku": {
+      "name": "Premium_LRS",
+      "tier": "Premium"
+    },
+    "statusOfPrimary": "available",
+    "statusOfSecondary": null,
+    "storageAccountSkuConversionStatus": null,
+    "tags": {
+      "k8s-azure-created-by": "azure"
+    },
+    "type": "Microsoft.Storage/storageAccounts"
+  }
+]
+
+nc -v nfs81f80099ae0947aaaf75.blob.core.windows.net 2048
+nc -v nfs81f80099ae0947aaaf75.blob.core.windows.net 111
+
+Connection to nfs81f80099ae0947aaaf75.blob.core.windows.net (20.60.79.4) 2048 port [tcp/*] succeeded!
+^C
+Connection to nfs81f80099ae0947aaaf75.blob.core.windows.net (20.60.79.4) 111 port [tcp/sunrpc] succeeded!
 ```
 
 ```

@@ -1,3 +1,19 @@
+## device.bus
+
+- https://tldp.org/HOWTO/SCSI-2.4-HOWTO/scsiaddr.html: SCSI Addressing. four level hierarchical addressing scheme for SCSI devices (Host:Bus:Target:LUN).
+  - "Bus" is used in preference to "channel".
+  - The SCSI adapter number is typically an arbitrary numbering of the adapter cards on the internal IO buses (e.g. PCI, PCMCIA, ISA etc) of the computer. Such adapters are sometimes termed as HBAs (host bus adapters). SCSI adapter numbers are issued by the kernel in ascending order starting with 0.
+  - Each HBA may control one or more SCSI buses
+  - Each SCSI bus can have multiple SCSI devices connected to it
+  - SCSI devices (e.g. disks).
+  - Each SCSI device can contain multiple Logical Unit Numbers (LUNs). These are typically used by sophisticated tape and cdrom units that support multiple media.
+
+## device.bus.type.SCSI
+
+- https://tldp.org/HOWTO/SCSI-2.4-HOWTO/index.html
+- https://tldp.org/HOWTO/SCSI-2.4-HOWTO/scsibus.html: Appendix A. Common bus types (SCSI and other)
+  - SCSI. The original SCSI 1 standard (ANSI specification X3.131-1986) introduced an 8 bit parallel bus that was able to do asynchronous transfers at 1.5 MegaBytes/sec and synchronous transfers up to 5 MB/sec. SCSI commands are sent at the asynchronous rate. SCSI data is transferred either at the asynchronous rate (worst case) or a negotiated synchronous rate (with 5 MB/sec being the best case).
+  
 ## storage.SCSI.device (/dev)
 
 ```
@@ -8,6 +24,31 @@
 #     harddisk(/dev/sd[a-z])(major-number 8).partition(/dev/sda1)(max 15)
 #     nvme(major-number 259)
 #    filesystem.ext4/fat/ntfs
+
+root@aks-nodepool1-20283200-vmss000000:/# ls /dev
+autofs           initctl       port        sg2              tty19  tty38  tty57   ttyS18  ttyS9      vcsu
+block            input         ppp         shm              tty2   tty39  tty58   ttyS19  ttyprintk  vcsu1
+bsg              kmsg          psaux       snapshot         tty20  tty4   tty59   ttyS2   udmabuf    vcsu2
+btrfs-control    log           ptmx        snd              tty21  tty40  tty6    ttyS20  uhid       vcsu3
+cdrom            loop-control  ptp0        sr0              tty22  tty41  tty60   ttyS21  uinput     vcsu4
+char             loop0         ptp1        stderr           tty23  tty42  tty61   ttyS22  urandom    vcsu5
+console          loop1         ptp_hyperv  stdin            tty24  tty43  tty62   ttyS23  userio     vcsu6
+core             loop2         pts         stdout           tty25  tty44  tty63   ttyS24  vcs        vfio
+cpu_dma_latency  loop3         random      termination-log  tty26  tty45  tty7    ttyS25  vcs1       vga_arbiter
+cuse             loop4         rfkill      tty              tty27  tty46  tty8    ttyS26  vcs2       vhost-net
+disk             loop5         root        tty0             tty28  tty47  tty9    ttyS27  vcs3       vhost-vsock
+dma_heap         loop6         rtc         tty1             tty29  tty48  ttyS0   ttyS28  vcs4       vmbus
+ecryptfs         loop7         rtc0        tty10            tty3   tty49  ttyS1   ttyS29  vcs5       zero
+fb0              mapper        sda         tty11            tty30  tty5   ttyS10  ttyS3   vcs6       zfs
+fd               mcelog        sda1        tty12            tty31  tty50  ttyS11  ttyS30  vcsa
+full             mem           sda14       tty13            tty32  tty51  ttyS12  ttyS31  vcsa1
+fuse             mqueue        sda15       tty14            tty33  tty52  ttyS13  ttyS4   vcsa2
+hpet             net           sdb         tty15            tty34  tty53  ttyS14  ttyS5   vcsa3
+hugepages        null          sdb1        tty16            tty35  tty54  ttyS15  ttyS6   vcsa4
+hwrng            nvme-fabrics  sg0         tty17            tty36  tty55  ttyS16  ttyS7   vcsa5
+infiniband       nvram         sg1         tty18            tty37  tty56  ttyS17  ttyS8   vcsa6
+root@aks-nodepool1-20283200-vmss000000:/# ls /dev/block
+11:0  7:0  7:1  7:2  7:3  7:4  7:5  7:6  7:7  8:0  8:1  8:14  8:15  8:16  8:17
 ```
 
 - https://lwn.net/Kernel/Index/#Block_layer
@@ -60,13 +101,13 @@ acpi-VMBUS:00-vmbus-f8b3781a1e824818a1c363d806ec15bb-lun-1
 acpi-VMBUS:00-vmbus-f8b3781a1e824818a1c363d806ec15bb-lun-1-part1
 acpi-VMBUS:00-vmbus-f8b3781a1e824818a1c363d806ec15bb-lun-2
 
-# h:b:t:l = 0:0:0:0 i.e. (H:C:T:L – (Host:Bust:Target:LUN))
+# h:b:t:l = 0:0:0:0 i.e. (H:C:T:L – (Host:Bus:Target:LUN))
 root@aks-nodepool1-24666711-vmss000000:# dmesg | grep -i "attached "
 # root@aks-nodepool1-24666711-vmss000000:# cat /var/log/dmesg.0 | grep -i "attached "
 [    1.051162] kernel: sd 0:0:0:0: [sda] Attached SCSI disk
 [    1.064345] kernel: sd 0:0:0:1: [sdb] Attached SCSI disk
 
-# (H:C:T:L – (Host:Bust:Target:LUN))
+# (H:C:T:L – (Host:Bus:Target:LUN))
 root@aks-nodepool1-24666711-vmss000001:/# multipath -v4 -ll
 445.833356 | loading //lib/multipath/libchecktur.so checker
 445.833456 | checker tur: message table size = 3
@@ -86,7 +127,7 @@ root@aks-nodepool1-24666711-vmss000001:/# multipath -v4 -ll
 445.836291 | sda: h:b:t:l = 0:0:0:0
 
 # tbd disk n = lun n
-# scsi@0:0.0.0 i.e. (H:C:T:L – (Host:Bust:Target:LUN))
+# scsi@0:0.0.0 i.e. (H:C:T:L – (Host:Bus:Target:LUN))
 root@aks-nodepool1-24666711-vmss000001:/# lshw -class disk
   *-disk:0
        description: SCSI Disk
@@ -125,7 +166,7 @@ root@aks-nodepool1-24666711-vmss000001:/# lshw -class disk
           physical id: 0
           logical name: /dev/cdrom
           
-# The first column. (H:C:T:L – (Host:Bust:Target:LUN))
+# The first column. (H:C:T:L – (Host:Bus:Target:LUN))
 root@aks-nodepool1-24666711-vmss000001:/# lsscsi # lsscsi --scsi # lsscsi --scsi --size
 [0:0:0:0]    disk    Msft     Virtual Disk     1.0   /dev/sda   14d534654202020208476f53924e8c8448c6e657d30e54d55
 [0:0:0:1]    disk    Msft     Virtual Disk     1.0   /dev/sdb   36002248094bfcf070909def97fd03eed
@@ -138,7 +179,7 @@ smartctl -a /dev/sdb
 
 - https://linuxopsys.com/check-luns-in-linux
 - https://unix.stackexchange.com/questions/4561/how-do-i-find-out-what-hard-disks-are-in-the-system: lshw -class disk
-- https://www.fosstechi.com/find-san-disk-lun-number-linux/: lsscsi. The first column. (H:C:T:L – (Host:Bust:Target:LUN)). smartctl
+- https://www.fosstechi.com/find-san-disk-lun-number-linux/: lsscsi. The first column. (H:C:T:L – (Host:Bus:Target:LUN)). smartctl
 - https://tldp.org/HOWTO/SCSI-2.4-HOWTO/scsiaddr.html: SCSI Addressing. "Lun" is the common SCSI abbreviation of Logical Unit Number. The terms in brackets are the name conventions used by device pseudo file system (devfs). "Bus" is used in preference to "channel" in the description below. arbitrary numbering of the adapter cards on the internal IO buses (e.g. PCI, PCMCIA, ISA etc) of the computer.
 - https://en.wikipedia.org/wiki/Logical_unit_number: logical unit number, or LUN. device addressed by the SCSI protocol or by Storage Area Network protocols that encapsulate SCSI, such as Fibre Channel or iSCSI
 - https://superuser.com/questions/901817/what-is-the-maximum-scsi-lun-size

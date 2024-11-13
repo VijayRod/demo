@@ -1,15 +1,18 @@
 ## nat
 
 - https://networkengineering.stackexchange.com/questions/3145/what-layer-of-the-osi-model-does-nat-work: NAT works at layer 3 because it is modifying the IP header.
+- https://datatracker.ietf.org/doc/html/rfc2663: IP Network Address Translator (NAT) Terminology and Considerations
 
 ## nat.snat
 
 - https://networkengineering.stackexchange.com/questions/77536/what-is-the-use-of-snat-static-network-address-translation: "SNAT" is commonly used for "source NAT"
 
+
 ## nat.snat.app.azureloadbalancer
 
 - https://learn.microsoft.com/en-us/azure/load-balancer/outbound-rules#scale: Each extra IP address provided by a frontend provides another 64,000 ephemeral ports for load balancer to use as SNAT ports. Load balancer will use IPs as needed based on the available ports. The Load balancer will use the next IP once the connections can no longer be made with the current IP in use.
 - https://learn.microsoft.com/en-us/azure/load-balancer/load-balancer-outbound-connections: Number of frontend IPs * 64K
+- https://datatracker.ietf.org/doc/html/rfc2663#section-4.1: Traditional NAT (or) Outbound NAT (SNAT). Traditional NAT would allow hosts within a private network to transparently access hosts in the external network, in most cases (So, an internal (non-public) load balancer wouldn't use SNAT because there's no external network or internet involved.)
 
 ## nat.snat.app.azureloadbalancer.k8s
 

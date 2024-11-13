@@ -2,6 +2,10 @@
 
 ```
 # See the section on storage-device-filesystem_overlayfs
+# apt install containerd
+
+root@aks-nodepool1-24666711-vmss000002:/# containerd --version
+containerd github.com/containerd/containerd 1.7.22-1 7f7fdf5fed64eb6a7caf99b3e12efcf9d60e311c
 
 kubectl get no -owide
 NAME                                STATUS   ROLES   AGE    VERSION   INTERNAL-IP    EXTERNAL-IP   OS-IMAGE                KERNEL-VERSION      CONTAINER-RUNTIME
@@ -50,7 +54,8 @@ systemctl restart containerd
 - https://learn.microsoft.com/en-us/azure/aks/cluster-configuration#container-runtime-configuration
 - https://learn.microsoft.com/en-us/azure/aks/learn/quick-windows-container-deploy-cli#connect-to-the-cluster
 - https://docs.docker.com/desktop/features/containerd/#what-is-containerd
-
+- https://cloud.google.com/kubernetes-engine/docs/troubleshooting/container-runtime
+  
 ## k8s.cri.containerd.containerd-shim
 
 ```

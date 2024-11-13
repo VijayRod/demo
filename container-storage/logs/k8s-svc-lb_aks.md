@@ -176,6 +176,134 @@ az aks show -g $rg -n akscni --query networkProfile.loadBalancerProfile # same
 
 az network lb show -g MC_rg_aks_swedencentral -n kubernetes
 az network lb show -g MC_rg_akscni_swedencentral -n kubernetes # same
+
+kubectl delete po nginx
+kubectl delete svc nginx
+kubectl run nginx --image=nginx --port=80
+sleep 5
+kubectl get po nginx
+kubectl expose po nginx --type=LoadBalancer
+sleep 60
+kubectl get svc; kubectl get po -owide
+
+# Same with kubnet and azure-cni
+k describe po nginx | grep Port:
+Containers:
+  nginx:
+    Port:           80/TCP
+    Host Port:      0/TCP
+k get svc;k get po -owide
+NAME         TYPE           CLUSTER-IP     EXTERNAL-IP      PORT(S)        AGE
+nginx        LoadBalancer   10.0.216.132   74.241.154.123   80:32642/TCP   13m
+az network lb list -g $noderg
+      {
+        "backendIPConfigurations": [
+...
+        ],
+        "loadBalancingRules": [
+          {
+            "id": "/subscriptions/redacts-1111-1111-1111-111111111111/resourceGroups/mc_rg_akscni_swedencentral/providers/Microsoft.Network/loadBalancers/kubernetes/loadBalancingRules/a3ec62707b79842639e5500b53b299d0-TCP-80",
+            "resourceGroup": "mc_rg_akscni_swedencentral"
+          }
+        ],
+        "name": "kubernetes",
+        "provisioningState": "Succeeded",
+        "resourceGroup": "mc_rg_akscni_swedencentral",
+        "type": "Microsoft.Network/loadBalancers/backendAddressPools"
+      }
+    ],
+    "etag": "W/\"ddefdbd0-ce8f-442f-8e93-99adf3784432\"",
+    "frontendIPConfigurations": [
+      {
+...
+      },
+      {
+        "etag": "W/\"ddefdbd0-ce8f-442f-8e93-99adf3784432\"",
+        "id": "/subscriptions/redacts-1111-1111-1111-111111111111/resourceGroups/mc_rg_akscni_swedencentral/providers/Microsoft.Network/loadBalancers/kubernetes/frontendIPConfigurations/a3ec62707b79842639e5500b53b299d0",
+        "loadBalancingRules": [
+          {
+            "id": "/subscriptions/redacts-1111-1111-1111-111111111111/resourceGroups/mc_rg_akscni_swedencentral/providers/Microsoft.Network/loadBalancers/kubernetes/loadBalancingRules/a3ec62707b79842639e5500b53b299d0-TCP-80",
+            "resourceGroup": "mc_rg_akscni_swedencentral"
+          }
+        ],
+        "name": "a3ec62707b79842639e5500b53b299d0",
+        "privateIPAllocationMethod": "Dynamic",
+        "provisioningState": "Succeeded",
+        "publicIPAddress": {
+          "id": "/subscriptions/redacts-1111-1111-1111-111111111111/resourceGroups/mc_rg_akscni_swedencentral/providers/Microsoft.Network/publicIPAddresses/kubernetes-a3ec62707b79842639e5500b53b299d0",
+          "resourceGroup": "mc_rg_akscni_swedencentral"
+        },
+        "resourceGroup": "mc_rg_akscni_swedencentral",
+        "type": "Microsoft.Network/loadBalancers/frontendIPConfigurations"
+      }
+    ],
+    "id": "/subscriptions/redacts-1111-1111-1111-111111111111/resourceGroups/mc_rg_akscni_swedencentral/providers/Microsoft.Network/loadBalancers/kubernetes",
+    "inboundNatPools": [],
+    "inboundNatRules": [],
+    "loadBalancingRules": [
+      {
+        "backendAddressPool": {
+          "id": "/subscriptions/redacts-1111-1111-1111-111111111111/resourceGroups/mc_rg_akscni_swedencentral/providers/Microsoft.Network/loadBalancers/kubernetes/backendAddressPools/kubernetes",
+          "resourceGroup": "mc_rg_akscni_swedencentral"
+        },
+        "backendAddressPools": [
+          {
+            "id": "/subscriptions/redacts-1111-1111-1111-111111111111/resourceGroups/mc_rg_akscni_swedencentral/providers/Microsoft.Network/loadBalancers/kubernetes/backendAddressPools/kubernetes",
+            "resourceGroup": "mc_rg_akscni_swedencentral"
+          }
+        ],
+        "backendPort": 80,
+        "disableOutboundSnat": true,
+        "enableFloatingIP": true,
+        "enableTcpReset": true,
+        "etag": "W/\"ddefdbd0-ce8f-442f-8e93-99adf3784432\"",
+        "frontendIPConfiguration": {
+          "id": "/subscriptions/redacts-1111-1111-1111-111111111111/resourceGroups/mc_rg_akscni_swedencentral/providers/Microsoft.Network/loadBalancers/kubernetes/frontendIPConfigurations/a3ec62707b79842639e5500b53b299d0",
+          "resourceGroup": "mc_rg_akscni_swedencentral"
+        },
+        "frontendPort": 80,
+        "id": "/subscriptions/redacts-1111-1111-1111-111111111111/resourceGroups/mc_rg_akscni_swedencentral/providers/Microsoft.Network/loadBalancers/kubernetes/loadBalancingRules/a3ec62707b79842639e5500b53b299d0-TCP-80",
+        "idleTimeoutInMinutes": 4,
+        "loadDistribution": "Default",
+        "name": "a3ec62707b79842639e5500b53b299d0-TCP-80",
+        "probe": {
+          "id": "/subscriptions/redacts-1111-1111-1111-111111111111/resourceGroups/mc_rg_akscni_swedencentral/providers/Microsoft.Network/loadBalancers/kubernetes/probes/a3ec62707b79842639e5500b53b299d0-TCP-80",
+          "resourceGroup": "mc_rg_akscni_swedencentral"
+        },
+        "protocol": "Tcp",
+        "provisioningState": "Succeeded",
+        "resourceGroup": "mc_rg_akscni_swedencentral",
+        "type": "Microsoft.Network/loadBalancers/loadBalancingRules"
+      }
+    ],
+    "location": "swedencentral",
+    "name": "kubernetes",
+    "outboundRules": [
+      {
+...
+      }
+    ],
+    "probes": [
+      {
+        "etag": "W/\"ddefdbd0-ce8f-442f-8e93-99adf3784432\"",
+        "id": "/subscriptions/redacts-1111-1111-1111-111111111111/resourceGroups/mc_rg_akscni_swedencentral/providers/Microsoft.Network/loadBalancers/kubernetes/probes/a3ec62707b79842639e5500b53b299d0-TCP-80",
+        "intervalInSeconds": 5,
+        "loadBalancingRules": [
+          {
+            "id": "/subscriptions/redacts-1111-1111-1111-111111111111/resourceGroups/mc_rg_akscni_swedencentral/providers/Microsoft.Network/loadBalancers/kubernetes/loadBalancingRules/a3ec62707b79842639e5500b53b299d0-TCP-80",
+            "resourceGroup": "mc_rg_akscni_swedencentral"
+          }
+        ],
+        "name": "a3ec62707b79842639e5500b53b299d0-TCP-80",
+        "numberOfProbes": 2,
+        "port": 32642,
+        "probeThreshold": 2,
+        "protocol": "Tcp",
+        "provisioningState": "Succeeded",
+        "resourceGroup": "mc_rg_akscni_swedencentral",
+        "type": "Microsoft.Network/loadBalancers/probes"
+      }
+    ],
 ```
 
 ```

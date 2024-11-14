@@ -1,5 +1,0 @@
-- https://learn.microsoft.com/en-us/azure/virtual-machines/enable-nvme-faqs
-- https://learn.microsoft.com/en-us/azure/virtual-machines/enable-nvme-interface
-- https://learn.microsoft.com/en-us/azure/virtual-machines/lsv2-series
-- https://learn.microsoft.com/en-us/azure/virtual-machines/sizes-storage
-- https://techcommunity.microsoft.com/t5/azure-compute-blog/announcing-the-new-ebsv5-vm-sizes-offering-2x-remote-storage/ba-p/3652000

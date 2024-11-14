@@ -1,0 +1,2 @@
+- https://en.wikipedia.org/wiki/Object_storage: Object storage (also known as object-based storage[1] or blob storage) is a computer data storage approach that manages data as "blobs" or "objects", as opposed to other storage architectures like file systems, which manage data as a file hierarchy, and block storage, which manages data as blocks within sectors and tracks.
+  - Each object is typically associated with a variable amount of metadata, and a globally unique identifier.

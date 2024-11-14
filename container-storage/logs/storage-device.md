@@ -86,6 +86,8 @@ root@aks-nodepool1-20283200-vmss000000:/# ls /dev/block
 ## storage.SCSI.lun
 
 ```
+# See the section on virtualization-hyperv-hostnode_disk
+
 # lun
 root@aks-nodepool1-24666711-vmss000000:/# cat /proc/scsi/scsi
 Attached devices:

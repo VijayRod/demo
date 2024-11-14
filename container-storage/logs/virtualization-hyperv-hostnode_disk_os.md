@@ -81,6 +81,4 @@ root@aks-nodepool1-12740373-vmss000000:/# du -h /tmp
 
 - https://linuxconfig.org/introduction-to-the-lsblk-command
 - https://learn.microsoft.com/en-us/azure/virtual-machines/linux/tutorial-manage-disks: The OS disk is labeled /dev/sda by default.
-- https://learn.microsoft.com/en-us/azure/virtual-machines/linux/tutorial-manage-disks: Temporary disks are labeled /dev/sdb and have a mountpoint of /mnt.
-- https://learn.microsoft.com/en-us/azure/virtual-machines/azure-vms-no-temp-disk
 - https://www.redhat.com/en/blog/du-command-options

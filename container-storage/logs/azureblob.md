@@ -8,3 +8,4 @@ az storage blob list --account-name $storage --container-name backups --output t
 - https://learn.microsoft.com/en-us/azure/storage/blobs/storage-performance-checklist
 - https://learn.microsoft.com/en-us/azure/storage/blobs/monitor-blob-storage
 - https://learn.microsoft.com/en-us/azure/storage/blobs/storage-quickstart-blobs-cli
+- https://learn.microsoft.com/en-us/azure/storage/blobs/security-recommendations#networking

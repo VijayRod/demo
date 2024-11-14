@@ -7,6 +7,7 @@
 - https://learn.microsoft.com/en-us/azure/virtual-machines/disks-performance
 - https://learn.microsoft.com/en-us/azure/virtual-machines/sizes
 - https://learn.microsoft.com/en-us/troubleshoot/azure/virtual-machines/troubleshoot-performance-bottlenecks-linux#disk
+- https://learn.microsoft.com/en-us/azure/virtual-machines/sizes/general-purpose/ddsv6-series: Disk throughput is measured in input/output operations per second (IOPS) and MBps where MBps = 10^6 bytes/sec.
 
 ## os-linux-perf.iops.debug
 

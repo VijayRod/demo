@@ -3,6 +3,8 @@
 Here are steps from https://learn.microsoft.com/en-us/azure/aks/azure-blob-csi to install this driver.
       
 ```
+# See the section on azureblob
+
 rg=rgblob
 az group create -g $rg -l $loc
 az aks create -g $rg -n aks --enable-blob-driver -s $vmsize -c 2

@@ -306,10 +306,6 @@ I1004 18:04:18.672538    5991 nodeserver.go:155] NodePublishVolume: volume MC_rg
 I1004 18:04:18.672553    5991 utils.go:111] GRPC response: {}
 ```
 
-## azureblob.driver.parameter.protocol.fuse.Blobfuse2
-
-- https://github.com/Azure/azure-storage-fuse
-
 ## azureblob.driver.parameter.protocol.nfs
 
 ```

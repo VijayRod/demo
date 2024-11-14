@@ -70,6 +70,13 @@ tmpfs           5.0M     0  5.0M   0% /run/lock
 tmpfs           250M  4.0K  250M   1% /var/lib/kubelet/pods/b9430ccf-8644-4fcc-92ea-4949bb0a2178/volumes/kubernetes.io~projected/azure-ip-masq-agent-config-volume
 tmpfs            61G   12K   61G   1% /var/lib/kubelet/pods/75e8808a-bb68-4776-80d5-ab41d773e88a/volumes/kubernetes.io~projected/kube-api-access-tbmgt
 ...
+
+root@aks-nodepool1-12740373-vmss000000:/# du -h /tmp
+4.0K    /tmp/systemd-private-59080e8b19d74b80bececea5545fe645-systemd-logind.service-vMXevi/tmp
+...
+4.0K    /tmp/.font-unix
+4.0K    /tmp/.Test-unix
+48K     /tmp
 ```
 
 - https://linuxconfig.org/introduction-to-the-lsblk-command

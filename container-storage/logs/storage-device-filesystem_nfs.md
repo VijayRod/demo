@@ -1,4 +1,4 @@
-NFS
+## nfs
 
 - https://lwn.net/Kernel/Index/#Filesystems-NFS
 - https://lwn.net/Kernel/Index/#Network_filesystems
@@ -21,9 +21,15 @@ NFS
 NFSv3
 - The NFS 3.0 protocol uses ports 111 and 2048.
   - https://learn.microsoft.com/en-us/azure/storage/blobs/network-file-system-protocol-support: The NFS 3.0 protocol uses ports 111 and 2048.
+  - https://learn.microsoft.com/en-us/azure/storage/blobs/network-file-system-protocol-support-how-to#step-2-configure-network-security: The NFS 3.0 protocol uses ports 111 and 2048.
 
 NFSv4
 - The NFSv4.1 service listens on port 2049 only and does not require portmap (port 111) to operate.
   - https://learn.microsoft.com/en-us/azure/storage/files/storage-files-how-to-mount-nfs-shares: Currently, only NFS version 4.1 is supported. Open port 2049
 - https://community.netapp.com/t5/Tech-ONTAP-Blogs/NFSv3-and-NFSv4-What-s-the-difference/ba-p/441316
 - https://datatracker.ietf.org/doc/html/rfc5661
+
+## nfs.mount.permission
+
+- https://learn.microsoft.com/en-us/azure/aks/azure-csi-blob-storage-provision?tabs=mount-nfs%2Csecret: Mounting Blob storage using the NFS v3 protocol doesn't authenticate using an account key. Your AKS cluster needs to reside in the same or peered virtual network as the agent node. The only way to secure the data in your storage account is by using a virtual network and other network security settings.
+- https://learn.microsoft.com/en-us/azure/storage/blobs/network-file-system-protocol-support-how-to#step-2-configure-network-security: Currently, the only way to secure the data in your storage account is by using a virtual network and other network security settings

@@ -1,6 +1,8 @@
 ## storage.SCSI.device.type.disk
 
 ```
+# See the section on storage device
+
 root@aks-nodepool1-57299033-vmss000000:/# ls -l /dev | grep sda
 brw-rw---- 1 root disk      8,   0 Nov  7 10:28 sda
 brw-rw---- 1 root disk      8,   1 Nov  7 10:28 sda1

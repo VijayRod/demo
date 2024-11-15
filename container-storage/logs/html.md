@@ -7,6 +7,8 @@
 ## html.{#each ...}
 
 ```
+# tablevalues has the table data
+
 <table>
 <tr>
 <th>Id</th>

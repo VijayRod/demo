@@ -19,6 +19,7 @@ echo 'echo $(date),$HOME,$loc,$rg,$vmsize,sub $subId,tenant $tenantId' >> ~/.bas
 echo 'cd /tmp' >> ~/.bash_profile
 echo 'alias k=kubectl' >> ~/.bash_profile
 echo 'export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"' >> ~/.bash_profile
+echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> ~/.bash_profile
 source ~/.bash_profile
 cat ~/.bash_profile | tail -n 10
 # vi ~/.bash_profile

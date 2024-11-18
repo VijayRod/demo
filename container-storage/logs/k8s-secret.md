@@ -18,6 +18,19 @@ metadata:
   uid: b7ecbb28-37d4-47cc-abfc-70d0c96b3841
 type: Opaque
 
+cat <<EOF | kubectl apply -f -
+apiVersion: v1
+kind: Secret
+metadata:
+ name: aso-credential
+ namespace: default
+stringData:
+ AZURE_SUBSCRIPTION_ID: "$AZURE_SUBSCRIPTION_ID"
+ AZURE_TENANT_ID: "$AZURE_TENANT_ID"
+ AZURE_CLIENT_ID: "$AZURE_CLIENT_ID"
+ AZURE_CLIENT_SECRET: "$AZURE_CLIENT_SECRET"
+EOF
+
 # echo -n 'bXl1c2VybmFtZQ==' | base64 --decode
 myusername
 

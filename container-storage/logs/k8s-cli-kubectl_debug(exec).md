@@ -26,6 +26,21 @@ kubectl cp nsenter-es99e8:/tmp/capture_file_nodeC.pcap /tmp/capture_file_nodeC.p
 - https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#debug
 - https://learn.microsoft.com/en-us/azure/aks/node-access
 
+## kubectl.debug.node.tcpdump
+
+```
+# See the section on tcpdump k8s
+
+kubectl debug node/aks-nodepool1-14217322-vmss000000 -it --image=mcr.microsoft.com/cbl-mariner/busybox:2.0
+# chroot /host
+root@aks-nodepool1-14217322-vmss000000:/# tcpdump 1.2.3.4
+kubectl cp <debugger podname>:/host/tmp/tcpdump-keda-law.pcap /tmp/tcpdump/tcpdump-keda-law-aks-nodepool1-14217322-vmss000000.pcap
+
+kubectl get po --show-labels
+node-debugger-aks-nodepool1-14217322-vmss000000-n6rvn   1/1     Running   0          2m44s   <none>
+```
+- https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/logs/capture-tcp-dump-linux-node-aks
+
 ### kubectl.debug.pod
 
 ```

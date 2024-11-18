@@ -1,4 +1,14 @@
+## netpol.calico
+
 tbd Interpret the iptable policies for Calico - The output doesn't show how it distinguishes packets coming from a source pod that lacks the necessary labels.
+
+```
+az aks create -g $rg -n akscal --network-plugin azure --network-policy calico -s $vmsize -c 1
+az aks create -g $rg -n akskubecal --network-plugin kubenet --network-policy calico -s $vmsize -c 1
+az aks get-credentials -g $rg -n akscal --overwrite-existing
+az aks get-credentials -g $rg -n akskubecal --overwrite-existing
+kubectl get no
+```
 
 ```
 kubectl delete ns demo
@@ -334,3 +344,60 @@ Chain cali-tw-azve0cf0fbcf9f (1 references)
 ```
 
 - https://learn.microsoft.com/en-us/azure/aks/use-network-policies#verify-network-policy-setup
+
+## netpol.calico.spec.namespaceSelector
+
+```
+kubectl delete ns demo democ
+kubectl create ns demo
+kubectl create ns democ
+kubectl run server --image=nginx --port=80 -n demo -l app=server
+kubectl run client --image=nginx --port=80 -n democ -l app=client
+cat << EOF | kubectl create -f -
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: demo-policy
+  namespace: demo
+spec:
+  podSelector:
+    matchLabels:
+      app: server
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: kube-system
+    ports:
+    - port: 80
+      protocol: TCP
+EOF
+sleep 10
+kubectl get po -owide -A | grep demo
+
+kubectl exec -it client -n democ -- curl -Iv 10.224.0.23 # Server's IP address # *   Trying 10.224.0.23:80...
+
+kubectl edit netpol -n demo demo-policy # Update to change from kube-system to democ. Now the curl command in 'kubectl exec' works.
+
+# optional
+kubectl delete ns demo democ
+cat << EOF | kubectl create -f -
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    app: server
+  name: demo
+spec: {}
+status: {}
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    app: client
+  name: democ
+spec: {}
+status: {}
+EOF
+```

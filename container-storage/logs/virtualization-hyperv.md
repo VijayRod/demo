@@ -59,8 +59,10 @@ cat: /dev/vmbus/hv_kvp: Device or resource busy
 - https://azure.microsoft.com/en-us/blog/maximize-your-vm-s-performance-with-accelerated-networking-now-generally-available-for-both-windows-and-linux/: much of Azure's software-defined networking stack off the CPUs and into FPGA-based SmartNICs
 - https://learn.microsoft.com/en-us/azure/virtual-network/accelerated-networking-mana-overview: In instances where the operating system doesn't or can't support MANA, network connectivity is provided through the hypervisor’s virtual switch.
 - https://learn.microsoft.com/en-us/windows-hardware/drivers/network/overview-of-single-root-i-o-virtualization--sr-iov-
+- https://techcommunity.microsoft.com/blog/azurenetworkingblog/secure-high-performance-networking-for-data-intensive-kubernetes-workloads/4271478: Azure CNI supports SR-IOV (Single Root I/O Virtualization) technologies, which allows for dedicated network interfaces for pods, further enhancing performance by reducing the CPU overhead associated with networking.
 
 ## hyperv.VMBus.parent-partition.VPort.VMMQ
+
 - https://learn.microsoft.com/en-us/windows-hardware/drivers/network/overview-of-virtual-machine-multiple-queues: Virtual Machine Multiple Queues (VMMQ) is a NIC offload technology that extends Native RSS (RSSv1) to a Hyper-V virtual environment. 
   - VMMQ provides scalable network traffic processing for virtual ports (VPorts) in the parent partition of a virtualized node.
     

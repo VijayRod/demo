@@ -1,3 +1,5 @@
+## nodepool.spec.scale-down-mode
+
 This uses commands from https://learn.microsoft.com/en-us/azure/aks/scale-down-mode.
 
 ```
@@ -55,4 +57,14 @@ Delete
 az aks nodepool delete -g $rgname --cluster-name $clustername -n $nodepoolname --no-wait
 ```
 
-https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/virtual-machine-scale-sets-faq#what-s-the-difference-between-deleting-a-vm-in-a-virtual-machine-scale-set-and-deallocating-the-vm--when-should-i-choose-one-over-the-other-
+- https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/virtual-machine-scale-sets-faq#what-s-the-difference-between-deleting-a-vm-in-a-virtual-machine-scale-set-and-deallocating-the-vm--when-should-i-choose-one-over-the-other-
+
+## nodepool.op.delete-machines
+
+```
+kubectl get no
+az aks nodepool delete-machines -g $rg --cluster-name aks -n nodepool1 --machine-names aks-nodepool1-32689978-vmss000000 aks-nodepool1-32689978-vmss000001
+kubectl get no
+```
+
+- https://learn.microsoft.com/en-us/azure/aks/manage-node-pools#remove-specific-vms-in-the-existing-node-pool

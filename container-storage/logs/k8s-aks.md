@@ -1,5 +1,7 @@
 ## aks
 ```
+# See the section on aks op
+
 rg=rg
 az group create -n $rg -l $loc
 az aks create -g $rg -n aks -s $vmsize -c 1
@@ -53,8 +55,7 @@ for i in {2..100}; do az aks nodepool delete -g $rg --cluster-name aks -n nodepo
 ## aks.core.reconcile
 
 ```
-k describe ds -n kube-system csi-azuredisk-node | grep Limits: -A 1.
-kubectl set resources daemonset csi-azuredisk-node -c=azuredisk --limits=memory=1200Mi -n kube-system # AKS quickly reverts back my change
+# See the section on aks op reconcile auto
 ```
 
 ## aks.core.remediator

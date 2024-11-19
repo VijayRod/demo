@@ -124,6 +124,13 @@ az aks show -g $rg -n aks --query agentPoolProfiles[0].upgradeSettings
 
 ## k8s-aks-op.upgrade.events
 
+```
+# See the section on eventgrid aks
+
+kubectl get events
+```
+
+- https://learn.microsoft.com/en-us/azure/aks/upgrade-aks-cluster?tabs=azure-cli#view-upgrade-events
 - https://azure.microsoft.com/en-us/updates/generally-available-azure-kubernetes-support-for-upgrade-events/
 
 ## k8s-aks-op.upgrade.autoUpgrade

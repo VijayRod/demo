@@ -96,6 +96,13 @@ az aks nodepool update -g $noderg --cluster-name aks -n nodepool1
 az resource update --id /subscriptions/redacts-1111-1111-1111-111111111111/resourceGroups/$rg/providers/Microsoft.ContainerService/managedClusters/aks
 ```
 
+## k8s-aks-op.reconcile.auto
+
+```
+k describe ds -n kube-system csi-azuredisk-node | grep Limits: -A 1.
+kubectl set resources daemonset csi-azuredisk-node -c=azuredisk --limits=memory=1200Mi -n kube-system # AKS quickly reverts back my change
+```
+
 ## k8s-aks-op.upgrade
 
 ```

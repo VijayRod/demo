@@ -1,4 +1,6 @@
 ```
+# See the sections on svc lb finalizer and ingress svc finalizer
+
 cat << EOF | kubectl apply -f -
 apiVersion: v1
 kind: Pod

@@ -33,6 +33,61 @@ az aks delete -g $rg -n aks -y # --no-wait # success
 az group delete -n $rg -y -f # --no-wait # success
 ```
 
+## k8s-aks-op.maintenanceconfiguration
+
+```
+az aks maintenanceconfiguration list -g $rg --cluster-name aks # []
+```
+
+## k8s-aks-op.maintenanceconfiguration.aksManagedAutoUpgradeSchedule
+
+```
+az aks maintenanceconfiguration add -g $rgname --cluster-name $clustername -n aksManagedAutoUpgradeSchedule --schedule-type Weekly --interval-weeks 1 --day-of-week Monday --start-time 01:00
+--duration 5
+```
+
+```
+az aks maintenanceconfiguration update -g $rgname --cluster-name $clustername -n aksManagedAutoUpgradeSchedule --schedule-type Weekly --interval-weeks 1 --day-of-week Monday --start-time 02:00 --duration 5
+az aks maintenanceconfiguration show -g $rgname --cluster-name $clustername -n aksManagedAutoUpgradeSchedule
+az aks maintenanceconfiguration delete -g $rgname --cluster-name $clustername -n aksManagedAutoUpgradeSchedule
+
+az aks maintenanceconfiguration list -g $rgname --cluster-name $clustername
+az aks show -g $rgname -n $clustername --query autoUpgradeProfile # No rows
+```
+
+## k8s-aks-op.maintenanceconfiguration.aksManagedNodeOSUpgradeSchedule
+
+```
+az aks maintenanceconfiguration add -g $rgname --cluster-name $clustername -n aksManagedNodeOSUpgradeSchedule --schedule-type Weekly --interval-weeks 1 --day-of-week Monday --start-time 01:00 --duration 5
+```
+
+```
+az aks maintenanceconfiguration update -g $rgname --cluster-name $clustername -n aksManagedNodeOSUpgradeSchedule --schedule-type Weekly --interval-weeks 1 --day-of-week Monday --start-time 02:00 --duration 5
+az aks maintenanceconfiguration show -g $rgname --cluster-name $clustername -n aksManagedNodeOSUpgradeSchedule
+az aks maintenanceconfiguration delete -g $rgname --cluster-name $clustername -n aksManagedNodeOSUpgradeSchedule
+
+az aks maintenanceconfiguration list -g $rgname --cluster-name $clustername
+az aks show -g $rgname -n $clustername --query autoUpgradeProfile # No rows
+```
+
+## k8s-aks-op.maintenanceconfiguration.default
+
+```
+az aks maintenanceconfiguration add -g $rgname --cluster-name $clustername -n default --weekday Monday --start-hour 1 --duration 5
+```
+
+```
+az aks maintenanceconfiguration update -g $rgname --cluster-name $clustername -n default --weekday Monday --start-hour 2 --duration 5
+az aks maintenanceconfiguration show -g $rgname --cluster-name $clustername -n default
+az aks maintenanceconfiguration delete -g $rgname --cluster-name $clustername -n default
+
+az aks maintenanceconfiguration list -g $rgname --cluster-name $clustername
+az aks show -g $rgname -n $clustername --query autoUpgradeProfile # No rows
+```
+
+- https://azure.microsoft.com/id-id/updates/public-preview-planned-maintenance-windows-in-aks/
+- https://learn.microsoft.com/en-us/azure/aks/planned-maintenance
+  
 ## k8s-aks-op.reconcile
 
 ```
@@ -45,6 +100,7 @@ az resource update --id /subscriptions/redacts-1111-1111-1111-111111111111/resou
 
 ```
 # See the section on k8s version
+# See the section on maintenanceconfiguration
 # More details in pdb
 
 az aks get-versions -otable -l swedencentral
@@ -66,11 +122,11 @@ az aks show -g $rg -n aks --query agentPoolProfiles[0].upgradeSettings
 - https://learn.microsoft.com/en-us/azure/aks/upgrade-cluster
 - tbd https://www.pjlewis.com/posts/best-practices-for-upgrading-updating-your-aks-clusters/
 
-### k8s-aks-op.upgrade.events
+## k8s-aks-op.upgrade.events
 
 - https://azure.microsoft.com/en-us/updates/generally-available-azure-kubernetes-support-for-upgrade-events/
 
-### k8s-aks-op.upgrade.autoUpgradeProfile
+## k8s-aks-op.upgrade.autoUpgrade
 
 ```
 az aks show -g $rg -n aks --query autoUpgradeProfile
@@ -81,6 +137,26 @@ az aks show -g $rg -n aks --query autoUpgradeProfile
 - https://learn.microsoft.com/en-us/azure/aks/upgrade#automatic-upgrades
 - https://learn.microsoft.com/en-us/azure/aks/upgrade-cluster#configure-automatic-upgrades
 
+## k8s-aks-op.upgrade.autoUpgrade.nodeOsUpgradeChannel
+
+
+## k8s-aks-op.upgrade.autoUpgrade.upgradeChannel
+
+```
+az aks update -g $rgname -n $clustername --auto-upgrade-channel stable
+
+az aks show -g $rgname -n $clustername --query autoUpgradeProfile
+{
+  "nodeOsUpgradeChannel": null,
+  "upgradeChannel": "stable"
+}
+
+# To cleanup
+az aks update -g $rgname -n $clustername --auto-upgrade-channel none
+```
+
+- https://learn.microsoft.com/en-us/azure/aks/auto-upgrade-cluster
+  
 ## k8s-aks-op.upgrade.upgradeSettings.drainTimeoutInMinutes
 
 ```

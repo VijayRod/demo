@@ -44,13 +44,21 @@ az resource update --id /subscriptions/redacts-1111-1111-1111-111111111111/resou
 ## k8s-aks-op.upgrade
 
 ```
+# See the section on k8s version
+# More details in pdb
+
+az aks get-versions -otable -l swedencentral
+az aks get-upgrades -g $rg -n aks -otable
+
+az aks upgrade -y -g $rg -n aks --kubernetes-version 1.27.1
+# az aks upgrade --control-plane-only -y -g $rg -n aks --kubernetes-version 1.27.1
+# az aks nodepool upgrade -y -g $rg --cluster-name aks -n nodepool1 --kubernetes-version 1.27.1
+
 az aks show -g $rg -n aks --query agentPoolProfiles[0].upgradeSettings
   "drainTimeoutInMinutes": null,
   "maxSurge": "10%",
   "nodeSoakDurationInMinutes": null,
   "undrainableNodeBehavior": null
-
-# More details in pdb
 ```
 
 - https://learn.microsoft.com/en-us/azure/aks/upgrade
@@ -62,7 +70,7 @@ az aks show -g $rg -n aks --query agentPoolProfiles[0].upgradeSettings
 
 - https://azure.microsoft.com/en-us/updates/generally-available-azure-kubernetes-support-for-upgrade-events/
 
-### k8s-aks-op.upgrade.auto
+### k8s-aks-op.upgrade.autoUpgradeProfile
 
 ```
 az aks show -g $rg -n aks --query autoUpgradeProfile
@@ -72,3 +80,58 @@ az aks show -g $rg -n aks --query autoUpgradeProfile
 
 - https://learn.microsoft.com/en-us/azure/aks/upgrade#automatic-upgrades
 - https://learn.microsoft.com/en-us/azure/aks/upgrade-cluster#configure-automatic-upgrades
+
+## k8s-aks-op.upgrade.upgradeSettings.drainTimeoutInMinutes
+
+```
+# See the section on pod state Terminating and terminationGracePeriodSeconds
+
+az aks nodepool show -g $rg --cluster-name aks -n nodepool1 --query upgradeSettings.drainTimeoutInMinutes -otsv # null
+
+az aks nodepool update -g $rg --cluster-name aks -n nodepool1 --drain-timeout 45
+az aks nodepool show -g $rg --cluster-name aks -n nodepool1 --query upgradeSettings.drainTimeoutInMinutes -otsv # 45
+```
+
+- https://learn.microsoft.com/en-us/azure/aks/upgrade-aks-cluster?tabs=azure-cli#set-node-drain-timeout-value
+
+## k8s-aks-op.upgrade.upgradeSettings.max-surge
+
+```
+az aks nodepool show -g $rg --cluster-name aks -n nodepool1 --query upgradeSettings.maxSurge -otsv # "10%"
+
+az aks nodepool update -g $rg --cluster-name aks -n nodepool1 --max-surge 33%
+az aks nodepool show -g $rg --cluster-name aks -n nodepool1 --query upgradeSettings.maxSurge -otsv # 33%
+
+az aks nodepool update -g $rg --cluster-name aks -n nodepool1 --max-surge 1
+az aks nodepool show -g $rg --cluster-name aks -n nodepool1 --query upgradeSettings.maxSurge -otsv # 1
+```
+
+- https://learn.microsoft.com/en-us/azure/aks/upgrade-aks-cluster?tabs=azure-cli#customize-node-surge-upgrade
+
+## k8s-aks-op.upgrade.upgradeSettings.node-soak-duration
+
+```
+az aks nodepool show -g $rg --cluster-name aks -n nodepool1 --query upgradeSettings.nodeSoakDurationInMinutes -otsv # null
+
+az aks nodepool update -g $rg --cluster-name aks -n nodepool1 --node-soak-duration 5
+az aks nodepool show -g $rg --cluster-name aks -n nodepool1 --query upgradeSettings.nodeSoakDurationInMinutes -otsv # 5
+```
+
+- https://learn.microsoft.com/en-us/azure/aks/upgrade-aks-cluster?tabs=azure-cli#set-node-soak-time-value
+
+## k8s-aks-op.upgrade.upgradeSettings.undrainable-node-behavior
+
+```
+az aks nodepool show -g $rg --cluster-name aks -n nodepool1 --query upgradeSettings.undrainableNodeBehavior -otsv # null
+
+az aks nodepool update -g $rg --cluster-name aks -n nodepool1 --undrainable-node-behavior Cordon
+az aks nodepool show -g $rg --cluster-name aks -n nodepool1 --query upgradeSettings.undrainableNodeBehavior -otsv # Cordon
+
+az aks nodepool update -g $rg --cluster-name aks -n nodepool1 --undrainable-node-behavior Schedule
+az aks nodepool show -g $rg --cluster-name aks -n nodepool1 --query upgradeSettings.undrainableNodeBehavior -otsv # Schedule
+
+kubectl get nodes --show-labels=true
+kubectl get nodes -l kubernetes.azure.com/upgrade-status=Quarantined
+```
+
+- https://learn.microsoft.com/en-us/azure/aks/upgrade-cluster#optimize-for-undrainable-node-behavior-preview

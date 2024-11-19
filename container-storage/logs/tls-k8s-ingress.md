@@ -75,6 +75,11 @@ root@aks-nodepool1-17429108-vmss000000:/# curl http://https-example.foo.com --re
 HTTP/1.1 308 Permanent Redirect
 Location: https://https-example.foo.com
 
+# ingress.finalizers
+kubectl get svc -n ingress-basic ingress-nginx-controller -oyaml
+metadata:
+  finalizers:
+  - service.kubernetes.io/load-balancer-cleanup
 
 kubectl delete secret $cert
 kubectl get ingress minimal-ingress

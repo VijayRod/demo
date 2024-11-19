@@ -1,1 +1,2 @@
 - https://kubernetes.io/docs/concepts/workloads/pods/init-containers/
+- https://kubernetes.io/docs/tasks/debug/debug-application/debug-init-containers/

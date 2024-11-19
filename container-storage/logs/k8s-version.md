@@ -1,4 +1,6 @@
 ```
+# See the section on aks op upgrade
+
 az aks get-versions -otable -l swedencentral
 az aks get-upgrades -g $rg -n aks -otable
 ```

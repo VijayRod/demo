@@ -38,5 +38,8 @@ CONTAINER           IMAGE               CREATED             STATE               
 # See the section on pod state PodInitializing
 ```
 
-- https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/
 - https://kubernetes.io/docs/tasks/configure-pod-container/attach-handler-lifecycle-event/
+
+## container.state.hook
+
+- https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/: FailedPostStartHook, FailedPreStopHook

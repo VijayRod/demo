@@ -7,6 +7,23 @@
 az aks show -g $rg -n aks --query networkProfile.loadBalancerProfile
 
 az network lb show -g MC_rg_aks_swedencentral -n kubernetes
+
+kubectl delete po nginx
+kubectl delete svc nginx
+kubectl run nginx --image=nginx --port=80
+sleep 5
+kubectl get po nginx
+kubectl expose po nginx --type=LoadBalancer
+sleep 60
+kubectl get svc,ep; kubectl get po -owide
+```
+
+```
+# svc.lb.finalizer
+kubectl get svc nginx -oyaml
+metadata:
+  finalizers:
+  - service.kubernetes.io/load-balancer-cleanup
 ```
 
 ```

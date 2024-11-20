@@ -6,6 +6,23 @@
 ipconfig /all
 pktmon component list
 
+sc qc pktmon
+[SC] QueryServiceConfig SUCCESS
+
+SERVICE_NAME: pktmon
+        TYPE               : 1  KERNEL_DRIVER
+        START_TYPE         : 3   DEMAND_START
+        ERROR_CONTROL      : 1   NORMAL
+        BINARY_PATH_NAME   : system32\drivers\PktMon.sys
+        LOAD_ORDER_GROUP   :
+        TAG                : 0
+        DISPLAY_NAME       : Packet Monitor Driver
+        DEPENDENCIES       :
+        SERVICE_START_NAME :
+```
+
+```
+# capture
 pktmon filter remove
 pktmon filter add myprotocol -t ICMP
 pktmon filter add myIPFilter -i 127.0.0.1

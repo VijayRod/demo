@@ -1,15 +1,20 @@
+## secrets-store
+
+```
+# See the section on secrets-store key
+```
+
+## secrets-store.key
+
 The following code creates a cluster with the Key Vault addon using the steps mentioned in [this Microsoft Azure documentation](https://learn.microsoft.com/en-us/azure/aks/csi-secrets-store-driver), and utilizes the user-assigned managed identity that was created during addon enablement, as indicated in [this documentation](https://learn.microsoft.com/en-us/azure/aks/csi-secrets-store-identity-access#access-with-a-user-assigned-managed-identity).
 
 ```
-# Replace the below with appropriate values.
-rgname=resourceGroupName
-clustername=clusterName
-keyvaultName=keyvaultName
-keyvaultResourceGroupName=keyvaultResourceGroupName
-```
+rgname=$rg
+clustername=akssecretstore
+keyvaultName="keyvault$RANDOM"
+keyvaultResourceGroupName=$rg
 
-```
-az aks create -g $rgname -n $clustername --enable-addons azure-keyvault-secrets-provider
+az aks create -g $rgname -n $clustername --enable-addons azure-keyvault-secrets-provider -s $vmsize -c 2
 # (for existing cluster) az aks enable-addons --addons azure-keyvault-secrets-provider -g $rgname -n $clustername
 
 az keyvault create -g $keyvaultResourceGroupName -n $keyvaultName --retention-days 7 --public-network-access Enabled  --enable-rbac-authorization false # Test.
@@ -29,6 +34,8 @@ userAssignedIdentityID=$(az aks show -g $rgname -n $clustername --query addonPro
 tenantId=$(az aks show -g $rgname -n $clustername --query identity.tenantId -o tsv)
 az aks get-credentials -g $rgname -n $clustername --overwrite-existing
 
+kubectl delete po busybox-secrets-store-inline-user-msi
+kubectl delete secretproviderclass azure-kvname-user-msi
 cat << EOF | kubectl apply -f -
 # This is a SecretProviderClass example using user-assigned identity to access your key vault
 apiVersion: secrets-store.csi.x-k8s.io/v1
@@ -130,9 +137,9 @@ aks-secrets-store-csi-driver-windows       0         0         0       0        
 aks-secrets-store-provider-azure           3         3         3       3            3           kubernetes.io/os=linux     3h7m
 aks-secrets-store-provider-azure-windows   0         0         0       0            0           kubernetes.io/os=windows   3h7m
 
-kubectl api-versions | grep secrets-store
-secrets-store.csi.x-k8s.io/v1
-secrets-store.csi.x-k8s.io/v1alpha1
+k api-resources | grep secrets-
+secretproviderclasses                                   secrets-store.csi.x-k8s.io/v1          true         SecretProviderClass
+secretproviderclasspodstatuses                          secrets-store.csi.x-k8s.io/v1          true         SecretProviderClassPodStatus
 
 kubectl get crd | grep store
 secretproviderclasses.secrets-store.csi.x-k8s.io            2023-06-06T14:11:50Z
@@ -243,6 +250,34 @@ Node-Selectors:              <none>
 Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
                              node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
 Events:                      <none>
+
+# for pod create
+k describe secretproviderclasspodstatuses
+Name:         busybox-secrets-store-inline-user-msi-default-azure-kvname-user-msi
+Namespace:    default
+Labels:       internal.secrets-store.csi.k8s.io/node-name=aks-nodepool1-40899545-vmss000001
+Annotations:  <none>
+API Version:  secrets-store.csi.x-k8s.io/v1
+Kind:         SecretProviderClassPodStatus
+Metadata:
+  Creation Timestamp:  2024-11-20T18:53:41Z
+  Generation:          1
+  Owner References:
+    API Version:     v1
+    Kind:            Pod
+    Name:            busybox-secrets-store-inline-user-msi
+    UID:             197cf1f7-4d27-41a1-8ac4-b1ddf4c40779
+  Resource Version:  12831
+  UID:               167de5dc-7235-4e7e-b8e9-1a725ff4b737
+Status:
+  Mounted:  true
+  Objects:
+    Id:                        secret/ExampleSecret
+    Version:                   dc57c223d6fe48e099b3ac1f68a62b1e
+  Pod Name:                    busybox-secrets-store-inline-user-msi
+  Secret Provider Class Name:  azure-kvname-user-msi
+  Target Path:                 /var/lib/kubelet/pods/197cf1f7-4d27-41a1-8ac4-b1ddf4c40779/volumes/kubernetes.io~csi/secrets-store01-inline/mount
+Events:                        <none>
 
 # for pod create
 k logs -n kube-system -l app=secrets-store-csi-driver -c secrets-store

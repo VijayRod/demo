@@ -1,3 +1,29 @@
+## az-keyvault.certificates
+
+```
+# See the section on certificate
+
+# https://www.golinuxcloud.com/openssl-cheatsheet/: Converting Certificate Formats - PEM to PKCS#12
+openssl pkcs12 -export -out certificate.pfx -inkey privateKey.key -in certificate.pem -certfile CAcert.pem
+
+keyvault=$keyvaultName
+az keyvault certificate create --vault-name $keyvault -n ExampleCertificate -p "$(az keyvault certificate get-default-policy)" # generate a self-signed certificate
+az keyvault certificate show --vault-name $keyvault -n ExampleCertificate
+```
+
+- https://learn.microsoft.com/en-us/azure/key-vault/certificates/
+- https://learn.microsoft.com/en-us/azure/key-vault/certificates/quick-create-cli#add-a-certificate-to-key-vault
+- az keyvault certificate import: --file -f    [Required] : PKCS12 file or PEM file containing the certificate and private key.
+
+## az-keyvault.certificates.import
+
+```
+tbd az keyvault certificate import --vault-name $keyvault -n test-cert -f "/tmp/..."
+```
+
+- https://learn.microsoft.com/en-us/azure/key-vault/certificates/tutorial-import-certificate?tabs=azure-cli
+- https://learn.microsoft.com/en-us/rest/api/keyvault/certificates/import-certificate/import-certificate?view=rest-keyvault-certificates-7.4&tabs=HTTP
+
 ## az-keyvault.hsm (managed hsm)
 
 ```
@@ -130,3 +156,18 @@ az role assignment create --role Contributor --assignee $aksIdentity --scope $rg
 NAME                     READY   STATUS    RESTARTS   AGE
 nginx-7f5df5b7dd-bfp87   1/1     Running   0          33s
 ```
+
+## az-keyvault.key
+
+- https://learn.microsoft.com/en-us/azure/key-vault/keys/about-keys-details
+
+## az-keyvault.key.generate
+
+```
+# Use the Azure portal to create a key in the key vault
+```
+
+## az-keyvault.key.import
+
+- https://stackoverflow.com/questions/72663191/import-ec-key-into-key-vault: This REST endpoint. official SDKs (Java,.Net, Python, etc.)
+- https://learn.microsoft.com/en-us/rest/api/keyvault/keys/import-key/import-key?view=rest-keyvault-keys-7.4&tabs=HTTP

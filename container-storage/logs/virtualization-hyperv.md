@@ -44,6 +44,10 @@ cat: /dev/vmbus/hv_kvp: Device or resource busy
 - https://www.kernel.org/doc/html/latest/networking/device_drivers/ethernet/microsoft/netvsc.html
 - https://learn.microsoft.com/en-us/troubleshoot/azure/virtual-machines/linux-hyperv-issue
 
+## hyperv.VMBus.child-partition[].IntegrationServices.VSC.hvnetvsc.VirtualSwitch
+
+- https://learn.microsoft.com/en-us/windows-server/networking/technologies/pktmon/pktmon#overview: extended networking stack now includes components like the Virtual Switch that handle packet processing and switching.
+
 ## hyperv.VMBus.parent-partition.IntelVT (AMD-V)
 
 - https://learn.microsoft.com/en-us/virtualization/hyper-v-on-windows/reference/hyper-v-architecture: Hyper-V requires a processor that includes hardware assisted virtualization, such as is provided with Intel VT or AMD Virtualization (AMD-V) technology.

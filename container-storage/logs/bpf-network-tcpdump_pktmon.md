@@ -8,7 +8,6 @@ pktmon component list
 
 sc qc pktmon
 [SC] QueryServiceConfig SUCCESS
-
 SERVICE_NAME: pktmon
         TYPE               : 1  KERNEL_DRIVER
         START_TYPE         : 3   DEMAND_START
@@ -23,6 +22,7 @@ SERVICE_NAME: pktmon
 
 ```
 # capture
+# admin: cmd
 pktmon filter remove
 pktmon filter add myprotocol -t ICMP
 pktmon filter add myIPFilter -i 127.0.0.1

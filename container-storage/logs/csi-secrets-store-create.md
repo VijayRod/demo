@@ -15,6 +15,7 @@ az aks create -g $rgname -n $clustername --enable-addons azure-keyvault-secrets-
 az keyvault create -g $keyvaultResourceGroupName -n $keyvaultName --retention-days 7 --public-network-access Enabled  --enable-rbac-authorization false # Test.
 az keyvault secret set --vault-name $keyvaultName -n ExampleSecret --value MyAKSExampleSecret
 
+userAssignedIdentityID=$(az aks show -g $rgname -n $clustername --query addonProfiles.azureKeyvaultSecretsProvider.identity.clientId -o tsv)
 # Set policy to access keys in your key vault
 az keyvault set-policy -n $keyvaultName --key-permissions get --spn "$userAssignedIdentityID"
 # Set policy to access secrets in your key vault
@@ -102,8 +103,19 @@ kubectl delete secretproviderclass.secrets-store.csi.x-k8s.io/azure-kvname-user-
 Each node has a aks-secrets-store-csi-driver pod and a aks-secrets-store-provider-azure pod.
 
 ```
-kubectl get pods -n kube-system -owide -l 'app in (secrets-store-csi-driver,secrets-store-provider-azure)'
+kubectl get all -n kube-system | grep secrets
+pod/aks-secrets-store-csi-driver-l84kb       3/3     Running   0          3h20m
+pod/aks-secrets-store-csi-driver-r5gww       3/3     Running   0          3h20m
+pod/aks-secrets-store-csi-driver-xlqfj       3/3     Running   0          3h20m
+pod/aks-secrets-store-provider-azure-6nxkd   1/1     Running   0          3h20m
+pod/aks-secrets-store-provider-azure-l8cbr   1/1     Running   0          3h20m
+pod/aks-secrets-store-provider-azure-m29gg   1/1     Running   0          3h20m
+daemonset.apps/aks-secrets-store-csi-driver               3         3         3       3            3           <none>                     3h22m
+daemonset.apps/aks-secrets-store-csi-driver-windows       0         0         0       0            0           <none>                     3h22m
+daemonset.apps/aks-secrets-store-provider-azure           3         3         3       3            3           kubernetes.io/os=linux     3h22m
+daemonset.apps/aks-secrets-store-provider-azure-windows   0         0         0       0            0           kubernetes.io/os=windows   3h22m
 
+kubectl get pods -n kube-system -owide -l 'app in (secrets-store-csi-driver,secrets-store-provider-azure)'
 NAME                                     READY   STATUS    RESTARTS   AGE    IP           NODE                                NOMINATED NODE   READINESS GATES
 aks-secrets-store-csi-driver-m2cqq       3/3     Running   0          3h5m   10.244.2.2   aks-nodepool1-29360345-vmss000001   <none>           <none>
 aks-secrets-store-csi-driver-pbl4x       3/3     Running   0          3h5m   10.244.0.2   aks-nodepool1-29360345-vmss000002   <none>           <none>
@@ -113,24 +125,20 @@ aks-secrets-store-provider-azure-bfl6m   1/1     Running   0          3h5m   10.
 aks-secrets-store-provider-azure-w9kzp   1/1     Running   0          3h5m   10.224.0.6   aks-nodepool1-29360345-vmss000002   <none>           <none>
 
 kubectl get ds -n kube-system | grep -i secrets-store
-
 aks-secrets-store-csi-driver               3         3         3       3            3           <none>                     3h7m
 aks-secrets-store-csi-driver-windows       0         0         0       0            0           <none>                     3h7m
 aks-secrets-store-provider-azure           3         3         3       3            3           kubernetes.io/os=linux     3h7m
 aks-secrets-store-provider-azure-windows   0         0         0       0            0           kubernetes.io/os=windows   3h7m
 
 kubectl api-versions | grep secrets-store
-
 secrets-store.csi.x-k8s.io/v1
 secrets-store.csi.x-k8s.io/v1alpha1
 
 kubectl get crd | grep store
-
 secretproviderclasses.secrets-store.csi.x-k8s.io            2023-06-06T14:11:50Z
 secretproviderclasspodstatuses.secrets-store.csi.x-k8s.io   2023-06-06T14:11:50Z
 
 az aks show -g $rgname -n $clustername --query addonProfiles.azureKeyvaultSecretsProvider
-
 The behavior of this command has been altered by the following extension: aks-preview
 {
   "config": {
@@ -147,8 +155,7 @@ The behavior of this command has been altered by the following extension: aks-pr
 ```
 
 ```
-# Sample describes.
-
+# describe
 Name:         azure-kvname-user-msi
 Namespace:    default
 Labels:       <none>
@@ -176,6 +183,7 @@ Spec:
   Provider:                     azure
 Events:                         <none>
 
+# describe
 Name:             busybox-secrets-store-inline-user-msi
 Namespace:        default
 Priority:         0
@@ -236,6 +244,30 @@ Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists fo
                              node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
 Events:                      <none>
 
+# for pod create
+k logs -n kube-system -l app=secrets-store-csi-driver -c secrets-store
+I1120 18:30:51.446006       1 nodeserver.go:143] "node publish volume" target="/var/lib/kubelet/pods/e0c6b259-9cd3-4a68-b436-d37043b45c6d/volumes/kubernetes.io~csi/secrets-store01-inline/mount" volumeId="csi-ab5cc7b693d80b579a12dcfaf6b8b530197590e184e081f4cdef683c4bcf3e94" mount flags=null
+I1120 18:30:51.447725       1 nodeserver.go:353] "Using gRPC client" provider="azure" pod="busybox-secrets-store-inline-user-msi"
+I1120 18:30:51.606179       1 nodeserver.go:253] "node publish volume complete" targetPath="/var/lib/kubelet/pods/e0c6b259-9cd3-4a68-b436-d37043b45c6d/volumes/kubernetes.io~csi/secrets-store01-inline/mount" pod="default/busybox-secrets-store-inline-user-msi" time="160.228828ms"
+I1120 18:30:51.606437       1 secretproviderclasspodstatus_controller.go:224] "reconcile started" spcps="default/busybox-secrets-store-inline-user-msi-default-azure-kvname-user-msi"
+I1120 18:30:51.606477       1 secretproviderclasspodstatus_controller.go:265] "no secret objects defined for spc, nothing to reconcile" spc="default/azure-kvname-user-msi" spcps="default/busybox-secrets-store-inline-user-msi-default-azure-kvname-user-msi"
+
+# for pod create
+k logs -n kube-system -l app=secrets-store-provider-azure
+            objectName: ExampleSecret
+            objectType: secret              # object types: secret, key, or cert
+            objectVersion: ""               # [OPTIONAL] object versions, default to latest if empty
+ > pod="default/busybox-secrets-store-inline-user-msi"
+I1120 18:30:51.485937       1 provider.go:188] "unmarshaled objects yaml array" objectsArray=<
+        [objectName: ExampleSecret
+        objectType: secret              # object types: secret, key, or cert
+        objectVersion: ""               # [OPTIONAL] object versions, default to latest if empty]
+ > pod="default/busybox-secrets-store-inline-user-msi"
+I1120 `18:30:51.486100       1 provider.go:217] "vault url" vaultName="keyvault28122" vaultURL="https://keyvault28122.vault.azure.net/" pod="default/busybox-secrets-store-inline-user-msi"
+
+# for pod create delete
+k logs -n kube-system -l app=secrets-store-csi-driver -c secrets-store
+I1120 18:34:04.946994       1 nodeserver.go:306] "node unpublish volume complete" targetPath="/var/lib/kubelet/pods/e0c6b259-9cd3-4a68-b436-d37043b45c6d/volumes/kubernetes.io~csi/secrets-store01-inline/mount" time="2.280396ms"
 ```
 
 - https://learn.microsoft.com/en-us/azure/aks/csi-secrets-store-driver

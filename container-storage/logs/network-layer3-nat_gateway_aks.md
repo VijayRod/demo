@@ -1,13 +1,15 @@
+## natgateway
+
 ```
 # Replace the below with appropriate values.
-rgname=secureshack2
-clustername=asknat
+rgname=rg
+clustername=aksnat
 ```
 
 ```
 # To create a cluster with a NAT gateway, the ip-count and idle-timeout values are optional.
 az aks create -g $rgname -n $clustername --outbound-type managedNATGateway \
-    --nat-gateway-managed-outbound-ip-count 2 --nat-gateway-idle-timeout 4
+    --nat-gateway-managed-outbound-ip-count 2 --nat-gateway-idle-timeout 4 -s $vmsize -c 2
     
 # To update an existing cluster
 az aks update -g $rgname -n $clustername --outbound-type managedNATGateway \

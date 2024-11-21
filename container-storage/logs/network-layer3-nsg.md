@@ -1,3 +1,5 @@
+## nsg
+
 ```
 az network nsg create -g $rg -n aks-agentpools-nsg
 az network nsg rule create -g $rg --nsg-name aks-agentpools-nsg -n DenyAllOutBound-my --priority 100 --access Deny --direction Outbound --protocol "*" --destination-port-ranges "*" --no-wait
@@ -13,3 +15,217 @@ az network nsg show -g $noderg -n aks-agentpool-37790187-nsg
 - https://learn.microsoft.com/en-us/azure/security/fundamentals/network-overview#network-security-rules-nsgs
 - https://learn.microsoft.com/en-us/azure/virtual-network/network-security-groups-overview
 - https://learn.microsoft.com/en-us/azure/well-architected/security/networking: Because network security groups work at layers 3 and 4 on the Open Systems Interconnection (OSI) stack
+- https://learn.microsoft.com/en-us/azure/network-watcher/vnet-flow-logs-overview: Virtual network flow logs are a feature of Azure Network Watcher. Virtual network flow logs overcome some of the limitations of Network security group flow logs.
+
+## nsg.flowlog (network watcher)
+
+```
+# https://learn.microsoft.com/en-us/azure/network-watcher/nsg-flow-logs-cli
+nsg=
+noderg=$(az aks show -g $rg -n aks --query nodeResourceGroup -o tsv)  
+storage="storage$RANDOM$RANDOM"
+az storage account create -g $rg -n $storage
+storageId=$(az storage account show -g $rg -n $storage --query id -otsv); echo $storageId
+az network watcher flow-log create -g $noderg --nsg $nsg -n myFlowLog --storage-account $storageId --log-version 2
+
+az network watcher flow-log update -g $noderg --nsg $nsg -n myFlowLog --log-version 2
+
+az network watcher flow-log list -l $loc --out table
+
+az group list -otable
+Name                                                                 Location       Status
+-------------------------------------------------------------------  -------------  ---------
+NetworkWatcherRG                                                     swedencentral  Succeeded
+
+# disable (temporary)
+az network watcher flow-log update -g $noderg --nsg $nsg -n myFlowLog --storage-account $storageId --traffic-analytics false --workspace $workspaceId
+az network watcher flow-log update -g $noderg --nsg $nsg -n myFlowLog --storage-account $storageId --enabled false
+
+# delete
+az network watcher flow-log delete --name myFlowLog -l $loc --no-wait true
+```
+
+```
+# nsg.flowlog.storageaccount
+# https://learn.microsoft.com/en-us/azure/network-watcher/nsg-flow-logs-cli#download-a-flow-log
+# Azure portal, go to the storage account, Storage browser, Blob containers, insights-logs-networksecuritygroupflowevent
+## https://storage120161285.blob.core.windows.net/insights-logs-networksecuritygroupflowevent/resourceId=/SUBSCRIPTIONS/redacts-1111-1111-1111-111111111111/RESOURCEGROUPS/MC_RG_ASKNAT_SWEDENCENTRAL/PROVIDERS/MICROSOFT.NETWORK/NETWORKSECURITYGROUPS/AKS-AGENTPOOL-42418909-NSG/y=2024/m=11/d=21/h=15/m=00/macAddress=6045BDACE2FA/PT1H.json
+root@aks-nodepool1-26864853-vmss000000:/# ip addr show eth0
+3: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP group default qlen 1000
+    link/ether 60:45:bd:e9:86:94 brd ff:ff:ff:ff:ff:ff
+    
+--log-version 1
+PT1H.json
+{
+	"records": [
+		{
+			"time": "2024-11-21T18:31:06.9240210Z",
+			"systemId": "90487218-89e5-47b5-a4b8-138eb46e56e4",
+			"macAddress": "6045BDACE2FA",
+			"category": "NetworkSecurityGroupFlowEvent",
+			"resourceId": "/SUBSCRIPTIONS/redacts-1111-1111-1111-111111111111/RESOURCEGROUPS/MC_RG_ASKNAT_SWEDENCENTRAL/PROVIDERS/MICROSOFT.NETWORK/NETWORKSECURITYGROUPS/AKS-AGENTPOOL-42418909-NSG",
+			"operationName": "NetworkSecurityGroupFlowEvents",
+			"properties": {
+				"Version": 1,
+				"flows": [
+					{
+						"rule": "DefaultRule_AllowVnetOutBound",
+						"flows": [
+							{
+								"mac": "6045BDACE2FA",
+								"flowTuples": [
+									"1732203050,10.224.0.4,10.224.0.6,46992,19100,T,O,A"
+								]
+							}
+						]
+					}
+				]
+			}
+		},
+		{
+			"time": "2024-11-21T18:32:06.9320808Z",
+			"systemId": "90487218-89e5-47b5-a4b8-138eb46e56e4",
+			"macAddress": "6045BDACE2FA",
+			"category": "NetworkSecurityGroupFlowEvent",
+			"resourceId": "/SUBSCRIPTIONS/redacts-1111-1111-1111-111111111111/RESOURCEGROUPS/MC_RG_ASKNAT_SWEDENCENTRAL/PROVIDERS/MICROSOFT.NETWORK/NETWORKSECURITYGROUPS/AKS-AGENTPOOL-42418909-NSG",
+			"operationName": "NetworkSecurityGroupFlowEvents",
+			"properties": {
+				"Version": 1,
+				"flows": [
+					{
+						"rule": "DefaultRule_AllowVnetInBound",
+						"flows": [
+							{
+								"mac": "6045BDACE2FA",
+								"flowTuples": [
+									"1732203103,10.244.2.2,10.244.0.2,53030,53,U,I,A",
+									"1732203103,10.244.2.2,10.244.0.8,33267,53,U,I,A",
+									"1732203103,10.244.2.2,10.244.0.8,34088,53,U,I,A",
+									"1732203103,10.244.2.2,10.244.0.8,35664,53,U,I,A",
+									"1732203103,10.244.2.2,10.244.0.8,37787,53,U,I,A",
+									"1732203103,10.244.2.2,10.244.0.8,43958,53,U,I,A",
+									"1732203104,10.244.1.2,10.244.0.2,55282,53,U,I,A",
+									"1732203104,10.244.1.2,10.244.0.8,40148,53,U,I,A",
+									"1732203104,10.244.1.2,10.244.0.8,37414,53,U,I,A",
+									"1732203104,10.244.1.2,10.244.0.2,32833,53,U,I,A",
+									"1732203104,10.244.1.2,10.244.0.2,54710,53,U,I,A",
+									"1732203104,10.244.1.2,10.244.0.2,34632,53,U,I,A",
+									"1732203103,10.244.2.2,10.244.0.8,34525,53,U,I,A",
+									"1732203103,10.244.2.2,10.244.0.8,49429,53,U,I,A",
+									"1732203103,10.244.2.2,10.244.0.8,43444,53,U,I,A",
+									"1732203103,10.244.2.2,10.244.0.2,46824,53,U,I,A",
+									"1732203104,10.244.1.2,10.244.0.8,51081,53,U,I,A",
+									"1732203104,10.244.1.2,10.244.0.8,43423,53,U,I,A",
+									"1732203104,10.244.1.2,10.244.0.2,37741,53,U,I,A",
+									"1732203104,10.244.1.2,10.244.0.2,48314,53,U,I,A"
+								]
+							}
+						]
+					},
+					{
+						"rule": "DefaultRule_AllowVnetOutBound",
+						"flows": [
+							{
+								"mac": "6045BDACE2FA",
+								"flowTuples": [
+									"1732203081,10.224.0.4,10.224.0.6,56098,20257,T,O,A",
+									"1732203110,10.224.0.4,10.224.0.6,58968,19100,T,O,A"
+								]
+							}
+						]
+					}
+				]
+			}
+		},
+
+--log-version 2
+PT1H.json
+{
+	"records": [
+		{
+			"time": "2024-11-21T19:00:07.0757201Z",
+			"systemId": "90487218-89e5-47b5-a4b8-138eb46e56e4",
+			"macAddress": "6045BDACE2FA",
+			"category": "NetworkSecurityGroupFlowEvent",
+			"resourceId": "/SUBSCRIPTIONS/redacts-1111-1111-1111-111111111111/RESOURCEGROUPS/MC_RG_ASKNAT_SWEDENCENTRAL/PROVIDERS/MICROSOFT.NETWORK/NETWORKSECURITYGROUPS/AKS-AGENTPOOL-42418909-NSG",
+			"operationName": "NetworkSecurityGroupFlowEvents",
+			"properties": {
+				"Version": 1,
+				"flows": [
+					{
+						"rule": "DefaultRule_AllowInternetOutBound",
+						"flows": [
+							{
+								"mac": "6045BDACE2FA",
+								"flowTuples": [
+									"1732204744,10.224.0.4,4.225.194.90,58916,443,T,O,A",
+									"1732204772,10.224.0.4,4.225.194.90,60516,443,T,O,A"
+								]
+							}
+						]
+					}
+				]
+			}
+		},
+		{
+			"time": "2024-11-21T19:01:07.0795183Z",
+			"systemId": "90487218-89e5-47b5-a4b8-138eb46e56e4",
+			"macAddress": "6045BDACE2FA",
+			"category": "NetworkSecurityGroupFlowEvent",
+			"resourceId": "/SUBSCRIPTIONS/redacts-1111-1111-1111-111111111111/RESOURCEGROUPS/MC_RG_ASKNAT_SWEDENCENTRAL/PROVIDERS/MICROSOFT.NETWORK/NETWORKSECURITYGROUPS/AKS-AGENTPOOL-42418909-NSG",
+			"operationName": "NetworkSecurityGroupFlowEvents",
+			"properties": {
+				"Version": 1,
+				"flows": [
+					{
+						"rule": "DefaultRule_AllowInternetOutBound",
+						"flows": [
+							{
+								"mac": "6045BDACE2FA",
+								"flowTuples": [
+									"1732204805,10.224.0.4,4.225.194.90,35822,443,T,O,A"
+								]
+							}
+						]
+					},
+					{
+						"rule": "DefaultRule_AllowVnetOutBound",
+						"flows": [
+							{
+								"mac": "6045BDACE2FA",
+								"flowTuples": [
+									"1732204805,10.244.0.9,10.244.2.3,41082,53,U,O,A",
+									"1732204805,10.244.0.9,10.244.1.3,45404,53,U,O,A",
+									"1732204805,10.244.0.9,10.244.1.3,59022,53,U,O,A",
+									"1732204805,10.244.0.9,10.244.1.3,55676,53,U,O,A",
+									"1732204805,10.244.0.9,10.244.2.3,34633,53,U,O,A",
+									"1732204805,10.244.0.9,10.244.1.3,46227,53,U,O,A",
+									"1732204805,10.244.0.9,10.244.1.3,53375,53,U,O,A",
+									"1732204805,10.244.0.9,10.244.2.3,42215,53,U,O,A",
+									"1732204805,10.244.0.9,10.244.2.3,60714,53,U,O,A",
+									"1732204805,10.244.0.9,10.244.1.3,40008,53,U,O,A"
+								]
+							}
+						]
+					}
+				]
+			}
+		},
+```
+
+```
+# nsg.flowlog.workspace
+# https://learn.microsoft.com/en-us/azure/network-watcher/nsg-flow-logs-cli#create-a-flow-log-and-traffic-analytics-workspace
+nsg=aks-agentpool-42418909-nsg
+noderg=$(az aks show -g $rg -n asknat --query nodeResourceGroup -o tsv)  
+storage="storage$RANDOM$RANDOM"; echo $storage
+az storage account create -g $rg -n $storage
+az monitor log-analytics workspace create -g $rg -n laworkspace
+workspaceId=$(az monitor log-analytics workspace show -g $rg -n laworkspace --query id -otsv)
+az network watcher flow-log create -g $noderg --nsg $nsg -n myFlowLog --storage-account $storageId --log-version 2 --traffic-analytics true --workspace $workspaceId --interval 10 # minutes
+# az network watcher flow-log update -g $noderg --nsg $nsg -n myFlowLog --interval 60 # minutes
+```
+
+- https://learn.microsoft.com/en-us/azure/network-watcher/nsg-flow-logs-overview
+- https://learn.microsoft.com/en-us/azure/network-watcher/traffic-analytics-schema?tabs=nsg
+- https://learn.microsoft.com/en-us/azure/network-watcher/nsg-flow-logs-overview#log-format

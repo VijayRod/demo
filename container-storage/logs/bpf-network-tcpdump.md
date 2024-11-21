@@ -26,16 +26,33 @@ apt update -y && apt install tcpdump -y && tcpdump host redis3696.redis.cache.wi
 - https://wizardzines.com/zines/tcpdump/: tutorial
 - https://superuser.com/questions/925286/does-tcpdump-bypass-iptables: tcpdump is the first software found after the wire (and the NIC, if you will) on the way IN, and the last one on the way OUT....
 
-### tcpdump.faqs
+## tcpdump.capture.export.etl.pcapng
 
-- Frequently Asked Questions
-  - tbd https://linuxconfig.org/how-to-use-tcpdump-command-on-linux
-  - https://superuser.com/questions/1455476/what-does-tcp-packet-p-flag-means-in-tcpdumps-output
-  - https://stackoverflow.com/questions/25603831/how-can-i-have-tcpdump-write-to-file-and-standard-output-the-appropriate-data
-  - https://superuser.com/questions/273489/how-do-i-make-tcpdump-to-write-to-file-for-each-packet-it-captures
-  - https://stackoverflow.com/questions/19808483/tcpdump-resolve-ip-and-skip-resolving-ports
+```
+# For packet capture conversion from Etl to WireShark's pcapng, use etl2pcapng (preferred). 
+## If that doesn't work, try pktmon, or netsh (which converts to txt and should be used if the others don't work).
 
-## tcpdump.filters.capture.filters
+# The UI tools for analyzing ETL are Message Analyzer (deprecated) and NetMon (deprecated).
+```
+
+## tcpdump.capture.export.etl.pcapng.etl2pcapng
+
+```
+# Download the exe and run the command in the same folder. The output file will have the same name and be in the same folder by default.
+etl2pcapng.exe trace.etl
+IF: medium=eth                  ID=0    IfIndex=10      VlanID=0
+Wrote 38698 frames to trace.pcapng
+```
+
+- https://github.com/microsoft/etl2pcapng
+
+## tcpdump.capture.export.etl.pcapng.netsh
+
+```
+netsh trace convert input=trace.etl # converts to txt
+```
+
+## tcpdump.capture.filter
 
 ```
 tcpdump host 1.1.1.1 # Source or destination
@@ -58,7 +75,7 @@ ip.addr!=169.254.169.254 && ip.addr!=168.63.129.16
 - https://www.tcpdump.org/manpages/pcap-filter.7.html
 - https://blog.wains.be/2007/2007-10-01-tcpdump-advanced-filters/
 
-## tcpdump.filters.capture.filters.http
+## tcpdump.capture.filter.http
 
 ```
 tcpdump tcp port http # tcpdump port 80 # tcpdump port http
@@ -97,15 +114,24 @@ tcpdump 'tcp[((tcp[12:1] & 0xf0) >> 2):4] = 0x48454144' # HEAD
 - https://stackoverflow.com/questions/9241391/how-to-capture-all-the-http-packets-using-tcpdump
 - https://stackoverflow.com/questions/39012132/how-to-capture-only-http-with-tcpdump-with-linux
 
-## tcpdump.filters.capture.filters.https
+## tcpdump.capture.filter.https
 
 ```
 tcpdump tcp port https
 
 ```
 
-## tcpdump.filters.capture.filters.ip
+## tcpdump.capture.filter.ip
 
 ```
 tcpdump ip
 ```
+
+## tcpdump.debug.faqs
+
+- Frequently Asked Questions
+  - tbd https://linuxconfig.org/how-to-use-tcpdump-command-on-linux
+  - https://superuser.com/questions/1455476/what-does-tcp-packet-p-flag-means-in-tcpdumps-output
+  - https://stackoverflow.com/questions/25603831/how-can-i-have-tcpdump-write-to-file-and-standard-output-the-appropriate-data
+  - https://superuser.com/questions/273489/how-do-i-make-tcpdump-to-write-to-file-for-each-packet-it-captures
+  - https://stackoverflow.com/questions/19808483/tcpdump-resolve-ip-and-skip-resolving-ports

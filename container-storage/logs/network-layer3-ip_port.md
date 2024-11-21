@@ -33,7 +33,11 @@ while true; echo -e '\n\n\n\n'$(date);  do sleep 1; (echo > /dev/tcp/8.8.8.8/443
 
 ```
 # nc.telnet
-nc -v www.microsoft.com 80
+nc -v google.com 443 -w 1 # exits or times out in a sec
+Connection to google.com (142.250.178.14) 443 port [tcp/https] succeeded!
+nc -v google1.com 443 -w 1
+nc: getaddrinfo for host "google1.com" port 443: Name or service not known
+nc -v www.microsoft.com 80 # Ctrl+C to exit
 Connection to www.microsoft.com 80 port [tcp/http] succeeded!
 
 # nc.listenmode
@@ -68,11 +72,27 @@ PORT     STATE SERVICE
 Nmap done: 1 IP address (1 host up) scanned in 0.39 seconds
 ```
 
+## ip.port.apps.psping
+
+```
+# This one's for Windows OS
+```
+
 ## ip.port.apps.ss
 
 ```
 ss -anlp # apt-get update && apt-get install iproute2 -y
 ```
+
+## ip.port.apps.tcpping
+
+- https://github.com/deajan/tcpping
+- http://www.vdberg.org/~richard/: The script is called tcpping, the current version is 2.0 and is now being maintained on github by Orsiris de Jong
+- http://www.vdberg.org/~richard/tcpping
+
+## ip.port.apps.tcpspray
+
+- https://manpages.org/tcpspray
 
 ## ip.port.debug
 

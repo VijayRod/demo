@@ -7,6 +7,50 @@
 
 - https://www.azurespeed.com/Azure/Latency
 
+## ip.Azure.types.ca
+
+```
+# Customer address (CA)
+# See the section on PA
+```
+
+## ip.Azure.types.lb.dip
+
+```
+# DIP (Dynamic IP)
+```
+
+- https://www.itprotoday.com/azure-cloud/correct-terms-for-vip-and-dip-and-more-in-azure-resource-manager
+- https://shabiryusuf.wordpress.com/2016/03/15/example-of-dip-pip-ilpip-and-vip-on-microsoft-azure/
+- https://petri.com/understanding-ip-addressing-microsoft-azure/
+- https://techcommunity.microsoft.com/blog/azuredevcommunityblog/azure-api-management-networking-explained/3274323
+- https://www.microsoftpressstore.com/articles/article.aspx?p=2358300&seqNum=2
+
+## ip.Azure.types.lb.ilpip
+
+```
+# PIP or ILPIP= Instance Level Public IP
+# See the section on DIP
+```
+
+## ip.Azure.types.lb.vip
+
+```
+# VIP (virtual IP)
+# See the section on DIP
+```
+
+## ip.Azure.types.pa
+
+```
+Provider address (PA)
+```
+
+- https://learn.microsoft.com/en-us/azure/azure-government/azure-secure-isolation-guidance: Provider address (PA) is the Azure assigned internal fabric address that isn't visible to users and is also referred to as Dynamic IP (DIP). No traffic goes directly from the Internet to a server; all traffic from the Internet must go through a Software Load Balancer (SLB) and be encapsulated to protect the internal Azure address space by only routing packets to valid Azure internal IP addresses and ports
+  - Customer address (CA)
+- https://learn.microsoft.com/en-us/windows-server/networking/sdn/technologies/hyper-v-network-virtualization/hyperv-network-virtualization-technical-details-windows-server#packet-encapsulation
+- https://learn.microsoft.com/en-us/troubleshoot/windows-server/software-defined-networking/troubleshoot-sdn-guidance: If provider addresses (PA) are not present or customer address (CA) connectivity is broken, check to make sure that network policy has been received.
+
 ## ip.virtualPublicIp
 
 ```

@@ -50,6 +50,10 @@ az aks show -g $rg -n aks --query privateLinkResources
 ```
 # See the section on run commandinvoke aks
 
+fqdn=$(az aks show -g $rg -n aks --query privateFqdn -otsv)
+nslookup $fqdn
+** server can't find aks-rg-efec8e-2fc44ihq.ec2ccfad-dd02-4ef6-8ce0-e3f276ae86aa.privatelink.swedencentral.azmk8s.io: NXDOMAIN
+
 # This from a machine that's not in the same virtual network or in a connected peer network
 az aks get-credentials -g $rg -n aksprivate
 The behavior of this command has been altered by the following extension: aks-preview

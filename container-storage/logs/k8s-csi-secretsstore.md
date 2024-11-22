@@ -447,3 +447,9 @@ I1120 18:34:04.946994       1 nodeserver.go:306] "node unpublish volume complete
 - https://learn.microsoft.com/en-us/azure/aks/csi-secrets-store-driver
 - https://secrets-store-csi-driver.sigs.k8s.io/known-limitations
 - https://github.com/kubernetes-sigs/secrets-store-csi-driver/issues
+
+## secrets-store.other.external-secrets
+
+- https://external-secrets.io/provider-azure-key-vault/
+- https://external-secrets.io/v0.4.4/guides-getting-started/
+- https://github.com/external-secrets/external-secrets/

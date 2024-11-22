@@ -9,7 +9,7 @@ clustername=aksnat
 az group create -n $rg -l $loc
 az aks create -g $rgname -n $clustername --outbound-type managedNATGateway \
     --nat-gateway-managed-outbound-ip-count 2 --nat-gateway-idle-timeout 4 -s $vmsize -c 2
-az aks get-credentials -g $rg -n aksnat --overwrite-existing
+az aks get-credentials -g $rg -n $clustername --overwrite-existing
 
 # To update an existing cluster
 az aks update -g $rgname -n $clustername --outbound-type managedNATGateway \

@@ -170,10 +170,6 @@ command started at 2024-11-21 18:38:30+00:00, finished at 2024-11-21 18:38:30+00
 ```
 # don't run by default
   
-fqdn=$(az aks show -g $rg -n aks --query privateFqdn -otsv)
-nslookup $fqdn
-** server can't find aks-rg-efec8e-2fc44ihq.ec2ccfad-dd02-4ef6-8ce0-e3f276ae86aa.privatelink.swedencentral.azmk8s.io: NXDOMAIN
-
 az aks command invoke -g $rg -n aks --command "nc -v google.com 443 -w 1"
 command started at 2024-11-21 18:49:32+00:00, finished at 2024-11-21 18:49:32+00:00 with exitcode=127
 /bin/sh: 1: nc: not found

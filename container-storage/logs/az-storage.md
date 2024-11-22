@@ -4,10 +4,12 @@
 rg=rg
 az group create -g $rg -l $loc
 
-storage="storage$RANDOM"
+storage="storage$RANDOM$RANDOM"; echo $storage
 az storage account create -g $rg -n $storage
 
 az storage account list -g $rg
+
+storageId=$(az storage account show -g $rg -n $storage --query id -otsv); echo $storageId
 ```
 
 ## az-storage.api

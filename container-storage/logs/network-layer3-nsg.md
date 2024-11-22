@@ -23,10 +23,6 @@ az network nsg show -g $noderg -n aks-agentpool-37790187-nsg
 # https://learn.microsoft.com/en-us/azure/network-watcher/nsg-flow-logs-cli
 nsg=
 noderg=$(az aks show -g $rg -n aks --query nodeResourceGroup -o tsv)  
-storage="storage$RANDOM$RANDOM"
-az storage account create -g $rg -n $storage
-storageId=$(az storage account show -g $rg -n $storage --query id -otsv); echo $storageId
-az network watcher flow-log create -g $noderg --nsg $nsg -n myFlowLog --storage-account $storageId --log-version 2
 
 az network watcher flow-log update -g $noderg --nsg $nsg -n myFlowLog --log-version 2
 
@@ -49,7 +45,13 @@ az network watcher flow-log delete --name myFlowLog -l $loc --no-wait true
 
 ```
 # See the section on nsg.flowlog.workspace for log format
+
 # Instead of just setting up the storage account, enable traffic analytics with 'az network watcher flow-log create --traffic-analytics' because it's easier to query
+storage="storage$RANDOM$RANDOM"
+az storage account create -g $rg -n $storage
+storageId=$(az storage account show -g $rg -n $storage --query id -otsv); echo $storageId
+az network watcher flow-log create -g $noderg --nsg $nsg -n myFlowLog --storage-account $storageId --log-version 2
+
 # https://learn.microsoft.com/en-us/azure/network-watcher/nsg-flow-logs-cli#download-a-flow-log
 # Azure portal, go to the storage account, Storage browser, Blob containers, insights-logs-networksecuritygroupflowevent
 ## https://storage120161285.blob.core.windows.net/insights-logs-networksecuritygroupflowevent/resourceId=/SUBSCRIPTIONS/redacts-1111-1111-1111-111111111111/RESOURCEGROUPS/MC_RG_ASKNAT_SWEDENCENTRAL/PROVIDERS/MICROSOFT.NETWORK/NETWORKSECURITYGROUPS/AKS-AGENTPOOL-42418909-NSG/y=2024/m=11/d=21/h=15/m=00/macAddress=6045BDACE2FA/PT1H.json
@@ -223,13 +225,14 @@ PT1H.json
 ```
 # https://learn.microsoft.com/en-us/azure/network-watcher/nsg-flow-logs-cli#create-a-flow-log-and-traffic-analytics-workspace
 nsg=aks-agentpool-42418909-nsg
-noderg=$(az aks show -g $rg -n asknat --query nodeResourceGroup -o tsv)  
+noderg=$(az aks show -g $rg -n aksnat --query nodeResourceGroup -o tsv)  
 storage="storage$RANDOM$RANDOM"; echo $storage
 az storage account create -g $rg -n $storage
+storageId=$(az storage account show -g $rg -n $storage --query id -otsv); echo $storageId
 az monitor log-analytics workspace create -g $rg -n laworkspace
 workspaceId=$(az monitor log-analytics workspace show -g $rg -n laworkspace --query id -otsv)
 az network watcher flow-log create -g $noderg --nsg $nsg -n myFlowLog --storage-account $storageId --log-version 2 --traffic-analytics true --workspace $workspaceId --interval 10 # minutes
-# az network watcher flow-log update -g $noderg --nsg $nsg -n myFlowLog --interval 60 # minutes
+# az network watcher flow-log update -g $noderg --nsg $nsg -n myFlowLog --interval 10 # minutes
 
 # nsg.flowlog.SubType_s
 # https://learn.microsoft.com/en-us/azure/network-watcher/traffic-analytics-schema?tabs=nsg#notes: AzurePublic, ExternalPublic

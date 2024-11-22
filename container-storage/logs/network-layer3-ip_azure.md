@@ -1,7 +1,14 @@
 ## ip.Azure.IpRanges
 
+```
+# See the section on service tag
+```
+
 - https://www.azurespeed.com/Azure/IPLookup
-- https://www.microsoft.com/en-us/download/details.aspx?id=56519: Azure IP Ranges and Service Tags – Public Cloud
+- https://www.microsoft.com/en-us/download/details.aspx?id=56519: Azure IP Ranges and Service Tags – Public Cloud (This link has IP ranges, so you might not be able to search for an IP directly)
+- https://azservicetags.azurewebsites.net/iplookup
+- https://azservicetags.azurewebsites.net/servicetag/azurecloud
+- https://azservicetags.azurewebsites.net/servicetag/azurecloud.swedencentral
 
 ## ip.Azure.IpRanges.Latency
 

@@ -45,8 +45,11 @@ az network watcher flow-log update -g $noderg --nsg $nsg -n myFlowLog --storage-
 az network watcher flow-log delete --name myFlowLog -l $loc --no-wait true
 ```
 
+## nsg.flowlog.storageaccount
+
 ```
-# nsg.flowlog.storageaccount
+# See the section on nsg.flowlog.workspace for log format
+# Instead of just setting up the storage account, enable traffic analytics with 'az network watcher flow-log create --traffic-analytics' because it's easier to query
 # https://learn.microsoft.com/en-us/azure/network-watcher/nsg-flow-logs-cli#download-a-flow-log
 # Azure portal, go to the storage account, Storage browser, Blob containers, insights-logs-networksecuritygroupflowevent
 ## https://storage120161285.blob.core.windows.net/insights-logs-networksecuritygroupflowevent/resourceId=/SUBSCRIPTIONS/redacts-1111-1111-1111-111111111111/RESOURCEGROUPS/MC_RG_ASKNAT_SWEDENCENTRAL/PROVIDERS/MICROSOFT.NETWORK/NETWORKSECURITYGROUPS/AKS-AGENTPOOL-42418909-NSG/y=2024/m=11/d=21/h=15/m=00/macAddress=6045BDACE2FA/PT1H.json
@@ -213,8 +216,11 @@ PT1H.json
 		},
 ```
 
+- https://learn.microsoft.com/en-us/azure/network-watcher/traffic-analytics-schema?tabs=nsg#data-aggregation: All flow logs at a network security group between FlowIntervalStartTime_t and FlowIntervalEndTime_t are captured at one-minute intervals as blobs in a storage account.
+
+## nsg.flowlog.workspace
+
 ```
-# nsg.flowlog.workspace
 # https://learn.microsoft.com/en-us/azure/network-watcher/nsg-flow-logs-cli#create-a-flow-log-and-traffic-analytics-workspace
 nsg=aks-agentpool-42418909-nsg
 noderg=$(az aks show -g $rg -n asknat --query nodeResourceGroup -o tsv)  
@@ -224,8 +230,22 @@ az monitor log-analytics workspace create -g $rg -n laworkspace
 workspaceId=$(az monitor log-analytics workspace show -g $rg -n laworkspace --query id -otsv)
 az network watcher flow-log create -g $noderg --nsg $nsg -n myFlowLog --storage-account $storageId --log-version 2 --traffic-analytics true --workspace $workspaceId --interval 10 # minutes
 # az network watcher flow-log update -g $noderg --nsg $nsg -n myFlowLog --interval 60 # minutes
+
+# nsg.flowlog.SubType_s
+# https://learn.microsoft.com/en-us/azure/network-watcher/traffic-analytics-schema?tabs=nsg#notes: AzurePublic, ExternalPublic
+AzureNetworkAnalytics_CL 
+| where SubType_s == "FlowLog"
+| summarize count() by FlowType_s
+ExternalPublic	53
+AzurePublic	51
+Unknown		180
+IntraVNet	330
 ```
 
 - https://learn.microsoft.com/en-us/azure/network-watcher/nsg-flow-logs-overview
 - https://learn.microsoft.com/en-us/azure/network-watcher/traffic-analytics-schema?tabs=nsg
 - https://learn.microsoft.com/en-us/azure/network-watcher/nsg-flow-logs-overview#log-format
+- https://learn.microsoft.com/en-us/azure/network-watcher/traffic-analytics-schema?tabs=nsg#data-aggregation: if a processing interval of 10 minutes is selected, traffic analytics will instead pick blobs from the storage account every 10 minute
+- https://learn.microsoft.com/en-us/azure/network-watcher/traffic-analytics-schema?tabs=nsg#traffic-analytics-schema: TableName	AzureNetworkAnalytics_CL
+- https://learn.microsoft.com/en-us/azure/network-watcher/traffic-analytics-schema?tabs=nsg#notes: See Notes for definitions.
+- https://harvestingclouds.com/post/troubleshooting-azure-networking-checking-allowed-and-denied-traffic-in-network-security-groups-nsgs-via-log-analytics-queries/: All the logs from NSG Flow Logs are sent to the "AzureNetworkAnalytics_CL" table in the Log Analytics.

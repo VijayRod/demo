@@ -1,4 +1,9 @@
 ## lb (load balancer)
+
+```
+# See the section on ip azure for vip dip ilpip ca pa
+```
+
 - https://learn.microsoft.com/en-us/azure/load-balancer/load-balancer-overview: Azure Load Balancer operates at layer 4 of the Open Systems Interconnection (OSI) model.
 - https://learn.microsoft.com/en-us/azure/load-balancer/load-balancer-troubleshoot
 - https://learn.microsoft.com/en-us/azure/load-balancer/load-balancer-standard-diagnostics

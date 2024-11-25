@@ -50,6 +50,7 @@ Oct 23 19:25:39 aks-nodepool1-74128781-vmss000000 containerd[2707]: time="2024-1
 systemctl restart containerd
 ```
 
+- https://kubernetes.io/docs/setup/production-environment/container-runtimes/
 - https://azure.microsoft.com/en-us/updates/azure-kubernetes-service-aks-support-for-containerd-runtime-is-in-preview/
 - https://learn.microsoft.com/en-us/azure/aks/cluster-configuration#container-runtime-configuration
 - https://learn.microsoft.com/en-us/azure/aks/learn/quick-windows-container-deploy-cli#connect-to-the-cluster

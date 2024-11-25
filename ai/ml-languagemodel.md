@@ -10,6 +10,8 @@
   - In supervised machine learning, a model takes an example as input and infers a prediction as output. linear regression model. neural network model. decision tree model.
   - Unsupervised machine learning also generates models, typically a function that can map an input example to the most appropriate cluster.
 - https://developers.google.com/machine-learning/resources/intro-llms#what_is_a_language_model: A language model is a machine learning model that aims to predict and generate plausible language. Autocomplete is a language model, for example.
+- https://arxiv.org/pdf/2305.20050: Let’s Verify Step by Step.  Large language models are capable of solving tasks that require complex multi
+step reasoning by generating solutions in a step-by-step chain-of-thought format
 
 ## ml.languagemodel.supervised.neural-network
 
@@ -66,18 +68,27 @@
 
 - https://platform.openai.com/docs/models
 
-## ml.languagemodel.supervised.neural-network.RNN.genai.transformer.token.llm.model.gpt-3
+## ml.languagemodel.supervised.neural-network.RNN.genai.transformer.token.llm.model.anthropic.claude35sonnet
+
+- https://www.anthropic.com/news/claude-3-5-sonnet
+- https://claude.ai/chat/
+
+## ml.languagemodel.supervised.neural-network.RNN.genai.transformer.token.llm.model.google.lamda
+
+- https://www.wired.com/story/how-chatgpt-works-large-language-model/: the research paper introducing the LaMDA (Language Model for Dialogue Applications) model, which Bard is built on
+- https://arxiv.org/abs/2201.08239: LaMDA: Language Models for Dialog Applications. LaMDA is a family of Transformer based neural language models specialized for dialog, which have up to 137B parameters and are pre-trained on 1.56T words of public dialog data and web text.
+
+## ml.languagemodel.supervised.neural-network.RNN.genai.transformer.token.llm.model.meta.llama
+
+## ml.languagemodel.supervised.neural-network.RNN.genai.transformer.token.llm.model.openai.gpt-3
 
 - https://www.ibm.com/think/insights/generative-ai-benefits: 
 
-## ml.languagemodel.supervised.neural-network.RNN.genai.transformer.token.llm.model.gpt-4
+## ml.languagemodel.supervised.neural-network.RNN.genai.transformer.token.llm.model.openai.gpt-4
 
-## ml.languagemodel.supervised.neural-network.RNN.genai.transformer.token.llm.model.lamda
+## ml.languagemodel.supervised.neural-network.RNN.genai.transformer.token.llm.model.openai.o1
 
-- https://www.wired.com/story/how-chatgpt-works-large-language-model/: the research paper introducing the LaMDA (Language Model for Dialogue Applications) model, which Bard is built on
-- https://arxiv.org/abs/2201.08239: LaMDA: Language Models for Dialog Applications
-
-## ml.languagemodel.supervised.neural-network.RNN.genai.transformer.token.llm.model.llama
+- https://openai.com/index/introducing-openai-o1-preview/: refine their thinking process, try different strategies, and recognize their mistakes. similarly to PhD students
 
 ## ml.languagemodel.supervised.neural-network.RNN.genai.transformer.token.slm
 

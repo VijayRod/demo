@@ -1,0 +1,3 @@
+- https://external-secrets.io/provider-azure-key-vault/
+- https://external-secrets.io/v0.4.4/guides-getting-started/
+- https://github.com/external-secrets/external-secrets/

@@ -8,7 +8,60 @@ az feature show --namespace Microsoft.ContainerService --name AzureVnetScalePrev
 - https://learn.microsoft.com/en-us/azure/aks/concepts-network-azure-cni-pod-subnet
 - https://learn.microsoft.com/en-us/azure/aks/configure-azure-cni-static-block-allocation#plan-ip-addressing
 
-## k8s-cni.azure.podsubnet.staticblock
+## k8s-cni.azure.podsubnet.pod-ip-allocation-mode.DynamicIndividual (dynamic IP)
+
+```
+rgname=$rg
+clustername=akspodsubnet
+vnet=myvnet
+subId=$(az account show --query id -otsv)
+az group create -g $rg -l $loc
+
+az network vnet create -g $rgname --name $vnet --address-prefixes 10.0.0.0/8 -o none 
+az network vnet subnet create -g $rgname --vnet-name $vnet --name nodesubnet --address-prefixes 10.240.0.0/16 -o none 
+az network vnet subnet create -g $rgname --vnet-name $vnet --name podsubnet --address-prefixes 10.241.0.0/16 -o none
+
+az aks create -g $rgname -n $clustername --network-plugin azure \
+    --vnet-subnet-id /subscriptions/$subId/resourceGroups/$rgname/providers/Microsoft.Network/virtualNetworks/$vnet/subnets/nodesubnet \
+    --pod-subnet-id /subscriptions/$subId/resourceGroups/$rgname/providers/Microsoft.Network/virtualNetworks/$vnet/subnets/podsubnet
+    # --pod-ip-allocation-mode=DynamicIndividual (default)
+az aks get-credentials -g $rgname -n $clustername
+# az aks get-credentials -g $rg -n akspodsubnet
+```
+
+```
+# To query the values
+az aks show -g $rgname -n $clustername --query id
+az aks show -g $rgname -n $clustername --query agentPoolProfiles[0].podSubnetId
+az aks show -g $rgname -n $clustername --query agentPoolProfiles[0].vnetSubnetId
+
+# Here is a sample output below.
+"/subscriptions/dummys-1111-1111-1111-111111111111/resourcegroups/resourceGroupName/providers/Microsoft.ContainerService/managedClusters/akspodsubnet"
+"/subscriptions/dummys-1111-1111-1111-111111111111/resourceGroups/resourceGroupName/providers/Microsoft.Network/virtualNetworks/myvnet/subnets/podsubnet"
+"/subscriptions/dummys-1111-1111-1111-111111111111/resourceGroups/resourceGroupName/providers/Microsoft.Network/virtualNetworks/myvnet/subnets/nodesubnet"
+
+# See the section on nnc
+k get po -n kube-system -l k8s-app=azure-cns
+NAME              READY   STATUS    RESTARTS   AGE
+azure-cns-bnd8r   1/1     Running   0          9m3s
+azure-cns-cxqzn   1/1     Running   0          9m3s
+azure-cns-pw6xc   1/1     Running   0          9m8s
+k get nnc -n kube-system
+NAME                                ALLOCATED IPS   NC MODE   NC VERSION
+aks-nodepool1-37360466-vmss000000   16              dynamic   0
+aks-nodepool1-37360466-vmss000001   16              dynamic   0
+aks-nodepool1-37360466-vmss000002   16              dynamic   0
+```
+
+```
+# To cleanup
+az aks delete -g $rgname -n $clustername -y --no-wait
+az network vnet delete -g $rgname -n $vnet --no-wait
+```
+
+- https://learn.microsoft.com/en-us/azure/aks/configure-azure-cni-dynamic-ip-allocation
+
+## k8s-cni.azure.podsubnet.pod-ip-allocation-mode.staticblock
 
 ```
 rg=rg
@@ -77,7 +130,7 @@ az aks nodepool add -g $rg --cluster-name akspodsubnet -n nodepool2 --vnet-subne
 - https://learn.microsoft.com/en-us/azure/aks/configure-azure-cni-static-block-allocation
 - https://learn.microsoft.com/en-us/azure/aks/concepts-network-azure-cni-pod-subnet#static-block-allocation-mode-preview
 
-### k8s-cni.azure.podsubnet.staticblock.16IPs
+### k8s-cni.azure.podsubnet.pod-ip-allocation-mode.staticblock.16IPs
 
 ```
 # To determine how many 16 IP blocks are allocated to a node, you should look at the number of pods that are currently running on that node.
@@ -116,7 +169,7 @@ kubectl get po -A -owide | grep aks-nodepool1-90720178-vmss000000 | grep Running
 
 - https://learn.microsoft.com/en-us/azure/aks/configure-azure-cni-static-block-allocation#plan-ip-addressing: "CIDR blocks of /28 (16 IPs) are allocated to nodes based on..."
 
-### k8s-cni.azure.podsubnet.staticblock.16IPs.error.InsufficientSubnetSize - no NCs found in NNC CRD
+### k8s-cni.azure.podsubnet.pod-ip-allocation-mode.staticblock.16IPs.error.InsufficientSubnetSize - no NCs found in NNC CRD
 
 ```
 # InsufficientSubnetSize - no NCs found in NNC CRD
@@ -204,6 +257,6 @@ kubectl logs -n kube-system azure-cns-59v7p
 2024/10/03 22:19:18 [1] failed to reconcile initial CNS state, attempt: 1 err: failed to init CNS state: no NCs found in NNC CRD
 ```
 
-## k8s-cni.azure.podsubnet.staticblock.scale
+## k8s-cni.azure.podsubnet.pod-ip-allocation-mode.staticblock.scale
 
 - tbd https://learn.microsoft.com/en-us/azure/aks/configure-azure-cni-static-block-allocation#plan-ip-addressing: This enables routing based on CIDR blocks and helps scale the cluster limit up to 1 million pods from the traditional 65K pods per cluster. 

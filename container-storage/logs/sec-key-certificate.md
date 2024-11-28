@@ -2,6 +2,8 @@
 
 ```
 # See the section on openssl certificate, k8s certificate and key vault certificate
+# curl -v https://$albUrl
+# openssl s_client -connect f989246f5c8f43179b0bd73c36268aaf.alb.azure.com:443 -showcerts
 
 # certificate.self-signed
 openssl genpkey -algorithm RSA -out mykey.pem

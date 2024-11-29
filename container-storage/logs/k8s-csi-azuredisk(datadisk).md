@@ -1,6 +1,8 @@
 ## azuredisk-csi
 
 ```
+# See the section on data disk, node zone data disk
+
 rg=rg
 az group create -n $rg -l swedencentral
 az aks create -g $rg -n aks
@@ -126,4 +128,41 @@ spec:
   storageClassName: managed-csi
 EOF
 watch kubectl get deploy
+```
+
+```
+kubectl delete po nginx
+kubectl delete pvc pvc-azuredisk
+cat << EOF | kubectl create -f -
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: nginx
+  name: nginx
+spec:
+  containers:
+  - image: nginx
+    name: nginx
+    volumeMounts:
+    - name: azure
+      mountPath: /mnt/azure
+  volumes:
+  - name: azure
+    persistentVolumeClaim:
+      claimName: pvc-azuredisk
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvc-azuredisk
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  #storageClassName: managed-csi
+EOF
+kubectl get po -w
 ```

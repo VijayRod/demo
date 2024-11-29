@@ -20,6 +20,8 @@ ls >/dev/tcp/localhost/3333
 ```
 
 ```
+# Keep tcpping or psping, whichever they prefer, running to the destination. Please ask them to leave running continuously. We need tcp ping on the specific port
+
 while true; echo -e '\n\n\n\n'$(date);  do sleep 1; (echo > /dev/tcp/google.com/443) >/dev/null 2>&1 && echo "up" || echo "down"; done >result.txt # cat result.txt | grep down # Credits: Ricardo
 while true; echo -e '\n\n\n\n'$(date);  do sleep 1; (echo > /dev/tcp/8.8.8.8/443) >/dev/null 2>&1 && echo "up" || echo "down"; done # Credits: Ricardo
 ```

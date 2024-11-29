@@ -42,6 +42,38 @@ az vmss list-instances -g $noderg -n aks-np2-39852331-vmss
     "zones": [
       "1"
 ```                    
+
+```
+k describe no -l kubernetes.azure.com/agentpool=np2 | grep zone
+topology.kubernetes.io/zone=swedencentral-1
+
+kubectl delete po nginx
+cat << EOF | kubectl create -f -
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: nginx
+  name: nginx
+spec:
+  containers:
+  - image: nginx
+    name: nginx
+  nodeSelector:
+    kubernetes.azure.com/agentpool: np2
+    topology.kubernetes.io/zone: swedencentral-2 # different zone
+EOF
+kubectl get po
+kubectl describe po
+
+NAME    READY   STATUS    RESTARTS   AGE
+nginx   0/1     Pending   0          0s
+
+Events:
+  Type     Reason            Age   From               Message
+  ----     ------            ----  ----               -------
+  Warning  FailedScheduling  23s   default-scheduler  0/2 nodes are available: 2 node(s) didn't match Pod's node affinity/selector. preemption: 0/2 nodes are available: 2 Preemption is not helpful for scheduling.
+```
                     
 - https://learn.microsoft.com/en-us/azure/aks/availability-zones
 - https://learn.microsoft.com/en-us/azure/aks/free-standard-pricing-tiers#uptime-sla-terms-and-conditions

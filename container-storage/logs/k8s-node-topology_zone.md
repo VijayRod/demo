@@ -1,32 +1,46 @@
 ## k8s-node-topology_zone
 
 ```
-# Replace the below with appropriate values.
 rg=rgzone
 clustername=aks
-```
-
-```
-# To create a cluster
 az aks create -g $rg -n $clustername --zones 1 2
-```
 
-```
-# az aks show -g $r -n $clustername --query agentPoolProfiles[0].availabilityZones
+az aks show -g $r -n $clustername --query agentPoolProfiles[0].availabilityZones
 [
   "1",
   "2"
 ]
-```
 
-```
+# node pool create without specifying --zone
+# k describe no | grep -E 'name|zone'
+k describe no | grep zone
+                    failure-domain.beta.kubernetes.io/zone=0
+                    topology.disk.csi.azure.com/zone=
+                    topology.kubernetes.io/zone=0
+
 # kubectl describe nodes | grep -e "Name:" -e "topology.kubernetes.io/zone"
+# kubectl describe no -l kubernetes.azure.com/agentpool=np2 | grep zone # topology.disk.csi.azure.com/zone=swedencentral-1
 Name:               aks-nodepool1-29870350-vmss000000
                     topology.kubernetes.io/zone=swedencentral-1
 Name:               aks-nodepool1-29870350-vmss000001
                     topology.kubernetes.io/zone=swedencentral-2
 Name:               aks-nodepool1-29870350-vmss000002
                     topology.kubernetes.io/zone=swedencentral-1
+```
+
+```
+kubectl describe no -l kubernetes.azure.com/agentpool=np2 | grep zone # topology.disk.csi.azure.com/zone=swedencentral-1
+noderg=$(az aks show -g $rg -n aks --query nodeResourceGroup -o tsv)
+diskUri=$(az disk create -g $noderg -n myAKSDisk --size-gb 1 --zone 2 --query id --output tsv); echo $diskUri # --zone different from VM
+az disk show -g $noderg -n myAKSDisk --query zones # [  "2"]
+
+az vmss show -g $noderg -n aks-np2-39852331-vmss --query zones # [  "1"]
+
+az vmss list-instances -g $noderg -n aks-np2-39852331-vmss
+[
+    "name": "aks-np2-39852331-vmss_0",
+    "zones": [
+      "1"
 ```                    
                     
 - https://learn.microsoft.com/en-us/azure/aks/availability-zones

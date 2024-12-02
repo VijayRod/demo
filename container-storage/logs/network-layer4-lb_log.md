@@ -1,5 +1,5 @@
 ```
-# Stop the kubectl service. The pods are using a load balancer but don't have a livenessProbe set up
+# Stop the kubectl service in the azure-cni cluster. The pods are using a load balancer but don't have a livenessProbe set up
 
 rg=rg
 az group create -n $rg -l $loc

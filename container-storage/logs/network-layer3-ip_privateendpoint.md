@@ -43,6 +43,10 @@ az network private-dns record-set a add-record -g $rg --zone-name $zone -n akspr
 az network private-dns link vnet create -g $rg --zone-name $zone -n dnslink --virtual-network $clusterVNetId --registration-enabled false
 az network private-endpoint dns-zone-group create -g $rg --endpoint-name pe -n zonegroup --private-dns-zone $zone --zone-name aks
 
+# Mitigate
+# Delete the cluster PE, then reconcile the cluster to recreate the PE. az aks update -g $rg -n aksprivate
+# Stop and start the cluster to delete the PE and the associated control plane. https://learn.microsoft.com/en-us/azure/aks/private-clusters: If the private cluster is stopped and restarted, the private cluster's original private link service (PLS) is removed and recreated
+
 # Cleanup
 # Here's the right order of steps: First, delete the PLE (private-endpoint) and PLS (private-dns link vnet) in the app DNS zone (optionally make sure it's deleted in the cluster DNS zones too). After that, you can delete the ingress (with the finalizers in its service, which will remove the LB).
 ```

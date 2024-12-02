@@ -74,6 +74,7 @@ ip.addr!=169.254.169.254 && ip.addr!=168.63.129.16
 - https://wiki.wireshark.org/CaptureFilters
 - https://www.tcpdump.org/manpages/pcap-filter.7.html
 - https://blog.wains.be/2007/2007-10-01-tcpdump-advanced-filters/
+- https://gist.github.com/tuxfight3r/9ac030cb0d707bb446c7
 
 ## tcpdump.capture.filter.http
 

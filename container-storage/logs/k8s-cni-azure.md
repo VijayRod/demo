@@ -1,6 +1,8 @@
 ## k8s-cni.azure
 
 ```
+# See the section on container logs
+
 akscal
 cat /var/run/azure-vnet.json
 cat /var/run/azure-vnet-ipam.json

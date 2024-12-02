@@ -1,6 +1,8 @@
 ## k8s-cni
 
 ```
+# See the section on container logs
+
 az aks create -g $rg -n akscal --network-plugin azure --network-policy calico -s $vmsize -c 1
 az aks create -g $rg -n akskubecal --network-plugin kubenet --network-policy calico -s $vmsize -c 1
 az aks create -g $rg -n akskube --network-plugin kubenet # default

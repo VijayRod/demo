@@ -10,6 +10,8 @@ kubectl debug -it nginx --image=busybox:1.28 --target=nginx # https://kubernetes
 ## container.id
 
 ```
+# See the section on container logs
+
 kubectl run nginx --image=nginx
 
 # kubectl describe po nginx

@@ -11,6 +11,8 @@
 ## lb.app.k8s.aks
 
 ```
+# See the section on lb logs
+
 rg=rg
 az group create -n $rg -l $loc
 az aks create -g $rg -n aks -s $vmsize -c 1

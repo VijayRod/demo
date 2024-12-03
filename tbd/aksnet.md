@@ -20,6 +20,7 @@
   - storage/[k8s-csi](https://github.com/VijayRod/demo/blob/master/container-storage/logs/k8s-csi.md)
   - test/[load](https://github.com/VijayRod/demo/blob/master/container-storage/logs/http-test-load.md) - 
   - virtualization(hyperv) - [vm](https://github.com/VijayRod/demo/blob/master/container-storage/logs/az-virtualmachine(vm).md)
+  - zone - [node-topology_zone](https://github.com/VijayRod/demo/blob/master/container-storage/logs/k8s-node-topology_zone.md),
 
 
 

@@ -55,6 +55,8 @@ kubectl get po,pv,pvc
 ## pv.provision.static
 
 ```
+# **Since the PV is created by the user, the storage class settings won't apply to it. However, if it's a dynamically provisioned PV, then the settings in the storage class will take effect.
+
 # az disk delete -g MC_rg_aks_swedencentral -n disk
 az disk create -g MC_rg_aks_swedencentral -n disk --size-gb 20 --query id --output tsv
 diskId=$(az disk show -g MC_rg_aks_swedencentral -n disk --query id -otsv)

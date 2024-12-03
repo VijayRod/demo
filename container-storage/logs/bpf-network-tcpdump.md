@@ -128,6 +128,12 @@ tcpdump tcp port https
 tcpdump ip
 ```
 
+## tcpdump.debug.Challenge-ACK
+
+- https://knowledgebase.paloaltonetworks.com/KCSArticleDetail?id=kA10g000000boBJCAY: Firewall dropping RST from Client after Server's Challenge-ACK. While dropping the out of window RST (in the Palo Alto firewall) is actually an intended behavior, it breaks the Challenge-ACK mechanism.
+- https://datatracker.ietf.org/doc/html/rfc5961#section-4: the handling of the SYN in the synchronized state SHOULD be performed as follows: 1) If the SYN bit is set, irrespective of the sequence number, TCP MUST send an ACK (also referred to as challenge ACK) to the remote peer
+- https://www.networkdefenseblog.com/post/wireshark-tcp-challenge-ack
+
 ## tcpdump.debug.faqs
 
 - Frequently Asked Questions

@@ -4,7 +4,7 @@
 
 rg=rg
 az group create -n $rg -l $loc
-az aks create -g $rg -n aks -s $vmsize -c 1
+az aks create -g $rg -n aks -s $vmsize -c 2
 az aks get-credentials -g $rg -n aks --overwrite-existing
 kubectl get no; kubectl get po -A
 

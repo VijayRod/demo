@@ -1,11 +1,13 @@
 ## k8s-node-topology_zone
 
 ```
-rg=rgzone
-clustername=aks
-az aks create -g $rg -n $clustername --zones 1 2
+rg=rg
+az group create -n $rg -l $loc
+az aks create -g $rg -n akszone --zones 1 2 -s $vmsize -c 2
+az aks get-credentials -g $rg -n aks --overwrite-existing
+kubectl get no; kubectl get po -A
 
-az aks show -g $r -n $clustername --query agentPoolProfiles[0].availabilityZones
+az aks show -g $r -n akszone --query agentPoolProfiles[0].availabilityZones
 [
   "1",
   "2"
@@ -30,7 +32,7 @@ Name:               aks-nodepool1-29870350-vmss000002
 
 ```
 kubectl describe no -l kubernetes.azure.com/agentpool=np2 | grep zone # topology.disk.csi.azure.com/zone=swedencentral-1
-noderg=$(az aks show -g $rg -n aks --query nodeResourceGroup -o tsv)
+noderg=$(az aks show -g $rg -n akszone --query nodeResourceGroup -o tsv)
 diskUri=$(az disk create -g $noderg -n myAKSDisk --size-gb 1 --zone 2 --query id --output tsv); echo $diskUri # --zone different from VM
 az disk show -g $noderg -n myAKSDisk --query zones # [  "2"]
 

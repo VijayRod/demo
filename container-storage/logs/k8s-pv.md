@@ -50,6 +50,7 @@ kubectl get po,pv,pvc
 - https://kubernetes.io/docs/tasks/configure-pod-container/configure-persistent-volume-storage/
 - https://learn.microsoft.com/en-us/azure/aks/concepts-storage#volumes
 - https://learn.microsoft.com/en-us/azure/aks/concepts-storage#persistent-volumes
+- https://github.com/container-storage-interface/spec/blob/master/spec.md#createvolume
 
 ## pv.provision.static
 
@@ -124,6 +125,11 @@ Reclaim Policy:  Delete
 ```
 storageclass.volumeBindingMode
 ```
+
+## pv.volumeAttributes
+
+- https://kubernetes.io/docs/concepts/storage/volumes/#csi: This map must correspond to the map returned in the volume.attributes field of the CreateVolumeResponse by the CSI driver. The map is passed to the CSI driver via the volume_context field in the ControllerPublishVolumeRequest, NodeStageVolumeRequest, and NodePublishVolumeRequest.
+- https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.28/#volume-v1-core: volumeAttributes stores driver-specific properties that are passed to the CSI driver. Consult your driver's documentation for supported values.
 
 ## pv.volumeHandle
 

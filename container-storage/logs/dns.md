@@ -74,6 +74,17 @@ Address: 2a00:1450:400f:80c::200e
 
 - https://www.digwebinterface.com/: type the fqdn, and press Dig. It will display the IP if the full fqdn can be resolved publicly, even if its linked to a private IP, like those used in AKS private clusters. If not, , it will show the part of the fqdn that can be resolved by the dns server.
 
+## dns.server.relay
+
+- https://support.huawei.com/enterprise/en/knowledge/EKB1000075807: FAQ-In What Scenarios Should I Use the DNS Relay Function. The DNS proxy or relay function enables a DNS client on a LAN to connect to an external DNS server. After the external DNS server translates the domain name of the DNS client to an IP address, the DNS client can access the Internet.
+  After receiving DNS query packets from the DNS client, the device with DNS proxy enabled searches the local cache. The device with DNS relay enabled directly forwards the DNS query packets to the external DNS server, and does not search the local cache.
+  If the DNS client needs to obtain resource records on the DNS server in real time, enable the DNS relay function on the device.
+- https://help.dnsfilter.com/hc/en-us/sections/1500001413361-DNS-Relay
+    
+## dns.server.relay.windows
+
+- https://my.f5.com/manage/s/article/K9694: Archived - K9694: Overview of the Windows DNS Relay Proxy service. the DNS Relay Proxy service directs client DNS requests to the DNS servers that are configured for the Network Access connection when the domain name matches a domain name in the DNS address space field. All other client DNS requests are directed to the DNS servers configured on the client system.
+
 ## dns.spec.record
 
 - https://learn.microsoft.com/en-us/azure/dns/dns-zones-records#dns-records

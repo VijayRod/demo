@@ -28,10 +28,15 @@ az network watcher flow-log update -g $noderg --nsg $nsg -n myFlowLog --log-vers
 
 az network watcher flow-log list -l $loc --out table
 
+az network watcher flow-log show -g $noderg --nsg $nsg -n myFlowLog
+/subscriptions/redacts-1111-1111-1111-111111111111/resourceGroups/NetworkWatcherRG/providers/Microsoft.Network/networkWatchers/NetworkWatcher_swedencentral/flowLogs/myFlowLog
+
 az group list -otable
 Name                                                                 Location       Status
 -------------------------------------------------------------------  -------------  ---------
 NetworkWatcherRG                                                     swedencentral  Succeeded
+
+# create - See the section on nsg.flowlog.create.workspace
 
 # disable (temporary)
 az network watcher flow-log update -g $noderg --nsg $nsg -n myFlowLog --storage-account $storageId --traffic-analytics false --workspace $workspaceId
@@ -41,7 +46,7 @@ az network watcher flow-log update -g $noderg --nsg $nsg -n myFlowLog --storage-
 az network watcher flow-log delete --name myFlowLog -l $loc --no-wait true
 ```
 
-## nsg.flowlog.storageaccount
+## nsg.flowlog.create.storageaccount
 
 ```
 # See the section on nsg.flowlog.workspace for log format
@@ -220,12 +225,12 @@ PT1H.json
 
 - https://learn.microsoft.com/en-us/azure/network-watcher/traffic-analytics-schema?tabs=nsg#data-aggregation: All flow logs at a network security group between FlowIntervalStartTime_t and FlowIntervalEndTime_t are captured at one-minute intervals as blobs in a storage account.
 
-## nsg.flowlog.workspace
+## nsg.flowlog.create.workspace
 
 ```
 # https://learn.microsoft.com/en-us/azure/network-watcher/nsg-flow-logs-cli#create-a-flow-log-and-traffic-analytics-workspace
-nsg=aks-agentpool-42418909-nsg
-noderg=$(az aks show -g $rg -n aksnat --query nodeResourceGroup -o tsv)  
+nsg=aks-agentpool-42418909-nsg # update the name of the nsg
+noderg=$(az aks show -g $rg -n aksnat --query nodeResourceGroup -o tsv) # update the name of the aks cluster
 storage="storage$RANDOM$RANDOM"; echo $storage
 az storage account create -g $rg -n $storage
 storageId=$(az storage account show -g $rg -n $storage --query id -otsv); echo $storageId
@@ -233,8 +238,13 @@ az monitor log-analytics workspace create -g $rg -n laworkspace
 workspaceId=$(az monitor log-analytics workspace show -g $rg -n laworkspace --query id -otsv)
 az network watcher flow-log create -g $noderg --nsg $nsg -n myFlowLog --storage-account $storageId --log-version 2 --traffic-analytics true --workspace $workspaceId --interval 10 # minutes
 # az network watcher flow-log update -g $noderg --nsg $nsg -n myFlowLog --interval 10 # minutes
+```
 
-# nsg.flowlog.SubType_s
+```
+az network watcher flow-log show -g $noderg --nsg $nsg -n myFlowLog --query flowAnalyticsConfiguration.networkWatcherFlowAnalyticsConfiguration.workspaceResourceId -otsv
+/subscriptions/redacts-1111-1111-1111-111111111111/resourceGroups/rg/providers/Microsoft.OperationalInsights/workspaces/laworkspace
+
+# **nsg.flowlog.SubType_s
 # https://learn.microsoft.com/en-us/azure/network-watcher/traffic-analytics-schema?tabs=nsg#notes: AzurePublic, ExternalPublic
 AzureNetworkAnalytics_CL 
 | where SubType_s == "FlowLog"
@@ -243,6 +253,38 @@ ExternalPublic	53
 AzurePublic	51
 Unknown		180
 IntraVNet	330
+
+# kubenet/node (ExternalPublic) - curl google.com
+## AzureNetworkAnalytics_CL
+TimeGenerated [UTC]  2024-12-05T18:02:59.4882593Z
+FlowType_s  ExternalPublic
+SrcIP_s  10.224.0.4
+DestPublicIPs_s  142.250.74.46|1|1|6|0|478|0 142.250.74.174|1|1|6|0|478|0
+## kubectl get no -owide
+aks-nodepool1-75204569-vmss000000   Ready    <none>   83m   v1.30.6   10.224.0.4    <none>        Ubuntu 22.04.5 LTS   5.15.0-1074-azure   containerd://1.7.23-1
+## Name:   google.com
+Address: 142.250.187.238
+
+# kubenet/pod (ExternalPublic) - kubectl run nginx --image=nginx; kubectl exec -it nginx -- curl -I google.com
+No entry in the flowlog
+
+# azure-cni/pod (ExternalPublic) - kubectl run nginx --image=nginx; kubectl exec -it nginx -- curl -I google.com
+FlowType_s  ExternalPublic
+SrcIP_s  10.224.0.33
+DestPublicIPs_s  142.250.74.46|2|2|12|0|958|0
+kubectl get no -owide
+NAME                                STATUS   ROLES    AGE   VERSION   INTERNAL-IP   EXTERNAL-IP   OS-IMAGE             KERNEL-VERSION      CONTAINER-RUNTIME
+aks-nodepool1-23665971-vmss000000   Ready    <none>   33m   v1.30.6   10.224.0.33   <none>        Ubuntu 22.04.5 LTS   5.15.0-1074-azure   containerd://1.7.23-1
+
+# azure-cni/pod - curl to an nginx pod on the same node
+# kubectl run nginx0 --image=nginx --port=80 --overrides='{"spec": { "nodeSelector": {"kubernetes.io/hostname": "aks-nodepool1-23665971-vmss000000"}}}'
+# kubectl get po -owide; kubectl exec nginx -- curl -I 10.224.0.37
+No entry in the flowlog
+
+# azure-cni/pod - curl to an nginx pod on an another node
+# kubectl run nginx1 --image=nginx --port=80 --overrides='{"spec": { "nodeSelector": {"kubernetes.io/hostname": "aks-nodepool1-23665971-vmss000001"}}}'
+# kubectl get po -owide; kubectl exec nginx -- curl -I 10.224.0.19
+No entry in the flowlog
 ```
 
 - https://learn.microsoft.com/en-us/azure/network-watcher/nsg-flow-logs-overview

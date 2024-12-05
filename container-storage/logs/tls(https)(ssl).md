@@ -111,3 +111,5 @@ wireshark ssl.handshake
 - tbd https://www.hostzealot.com/blog/how-to/ssl-handshake-capture-with-tcpdump
 - tbd https://www.baeldung.com/linux/tcpdump-capture-ssl-handshake
 - https://techkluster.com/linux/tcpdump-capture-ssl-handshake/
+- https://www.sslshopper.com/ssl-checker.html
+- https://learn.microsoft.com/en-us/troubleshoot/developer/webapps/iis/www-authentication-authorization/troubleshooting-ssl-related-issues-server-certificate

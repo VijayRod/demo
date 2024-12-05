@@ -103,7 +103,7 @@ wireshark ssl.handshake
 - https://www.okta.com/identity-101/ssl-handshake/
 - tbd https://auth0.com/blog/the-tls-handshake-explained/
 - https://www.cloudflare.com/en-in/learning/ssl/what-is-https/
-- https://www.cloudflare.com/en-in/learning/ssl/what-happens-in-a-tls-handshake/
+- https://www.cloudflare.com/en-in/learning/ssl/what-happens-in-a-tls-handshake/: What are the steps of a TLS handshake?
 - https://datatracker.ietf.org/doc/html/rfc5246
 - https://wiki.wireshark.org/TLS
 - https://manpages.ubuntu.com/manpages/bionic/man1/mitmdump.1.html

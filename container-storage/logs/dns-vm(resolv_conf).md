@@ -1,4 +1,4 @@
-- https://support.google.com/faqs/answer/174717?hl=en: What is 1e100.net?
+
 
 ```
 aks-nodepool1-38494683-vmss000000:/# cat /etc/resolv.conf
@@ -71,6 +71,9 @@ root@aks-nodepool1-38494683-vmss000003:/# tcpdump
 17:39:55.195614 IP aks-nodepool1-38494683-vmss000000.internal.cloudapp.net > aks-nodepool1-38494683-vmss000003.internal.cloudapp.net: ICMP echo request, id 2, seq 2, length 64
 17:39:55.195654 IP aks-nodepool1-38494683-vmss000003.internal.cloudapp.net > aks-nodepool1-38494683-vmss000000.internal.cloudapp.net: ICMP echo reply, id 2, seq 2, length 64
 ```
+
+- https://support.google.com/faqs/answer/174717?hl=en: What is 1e100.net?
+- https://www.cloudflare.com/learning/dns/dns-records/dns-aaaa-record/: The DNS AAAA record matches a domain name with an IPv6 address — similar to A records, which do the same for IPv4 addresses.
 
 ## dns.vm.dnscache.systemd.systemd-resolved
 

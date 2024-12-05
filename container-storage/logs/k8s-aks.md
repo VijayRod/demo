@@ -51,6 +51,7 @@ for i in {2..100}; do az aks nodepool delete -g $rg --cluster-name aks -n nodepo
 - https://www.youtube.com/@theakscommunity
 - https://azure.github.io/AKS/: AKS Engineering Blog
 - https://github.com/Azure/AKS/?tab=readme-ov-file#important-links
+- https://cloud.google.com/kubernetes-engine/docs/troubleshooting
 
 ## aks.core.reconcile
 

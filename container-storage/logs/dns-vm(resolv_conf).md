@@ -72,6 +72,77 @@ root@aks-nodepool1-38494683-vmss000003:/# tcpdump
 17:39:55.195654 IP aks-nodepool1-38494683-vmss000003.internal.cloudapp.net > aks-nodepool1-38494683-vmss000000.internal.cloudapp.net: ICMP echo reply, id 2, seq 2, length 64
 ```
 
+## dns.vm.dnscache.systemd.systemd-resolved
+
+```
+root@aks-nodepool1-75204569-vmss000000:/# systemctl is-active systemd-resolved
+active
+
+root@aks-nodepool1-75204569-vmss000000:/# resolvectl statistics
+DNSSEC supported by current servers: no
+Transactions
+Current Transactions: 0
+  Total Transactions: 112
+Cache
+  Current Cache Size: 3
+          Cache Hits: 33
+        Cache Misses: 83
+DNSSEC Verdicts
+              Secure: 0
+            Insecure: 0
+               Bogus: 0
+       Indeterminate: 0
+
+root@aks-nodepool1-75204569-vmss000000:/# resolvectl flush-caches
+root@aks-nodepool1-75204569-vmss000000:/# resolvectl statistics
+DNSSEC supported by current servers: no
+Transactions
+Current Transactions: 0
+  Total Transactions: 112
+Cache
+  Current Cache Size: 0
+          Cache Hits: 33
+        Cache Misses: 83
+DNSSEC Verdicts
+              Secure: 0
+            Insecure: 0
+               Bogus: 0
+       Indeterminate: 0
+
+root@aks-nodepool1-75204569-vmss000000:/# curl -I google.com
+HTTP/1.1 301 Moved Permanently
+```
+
+```
+tbd
+curl -I google.com
+killall -USR1 systemd-resolved && journalctl -u systemd-resolved && grep -A 100 "CACHE:"
+
+systemctl is-active systemd-resolved # active
+resolvectl statistics # Current Cache Size: 15
+killall -USR1 systemd-resolved && journalctl -u systemd-resolved > /tmp/dns.txt && cat /tmp/dns.txt
+# killall -USR1 systemd-resolved && journalctl -u systemd-resolved && grep -A 100 "CACHE:"
+# resolvectl flush-caches
+Jul 30 18:36:44 aks-nodepool1-14036957-vmss000000 systemd-resolved[537]: CACHE:
+Jul 30 18:36:44 aks-nodepool1-14036957-vmss000000 systemd-resolved[537]:         umsaccbq0tfrcfl3kfbm.blob.core.windows.net IN CNAME blob.gvx01prdstrz04a.store.core.windows.net
+Jul 30 18:36:44 aks-nodepool1-14036957-vmss000000 systemd-resolved[537]:         umsab4sv24kfrmf40vxd.blob.core.windows.net IN CNAME blob.gvx01prdstrz04a.store.core.windows.net
+Jul 30 18:36:44 aks-nodepool1-14036957-vmss000000 systemd-resolved[537]:         mcr-0001.mcr-msedge.net IN A 150.171.69.10
+
+killall -USR1 systemd-resolved
+journalctl -u systemd-resolved > /tmp/dns.txt && cat /tmp/dns.txt | head -n 10
+Dec 05 09:14:00 aks-nodepool1-75204569-vmss000000 systemd[1]: Starting Network Name Resolution...
+Dec 05 09:14:00 aks-nodepool1-75204569-vmss000000 systemd-resolved[539]: Positive Trust Anchors:
+Dec 05 09:14:00 aks-nodepool1-75204569-vmss000000 systemd-resolved[539]: . IN DS 20326 8 2 e06d44b80b8f1d39a95c0b0d7c65d08458e880409bbc683457104237c7f8ec8d
+Dec 05 09:14:00 aks-nodepool1-75204569-vmss000000 systemd-resolved[539]: Negative trust anchors: home.arpa 10.in-addr.arpa 16.172.in-addr.arpa 17.172.in-addr.arpa 18.172.in-addr.arpa 19.172.in-addr.arpa 20.172.in-addr.arpa 21.172.in-addr.arpa 22.172.in-addr.arpa 23.172.in-addr.arpa 24.172.in-addr.arpa 25.172.in-addr.arpa 26.172.in-addr.arpa 27.172.in-addr.arpa 28.172.in-addr.arpa 29.172.in-addr.arpa 30.172.in-addr.arpa 31.172.in-addr.arpa 168.192.in-addr.arpa d.f.ip6.arpa corp home internal intranet lan local private test
+Dec 05 09:14:00 aks-nodepool1-75204569-vmss000000 systemd-resolved[539]: Using system hostname 'aks-nodepool1-75204569-vmss000000'.
+Dec 05 09:14:00 aks-nodepool1-75204569-vmss000000 systemd[1]: Started Network Name Resolution.
+...
+```
+
+- https://www.baeldung.com/linux/dns-cache-local-flushing
+- https://askubuntu.com/questions/1409726/systemd-resolve-command-not-found-in-ubuntu-22-04-desktop: Use resolvectl status instead. In systemd 239 systemd-resolve has been renamed to resolvectl
+- https://www.howtogeek.com/844964/how-to-flush-dns-in-linux/: Reviewing Your DNS Cache
+
 ## dns.vm.resolv_conf
 
 ```

@@ -1,6 +1,7 @@
 ## k8s-aks-extension
 
 ```
+az k8s-extension list -g $rg -c aks-dapr --cluster-type managedClusters
 az k8s-extension show -g $rg --cluster-name aks2 --name azure-aks-backup --cluster-type managedClusters -otable
 az k8s-extension delete -g $rg --cluster-name aks2 -n azure-aks-backup --cluster-type managedClusters -y
 
@@ -40,6 +41,7 @@ az k8s-extension show -t managedClusters -g $rg -c aksdapr -n dapr
 
 ```
 # failed
+az k8s-extension list -g $rg -c aks-dapr --cluster-type managedClusters # shows failures etc. for all arc extensions
 az k8s-extension show -t managedClusters -g $rg -c aksdapr -n dapr
   "provisioningState": "Failed",
   "statuses": [

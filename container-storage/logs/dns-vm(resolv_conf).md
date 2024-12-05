@@ -92,8 +92,7 @@ DNSSEC Verdicts
             Insecure: 0
                Bogus: 0
        Indeterminate: 0
-
-root@aks-nodepool1-75204569-vmss000000:/# resolvectl flush-caches
+root@aks-nodepool1-75204569-vmss000000:/# resolvectl flush-caches # Current Cache Size is now 0
 root@aks-nodepool1-75204569-vmss000000:/# resolvectl statistics
 DNSSEC supported by current servers: no
 Transactions
@@ -109,7 +108,7 @@ DNSSEC Verdicts
                Bogus: 0
        Indeterminate: 0
 
-root@aks-nodepool1-75204569-vmss000000:/# curl -I google.com
+root@aks-nodepool1-75204569-vmss000000:/# resolvectl flush-caches; curl -I google.com
 HTTP/1.1 301 Moved Permanently
 ```
 
@@ -185,18 +184,45 @@ nameserver 168.63.129.16
 search qibf5jn4e15enib2o0kmnxxmhd.gvxx.internal.cloudapp.net
 ```
 
-## dns.vm.resolv_conf.use-vc
+## dns.vm.resolv_conf.use-vc (DNS over TCP)
 
 ```
-echo "options use-vc" >> /etc/resolv.conf
-cat /etc/resolv.conf
+# regular DNS over UDP
+root@aks-nodepool1-75204569-vmss000000:/# resolvectl flush-caches; curl -I google.com 
+wireshark: dns.qry.name == "google.com"; udp.stream eq 84
+5541	2024-12-05 21:16:11.763456	10.224.0.4	168.63.129.16	DNS	UDP	76	0x3a74 (14964)	Standard query 0x03a4 A google.com
+5542	2024-12-05 21:16:11.763466	10.224.0.4	168.63.129.16	DNS	UDP	76	0x3a75 (14965)	Standard query 0x95a2 AAAA google.com
+5543	2024-12-05 21:16:11.765478	168.63.129.16	10.224.0.4	DNS	UDP	92	0x346b (13419)	Standard query response 0x03a4 A google.com A 142.250.74.46
+5544	2024-12-05 21:16:11.779927	168.63.129.16	10.224.0.4	DNS	UDP	104	0x346c (13420)	Standard query response 0x95a2 AAAA google.com AAAA 2a00:1450:400f:801::200e
+# both column names are "Protocol" - one for the transport layer "Protocol" (TCP) and one for the application layer "Protocol" (DNS)
+Frame 5541: 76 bytes on wire (608 bits), 76 bytes captured (608 bits)
+Internet Protocol Version 4, Src: 10.224.0.4, Dst: 168.63.129.16
+  Protocol: UDP (17)
+User Datagram Protocol, Src Port: 42322, Dst Port: 53
+Domain Name System (query)
 
-curl -I google.com
-
-Name:   google.com Address: 142.250.74.142
-tcpdump host 142.250.74.142
-tbd
-
+# DNS over TCP with use-vc
+root@aks-nodepool1-75204569-vmss000000:/# resolvectl flush-caches; curl -I google.com # echo "options use-vc" >> /etc/resolv.conf; cat /etc/resolv.conf
+wireshark: dns.qry.name == "google.com"; tcp.stream eq 109
+2345	2024-12-05 21:03:56.031776	10.224.0.4	168.63.129.16	TCP	TCP	80	0xd00c (53260)	36966 ? 53 [SYN] Seq=0 Win=64240 Len=0 MSS=1460 SACK_PERM TSval=4195208162 TSecr=0 WS=128
+2346	2024-12-05 21:03:56.032679	168.63.129.16	10.224.0.4	TCP	TCP	80	0x227c (8828)	53 ? 36966 [SYN, ACK] Seq=0 Ack=1 Win=65535 Len=0 MSS=1460 WS=256 SACK_PERM TSval=1152802924 TSecr=4195208162
+2347	2024-12-05 21:03:56.032742	10.224.0.4	168.63.129.16	TCP	TCP	72	0xd00d (53261)	36966 ? 53 [ACK] Seq=1 Ack=1 Win=64256 Len=0 TSval=4195208163 TSecr=1152802924
+2348	2024-12-05 21:03:56.032790	10.224.0.4	168.63.129.16	DNS	TCP	132	0xd00e (53262)	Standard query 0xec0f A google.com, Standard query 0xd20d AAAA google.com
+2349	2024-12-05 21:03:56.044678	168.63.129.16	10.224.0.4	TCP	TCP	72	0x227d (8829)	53 ? 36966 [ACK] Seq=1 Ack=61 Win=4195328 Len=0 TSval=1152802936 TSecr=4195208163
+2370	2024-12-05 21:03:56.344823	168.63.129.16	10.224.0.4	DNS	TCP	118	0x2284 (8836)	Standard query response 0xec0f A google.com A 142.250.74.142
+2371	2024-12-05 21:03:56.344874	10.224.0.4	168.63.129.16	TCP	TCP	72	0xd00f (53263)	36966 ? 53 [ACK] Seq=61 Ack=47 Win=64256 Len=0 TSval=4195208475 TSecr=1152803236
+2372	2024-12-05 21:03:56.345096	168.63.129.16	10.224.0.4	DNS	TCP	130	0x2285 (8837)	Standard query response 0xd20d AAAA google.com AAAA 2a00:1450:400f:804::200e
+2373	2024-12-05 21:03:56.345104	10.224.0.4	168.63.129.16	TCP	TCP	72	0xd010 (53264)	36966 ? 53 [ACK] Seq=61 Ack=105 Win=64256 Len=0 TSval=4195208476 TSecr=1152803236
+2374	2024-12-05 21:03:56.345136	10.224.0.4	168.63.129.16	TCP	TCP	72	0xd011 (53265)	36966 ? 53 [FIN, ACK] Seq=61 Ack=105 Win=64256 Len=0 TSval=4195208476 TSecr=1152803236
+2376	2024-12-05 21:03:56.345779	168.63.129.16	10.224.0.4	TCP	TCP	72	0x2286 (8838)	53 ? 36966 [ACK] Seq=105 Ack=62 Win=4195328 Len=0 TSval=1152803237 TSecr=4195208476
+2391	2024-12-05 21:03:56.448769	168.63.129.16	10.224.0.4	TCP	TCP	72	0x2287 (8839)	53 ? 36966 [FIN, ACK] Seq=105 Ack=62 Win=4195328 Len=0 TSval=1152803340 TSecr=4195208476
+2392	2024-12-05 21:03:56.448799	10.224.0.4	168.63.129.16	TCP	TCP	72	0x0000 (0)	36966 ? 53 [ACK] Seq=62 Ack=106 Win=64256 Len=0 TSval=4195208579 TSecr=1152803340
+# both column names are "Protocol" - one for the transport layer "Protocol" (TCP) and one for the application layer "Protocol" (DNS)
+Frame 2348: 132 bytes on wire (1056 bits), 132 bytes captured (1056 bits)
+Internet Protocol Version 4, Src: 10.224.0.4, Dst: 168.63.129.16
+  Protocol: TCP (6)
+Transmission Control Protocol, Src Port: 36966, Dst Port: 53, Seq: 1, Ack: 1, Len: 60  
+Domain Name System (query)
 ```
 
 - https://man7.org/linux/man-pages/man5/resolv.conf.5.html: use-vc. Sets RES_USEVC in _res.options. This option forces the use of TCP for DNS resolutions.

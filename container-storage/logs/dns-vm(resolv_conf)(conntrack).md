@@ -75,6 +75,16 @@ root@aks-nodepool1-38494683-vmss000003:/# tcpdump
 - https://support.google.com/faqs/answer/174717?hl=en: What is 1e100.net?
 - https://www.cloudflare.com/learning/dns/dns-records/dns-aaaa-record/: The DNS AAAA record matches a domain name with an IPv6 address — similar to A records, which do the same for IPv4 addresses.
 
+## dns.vm.conntrack
+
+```
+conntrack -L
+
+conntrack -S # shows packet drops
+cpu=0           found=0 invalid=104 insert=0 insert_failed=0 drop=0 early_drop=0 error=0 search_restart=40 (null)=2 (null)=0
+cpu=1           found=0 invalid=62 insert=0 insert_failed=0 drop=0 early_drop=0 error=0 search_restart=29 (null)=3 (null)=0
+```
+
 ## dns.vm.dnscache.systemd.systemd-resolved
 
 ```

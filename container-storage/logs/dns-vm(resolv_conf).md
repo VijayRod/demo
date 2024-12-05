@@ -71,3 +71,61 @@ root@aks-nodepool1-38494683-vmss000003:/# tcpdump
 17:39:55.195614 IP aks-nodepool1-38494683-vmss000000.internal.cloudapp.net > aks-nodepool1-38494683-vmss000003.internal.cloudapp.net: ICMP echo request, id 2, seq 2, length 64
 17:39:55.195654 IP aks-nodepool1-38494683-vmss000003.internal.cloudapp.net > aks-nodepool1-38494683-vmss000000.internal.cloudapp.net: ICMP echo reply, id 2, seq 2, length 64
 ```
+
+## dns.vm.resolv_conf
+
+```
+cp /etc/resolv.conf /tmp/resolv.conf
+ls /tmp/resolv.*
+cat /etc/resolv.conf
+
+rm /etc/resolv.conf
+cp /tmp/resolv.conf /etc/resolv.conf
+cat /etc/resolv.conf
+```
+
+```
+# symlink (shortcut) on my laptop
+ls -l /etc/resolv.conf
+lrwxrwxrwx 1 root root 20 Dec  5 18:17 /etc/resolv.conf -> /mnt/wsl/resolv.conf
+
+# isn't a symlink on an AKS node
+root@aks-nodepool1-75204569-vmss000000:/# ls -l /etc/resolv.conf # not a 
+-rw-r----- 1 root root 855 Dec  5 18:18 /etc/resolv.conf
+
+root@aks-nodepool1-75204569-vmss000000:/# cat /etc/resolv.conf
+# This is /run/systemd/resolve/resolv.conf managed by man:systemd-resolved(8).
+# Do not edit.
+#
+# This file might be symlinked as /etc/resolv.conf. If you're looking at
+# /etc/resolv.conf and seeing this text, you have followed the symlink.
+#
+# This is a dynamic resolv.conf file for connecting local clients directly to
+# all known uplink DNS servers. This file lists all configured search domains.
+#
+# Third party programs should typically not access this file directly, but only
+# through the symlink at /etc/resolv.conf. To manage man:resolv.conf(5) in a
+# different way, replace this symlink by a static file or a different symlink.
+#
+# See man:systemd-resolved.service(8) for details about the supported modes of
+# operation for /etc/resolv.conf.
+
+nameserver 168.63.129.16
+search qibf5jn4e15enib2o0kmnxxmhd.gvxx.internal.cloudapp.net
+```
+
+## dns.vm.resolv_conf.use-vc
+
+```
+echo "options use-vc" >> /etc/resolv.conf
+cat /etc/resolv.conf
+
+curl -I google.com
+
+Name:   google.com Address: 142.250.74.142
+tcpdump host 142.250.74.142
+tbd
+
+```
+
+- https://man7.org/linux/man-pages/man5/resolv.conf.5.html: use-vc. Sets RES_USEVC in _res.options. This option forces the use of TCP for DNS resolutions.

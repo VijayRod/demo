@@ -294,7 +294,8 @@ No entry in the flowlog
 
 ```
 AzureNetworkAnalytics_CL 
-| where SubType_s == "FlowLog" 
+| where SubType_s == "FlowLog"
+| limit 02
 
 AzureNetworkAnalytics_CL 
 | where SubType_s == "FlowLog" 

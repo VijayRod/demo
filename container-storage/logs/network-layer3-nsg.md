@@ -269,15 +269,7 @@ Address: 142.250.187.238
 FlowType_s=ExternalPublic, SrcIP_s=VMIP_s=<Node IP>
 
 # kubenet pods
-## update node names (first two lines target the same node, the third targets a different one)
-kubectl run nginx0 --image=nginx --port=80 --overrides='{"spec": { "nodeSelector": {"kubernetes.io/hostname": "aks-nodepool1-10049467-vmss000000"}}}'
-kubectl run nginx02 --image=nginx --port=80 --overrides='{"spec": { "nodeSelector": {"kubernetes.io/hostname": "aks-nodepool1-10049467-vmss000000"}}}'
-kubectl run nginx1 --image=nginx --port=80 --overrides='{"spec": { "nodeSelector": {"kubernetes.io/hostname": "aks-nodepool1-10049467-vmss000001"}}}'
-sleep 10
-kubectl get po -owide
-## curl to another pod on the same node and to another pod on a different node. Replace the IPs below
-kubectl exec nginx0 -- curl -I 10.244.0.71
-kubectl exec nginx0 -- curl -I 10.244.1.233
+tbd Pod to pod in the same node is not logged is NSG flowlog for kubenet (and is logged for azure-cni)
 
 # azure-cni/pod (ExternalPublic) - kubectl run nginx --image=nginx; kubectl exec -it nginx -- curl -I google.com
 FlowType_s  ExternalPublic

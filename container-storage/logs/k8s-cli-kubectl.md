@@ -200,6 +200,9 @@ node/aks-nodepool1-45428922-vmss000001 tainted
 node/aks-nodepool1-45428922-vmss000001 tainted
 node/aks-nodepool1-45428922-vmss000001 tainted
 
+# add a key without its value
+kubectl taint nodes aks-nodepool1-45428922-vmss000001 node.kubernetes.io/unreachable="":NoExecute
+
 # remove
 kubectl taint nodes aks-nodepool1-45428922-vmss000001 key1=value1:NoSchedule- key1=value1:NoExecute- key2=value2:NoSchedule-
 node/aks-nodepool1-45428922-vmss000001 untainted

@@ -1,12 +1,3 @@
-## evict_k8spod.replicaset.pdb
-
-```
-# deployment.status.(un)readyReplicas
-kubectl get deploy # READY 1/1
-```
-
-- https://kubernetes.io/docs/tasks/run-application/configure-pdb/#unhealthy-pod-eviction-policy
-  
 ## evict_k8spod.spec.containers.livenessProbe
 
 ```
@@ -199,10 +190,6 @@ tbd kubectl delete no
 - https://learn.microsoft.com/en-us/azure/virtual-network/what-is-ip-address-168-63-129-16: Enables health probes from Azure Load Balancer to determine the health state of VMs.
 - https://learn.microsoft.com/en-us/azure/load-balancer/load-balancer-troubleshoot-health-probe-status
 
-## evict_k8spod.spec.pod-eviction-timeout
-
-- https://kubernetes.io/blog/2023/03/17/upcoming-changes-in-kubernetes-v1-27/: The deprecated command line argument --pod-eviction-timeout will be removed from the kube-controller-manager.
-
 ## evict_k8spod.spec.tolerationSeconds
 
 ```
@@ -267,3 +254,26 @@ nginx            1/1     Terminating         0          77s # Terminating state 
 - https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/#taint-based-evictions: In some cases when the node is unreachable, the API server is unable to communicate with the kubelet on the node. The decision to delete the pods cannot be communicated to the kubelet until communication with the API server is re-established. In the meantime, the pods that are scheduled for deletion may continue to run on the partitioned node.
   - You can specify tolerationSeconds for a Pod to define how long that Pod stays bound to a failing or unresponsive Node. tolerationSeconds=300. These automatically-added tolerations mean that Pods remain bound to Nodes for 5 minutes after one of these problems is detected.
 - https://github.com/kubernetes/node-problem-detector?#remedy-systems
+
+## evict_k8spod.other.kube-controller-manager.pod-eviction-timeout
+
+- https://kubernetes.io/blog/2023/03/17/upcoming-changes-in-kubernetes-v1-27/: The deprecated command line argument --pod-eviction-timeout will be removed from the kube-controller-manager.
+
+## evict_k8spod.other.kubelet.eviction
+
+```
+root@aks-nodepool1-42220213-vmss000000:/# ps -aux | grep /bin/kubelet
+root        2594  1.9  1.5 1795616 129144 ?      Ssl  19:01   0:12 /usr/local/bin/kubelet ... --eviction-hard=memory.available<750Mi,nodefs.available<10%,nodefs.inodesFree<5%,pid.available<2000
+```
+
+- https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/: Node-pressure eviction is the process by which the kubelet proactively terminates pods to reclaim resources on nodes.
+- https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/#eviction-thresholds
+  
+## evict_k8spod.other.replicaset.pdb
+
+```
+# deployment.status.(un)readyReplicas
+kubectl get deploy # READY 1/1
+```
+
+- https://kubernetes.io/docs/tasks/run-application/configure-pdb/#unhealthy-pod-eviction-policy

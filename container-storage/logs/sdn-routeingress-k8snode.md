@@ -1,4 +1,4 @@
-## k8snode.port10250 (kubelet, node notready)
+## routeingress.k8snode.port10250 (kubelet, node notready)
 
 ```
 # Blocks node communication, including kubelet on TCP 10250.
@@ -51,7 +51,7 @@ az vmss run-command invoke -g $noderg -n aks-nodepool1-14945448-vmss000001 --com
 - https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/connectivity/tunnel-connectivity-issues
 - https://kubernetes.io/docs/reference/networking/ports-and-protocols/#node: TCP	Inbound	10250	Kubelet API	Self, Control plane
 
-## k8snode.port10250.kubectlogs
+## routeingress.k8snode.port10250.kubectlogs
 
 ```
 # kubectl get po -A -owide | grep core

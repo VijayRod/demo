@@ -308,7 +308,8 @@ AzureNetworkAnalytics_CL
 | where SubType_s == "FlowLog"
 | limit 02
 
-AzureNetworkAnalytics_CL 
+AzureNetworkAnalytics_CL
+//| where TimeGenerated between (todatetime('2024-12-06T22:44')..1m)
 | where SubType_s == "FlowLog" 
 | distinct NSGList_s,FlowType_s,SrcIP_s,DestIP_s,DestPublicIPs_s,DestPort_d,L4Protocol_s,L7Protocol_s,FlowDirection_s,Region_s,Subscription_g,Subnet1_s,NIC1_s,VM1_s,AllowedOutFlows_d,DeniedOutFlows_d,AllowedInFlows_d,DeniedInFlows_d
 

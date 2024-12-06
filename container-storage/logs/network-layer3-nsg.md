@@ -49,7 +49,7 @@ az network watcher flow-log delete --name myFlowLog -l $loc --no-wait true
 ## nsg.flowlog.create.storageaccount
 
 ```
-# See the section on nsg.flowlog.workspace for log format
+# See the section on nsg.flowlog.create.workspace for create
 
 # Instead of just setting up the storage account, enable traffic analytics with 'az network watcher flow-log create --traffic-analytics' because it's easier to query
 storage="storage$RANDOM$RANDOM"
@@ -230,7 +230,7 @@ PT1H.json
 ```
 # https://learn.microsoft.com/en-us/azure/network-watcher/nsg-flow-logs-cli#create-a-flow-log-and-traffic-analytics-workspace
 nsg=aks-agentpool-42418909-nsg # update the name of the nsg
-noderg=$(az aks show -g $rg -n aksnat --query nodeResourceGroup -o tsv) # update the name of the aks cluster
+noderg=$(az aks show -g $rg -n aks --query nodeResourceGroup -o tsv) # update the name of the aks cluster
 storage="storage$RANDOM$RANDOM"; echo $storage
 az storage account create -g $rg -n $storage
 storageId=$(az storage account show -g $rg -n $storage --query id -otsv); echo $storageId

@@ -2,7 +2,7 @@
 
 - https://kubernetes.io/docs/reference/node/node-status/#node-status-fields: A Node's status contains the following information: Addresses Conditions Capacity and Allocatable Info. 
 - https://kubernetes.io/docs/reference/node/node-status/#heartbeats: The kubelet is responsible for creating and updating the .status of Nodes, and for updating their related Leases.
-- - https://github.com/kubernetes/kubernetes/issues/125618#issuecomment-2206300812: an example for node temporarily not ready but pods running. If kubelet disconnects from the ApiServer network, the node will become notready, but the pod on the node is still running.
+- https://github.com/kubernetes/kubernetes/issues/125618#issuecomment-2206300812: an example for node temporarily not ready but pods running. If kubelet disconnects from the ApiServer network, the node will become notready, but the pod on the node is still running.
 
 ## evict_k8snode.status.notready.aks-remediator
 

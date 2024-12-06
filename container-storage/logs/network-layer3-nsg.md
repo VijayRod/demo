@@ -254,7 +254,7 @@ AzurePublic	51
 Unknown		180
 IntraVNet	330
 
-# kubenet/node (ExternalPublic) - curl google.com
+# kubenet/node (ExternalPublic) - curl -Iv google.com
 ## AzureNetworkAnalytics_CL
 TimeGenerated [UTC]  2024-12-05T18:02:59.4882593Z
 FlowType_s  ExternalPublic
@@ -265,8 +265,19 @@ aks-nodepool1-75204569-vmss000000   Ready    <none>   83m   v1.30.6   10.224.0.4
 ## Name:   google.com
 Address: 142.250.187.238
 
-# kubenet/pod (ExternalPublic) - kubectl run nginx --image=nginx; kubectl exec -it nginx -- curl -I google.com
-No entry in the flowlog
+# kubenet/pod (ExternalPublic) - kubectl run nginx --image=nginx; kubectl exec -it nginx -- curl -Iv google.com
+FlowType_s=ExternalPublic, SrcIP_s=VMIP_s=<Node IP>
+
+# kubenet pods
+## update node names (first two lines target the same node, the third targets a different one)
+kubectl run nginx0 --image=nginx --port=80 --overrides='{"spec": { "nodeSelector": {"kubernetes.io/hostname": "aks-nodepool1-10049467-vmss000000"}}}'
+kubectl run nginx02 --image=nginx --port=80 --overrides='{"spec": { "nodeSelector": {"kubernetes.io/hostname": "aks-nodepool1-10049467-vmss000000"}}}'
+kubectl run nginx1 --image=nginx --port=80 --overrides='{"spec": { "nodeSelector": {"kubernetes.io/hostname": "aks-nodepool1-10049467-vmss000001"}}}'
+sleep 10
+kubectl get po -owide
+## curl to another pod on the same node and to another pod on a different node. Replace the IPs below
+kubectl exec nginx0 -- curl -I 10.244.0.71
+kubectl exec nginx0 -- curl -I 10.244.1.233
 
 # azure-cni/pod (ExternalPublic) - kubectl run nginx --image=nginx; kubectl exec -it nginx -- curl -I google.com
 FlowType_s  ExternalPublic
@@ -279,12 +290,12 @@ aks-nodepool1-23665971-vmss000000   Ready    <none>   33m   v1.30.6   10.224.0.3
 # azure-cni/pod - curl to an nginx pod on the same node
 # kubectl run nginx0 --image=nginx --port=80 --overrides='{"spec": { "nodeSelector": {"kubernetes.io/hostname": "aks-nodepool1-23665971-vmss000000"}}}'
 # kubectl get po -owide; kubectl exec nginx -- curl -I 10.224.0.37
-No entry in the flowlog
+tbd No entry in the flowlog
 
 # azure-cni/pod - curl to an nginx pod on an another node
 # kubectl run nginx1 --image=nginx --port=80 --overrides='{"spec": { "nodeSelector": {"kubernetes.io/hostname": "aks-nodepool1-23665971-vmss000001"}}}'
 # kubectl get po -owide; kubectl exec nginx -- curl -I 10.224.0.19
-No entry in the flowlog
+tbd No entry in the flowlog
 ```
 
 - https://learn.microsoft.com/en-us/azure/network-watcher/nsg-flow-logs-overview
@@ -305,7 +316,7 @@ AzureNetworkAnalytics_CL
 | where SubType_s == "FlowLog" and FlowType_s=="ExternalPublic" and DestPublicIPs_s has_any ("142.250")
 ```
 
-- https://learn.microsoft.com/en-us/azure/network-watcher/traffic-analytics-schema?tabs=nsg
+- * https://learn.microsoft.com/en-us/azure/network-watcher/traffic-analytics-schema?tabs=nsg: For any resource in traffic analytics, the flows indicated in the Azure portal are total flows seen by the network security group, but in Azure Monitor logs, user sees only the single, reduced record. To see all the flows, use the blob_id field, which can be referenced from storage. The total flow count for that record matches the individual flows seen in the blob. i.e. AllowedOutFlows_d,DeniedOutFlows_d,AllowedInFlows_d,DeniedInFlows_d
 - https://learn.microsoft.com/en-us/azure/network-watcher/nsg-flow-logs-overview#log-format
 - https://learn.microsoft.com/en-us/azure/network-watcher/traffic-analytics-schema?tabs=nsg#data-aggregation: if a processing interval of 10 minutes is selected, traffic analytics will instead pick blobs from the storage account every 10 minute
 - https://learn.microsoft.com/en-us/azure/network-watcher/traffic-analytics-schema?tabs=nsg#traffic-analytics-schema: TableName	AzureNetworkAnalytics_CL

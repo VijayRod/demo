@@ -300,6 +300,9 @@ AzureNetworkAnalytics_CL
 AzureNetworkAnalytics_CL 
 | where SubType_s == "FlowLog" 
 | distinct NSGList_s,FlowType_s,SrcIP_s,DestIP_s,DestPublicIPs_s,DestPort_d,L4Protocol_s,L7Protocol_s,FlowDirection_s,Region_s,Subscription_g,Subnet1_s,NIC1_s,VM1_s,AllowedOutFlows_d,DeniedOutFlows_d,AllowedInFlows_d,DeniedInFlows_d
+
+AzureNetworkAnalytics_CL 
+| where SubType_s == "FlowLog" and FlowType_s=="ExternalPublic" and DestPublicIPs_s has_any ("142.250")
 ```
 
 - https://learn.microsoft.com/en-us/azure/network-watcher/traffic-analytics-schema?tabs=nsg

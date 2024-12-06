@@ -158,6 +158,10 @@ az network lb rule show -g $noderg --lb-name kubernetes -n a3d654cb447704508bc7b
 
 ## lb.spec.health
 
+```
+# See the section on scheduler evict.
+```
+
 - https://learn.microsoft.com/en-us/azure/virtual-network/what-is-ip-address-168-63-129-16: Enables health probes from Azure Load Balancer to determine the health state of VMs.
 - https://learn.microsoft.com/en-us/azure/load-balancer/load-balancer-troubleshoot-health-probe-status
 

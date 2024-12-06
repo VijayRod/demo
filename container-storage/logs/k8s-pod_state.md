@@ -19,3 +19,73 @@
 
 - https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#pod-termination
 - https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#hook-handler-execution: If a PreStop hook hangs during execution, the Pod's phase will be Terminating and remain there until the Pod is killed after its terminationGracePeriodSeconds expires.
+
+## pod.state.Terminating.terminationGracePeriodSeconds
+
+```
+kubectl delete po nginx
+cat << EOF | kubectl create -f -
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+spec:
+  containers:
+  - image: nginx
+    name: nginx
+    resources: {}
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+  terminationGracePeriodSeconds: 86400 # 24h. 
+EOF
+sleep 10
+kubectl get po nginx
+
+kubectl get po -oyaml
+apiVersion: v1
+items:
+- apiVersion: v1
+  spec:
+    terminationGracePeriodSeconds: 86400
+```    
+
+```    
+kubectl delete deploy nginx
+cat << EOF | kubectl create -f -
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: nginx
+  name: nginx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - image: nginx
+        name: nginx
+      terminationGracePeriodSeconds: 86400 # 24h. 
+EOF
+sleep 10
+kubectl get deploy nginx
+```
+    
+- https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#pod-termination: Because Pods represent processes running on nodes in the cluster, it is important to allow those processes to gracefully terminate when they are no longer needed (rather than being abruptly stopped with a KILL signal and having no chance to clean up).
+  - You use the kubectl tool to manually delete a specific Pod, with the default grace period (30 seconds).
+  - The default terminationGracePeriodSeconds setting is 30 seconds.
+- https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#hook-handler-execution
+- https://kubernetes.io/docs/tutorials/services/pods-and-endpoint-termination-flow/#example-flow-with-endpoint-termination
+  
+## pod.state.Terminating.terminationmessage
+
+- https://kubernetes.io/docs/tasks/debug/debug-application/determine-reason-pod-failure/#writing-and-reading-a-termination-message

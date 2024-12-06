@@ -5,8 +5,10 @@
 ```
 
 - https://learn.microsoft.com/en-us/azure/aks/node-problem-detector
-- https://github.com/kubernetes/node-problem-detector: node-problem-detector uses Event and NodeCondition to report problems to apiserver
-
+- https://github.com/kubernetes/node-problem-detector: enabled by default in AKS as part of the AKS Linux Extension. node-problem-detector uses Event and NodeCondition to report problems to apiserver
+  - https://docs.google.com/document/d/1cs1kqLziG-Ww145yN6vvlKguPbQQ0psrSBnEqpy0pzE/edit?tab=t.0#heading=h.ky5thzvo7t76: Motivation
+  - https://github.com/kubernetes/node-problem-detector?#remedy-systems
+    
 ## k8s-node-conditions_NodeProblemDetector.conditions
 
 ```

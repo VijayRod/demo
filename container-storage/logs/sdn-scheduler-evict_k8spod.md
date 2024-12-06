@@ -1,5 +1,14 @@
-- https://github.com/kubernetes/kubernetes/issues/125618#issuecomment-2206300812: an example for node temporarily not ready but pods running. If kubelet disconnects from the ApiServer network, the node will become notready, but the pod on the node is still running.
+## evict_k8spod.replicaset.pdb
+
+```
+# deployment.status.(un)readyReplicas
+kubectl get deploy # READY 1/1
+```
+
+- https://kubernetes.io/docs/tasks/run-application/configure-pdb/#unhealthy-pod-eviction-policy
   
+## evict_k8spod.spec.containers.livenessProbe
+
 ```
 # Stop the kubectl service in the azure-cni cluster. The pods are using a load balancer but don't have a livenessProbe set up
 
@@ -186,3 +195,75 @@ curl: (7) Failed to connect to 10.0.155.137 port 80 after 0 ms: Connection refus
 ```
 tbd kubectl delete no
 ```
+
+- https://learn.microsoft.com/en-us/azure/virtual-network/what-is-ip-address-168-63-129-16: Enables health probes from Azure Load Balancer to determine the health state of VMs.
+- https://learn.microsoft.com/en-us/azure/load-balancer/load-balancer-troubleshoot-health-probe-status
+
+## evict_k8spod.spec.pod-eviction-timeout
+
+- https://kubernetes.io/blog/2023/03/17/upcoming-changes-in-kubernetes-v1-27/: The deprecated command line argument --pod-eviction-timeout will be removed from the kube-controller-manager.
+
+## evict_k8spod.spec.tolerationSeconds
+
+```
+# tolerationSeconds (default value) with a node marked NotReady, for instance, after its kubelet service stops
+
+kubectl delete po nginx
+kubectl run nginx --image=nginx
+sleep 10
+kubectl get po -owide # Running
+
+# systemctl stop kubelet
+
+kubectl get no -w
+aks-nodepool1-45428922-vmss000001   Ready    <none>   121m   v1.30.6
+aks-nodepool1-45428922-vmss000001   NotReady   <none>   121m   v1.30.6
+
+kubectl get po -w
+NAME             READY   STATUS    RESTARTS   AGE
+nginx            1/1     Running   0          85s
+nginx            1/1     Running       0          6m38s
+nginx            1/1     Terminating   0          6m38s # after the tolerationSeconds kicks in, which starts once the node is in NotReady status with its toleration
+
+nginx            0/1     Terminating   0          15m # Last entry before the pod is terminated i.e. terminated (not terminating) after 15m, once the node is Ready (after aks-remediator action) and kubelet is running.
+aks-nodepool1-45428922-vmss000001   NotReady   <none>   135m   v1.30.6
+aks-nodepool1-45428922-vmss000001   Ready      <none>   135m   v1.30.6
+```
+
+```
+# tolerationSeconds (custom value) with a node marked NotReady, for instance, after its kubelet service stops
+
+kubectl delete po nginx
+cat << EOF | kubectl create -f -
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+spec:
+  containers:
+  - image: nginx
+    name: nginx
+  tolerations:
+  - key: "node.kubernetes.io/unreachable"
+    operator: "Exists"
+    effect: "NoExecute"
+    tolerationSeconds: 10
+EOF
+sleep 10
+kubectl get po -owide # Running
+
+# systemctl stop kubelet
+
+kubectl get no -w
+aks-nodepool1-45428922-vmss000001   Ready    <none>   167m   v1.30.6
+aks-nodepool1-45428922-vmss000001   NotReady   <none>   167m   v1.30.6
+
+kubectl get po -w
+nginx            1/1     Running             0          62s
+nginx            1/1     Running             0          77s
+nginx            1/1     Terminating         0          77s # Terminating state after tolerationSeconds (it'll actually terminate once the kubelet is running)
+```
+
+- https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/#taint-based-evictions: In some cases when the node is unreachable, the API server is unable to communicate with the kubelet on the node. The decision to delete the pods cannot be communicated to the kubelet until communication with the API server is re-established. In the meantime, the pods that are scheduled for deletion may continue to run on the partitioned node.
+  - You can specify tolerationSeconds for a Pod to define how long that Pod stays bound to a failing or unresponsive Node. tolerationSeconds=300. These automatically-added tolerations mean that Pods remain bound to Nodes for 5 minutes after one of these problems is detected.
+- https://github.com/kubernetes/node-problem-detector?#remedy-systems

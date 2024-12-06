@@ -295,6 +295,7 @@ kube-proxy-qdfmq                      1/1     Running   0          12h   10.224.
 - https://learn.microsoft.com/en-us/azure/virtual-network/container-networking-overview
 - https://stevegriffith.nyc/posts/aks-networking-part2/
 - https://azuregulfblog.wordpress.com/wp-content/uploads/2019/04/aks_basicnetwork_technicalpaper.pdf
+- https://blog.teknews.cloud/aks/network/2023/11/02/AKS_Networking-considerationspart2.html
 
 ## k8s-cni.azure.networkProfile
 

@@ -186,6 +186,27 @@ kubectl scale deploy nginx --replicas=2
 
 - https://learn.microsoft.com/en-us/azure/aks/tutorial-kubernetes-scale?tabs=azure-cli#manually-scale-pods
 
+## kubectl.spec.command.taint
+
+```
+kubectl describe no aks-nodepool1-45428922-vmss000001 | grep Taints -A 5
+Taints:             <none>
+
+# add
+kubectl taint nodes aks-nodepool1-45428922-vmss000001 key1=value1:NoSchedule
+kubectl taint nodes aks-nodepool1-45428922-vmss000001 key1=value1:NoExecute
+kubectl taint nodes aks-nodepool1-45428922-vmss000001 key2=value2:NoSchedule
+node/aks-nodepool1-45428922-vmss000001 tainted
+node/aks-nodepool1-45428922-vmss000001 tainted
+node/aks-nodepool1-45428922-vmss000001 tainted
+
+# remove
+kubectl taint nodes aks-nodepool1-45428922-vmss000001 key1=value1:NoSchedule- key1=value1:NoExecute- key2=value2:NoSchedule-
+node/aks-nodepool1-45428922-vmss000001 untainted
+```
+
+- https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/
+
 ## kubectl.spec.command.token
 
 ```

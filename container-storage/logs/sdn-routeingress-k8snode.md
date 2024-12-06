@@ -1,3 +1,5 @@
+## k8snode.port10250 (kubelet)
+
 ```
 # Blocks node communication, including kubelet on TCP 10250.
 
@@ -31,4 +33,20 @@ Nov 22 19:25:47 aks-nodepool1-40004829-vmss000000 kubelet[2461]: E1122 19:25:47.
 Nov 22 19:26:29 aks-nodepool1-40004829-vmss000000 kubelet[2461]: E1122 19:26:29.269417    2461 upgradeaware.go:426] Error proxying data from client to backend: readfrom tcp 127.0.0.1:50482->127.0.0.1:45449: read tcp 10.224.0.4:10250->10.244.0.13:60464: read: connection timed out
 ```
 
+```
+# tbd This is for a node that does not have a tunnel pod.
+
+# kubectl get po -A -owide | grep konn
+
+# node: iptables -A INPUT -p tcp --dport 10250 -j DROP
+kubectl get no # aks-nodepool1-14945448-vmss000001   NotReady   agent   26m   v1.28.10
+
+noderg=$(az aks show -g $rg -n aks --query nodeResourceGroup -o tsv)  
+az vmss run-command invoke -g $noderg -n aks-nodepool1-14945448-vmss000001 --command-id RunShellScript --instance-id 0 --scripts "iptables -D INPUT -p tcp --dport 10250 -j DROP" # ParentResourceNotFound. 
+
+# Tbd One mitigation strategy is to allow a few minutes for the remediator to take action.
+```
+
 - https://kubernetes.io/docs/reference/networking/ports-and-protocols/: TCP	Inbound	10250	Kubelet API	Self, Control plane (Inbound not egress)
+- https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/connectivity/tunnel-connectivity-issues
+- https://kubernetes.io/docs/reference/networking/ports-and-protocols/#node: TCP	Inbound	10250	Kubelet API	Self, Control plane

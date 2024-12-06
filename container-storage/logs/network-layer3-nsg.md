@@ -225,7 +225,7 @@ PT1H.json
 
 - https://learn.microsoft.com/en-us/azure/network-watcher/traffic-analytics-schema?tabs=nsg#data-aggregation: All flow logs at a network security group between FlowIntervalStartTime_t and FlowIntervalEndTime_t are captured at one-minute intervals as blobs in a storage account.
 
-## nsg.flowlog.create.workspace
+## nsg.flowlog.create.workspace.aks
 
 ```
 # https://learn.microsoft.com/en-us/azure/network-watcher/nsg-flow-logs-cli#create-a-flow-log-and-traffic-analytics-workspace
@@ -288,6 +288,19 @@ No entry in the flowlog
 ```
 
 - https://learn.microsoft.com/en-us/azure/network-watcher/nsg-flow-logs-overview
+
+
+## nsg.flowlog.schema
+
+```
+AzureNetworkAnalytics_CL 
+| where SubType_s == "FlowLog" 
+
+AzureNetworkAnalytics_CL 
+| where SubType_s == "FlowLog" 
+| distinct NSGList_s,FlowType_s,SrcIP_s,DestIP_s,DestPort_d,L4Protocol_s,L7Protocol_s,FlowDirection_s,Region_s,Subscription_g,Subnet1_s,NIC1_s,VM1_s
+```
+
 - https://learn.microsoft.com/en-us/azure/network-watcher/traffic-analytics-schema?tabs=nsg
 - https://learn.microsoft.com/en-us/azure/network-watcher/nsg-flow-logs-overview#log-format
 - https://learn.microsoft.com/en-us/azure/network-watcher/traffic-analytics-schema?tabs=nsg#data-aggregation: if a processing interval of 10 minutes is selected, traffic analytics will instead pick blobs from the storage account every 10 minute

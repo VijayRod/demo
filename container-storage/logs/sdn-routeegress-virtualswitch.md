@@ -1,0 +1,1 @@
+- https://networklessons.com/cisco/ccnp-encor-350-401/introduction-to-virtual-extensible-lan-vxlan: hypervisors like VMWare’s ESXi or Microsoft’s Hyper-V. These hypervisors use virtual switches, and some of them support VXLAN

@@ -463,3 +463,133 @@ I0903 23:18:25.194896       7 leaderelection.go:250] attempting to acquire leade
 I0903 23:18:25.199755       7 status.go:85] "New leader elected" identity="nginx-7cd7f56848-rtvrv"
 I0903 23:19:11.637295       7 status.go:85] "New leader elected" identity="nginx-7cd7f56848-tfjb6"
 ```
+
+```
+# routeingress
+
+kubectl get svc -A
+NAMESPACE               NAME             TYPE           CLUSTER-IP     EXTERNAL-IP     PORT(S)	AGE
+app-routing-system      nginx            LoadBalancer   10.0.199.21    4.225.209.242   80:31806/TCP,443:31010/TCP   93s
+app-routing-system      nginx-metrics    ClusterIP      10.0.95.24     <none>          10254/TCP	93s
+default                 kubernetes       ClusterIP      10.0.0.1       <none>          443/TCP	2m52s
+hello-web-app-routing   aks-helloworld   ClusterIP      10.0.202.114   <none>          80/TCP	34s
+
+# kubectl get ep -A
+NAMESPACE               NAME             ENDPOINTS                                                         AGE
+app-routing-system      nginx            10.244.0.203:8443,10.244.2.1:8443,10.244.0.203:8080 + 1 more...   2m17s
+app-routing-system      nginx-metrics    10.244.0.203:10254,10.244.2.1:10254                               2m17s
+hello-web-app-routing   aks-helloworld   10.244.2.177:80                                                   78s
+# kubectl describe svc -A # local traffic policy
+Name:                     nginx
+Namespace:                app-routing-system
+Labels:                   app.kubernetes.io/component=ingress-controller
+                          app.kubernetes.io/managed-by=aks-app-routing-operator
+                          app.kubernetes.io/name=nginx
+Annotations:              <none>
+Selector:                 app=nginx
+Type:                     LoadBalancer
+IP Family Policy:         SingleStack
+IP Families:              IPv4
+IP:                       10.0.199.21
+IPs:                      10.0.199.21
+LoadBalancer Ingress:     4.225.209.242 (VIP)
+Port:                     http  80/TCP
+TargetPort:               http/TCP
+NodePort:                 http  31806/TCP
+Endpoints:                10.244.0.203:8080,10.244.2.1:8080
+Port:                     https  443/TCP
+TargetPort:               https/TCP
+NodePort:                 https  31010/TCP
+Endpoints:                10.244.0.203:8443,10.244.2.1:8443
+Session Affinity:         None
+External Traffic Policy:  Local
+Internal Traffic Policy:  Cluster
+HealthCheck NodePort:     31893
+##
+Name:                     aks-helloworld
+Namespace:                hello-web-app-routing
+Labels:                   <none>
+Annotations:              <none>
+Selector:                 app=aks-helloworld
+Type:                     ClusterIP
+IP Family Policy:         SingleStack
+IP Families:              IPv4
+IP:                       10.0.202.114
+IPs:                      10.0.202.114
+Port:                     <unset>  80/TCP
+TargetPort:               80/TCP
+Endpoints:                10.244.2.177:80
+Session Affinity:         None
+Internal Traffic Policy:  Cluster
+Events:                   <none>
+
+# kubectl get po -owide -A
+NAMESPACE               NAME                                  READY   STATUS    RESTARTS   AGE     IP             NODE                                NOMINATED NODE   READINESS GATES
+app-routing-system      nginx-85497484cc-bbjdz                1/1     Running   0          3m35s   10.244.0.203   aks-nodepool1-13895781-vmss000002   <none>           <none>
+app-routing-system      nginx-85497484cc-dd9st                1/1     Running   0          3m39s   10.244.2.1     aks-nodepool1-13895781-vmss000001   <none>           <none>
+hello-web-app-routing   aks-helloworld-868d7dbbd8-szv22       1/1     Running   0          3m36s   10.244.2.177   aks-nodepool1-13895781-vmss000001   <none>
+# kubectl get no -owide
+NAME                                STATUS   ROLES    AGE     VERSION   INTERNAL-IP   EXTERNAL-IP   OS-IMAGE             KERNEL-VERSION      CONTAINER-RUNTIME
+aks-nodepool1-13895781-vmss000000   Ready    <none>   5m19s   v1.30.6   10.224.0.5    <none>        Ubuntu 22.04.5 LTS   5.15.0-1074-azure   containerd://1.7.23-1
+aks-nodepool1-13895781-vmss000001   Ready    <none>   5m      v1.30.6   10.224.0.4    <none>        Ubuntu 22.04.5 LTS   5.15.0-1074-azure   containerd://1.7.23-1
+aks-nodepool1-13895781-vmss000002   Ready    <none>   5m19s   v1.30.6   10.224.0.6    <none>        Ubuntu 22.04.5 LTS   5.15.0-1074-azure   containerd://1.7.23-1
+
+noderg=$(az aks show -g $rg -n aksapproute --query nodeResourceGroup -o tsv)
+lb=kubernetes
+az network lb frontend-ip list -g $noderg --lb-name $lb -o table
+Name                                  PrivateIPAllocationMethod    ProvisioningState    ResourceGroup
+------------------------------------  ---------------------------  -------------------  -------------------------------
+c0595ecb-f0b2-441c-93ba-1a4759a1b8a6  Dynamic                      Succeeded            mc_rg_aksapproute_swedencentral
+afd50e6da36c9436981b613759878f31      Dynamic                      Succeeded            mc_rg_aksapproute_swedencentral
+
+pipid=$(az network lb frontend-ip show -g $noderg --lb-name $lb -n afd50e6da36c9436981b613759878f31 --query publicIPAddress.id -o tsv)
+az network public-ip show --id $pipid --query ipAddress -o tsv
+4.225.209.242
+
+az network lb rule list -g $noderg --lb-name $lb -o table # port 443 (https)
+BackendPort    DisableOutboundSnat    EnableFloatingIP    EnableTcpReset    FrontendPort    IdleTimeoutInMinutes    LoadDistribution    Name                                      Protocol    ProvisioningState    ResourceGroup
+-------------  ---------------------  ------------------  ----------------  --------------  ----------------------  ------------------  ----------------------------------------  ----------  -------------------  -------------------------------
+80             True                   True                True              80              4				Default             afd50e6da36c9436981b613759878f31-TCP-80   Tcp         Succeeded            mc_rg_aksapproute_swedencentral
+443            True                   True                True              443             4				Default             afd50e6da36c9436981b613759878f31-TCP-443  Tcp         Succeeded            mc_rg_aksapproute_swedencentral
+
+az network lb probe list -g $noderg --lb-name $lb -o table # probe to /healthz
+IntervalInSeconds    Name                                        NumberOfProbes    Port    ProbeThreshold    Protocol    ProvisioningState    RequestPath    ResourceGroup
+-------------------  ------------------------------------------  ----------------  ------  ----------------  ----------  -------------------  -------------  -------------------------------
+5                    afd50e6da36c9436981b613759878f31-TCP-31893  2                 31893   2                 Http        Succeeded            /healthz       mc_rg_aksapproute_swedencentral
+
+# nslookup
+
+curl -H 'Host: myapp.contoso.com' https://4.225.209.242 -kIv
+* Connected to 4.225.209.242 (4.225.209.242) port 443
+
+# aks-nodepool1-13895781-vmss000001
+
+iptables-save | grep loadbal
+-A KUBE-SERVICES -d 4.225.209.242/32 -p tcp -m comment --comment "app-routing-system/nginx:http loadbalancer IP" -j KUBE-EXT-EEQNXCJLUUVUU2YK
+-A KUBE-SERVICES -d 4.225.209.242/32 -p tcp -m comment --comment "app-routing-system/nginx:https loadbalancer IP" -j KUBE-EXT-RX2GVUFA32EFJN3A
+
+-A KUBE-EXT-EEQNXCJLUUVUU2YK -i azv+ -m comment --comment "pod traffic for app-routing-system/nginx:http external destinations" -j KUBE-SVC-EEQNXCJLUUVUU2YK
+-A KUBE-EXT-EEQNXCJLUUVUU2YK -m comment --comment "masquerade LOCAL traffic for app-routing-system/nginx:http external destinations" -m addrtype --src-type LOCAL -j KUBE-MARK-MASQ
+-A KUBE-EXT-EEQNXCJLUUVUU2YK -m comment --comment "route LOCAL traffic for app-routing-system/nginx:http external destinations" -m addrtype --src-type LOCAL -j KUBE-SVC-EEQNXCJLUUVUU2YK
+-A KUBE-EXT-EEQNXCJLUUVUU2YK -j KUBE-SVL-EEQNXCJLUUVUU2YK
+
+-A KUBE-SVC-EEQNXCJLUUVUU2YK -d 10.0.199.21/32 ! -i azv+ -p tcp -m comment --comment "app-routing-system/nginx:http cluster IP" -j KUBE-MARK-MASQ
+-A KUBE-SVC-EEQNXCJLUUVUU2YK -m comment --comment "app-routing-system/nginx:http -> 10.244.0.203:8080" -m statistic --mode random --probability 0.50000000000 -j KUBE-SEP-GG5PHKGFOOREI2Y5
+-A KUBE-SVC-EEQNXCJLUUVUU2YK -m comment --comment "app-routing-system/nginx:http -> 10.244.2.1:8080" -j KUBE-SEP-7PTWPOJIQ22BXKMQ
+
+-A KUBE-SEP-GG5PHKGFOOREI2Y5 -s 10.244.0.203/32 -m comment --comment "app-routing-system/nginx:http" -j KUBE-MARK-MASQ
+-A KUBE-SEP-GG5PHKGFOOREI2Y5 -p tcp -m comment --comment "app-routing-system/nginx:http" -m tcp -j DNAT --to-destination 10.244.0.203:8080
+
+-A KUBE-SEP-7PTWPOJIQ22BXKMQ -s 10.244.2.1/32 -m comment --comment "app-routing-system/nginx:http" -j KUBE-MARK-MASQ
+-A KUBE-SEP-7PTWPOJIQ22BXKMQ -p tcp -m comment --comment "app-routing-system/nginx:http" -m tcp -j DNAT --to-destination 10.244.2.1:8080
+
+-A KUBE-SVC-EEQNXCJLUUVUU2YK -d 10.0.199.21/32 ! -i azv+ -p tcp -m comment --comment "app-routing-system/nginx:http cluster IP" -j KUBE-MARK-MASQ
+-A KUBE-SVC-EEQNXCJLUUVUU2YK -m comment --comment "app-routing-system/nginx:http -> 10.244.0.203:8080" -m statistic --mode random --probability 0.50000000000 -j KUBE-SEP-GG5PHKGFOOREI2Y5
+-A KUBE-SVC-EEQNXCJLUUVUU2YK -m comment --comment "app-routing-system/nginx:http -> 10.244.2.1:8080" -j KUBE-SEP-7PTWPOJIQ22BXKMQ
+
+-A KUBE-SEP-GG5PHKGFOOREI2Y5 -s 10.244.0.203/32 -m comment --comment "app-routing-system/nginx:http" -j KUBE-MARK-MASQ
+-A KUBE-SEP-GG5PHKGFOOREI2Y5 -p tcp -m comment --comment "app-routing-system/nginx:http" -m tcp -j DNAT --to-destination 10.244.0.203:8080
+
+-A KUBE-SEP-7PTWPOJIQ22BXKMQ -s 10.244.2.1/32 -m comment --comment "app-routing-system/nginx:http" -j KUBE-MARK-MASQ
+-A KUBE-SEP-7PTWPOJIQ22BXKMQ -p tcp -m comment --comment "app-routing-system/nginx:http" -m tcp -j DNAT --to-destination 10.244.2.1:8080
+```

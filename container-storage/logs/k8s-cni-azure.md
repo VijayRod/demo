@@ -296,6 +296,7 @@ kube-proxy-qdfmq                      1/1     Running   0          12h   10.224.
 - https://stevegriffith.nyc/posts/aks-networking-part2/
 - https://azuregulfblog.wordpress.com/wp-content/uploads/2019/04/aks_basicnetwork_technicalpaper.pdf
 - https://blog.teknews.cloud/aks/network/2023/11/02/AKS_Networking-considerationspart2.html
+- https://blog.cloudtrooper.net/2019/01/23/a-day-in-the-life-of-a-packet-in-aks-part-2-kubenet-and-ingress-controller/
 
 ## k8s-cni.azure.networkProfile
 

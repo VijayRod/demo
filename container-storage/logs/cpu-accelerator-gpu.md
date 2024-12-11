@@ -177,7 +177,8 @@ az group delete -n $rgname -y --no-wait
 az aks nodepool add -g $rg --cluster-name aksgpu -n gpunp -c 1 --os-type Windows --node-vm-size Standard_NC6s_v3 --no-wait
 
 # Install - Specify GPU Driver Type
-az aks nodepool add -g $rg --cluster-name aksgpu -n gpunpgrid -c 2 --os-type Windows --node-vm-size Standard_NC6s_v3 --driver-type GRID --no-wait
+az aks nodepool add -g $rg --cluster-name aksgpu -n npgrid -c 2 --os-type Windows --node-vm-size Standard_NC6s_v3 --driver-type GRID --no-wait
+az aks nodepool add -g $rg --cluster-name aksgpu -n npcuda -c 2 --os-type Windows --node-vm-size Standard_NC6s_v3 --driver-type CUDA --no-wait
 
 # Test
 cd "C:\Program Files\NVIDIA Corporation\NVSMI"

@@ -168,4 +168,23 @@ az group delete -n $rgname -y --no-wait
 - https://learn.microsoft.com/en-us/azure/aks/gpu-cluster
 - https://learn.microsoft.com/en-us/azure/aks/gpu-multi-instance
 - https://github.com/Azure/aks-gpu
-- https://learn.microsoft.com/en-us/azure/azure-linux/intro-azure-linux#azure-linux-container-host-supported-gpu-virtual-machine-sizes 
+- https://learn.microsoft.com/en-us/azure/azure-linux/intro-azure-linux#azure-linux-container-host-supported-gpu-virtual-machine-sizes
+
+## cpu.gpu.app.aks.windows
+
+```
+# Install - Using Windows GPU with automatic driver installation
+az aks nodepool add -g $rg --cluster-name aksgpu -n gpunp -c 1 --os-type Windows --node-vm-size Standard_NC6s_v3 --no-wait
+
+# Install - Specify GPU Driver Type
+az aks nodepool add -g $rg --cluster-name aksgpu -n gpunpgrid -c 2 --os-type Windows --node-vm-size Standard_NC6s_v3 --driver-type GRID --no-wait
+
+# Test
+cd "C:\Program Files\NVIDIA Corporation\NVSMI"
+.\nvidia-smi.exe
+```
+
+- https://learn.microsoft.com/en-us/azure/aks/use-windows-gpu: Using NVIDIA GPUs involves the installation of various NVIDIA software components such as the DirectX device plugin for Kubernetes, GPU driver installation, and more
+  - For NC and ND series VM sizes, the CUDA driver is installed. For NV series VM sizes, the GRID driver is installed.
+  - Because workload and driver compatibility are important for functioning GPU workloads, you can specify the driver type for your Windows GPU node.
+- https://github.com/aarnaud/k8s-directx-device-plugin

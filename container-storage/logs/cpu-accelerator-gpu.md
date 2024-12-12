@@ -168,6 +168,7 @@ az group delete -n $rgname -y --no-wait
 - https://learn.microsoft.com/en-us/azure/aks/gpu-multi-instance
 - https://github.com/Azure/aks-gpu
 - https://learn.microsoft.com/en-us/azure/azure-linux/intro-azure-linux#azure-linux-container-host-supported-gpu-virtual-machine-sizes
+- https://github.com/Azure/AgentBaker/blob/master/vhdbuilder/release-notes/AKSUbuntu/gen2/2204containerd/202412.04.0.txt: nvidia-driver=550.90.12-20241021235610, which means the nvidia driver version 550.90.
 
 ## cpu.gpu.app.aks.windows
 

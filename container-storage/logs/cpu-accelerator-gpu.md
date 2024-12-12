@@ -8,9 +8,8 @@
 ```
 # To create a cluster
 clustername=aksgpu
-rgname=testshack
-location=eastus
-az group create -n $rgname -l $location
+rgname=$rg
+az group create -n $rgname -l $loc # eastus
 az aks create -g $rgname -n $clustername
 
 # To add a node pool

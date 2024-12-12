@@ -51,6 +51,10 @@ sc.exe queryex LxssManager
 sc.exe stop LxssManager
 sc.exe start LxssManager
 sc.exe queryex LxssManager
+
+# wsl - bash
+cd ~
+ls /mnt/c/ # check the windows C: in wsl
 ```
   
 -- https://learn.microsoft.com/en-us/windows/wsl/basic-commands

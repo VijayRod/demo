@@ -104,7 +104,9 @@ az aks update -g $rg -n aks --load-balancer-managed-outbound-ip-count 2 # node w
 az aks update -g $rg -n aks --api-server-authorized-ip-ranges "" # node won't be recreated
 az aks update -g $rg -n aks --api-server-authorized-ip-ranges 0.0.0.0/32 # node won't be recreated
 az aks update -g $rg -n aks --api-server-authorized-ip-ranges 1.1.1.1/32 # node won't be recreated
+```
 
+```
 # Unsupported - The node was delete with kubernetes API.
 # Manual editing isn't supported or recommended. The node count in the agent pool profile wasn't updated. 
 # (tbd) Then agent pool reconciliation was triggered and vmss was scaled up. This is expected.
@@ -127,7 +129,9 @@ az aks update -g $rg -n aks # reconcile
 kubectl get no
 NAME                                STATUS   ROLES    AGE   VERSION
 aks-nodepool1-21822725-vmss000000   Ready    <none>   10m   v1.30.6
+```
 
+```
 ## Unsupported - This is for a node pool that has the cluster-autoscaler turned on. The node was deleted using the VMSS API and isn't recreated with a cluster PUT command. kubectl get no & az aks nodepool show now automatically update to show only the remaining nodes.
 
 az aks nodepool add -g $rg --cluster-name aks -n np2 --enable-cluster-autoscaler --min-count 1 --max-count 2 -s $vmsize -c 2 # --os-sku Mariner

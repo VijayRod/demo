@@ -36,6 +36,37 @@ kubectl get no --selector kubernetes.io/os=windows
 ```
 
 ```
+# fetching logs with azcopy
+
+kubectl get no
+NAME                                STATUS   ROLES    AGE     VERSION
+aksnpwin000000                      Ready    <none>   9m23s   v1.30.6
+
+noderg=$(az aks show -g $rg -n akswin --query nodeResourceGroup -o tsv)
+az vmss run-command invoke --command-id RunPowerShellScript --name aksnpwin --resource-group $noderg --instance-id 0 \
+--scripts 'c:\k\debug\collect-windows-logs.ps1'
+# output will include a file named something like aksnpwin000000-20241216-105619_logs.zip
+
+storage="k8slogstore$RANDOM$RANDOM"; echo $storage
+container=windows-logs
+az storage account create -g $rg -n $storage
+az storage container create -n $container --account-name $storage --auth-mode login
+
+EXPIRY_TIME=$(date -u -d "+1 day" +"%Y-%m-%dT%H:%M:%SZ")
+echo "Expiry Time: $EXPIRY_TIME"
+SAS_TOKEN=$(az storage account generate-sas --account-name $storage --expiry $EXPIRY_TIME --permissions rwl --resource-types sco --services b --https-only -otsv)
+echo "SAS Token: $SAS_TOKEN"
+STORAGE_URL="https://$storage.blob.core.windows.net/$container/CustomDataSetupScript.zip?$SAS_TOKEN"
+echo $STORAGE_URL
+
+tbd (script works on windows but not through the run-command)
+# use double quotes if you're manually specifying values in the command
+srcFile="C:\k\debug\aksnpwin000000-20241216-105619_logs.zip"
+az vmss run-command invoke --command-id RunPowerShellScript --name aksnpwin --resource-group $noderg --instance-id 0 \
+--scripts 'Invoke-WebRequest -UseBasicParsing https://aka.ms/downloadazcopy-v10-windows -OutFile azcopy.zip;expand-archive azcopy.zip;cd .\azcopy\*;.\azcopy.exe copy $srcFile $STORAGE_URL'
+```
+
+```
 # To cleanup
 az group delete -n $rgname -y --no-wait
 ```

@@ -23,5 +23,5 @@ az aks nodepool add -g $rg --cluster-name aksscale -n np2 --enable-cluster-autos
 
 ```
 # https://github.com/kubernetes/autoscaler/blob/master/cluster-autoscaler/FAQ.md#how-can-i-prevent-cluster-autoscaler-from-scaling-down-a-particular-node
-kubectl annotate node aks-readnp-19992910-vmss00001y cluster-autoscaler.kubernetes.io/scale-down-disabled=true
+kubectl annotate node aks-np2-19992910-vmss00001y cluster-autoscaler.kubernetes.io/scale-down-disabled=true
 ```

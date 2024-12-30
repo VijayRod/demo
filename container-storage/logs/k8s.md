@@ -265,6 +265,16 @@ sigs.k8s.io/cluster-api
 - https://capz.sigs.k8s.io/: CAPZ enables efficient management at scale of self-managed or managed (AKS) clusters on Azure.
 - https://capz.sigs.k8s.io/managed/managedcluster
 
+## k8s.spec.unsupported
+
+```
+# Unsupported - means it's not verified, and its behavior can be unpredictable. So, don't make any assumptions about it.
+```
+
+- https://kubernetes.io/releases/version-skew-policy/
+- https://learn.microsoft.com/en-us/azure/aks/supported-kubernetes-versions?tabs=azure-cli
+- https://learn.microsoft.com/en-us/azure/aks/support-policies
+
 ## k8s.tools
 
 - https://collabnix.github.io/kubetools/

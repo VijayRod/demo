@@ -17,3 +17,4 @@ az aks nodepool add -g $rg --cluster-name aksscale -n np2 --enable-cluster-autos
 - https://learn.microsoft.com/en-us/azure/aks/cluster-autoscaler-overview
 - https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/create-upgrade-delete/cannot-scale-cluster-autoscaler-enabled-node-pool
 - https://cluster-api.sigs.k8s.io/tasks/automated-machine-management/autoscaling.html
+- https://kubernetes.io/docs/concepts/cluster-administration/cluster-autoscaling/

@@ -1,6 +1,8 @@
 ## kubectl.install
 
 ```
+# See the section on kubectl.spec.command.get
+
 sudo az aks install-cli
 # az aks install-cli --client-version=v1.5.3
 ```
@@ -153,6 +155,7 @@ kubectl get all -n kube-system --show-labels
 kubectl get pods --no-headers -o custom-columns=":metadata.name" # nginx
 kubectl get pods -o=name # pod/nginx
 var=$(kubectl get po -n kube-system -l k8s-app=kube-dns --no-headers=true | head -n 1 | awk '{print $1}'); echo $var # nginx
+kubectl delete pods $(kubectl get pods | grep Creati | awk '{print $1}' | tr \\n ' ')
 ```
 
 - https://kubernetes.io/docs/reference/kubectl/cheatsheet/#viewing-and-finding-resources

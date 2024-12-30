@@ -173,12 +173,19 @@ az group delete -n $rgname -y --no-wait
 ## cpu.gpu.app.aks.windows
 
 ```
+# swedencentral - NCasT4v3 - Standard_NC4as_T4_v3 - https://learn.microsoft.com/en-us/azure/virtual-machines/sizes/gpu-accelerated/ncast4v3-series?tabs=sizebasic
+# swedencentral - NCA100v4 - Standard_NC24ads_A100_v4 - https://learn.microsoft.com/en-us/azure/virtual-machines/sizes/gpu-accelerated/nca100v4-series?tabs=sizebasic
+WINDOWS_USERNAME=azureuser
+rgname=$rg
+az group create -n $rg -l $loc
+az aks create -g $rg -n akswin --windows-admin-username $WINDOWS_USERNAME --windows-admin-password $WINDOWS_PASSWORD
+
 # Install - Using Windows GPU with automatic driver installation
-az aks nodepool add -g $rg --cluster-name aksgpu -n gpunp -c 1 --os-type Windows --node-vm-size Standard_NC6s_v3 --no-wait
+az aks nodepool add -g $rg --cluster-name akswin -n gpunp -c 1 --os-type Windows --node-vm-size Standard_NC6s_v3 --no-wait
 
 # Install - Specify GPU Driver Type
-az aks nodepool add -g $rg --cluster-name aksgpu -n npgrid -c 2 --os-type Windows --node-vm-size Standard_NC6s_v3 --driver-type GRID --no-wait
-az aks nodepool add -g $rg --cluster-name aksgpu -n npcuda -c 2 --os-type Windows --node-vm-size Standard_NC6s_v3 --driver-type CUDA --no-wait
+az aks nodepool add -g $rg --cluster-name akswin -n npgrid -c 2 --os-type Windows --node-vm-size Standard_NC6s_v3 --driver-type GRID --no-wait
+az aks nodepool add -g $rg --cluster-name akswin -n npcuda -c 2 --os-type Windows --node-vm-size Standard_NC6s_v3 --driver-type CUDA --no-wait
 
 # Test
 cd "C:\Program Files\NVIDIA Corporation\NVSMI"
@@ -189,3 +196,50 @@ cd "C:\Program Files\NVIDIA Corporation\NVSMI"
   - For NC and ND series VM sizes, the CUDA driver is installed. For NV series VM sizes, the GRID driver is installed.
   - Because workload and driver compatibility are important for functioning GPU workloads, you can specify the driver type for your Windows GPU node.
 - https://github.com/aarnaud/k8s-directx-device-plugin
+
+## cpu.gpu.app.aks.windows.containers
+
+- https://learn.microsoft.com/en-us/virtualization/windowscontainers/deploy-containers/gpu-acceleration#requirements
+
+## cpu.gpu.driver.amd
+
+- https://learn.microsoft.com/en-us/azure/virtual-machines/windows/n-series-amd-driver-setup
+
+## cpu.gpu.driver.nvidia.cuda
+
+- https://developer.nvidia.com/blog/cuda-refresher-cuda-programming-model/
+- https://stackoverflow.com/questions/2392250/understanding-cuda-grid-dimensions-block-dimensions-and-threads-organization-s
+- http://thebeardsage.com/cuda-threads-blocks-grids-and-synchronization/
+- https://www.reddit.com/r/CUDA/comments/kvhd62/noob_question_what_is_the_purpose_of_the/: [Noob question] What is the purpose of the multidimensional blocks/grids?
+- https://www.reddit.com/r/CUDA/comments/s6ullc/how_to_choose_the_grid_size_and_block_size_for_a/: How to Choose the Grid Size and Block Size for a CUDA Kernel?
+- https://learn.microsoft.com/en-us/azure/virtual-machines/sizes/gpu-accelerated/nc-series?tabs=sizebasic: NC-series VMs are powered by the NVIDIA Tesla K80 card and the Intel Xeon E5-2690 v3 (Haswell) processor.
+- https://learn.microsoft.com/en-us/azure/virtual-machines/sizes/gpu-accelerated/nd-series?tabs=sizebasic: ND instances are powered by NVIDIA Tesla P40 GPUs and Intel Xeon E5-2690 v4 (Broadwell) CPUs.
+
+## cpu.gpu.driver.nvidia.cuda.version
+
+- *https://docs.nvidia.com/cuda/cuda-toolkit-release-notes/index.html#id5: Table 3 CUDA Toolkit and Corresponding Driver Versions
+- *https://github.com/Azure/azhpc-extensions/blob/master/NvidiaGPU/resources.json: Latest driver version is at top of the list
+- https://developer.nvidia.com/cuda-downloads?target_os=Windows&target_arch=x86_64&target_version=Server2022&target_type=exe_local: Installation Instructions: Double click cuda_12.6.3_561.17_windows.exe (CUDA version 561.17 for Windows)
+- https://learn.microsoft.com/en-us/azure/aks/use-windows-gpu#using-windows-gpu-with-automatic-driver-installation: For NC and ND series VM sizes, the CUDA driver is installed.
+- https://learn.microsoft.com/en-us/azure/virtual-machines/windows/n-series-driver-setup#nvidia-tesla-cuda-drivers
+- https://learn.microsoft.com/en-us/azure/virtual-machines/sizes/overview#gpu-accelerated
+
+## cpu.gpu.driver.nvidia.grid (vGPU)
+
+- https://docs.nvidia.com/vgpu/latest/grid-vgpu-user-guide/index.html: NVIDIA vGPU software is a graphics virtualization platform that provides virtual machines (VMs) access to NVIDIA GPU technology. 
+  - NVIDIA Virtual GPU (vGPU) enables multiple virtual machines (VMs) to have simultaneous, direct access to a single physical GPU, using the same
+https://images.nvidia.com/content/pdf/grid/guides/GRID-vGPU-User-Guide.pdf: Under the control of NVIDIA’s GRID Virtual GPU Manager running under the hypervisor, GRID physical GPUs are capable of supporting multiple virtual GPU devices (vGPUs) that can be assigned directly to guest VMs.
+  - Guest VMs use GRID virtual GPUs in the same manner as a physical GPU that has been passed through by the hypervisor
+https://learn.microsoft.com/en-us/azure/virtual-machines/sizes/gpu-accelerated/nv-series?tabs=sizebasic: The NV-series virtual machines are powered by NVIDIA Tesla M60 GPUs and NVIDIA GRID technology
+
+## cpu.gpu.driver.nvidia.grid.version
+
+- https://github.com/Azure/azhpc-extensions/blob/master/NvidiaGPU/resources.json: Latest driver version is at top of the list
+- https://www.nvidia.com/en-us/drivers/virtual-gpu-software-driver/: NVIDIA vGPU Software (Quadro vDWS, GRID vPC, GRID vApps). Customers who have purchased NVIDIA vGPU software can download the drivers from the NVIDIA Licensing Portal. 
+- https://www.nvidia.com/en-us/drivers/: Product Category = GRID, Product Series = GRID series, select the Product and Operating System.
+- https://learn.microsoft.com/en-us/azure/virtual-machines/windows/n-series-driver-setup#nvidia-gridvgpu-drivers: Microsoft redistributes NVIDIA GRID driver installers for NV, NVv3 and NVads A10 v5-series VMs used as virtual workstations or for virtual applications. Install only these GRID drivers on Azure NV-series VMs, only on the operating systems listed in the following table. These drivers include licensing for GRID Virtual GPU Software in Azure. You don't need to set up a NVIDIA vGPU software license server.
+- https://learn.microsoft.com/en-us/azure/aks/use-windows-gpu#using-windows-gpu-with-automatic-driver-installation: For NV series VM sizes, the GRID driver is installed.
+
+## cpu.gpu.tools.nvidia-smi
+
+- https://docs.nvidia.com/vgpu/4.5/grid-vgpu-user-guide/index.html#performance-monitoring-gpu: From any supported hypervisor, and from a guest VM that is running a 64-bit edition of Windows or Linux, you can use NVIDIA System Management Interface, nvidia-smi.

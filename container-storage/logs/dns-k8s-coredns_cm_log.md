@@ -168,6 +168,17 @@ aks-nodepool1-14036957-vmss000002:/# tcpdump # grep 'kubernetes|147.75.40.148|14
 17:39:55.220570 IP aks-nodepool1-14036957-vmss000002.internal.cloudapp.net.56695 > 168.63.129.16.domain: 8802+ PTR? 148.40.75.147.in-addr.arpa. (44)
 ```
 
+- misc
+
+```
+```
+aks-nodepool1-22104563-vmss000000:/# nslookup www.google.com 172.251.14.10 # coredns service ip
+aks-nodepool1-22104563-vmss000000:/# nslookup www.google.com 192.251.4.77 # coredns pod ip 1
+aks-nodepool1-22104563-vmss000000:/# nslookup www.google.com 192.251.18.77 # coredns pod ip 2
+aks-nodepool1-22104563-vmss000000:/# curl https://acs-mirror.azureedge.net -v # connection to outbound.
+```
+```
+
 - resolv.conf
 
 ```

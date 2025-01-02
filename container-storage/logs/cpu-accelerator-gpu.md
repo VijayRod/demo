@@ -170,37 +170,6 @@ az group delete -n $rgname -y --no-wait
 - https://learn.microsoft.com/en-us/azure/azure-linux/intro-azure-linux#azure-linux-container-host-supported-gpu-virtual-machine-sizes
 - https://github.com/Azure/AgentBaker/blob/master/vhdbuilder/release-notes/AKSUbuntu/gen2/2204containerd/202412.04.0.txt: nvidia-driver=550.90.12-20241021235610, which means the nvidia driver version 550.90.
 
-## cpu.gpu.app.aks.windows
-
-```
-# swedencentral - NCasT4v3 - Standard_NC4as_T4_v3 - https://learn.microsoft.com/en-us/azure/virtual-machines/sizes/gpu-accelerated/ncast4v3-series?tabs=sizebasic
-# swedencentral - NCA100v4 - Standard_NC24ads_A100_v4 - https://learn.microsoft.com/en-us/azure/virtual-machines/sizes/gpu-accelerated/nca100v4-series?tabs=sizebasic
-WINDOWS_USERNAME=azureuser
-rgname=$rg
-az group create -n $rg -l $loc
-az aks create -g $rg -n akswin --windows-admin-username $WINDOWS_USERNAME --windows-admin-password $WINDOWS_PASSWORD
-
-# Install - Using Windows GPU with automatic driver installation
-az aks nodepool add -g $rg --cluster-name akswin -n gpunp -c 1 --os-type Windows --node-vm-size Standard_NC6s_v3 --no-wait
-
-# Install - Specify GPU Driver Type
-az aks nodepool add -g $rg --cluster-name akswin -n npgrid -c 2 --os-type Windows --node-vm-size Standard_NC6s_v3 --driver-type GRID --no-wait
-az aks nodepool add -g $rg --cluster-name akswin -n npcuda -c 2 --os-type Windows --node-vm-size Standard_NC6s_v3 --driver-type CUDA --no-wait
-
-# Test
-cd "C:\Program Files\NVIDIA Corporation\NVSMI"
-.\nvidia-smi.exe
-```
-
-- https://learn.microsoft.com/en-us/azure/aks/use-windows-gpu: Using NVIDIA GPUs involves the installation of various NVIDIA software components such as the DirectX device plugin for Kubernetes, GPU driver installation, and more
-  - For NC and ND series VM sizes, the CUDA driver is installed. For NV series VM sizes, the GRID driver is installed.
-  - Because workload and driver compatibility are important for functioning GPU workloads, you can specify the driver type for your Windows GPU node.
-- https://github.com/aarnaud/k8s-directx-device-plugin
-
-## cpu.gpu.app.aks.windows.containers
-
-- https://learn.microsoft.com/en-us/virtualization/windowscontainers/deploy-containers/gpu-acceleration#requirements
-
 ## cpu.gpu.driver.amd
 
 - https://learn.microsoft.com/en-us/azure/virtual-machines/windows/n-series-amd-driver-setup
@@ -240,6 +209,43 @@ https://learn.microsoft.com/en-us/azure/virtual-machines/sizes/gpu-accelerated/n
 - https://learn.microsoft.com/en-us/azure/virtual-machines/windows/n-series-driver-setup#nvidia-gridvgpu-drivers: Microsoft redistributes NVIDIA GRID driver installers for NV, NVv3 and NVads A10 v5-series VMs used as virtual workstations or for virtual applications. Install only these GRID drivers on Azure NV-series VMs, only on the operating systems listed in the following table. These drivers include licensing for GRID Virtual GPU Software in Azure. You don't need to set up a NVIDIA vGPU software license server.
 - https://learn.microsoft.com/en-us/azure/aks/use-windows-gpu#using-windows-gpu-with-automatic-driver-installation: For NV series VM sizes, the GRID driver is installed.
 
+## cpu.gpu.driver.OS.linux
+
+- https://learn.microsoft.com/en-us/azure/virtual-machines/extensions/hpccompute-gpu-linux
+
+## cpu.gpu.driver.OS.windows
+
+```
+# swedencentral - NCasT4v3 - Standard_NC4as_T4_v3 - https://learn.microsoft.com/en-us/azure/virtual-machines/sizes/gpu-accelerated/ncast4v3-series?tabs=sizebasic
+# swedencentral - NCA100v4 - Standard_NC24ads_A100_v4 - https://learn.microsoft.com/en-us/azure/virtual-machines/sizes/gpu-accelerated/nca100v4-series?tabs=sizebasic
+WINDOWS_USERNAME=azureuser
+rgname=$rg
+az group create -n $rg -l $loc
+az aks create -g $rg -n akswin --windows-admin-username $WINDOWS_USERNAME --windows-admin-password $WINDOWS_PASSWORD
+
+# Install - Using Windows GPU with automatic driver installation
+az aks nodepool add -g $rg --cluster-name akswin -n gpunp -c 1 --os-type Windows --node-vm-size Standard_NC6s_v3 --no-wait
+
+# Install - Specify GPU Driver Type
+az aks nodepool add -g $rg --cluster-name akswin -n npgrid -c 2 --os-type Windows --node-vm-size Standard_NC6s_v3 --driver-type GRID --no-wait
+az aks nodepool add -g $rg --cluster-name akswin -n npcuda -c 2 --os-type Windows --node-vm-size Standard_NC6s_v3 --driver-type CUDA --no-wait
+
+# Test
+cd "C:\Program Files\NVIDIA Corporation\NVSMI"
+.\nvidia-smi.exe
+```
+
+- https://learn.microsoft.com/en-us/azure/aks/use-windows-gpu: Using NVIDIA GPUs involves the installation of various NVIDIA software components such as the DirectX device plugin for Kubernetes, GPU driver installation, and more
+  - For NC and ND series VM sizes, the CUDA driver is installed. For NV series VM sizes, the GRID driver is installed.
+  - Because workload and driver compatibility are important for functioning GPU workloads, you can specify the driver type for your Windows GPU node.
+- https://github.com/aarnaud/k8s-directx-device-plugin
+- https://learn.microsoft.com/en-us/azure/virtual-machines/extensions/hpccompute-gpu-windows
+- https://learn.microsoft.com/en-us/azure/virtual-machines/extensions/hpccompute-amd-gpu-windows
+
+## cpu.gpu.driver.OS.windows.containers
+
+- https://learn.microsoft.com/en-us/virtualization/windowscontainers/deploy-containers/gpu-acceleration#requirements
+  
 ## cpu.gpu.tools.nvidia-smi
 
 - https://docs.nvidia.com/vgpu/4.5/grid-vgpu-user-guide/index.html#performance-monitoring-gpu: From any supported hypervisor, and from a guest VM that is running a 64-bit edition of Windows or Linux, you can use NVIDIA System Management Interface, nvidia-smi.

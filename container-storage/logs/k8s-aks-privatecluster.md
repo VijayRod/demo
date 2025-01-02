@@ -45,6 +45,28 @@ az aks show -g $rg -n aks --query privateLinkResources
 
 - https://learn.microsoft.com/en-us/azure/aks/private-clusters?tabs=azure-portal
 
+```
+# private clusters in custom vnets
+
+# vnet, aks
+rg=rg
+az group create -n $rg -l $loc
+az network vnet create -g $rg --name vnet --address-prefixes 10.0.0.0/8 -o none 
+az network vnet subnet create -g $rg --vnet-name vnet -n akssubnet --address-prefixes 10.240.0.0/16 -o none 
+subnetId=$(az network vnet subnet show -g $rg --vnet-name vnet -n akssubnet --query id -otsv)
+az aks create -g $rg -n aks --enable-private-cluster --vnet-subnet-id $subnetId -s $vmsize -c 2 # --network-plugin azure
+# az aks get-credentials -g $rg -n aks --overwrite-existing; kubectl get ns
+az aks command invoke -g $rg -n aks --command "kubectl cluster-info"
+
+# vnet2 with a different address space, aks2
+az network vnet create -g $rg --name vnet2 --address-prefixes 11.0.0.0/8 -o none 
+az network vnet subnet create -g $rg --vnet-name vnet2 -n akssubnet --address-prefixes 11.240.0.0/16 -o none 
+subnetId=$(az network vnet subnet show -g $rg --vnet-name vnet2 -n akssubnet --query id -otsv)
+az aks create -g $rg -n aks2 --enable-private-cluster --vnet-subnet-id $subnetId -s $vmsize -c 2 # --network-plugin azure
+# az aks get-credentials -g $rg -n aks2 --overwrite-existing; kubectl get ns
+az aks command invoke -g $rg -n aks2 --command "kubectl cluster-info"
+```
+
 ## k8s-aks-privatecluster.debug
 
 ```

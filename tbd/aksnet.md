@@ -17,7 +17,7 @@
   - storage (stor-) - device /dev, filesystem, snapshot,
   - storage/[database](https://github.com/VijayRod/demo/blob/master/container-storage/logs/db(database).md) -
   - storage/distributed - split-brain
-  - storage/[k8s-csi](https://github.com/VijayRod/demo/blob/master/container-storage/logs/k8s-csi.md)
+  - storage/[k8s-csi](https://github.com/VijayRod/demo/blob/master/container-storage/logs/k8s-csi.md), k8s-csi-azureblob-mount, k8s-csi-azuredisk-scsi-mount, k8s-csi-azurefile-smb-cifs-mount_detail, cdn-storage-tdevice-filesystem_nfs_t_k8s-csi-azureblob_nfs-mount, cdn-storage-tdevice-filesystem_nfs_t_netapp-mount_aks_static
   - test/[load](https://github.com/VijayRod/demo/blob/master/container-storage/logs/http-test-load.md) - 
   - virtualization(hyperv) - [vm](https://github.com/VijayRod/demo/blob/master/container-storage/logs/az-virtualmachine(vm).md)
   - zone - [node-topology_zone](https://github.com/VijayRod/demo/blob/master/container-storage/logs/k8s-node-topology_zone.md),

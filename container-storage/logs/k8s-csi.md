@@ -284,3 +284,105 @@ I1015 11:31:13.209240       1 utils.go:102] GRPC request: {"staging_target_path"
 - https://kubernetes-csi.github.io/docs/external-provisioner.html: registry.k8s.io/sig-storage/csi-provisioner. The CSI external-provisioner is a sidecar container that watches the Kubernetes API server for PersistentVolumeClaim objects.
 - https://github.com/kubernetes-csi/external-provisioner: The external-provisioner is a sidecar container that dynamically provisions volumes by calling CreateVolume and DeleteVolume functions of CSI drivers. It is necessary because internal persistent volume controller running in Kubernetes controller-manager does not have any direct interfaces to CSI drivers.
 - https://kubernetes.io/docs/concepts/storage/storage-classes/#provisioner: You can also run and specify external provisioners, which are independent programs that follow a specification defined by Kubernetes. Authors of external provisioners have full discretion over where their code lives, how the provisioner is shipped, how it needs to be run, what volume plugin it uses (including Flex), etc. The repository kubernetes-sigs/sig-storage-lib-external-provisioner houses a library for writing external provisioners that implements the bulk of the specification. Some external provisioners are listed under the repository kubernetes-sigs/sig-storage-lib-external-provisioner.
+
+## k8s-csi.error.GetDiskLun.Cannot find Lun for disk
+
+```
+# Delete the pod to mitigate the issue
+# Check if there are device names in the Ubuntu node for the attached disks (show proof that the disk is attached to the node, but not found in the Ubuntu node under /dev/ directory) - https://github.com/andyzhangx/demo/blob/master/linux/azuredisk/azuredisk-attachment-debugging.md#3-log-on-agent-node-and-check-device-info
+
+sudo apt install tree lsscsi -y
+
+df -aTH | grep dev
+tree /dev/disk/azure
+sudo lsscsi
+
+/dev/root      ext4         134G   24G  110G  18% /
+devtmpfs       devtmpfs     4.2G     0  4.2G   0% /dev
+tmpfs          tmpfs        4.2G     0  4.2G   0% /dev/shm
+devpts         devpts          0     0     0    - /dev/pts
+mqueue         mqueue          0     0     0    - /dev/mqueue
+hugetlbfs      hugetlbfs       0     0     0    - /dev/hugepages
+/dev/sda15     vfat         110M  6.4M  104M   6% /boot/efi
+/dev/sdb1      ext4          17G   29k   16G   1% /mnt
+/dev/root      ext4         134G   24G  110G  18% /var/lib/kubelet
+/dev/disk/azure
+|-- resource -> ../../sdb
+|-- resource-part1 -> ../../sdb1
+|-- root -> ../../sda
+|-- root-part1 -> ../../sda1
+|-- root-part14 -> ../../sda14
+`-- root-part15 -> ../../sda15
+0 directories, 6 files
+[0:0:0:0]    disk    Msft     Virtual Disk     1.0   /dev/sda
+[0:0:0:1]    disk    Msft     Virtual Disk     1.0   /dev/sdb
+[0:0:0:2]    cd/dvd  Msft     Virtual DVD-ROM  1.0   /dev/sr0
+
+kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/azuredisk-csi-driver/master/deploy/example/pvc-azuredisk-csi.yaml
+kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/azuredisk-csi-driver/master/deploy/example/nginx-pod-azuredisk.yaml
+sleep 30
+kubectl get pv,pvc
+kubectl get po -owide
+
+/dev/root      ext4         134G   24G  110G  18% /
+devtmpfs       devtmpfs     4.2G     0  4.2G   0% /dev
+tmpfs          tmpfs        4.2G     0  4.2G   0% /dev/shm
+devpts         devpts          0     0     0    - /dev/pts
+mqueue         mqueue          0     0     0    - /dev/mqueue
+hugetlbfs      hugetlbfs       0     0     0    - /dev/hugepages
+/dev/sda15     vfat         110M  6.4M  104M   6% /boot/efi
+/dev/sdb1      ext4          17G   29k   16G   1% /mnt
+/dev/root      ext4         134G   24G  110G  18% /var/lib/kubelet
+/dev/sdc       ext4          11G  2.2M   11G   1% /var/lib/kubelet/plugins/kubernetes.io/csi/disk.csi.azure.com/2bb20eb300e98e429ac676cba0c3967a87965fbe22ced23b6e97f34af2d537d6/globalmount
+/dev/sdc       ext4          11G  2.2M   11G   1% /var/lib/kubelet/plugins/kubernetes.io/csi/disk.csi.azure.com/2bb20eb300e98e429ac676cba0c3967a87965fbe22ced23b6e97f34af2d537d6/globalmount
+/dev/sdc       ext4          11G  2.2M   11G   1% /var/lib/kubelet/pods/609fdda1-fe29-48f7-a0b8-091a3df37e32/volumes/kubernetes.io~csi/pvc-0664bd30-1101-41a7-9973-dbe914f5b239/mount
+/dev/sdc       ext4          11G  2.2M   11G   1% /var/lib/kubelet/pods/609fdda1-fe29-48f7-a0b8-091a3df37e32/volumes/kubernetes.io~csi/pvc-0664bd30-1101-41a7-9973-dbe914f5b239/mount
+/dev/disk/azure
+|-- resource -> ../../sdb
+|-- resource-part1 -> ../../sdb1
+|-- root -> ../../sda
+|-- root-part1 -> ../../sda1
+|-- root-part14 -> ../../sda14
+|-- root-part15 -> ../../sda15
+`-- scsi1
+    `-- lun0 -> ../../../sdc
+1 directory, 7 files
+[0:0:0:0]    disk    Msft     Virtual Disk     1.0   /dev/sda
+[0:0:0:1]    disk    Msft     Virtual Disk     1.0   /dev/sdb
+[0:0:0:2]    cd/dvd  Msft     Virtual DVD-ROM  1.0   /dev/sr0
+[1:0:0:0]    disk    Msft     Virtual Disk     1.0   /dev/sdc
+
+lsblk
+NAME MAJ:MIN RM   SIZE RO TYPE MOUNTPOINTS
+sda    8:0    0   128G  0 disk
+|-sda1
+|      8:1    0 127.9G  0 part /var/lib/kubelet
+|                              /
+|-sda14
+|      8:14   0     4M  0 part
+`-sda15
+       8:15   0   106M  0 part /boot/efi
+sdb    8:16   0    16G  0 disk
+`-sdb1
+       8:17   0    16G  0 part /mnt
+sdc    8:32   0    10G  0 disk /var/lib/kubelet/pods/609fdda1-fe29-48f7-a0b8-091a3df37e32/volumes/kubernetes.io~csi/pvc-0664bd30-1101-41a7-9973-dbe914f5b239/mount
+                               /var/lib/kubelet/pods/609fdda1-fe29-48f7-a0b8-091a3df37e32/volumes/kubernetes.io~csi/pvc-0664bd30-1101-41a7-9973-dbe914f5b239/mount
+                               /var/lib/kubelet/plugins/kubernetes.io/csi/disk.csi.azure.com/2bb20eb300e98e429ac676cba0c3967a87965fbe22ced23b6e97f34af2d537d6/globalmount
+                               /var/lib/kubelet/plugins/kubernetes.io/csi/disk.csi.azure.com/2bb20eb300e98e429ac676c
+                               ba0c3967a87965fbe22ced23b6e97f34af2d537d6/globalmount
+sr0   11:0    1   732K  0 rom
+lsblk --output NAME,FSTYPE,LABEL,UUID,MODE
+NAME    FSTYPE LABEL           UUID                                 MODE
+sda                                                                 brw-rw----
+|-sda1  ext4   cloudimg-rootfs 0b58668a-ba2e-4a00-b89a-3354b7a547d4 brw-rw----
+|-sda14                                                             brw-rw----
+`-sda15 vfat   UEFI            C83D-C1E5                            brw-rw----
+sdb                                                                 brw-rw----
+`-sdb1  ext4                   56237ea8-718c-4091-9bfd-655a94c76493 brw-rw----
+sdc     ext4                   b3150c52-2bff-4283-9ce7-68be50db47ea brw-rw----
+sr0                                                                 brw-rw----
+```
+
+- https://github.com/andyzhangx/demo/blob/master/issues/azuredisk-issues.md#13-cannot-find-lun-for-disk
+- https://github.com/andyzhangx/demo/blob/master/linux/azuredisk/azuredisk-attachment-debugging.md#3-log-on-agent-node-and-check-device-info
+- https://github.com/kubernetes-sigs/azuredisk-csi-driver/issues/2777#issuecomment-2562539407

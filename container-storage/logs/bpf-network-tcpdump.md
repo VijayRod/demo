@@ -273,6 +273,14 @@ dumpy capture dumpy-09671733 successfully deleted
 
 - https://github.com/larryTheSlap/dumpy
 
+## tcpdump.capture.tools.k8s.kubectldebug
+
+```
+kubectl -n myns debug -i nginx-9456bbbf9-97gjc --image=nicolaka/netshoot –-target=nginx -- tcpdump -i eth0 -w - | wireshark -k -i -
+```
+
+- https://stackoverflow.com/questions/72388304/how-to-find-all-the-outgoing-network-traffic-from-a-pod-in-k8s
+
 ## tcpdump.capture.tools.k8s.kubeshark
 
 ```

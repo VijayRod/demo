@@ -1,2 +1,0 @@
-- https://tldp.org/LDP/tlk/dd/interrupts.html
-- https://lwn.net/Kernel/Index/: interrupt

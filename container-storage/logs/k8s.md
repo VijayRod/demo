@@ -275,6 +275,12 @@ sigs.k8s.io/cluster-api
 - https://learn.microsoft.com/en-us/azure/aks/supported-kubernetes-versions?tabs=azure-cli
 - https://learn.microsoft.com/en-us/azure/aks/support-policies
 
+## k8s.other.certifications
+
+- https://kodekloud.com/courses/
+- https://devopscube.com/kodekloud-coupons/
+- https://www.cncf.io/training/kubestronaut/
+
 ## k8s.tools
 
 - https://collabnix.github.io/kubetools/

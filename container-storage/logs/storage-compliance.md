@@ -1,3 +1,10 @@
+## compliance.hippa
+
+- https://www.hhs.gov/hipaa/for-professionals/privacy/laws-regulations/index.html
+- https://www.hhs.gov/hipaa/index.html
+
+## compliance.fips.aks
+
 ```
 rg=rg5
 az group create -n $rg -l swedencentral

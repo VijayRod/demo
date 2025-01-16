@@ -139,10 +139,6 @@ kubectl delete secret azure-secret
 az storage account delete -g $rgname -n $storageAccountName -y
 ```
 
-## inline.(blob.csi).pod
-
-- https://github.com/kubernetes-sigs/blob-csi-driver/blob/master/deploy/example/nginx-blobfuse-inline-volume.yaml
-
 ## inline.(blob.csi).pv
 
 ```

@@ -179,6 +179,44 @@ kubectl exec -it mypod2 -- cat /mnt/blob/empty.txt
 - https://github.com/Azure/azure-storage-fuse#frequently-asked-questions: Why am I not able to see the updated contents of file(s), which were updated through means other than Blobfuse2 mount?...
 - https://github.com/Azure/azure-storage-fuse/issues/1235#issuecomment-1700767145
 
+## blobfuse.app.k8s.csi.azureblob.mount.secret
+
+A kubernetes secret object is automatically created for a dynamically created azureblob-fuse PVC. This object has a naming convention `azure-storage-account-<storageAccountName>-secret`. Such an object must be manually created for a static PVC. Regardless of the creation method, this object contains the storage account name and the key.
+
+```
+# kubectl get secret
+NAME                                                   TYPE     DATA   AGE
+azure-storage-account-fusea5e2a60b1f5b42c08bb-secret   Opaque   2      41s
+
+# kubectl get secret -oyaml azure-storage-account-fusea5e2a60b1f5b42c08bb-secret
+apiVersion: v1
+data:
+  azurestorageaccountkey: redacted==
+  azurestorageaccountname: ZnVzZWE1ZTJhNjBiMWY1YjQyYzA4YmI=
+kind: Secret
+metadata:
+  creationTimestamp: "2023-08-01T17:39:35Z"
+  name: azure-storage-account-fusea5e2a60b1f5b42c08bb-secret
+  namespace: default
+  resourceVersion: "3641957"
+  uid: 65ea9e9d-0dd3-4aea-a2a4-2d0a86cfaa63
+type: Opaque
+```
+
+The values of both the azurestorageaccountkey and the azurestorageaccountname can be verified with a base64 conversion.
+
+```
+# echo -n 'ZnVzZWE1ZTJhNjBiMWY1YjQyYzA4YmI=' | base64 --decode ;echo
+fusea5e2a60b1f5b42c08bb
+```
+
+- https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/mounting-azure-blob-storage-container-fail#cause1-for-blobfuse-error2
+
+## blobfuse.app.k8s.csi.azureblob.storageclass.custom
+
+- https://learn.microsoft.com/en-us/azure/aks/azure-csi-blob-storage-provision?tabs=mount-nfs%2Csecret#storage-class-using-blobfuse
+- https://github.com/Azure/azure-storage-fuse#cli-parameters
+
 ## blobfuse.app.k8s.csi.azureblob.version
 
 ```

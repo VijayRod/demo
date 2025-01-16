@@ -80,6 +80,44 @@ Containers:
     Ready:          False
 ```
 
+```
+kubectl delete job whalesay-job
+cat << EOF | kubectl create -f -
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: whalesay-job
+spec:
+  ttlSecondsAfterFinished: 300
+  parallelism: 250
+  completions: 250
+  template:
+    spec:
+      restartPolicy: Never
+      # nodeSelector:
+        # kubernetes.io/hostname: aks-nodepool1-39736488-vmss000007
+      tolerations:
+      - key: scheduler-test
+        operator: Exists
+        effect: NoSchedule
+      - key: preemptible 
+        operator: Exists
+        effect: NoSchedule
+      containers:
+      - name: whalesay
+        image: docker/whalesay
+        command: ["cowsay", "hello"]
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "150Mi"
+          limits:
+            cpu: "100m"
+            memory: "150Mi"
+EOF
+kubectl get po -w
+```
+
 - https://kubernetes.io/docs/concepts/workloads/controllers/job/: If you want to run a Job (either a single task, or several in parallel) on a schedule, see CronJob.
 
 ```

@@ -1,5 +1,5 @@
 ```
-# See the section on dedicated host and ppg
+# See the sections on dedicated host and ppg
 ```
 
 - https://azure.microsoft.com/en-us/explore/global-infrastructure/products-by-region/

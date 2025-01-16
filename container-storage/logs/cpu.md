@@ -56,11 +56,12 @@ kubectl describe no
 Allocatable:
   cpu:                1900m
 ```
-https://kubernetes.io/docs/tasks/administer-cluster/reserve-compute-resources/#node-allocatable: The scheduler treats 'Allocatable' as the available capacity for pods.
-https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/: allocatable
-https://learn.microsoft.com/en-us/azure/aks/node-resource-reservations#cpu-reservations
-https://learn.microsoft.com/en-us/azure/aks/core-aks-concepts#resource-reservations
-https://learnk8s.io/allocatable-resources
+
+- https://kubernetes.io/docs/tasks/administer-cluster/reserve-compute-resources/#node-allocatable: The scheduler treats 'Allocatable' as the available capacity for pods.
+- https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/: allocatable
+- https://learn.microsoft.com/en-us/azure/aks/node-resource-reservations#cpu-reservations
+- https://learn.microsoft.com/en-us/azure/aks/core-aks-concepts#resource-reservations
+- https://learnk8s.io/allocatable-resources
 
 ```
 ## event.FailedScheduling.Insufficient cpu

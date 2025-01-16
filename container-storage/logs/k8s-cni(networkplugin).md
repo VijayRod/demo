@@ -36,6 +36,7 @@ More:
 - https://karampok.me/posts/chained-plugins-cni/
 - https://stevegriffith.nyc/posts/aks-networking-part2/
 - https://labs.iximiuz.com/tutorials/container-networking-from-scratch
+- https://learnk8s.io/kubernetes-network-packets
 
 ## k8s-cni./etc/cni/net.d
 

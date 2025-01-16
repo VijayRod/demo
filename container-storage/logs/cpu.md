@@ -33,7 +33,31 @@
 - https://www.codecademy.com/learn/fundamentals-of-operating-systems/modules/os-synchronization/cheatsheet
 - https://www.geeksforgeeks.org/computer-network-concepts-a-software-engineer-should-learn/#computer-network-concepts-should-a-software-engineer-learn
 
-## cpu.irqbalance(UnbalancedIRQs)
+## cpu.architecture.arm
+
+- https://lwn.net/Kernel/Index/#Architectures-Arm
+- https://en.wikipedia.org/wiki/ARM_architecture_family: ARM (stylised in lowercase as arm, formerly an acronym for Advanced RISC Machines and originally Acorn RISC Machine) is a family of RISC instruction set architectures (ISAs) for computer processors
+
+## cpu.architecture.arm.app.azurevm
+
+- https://azure.microsoft.com/en-us/blog/now-in-preview-azure-virtual-machines-with-ampere-altra-armbased-processors/: Arm-based processor
+    
+## cpu.architecture.arm.app.k8s
+
+- https://learn.microsoft.com/en-us/azure/aks/create-node-pools#arm64-node-pools
+- https://learn.microsoft.com/en-us/azure/aks/best-practices-cost: Arm64 VMs are power-efficient and cost effective but don't compromise on performance. With Arm64 node pool support in AKS, you can create Arm64 Ubuntu agent nodes...
+  
+## cpu.architecture.cpu-x86_64.md
+
+- https://lwn.net/Kernel/Index/#Architectures-x86
+- https://www.kernel.org/doc/html/latest/arch/x86/x86_64/index.html
+
+## cpu.interrupt
+
+- https://tldp.org/LDP/tlk/dd/interrupts.html
+- https://lwn.net/Kernel/Index/: interrupt
+  
+## cpu.interrupt.rqbalance(UnbalancedIRQs)
 
 ```
 dpkg -l |grep irqbalance
@@ -59,6 +83,7 @@ systemctl restart irqbalance.service
 - https://gist.github.com/juan-lee/cf53e166f7bb0a134b249ac0c434d495#file-patch-irqbalance-yaml
 - https://github.com/Azure/AKS/blob/master/vhd-notes/aks-ubuntu/AKSUbuntu-2204/202310.09.0.txt: irqbalance
 - https://github.com/Irqbalance/irqbalance/
+- https://linux.die.net/man/1/irqbalance
 - https://zmalik.dev/posts/packet-drop
   
 ## cpu.k8s

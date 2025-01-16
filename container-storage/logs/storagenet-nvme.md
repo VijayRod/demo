@@ -27,7 +27,16 @@ major minor  #blocks  name
 - https://learn.microsoft.com/en-us/azure/virtual-machines/sizes-storage
 - https://techcommunity.microsoft.com/t5/azure-compute-blog/announcing-the-new-ebsv5-vm-sizes-offering-2x-remote-storage/ba-p/3652000
 
-## NVMe.nvme-cli
+## NVMe.app.k8s.csi
+ 
+- https://learn.microsoft.com/en-us/azure/storage/container-storage/use-container-storage-with-local-disk: Use Azure Container Storage with local NVMe. two types of Ephemeral Disk available: local NVMe and temp SSD.
+- https://learn.microsoft.com/en-us/azure/storage/container-storage/use-container-storage-with-local-nvme-replication
+
+## NVMe.app.vm
+
+- https://learn.microsoft.com/en-us/azure/virtual-machines/linux/expand-disks?tabs=ubuntu: NVMe controllers for Ultra Disks or Premium SSD v2 disks
+  
+## NVMe.cli.nvme-cli
 
 ```
 # https://github.com/Azure/AKS/blob/master/vhd-notes/aks-ubuntu/AKSUbuntu-2204/202409.30.0.txt: nvme-cli/jammy-updates,now 1.16-3ubuntu0.3 amd64 [installed]

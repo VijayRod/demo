@@ -1,4 +1,4 @@
-## kubectl.install
+## kubectl
 
 ```
 # See the section on kubectl.spec.command.get
@@ -14,6 +14,10 @@ sudo az aks install-cli
 - https://learn.microsoft.com/en-us/azure/aks/learn/quick-kubernetes-deploy-cli#connect-to-the-cluster
 - https://learn.microsoft.com/en-us/azure/aks/tutorial-kubernetes-deploy-cluster?tabs=azure-cli#install-the-kubernetes-cli
 - https://learn.microsoft.com/en-us/cli/azure/aks?view=azure-cli-latest#az-aks-install-cli
+
+## kubectl.debug
+
+- https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/connectivity/config-file-is-not-available-when-connecting: The az aks get-credentials command in Azure CLI, which is used to get access credentials for a managed Kubernetes cluster, modifies the ~/.kube/config file. The kubectl command uses the kubeconfig (kubectl configuration) file in the $HOME/.kube directory. C:\Users\A\.kube\config file.
 
 ## kubectl.spec.discovery/memcache
 ```

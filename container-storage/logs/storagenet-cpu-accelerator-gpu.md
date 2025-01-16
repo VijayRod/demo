@@ -249,3 +249,7 @@ cd "C:\Program Files\NVIDIA Corporation\NVSMI"
 ## cpu.gpu.tools.nvidia-smi
 
 - https://docs.nvidia.com/vgpu/4.5/grid-vgpu-user-guide/index.html#performance-monitoring-gpu: From any supported hypervisor, and from a guest VM that is running a 64-bit edition of Windows or Linux, you can use NVIDIA System Management Interface, nvidia-smi.
+
+## cpu.gpu.workloads
+
+- https://learn.microsoft.com/en-us/azure/architecture/reference-architectures/containers/aks-gpu/gpu-aks

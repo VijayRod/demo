@@ -33,6 +33,34 @@
 - https://www.codecademy.com/learn/fundamentals-of-operating-systems/modules/os-synchronization/cheatsheet
 - https://www.geeksforgeeks.org/computer-network-concepts-a-software-engineer-should-learn/#computer-network-concepts-should-a-software-engineer-learn
 
+## cpu.irqbalance(UnbalancedIRQs)
+
+```
+dpkg -l |grep irqbalance
+ii  irqbalance                            1.8.0-1build1                           amd64        Daemon to balance interrupts for SMP systems
+
+root@aks-nodepool1-24398294-vmss000000:/# systemctl status irqbalance.service
+● irqbalance.service - irqbalance daemon
+     Loaded: loaded (/lib/systemd/system/irqbalance.service; enabled; vendor preset: enabled)
+     Active: active (running) since Fri 2023-10-27 19:58:00 UTC; 7s ago
+       Docs: man:irqbalance(1)
+             https://github.com/Irqbalance/irqbalance
+   Main PID: 11116 (irqbalance)
+      Tasks: 2 (limit: 9516)
+     Memory: 556.0K
+        CPU: 32ms
+     CGroup: /system.slice/irqbalance.service
+             └─11116 /usr/sbin/irqbalance --foreground
+Oct 27 19:58:00 aks-nodepool1-24398294-vmss000000 systemd[1]: Started irqbalance daemon.
+
+systemctl restart irqbalance.service
+```
+
+- https://gist.github.com/juan-lee/cf53e166f7bb0a134b249ac0c434d495#file-patch-irqbalance-yaml
+- https://github.com/Azure/AKS/blob/master/vhd-notes/aks-ubuntu/AKSUbuntu-2204/202310.09.0.txt: irqbalance
+- https://github.com/Irqbalance/irqbalance/
+- https://zmalik.dev/posts/packet-drop
+  
 ## cpu.k8s
 
 ```
@@ -98,36 +126,21 @@ kubectl describe no # FailedScheduling. 2 Insufficient cpu
 - https://github.com/kubernetes/kubernetes/issues/106884#issuecomment-1005074672: a Kubelet must consider the resources of terminating pods
 - https://github.com/kubernetes/kubernetes/issues/106884#issuecomment-1005891654: Create a large number of pods that run for a known short amount of time that consume 1 or more pod resources (1-5s)
 
-## cpu.irqbalance(UnbalancedIRQs)
-
-```
-dpkg -l |grep irqbalance
-ii  irqbalance                            1.8.0-1build1                           amd64        Daemon to balance interrupts for SMP systems
-
-root@aks-nodepool1-24398294-vmss000000:/# systemctl status irqbalance.service
-● irqbalance.service - irqbalance daemon
-     Loaded: loaded (/lib/systemd/system/irqbalance.service; enabled; vendor preset: enabled)
-     Active: active (running) since Fri 2023-10-27 19:58:00 UTC; 7s ago
-       Docs: man:irqbalance(1)
-             https://github.com/Irqbalance/irqbalance
-   Main PID: 11116 (irqbalance)
-      Tasks: 2 (limit: 9516)
-     Memory: 556.0K
-        CPU: 32ms
-     CGroup: /system.slice/irqbalance.service
-             └─11116 /usr/sbin/irqbalance --foreground
-Oct 27 19:58:00 aks-nodepool1-24398294-vmss000000 systemd[1]: Started irqbalance daemon.
-
-systemctl restart irqbalance.service
-```
-
-- https://gist.github.com/juan-lee/cf53e166f7bb0a134b249ac0c434d495#file-patch-irqbalance-yaml
-- https://github.com/Azure/AKS/blob/master/vhd-notes/aks-ubuntu/AKSUbuntu-2204/202310.09.0.txt: irqbalance
-- https://github.com/Irqbalance/irqbalance/
-- https://zmalik.dev/posts/packet-drop
-
 ## cpu.OS (operating system)
 
 - https://jameskle.com/writes/operating-systems
 - https://www.geeksforgeeks.org/prepare-cs-core-subjects-for-placements/
 - https://www.educative.io/blog/operating-systems-crashcourse
+
+## cpu.storage.cache
+
+- https://robots.net/tech/where-does-cpu-store-its-computations/: each level having a different size and proximity to the CPU. The first level cache, known as L1 cache, is the fastest and smallest cache, located directly on the CPU chip. It is divided into separate instruction cache (L1i cache) and data cache (L1d cache), allowing for parallel access to instructions and data.
+  - If the data or instructions are not found in the L1 cache, the CPU checks the next level of cache, called the L2 cache. The L2 cache is larger but slightly slower than the L1 cache. Depending on the system, there may be additional levels of cache, such as L3 cache, which further increase the capacity but introduce additional latency.
+  - The cache management algorithms determine how data is stored and replaced in the cache. Popular caching strategies include least recently used (LRU) and least frequently used (LFU)
+- https://www.howtogeek.com/891526/l1-vs-l2-vs-l3-cache/
+
+## cpu.storage.register
+
+- https://robots.net/tech/where-does-cpu-store-its-computations/: Registers are incredibly fast compared to other forms of memory. They can perform operations within a single clock cycle, making them essential for efficient execution of instructions. When the CPU receives an instruction, it fetches the necessary data from memory and stores it in registers, ready for processing.
+  - One important type is the program counter (PC) register, which keeps track of the address of the next instruction to be fetched from memory.
+  - Another critical type of register is the accumulator, which stores intermediate results during mathematical and logical operations.

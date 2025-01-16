@@ -147,6 +147,15 @@ az network lb list -g $noderg
 ]
 ```
 
+## lb.spec.FastPath
+
+- https://documents.uow.edu.au/~blane/netapp/ontap/nag/networking/concept/c_oc_netw_routing_understanding_fastpath.html: Using fast path provides the following advantages: Load balancing between multiple storage system interfaces on the same subnet. Load balancing is achieved by sending responses on the same interface of your storage system that receive incoming requests. Increased storage system performance by skipping routing table lookups.
+- https://learn.microsoft.com/en-us/azure/expressroute/about-fastpath: When enabled, FastPath sends network traffic directly to virtual machines in the virtual network, bypassing the expressroute virtual network gateway.
+- https://github.com/sonic-net/DASH/blob/main/documentation/load-bal-service/fast-path-icmp-flow-redirection.md: FastPath is the feature that switches traffic from using VIP-to-VIP connectivity (which involves transiting SLB MUXes), into using a direct path between VMs (direct PA to PA path).
+  - VIP	Virtualized IP (load balanced IP). This is load balanced IP.
+  - DIP/PA	Physical Address / Directly Assigned IP. Actual physical address of the VM (underlay).
+- https://knowledgebase.paloaltonetworks.com/KCSArticleDetail?id=kA10g000000ClWFCA0: Differences between packets in slow path, fast path and offloaded
+  
 ## lb.spec.floatingip
 
 ```
@@ -178,6 +187,13 @@ az network lb rule show -g $noderg --lb-name kubernetes -n a3d654cb447704508bc7b
 - https://learn.microsoft.com/en-us/azure/load-balancer/load-balancer-tcp-idle-timeout?tabs=tcp-reset-idle-cli
 - https://learn.microsoft.com/en-us/azure/aks/load-balancer-standard: IdleTimeoutInMinutes
 
+## lb.spec.SLB/MUX
+
+- https://learn.microsoft.com/en-us/azure/azure-local/concepts/software-load-balancer: VIPs are located in the SLB Multiplexer (MUX). The MUX consists of one or more VMs. Network Controller provides each MUX with each VIP, and each MUX in turn uses Border Gateway Protocol (BGP) to advertise each VIP to routers on the physical network as a /32 route. 
+  - Load balance - the MUX uses the VIP to select a DIP, encapsulates the packet, and forwards the traffic to the Hyper-V host where the DIP is located.
+  - Network Address Translation (NAT) - the Hyper-V host removes encapsulation from the packet, translates the VIP to a DIP, remaps the ports, and forwards the packet to the DIP VM.
+  - When tenant VMs respond and send outbound network traffic back to the internet or remote tenant locations, because the NAT is performed by the Hyper-V host, the traffic bypasses the MUX and goes directly to the edge router from the Hyper-V host. This MUX bypass process is called Direct Server Return (DSR). And after the initial network traffic flow is established, the inbound network traffic bypasses the SLB MUX completely.
+    
 ## lb.spec.tcpreset
 
 ```

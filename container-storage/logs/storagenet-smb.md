@@ -12,6 +12,11 @@
 - https://github.com/torvalds/linux/tree/master/fs/smb
 - https://github.com/multipath-tcp/mptcp/blob/mptcp_v0.96/fs/cifs
 
+## smb.app.k8s.csi
+
+- https://learn.microsoft.com/en-us/azure/storage/files/storage-files-introduction: Server Message Block (SMB) protocol, Network File System (NFS) protocol, and Azure Files REST API.
+- https://learn.microsoft.com/en-us/azure/aks/azure-netapp-files: Azure NetApp Files is an enterprise-class, high-performance, metered file storage service running on Azure and supports volumes using NFS (NFSv3 or NFSv4.1), SMB, and dual-protocol (NFSv3 and SMB, or NFSv4.1 and SMB).
+
 ## smb.client
 
 - https://github.com/TalAloni/SMBLibrary/blob/master/SMBLibrary/Client/SMB2Client.cs

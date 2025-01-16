@@ -52,6 +52,12 @@ tcpdump port 111 or port 2048
 
 - https://unix.stackexchange.com/questions/90401/using-tcpdump-to-extract-nfs-rpc-contents
 
+## nfs.protocol.debug
+
+- https://learn.microsoft.com/en-us/azure/storage/blobs/network-file-system-protocol-support-how-to#step-2-configure-network-security: The NFS 3.0 protocol uses ports 111 and 2048.
+- https://learn.microsoft.com/en-us/azure/storage/blobs/network-file-system-protocol-support
+- https://github.com/kubernetes-sigs/blob-csi-driver/blob/master/docs/csi-debug.md: nfs
+
 ## nfs.mount.permission
 
 - https://learn.microsoft.com/en-us/azure/aks/azure-csi-blob-storage-provision?tabs=mount-nfs%2Csecret: Mounting Blob storage using the NFS v3 protocol doesn't authenticate using an account key. Your AKS cluster needs to reside in the same or peered virtual network as the agent node. The only way to secure the data in your storage account is by using a virtual network and other network security settings.

@@ -47,6 +47,8 @@ root        2594  1.9  1.5 1795616 129144 ?      Ssl  19:01   0:12 /usr/local/bi
 ```
 
 ```
+# See the section on journalctl in bash
+
 journalctl -u kubelet -o cat > /tmp/kubeletlogs
 journalctl -u kubelet > /tmp/kubelet.log && journal -u containerd > /tmp/containerd.log
 journalctl -xeu kubelet

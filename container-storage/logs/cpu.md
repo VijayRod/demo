@@ -33,6 +33,70 @@
 - https://www.codecademy.com/learn/fundamentals-of-operating-systems/modules/os-synchronization/cheatsheet
 - https://www.geeksforgeeks.org/computer-network-concepts-a-software-engineer-should-learn/#computer-network-concepts-should-a-software-engineer-learn
 
+## cpu.k8s
+
+```
+# Units (cores/millicores)
+1 core (virtual/physical) = 1000m (millicores/millicpu)
+```
+
+- https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#resource-units-in-kubernetes: 0.1 is equivalent to the expression 100m, which can be read as "one hundred millicpu"
+- https://kubernetes.io/docs/tasks/configure-pod-container/assign-cpu-resource/#cpu-units: suffix m to mean milli. CPU is always requested as an absolute quantity, never as a relative quantity; 0.1 is the same amount of CPU on a single-core, dual-core, or 48-core machine.
+
+```
+# CPU Capacity (VM CPU)
+kubectl describe no
+Capacity:
+  cpu:                2
+```
+
+```
+# Allocatable (usable capacity)
+kubectl describe no
+Allocatable:
+  cpu:                1900m
+```
+https://kubernetes.io/docs/tasks/administer-cluster/reserve-compute-resources/#node-allocatable: The scheduler treats 'Allocatable' as the available capacity for pods.
+https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/: allocatable
+https://learn.microsoft.com/en-us/azure/aks/node-resource-reservations#cpu-reservations
+https://learn.microsoft.com/en-us/azure/aks/core-aks-concepts#resource-reservations
+https://learnk8s.io/allocatable-resources
+
+```
+## event.FailedScheduling.Insufficient cpu
+# error in scheduler
+
+kubectl delete po nginx
+cat << EOF | kubectl create -f -
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+spec:
+  containers:
+  - image: nginx
+    name: nginx
+    resources:
+      requests:
+        cpu: 100
+EOF
+kubectl describe no # FailedScheduling. 2 Insufficient cpu    
+```
+
+- https://github.com/kubernetes/kubernetes/blob/master/pkg/scheduler/framework/plugins/noderesources/fit.go: Reason:       "Insufficient cpu",
+
+```
+## event.OutOfcpu
+# error in kubelet i.e. after scheduling to a node
+```
+
+- https://github.com/kubernetes/kubernetes/blob/master/pkg/kubelet/lifecycle/predicate.go: OutOfcpu. InsufficientResourceError. "Node didn't have enough resource: %s, requested: %d, used: %d, capacity: %d". For example, "Node didn't have enough resource: cpu,".
+- https://github.com/kubernetes/kubernetes/blob/master/pkg/kubelet/kubelet.go: lifecycle.OutOfCPU
+- https://github.com/kubernetes/kubernetes/blob/master/pkg/apis/core/types.go: type ResourceName string. // CPU, in cores. (500m = .5 cores). ResourceCPU ResourceName = "cpu"
+- https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodename: If the named node does not have the resources to accommodate the Pod, the Pod will fail and its reason will indicate why, for example OutOfmemory or OutOfcpu.
+- https://github.com/kubernetes/kubernetes/issues/106884#issuecomment-1005074672: a Kubelet must consider the resources of terminating pods
+- https://github.com/kubernetes/kubernetes/issues/106884#issuecomment-1005891654: Create a large number of pods that run for a known short amount of time that consume 1 or more pod resources (1-5s)
+
 ## cpu.irqbalance(UnbalancedIRQs)
 
 ```

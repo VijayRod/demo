@@ -12,12 +12,6 @@ az storage blob list --account-name $storage --container-name backups --output t
 - https://learn.microsoft.com/en-us/azure/storage/blobs/storage-quickstart-blobs-cli
 - https://learn.microsoft.com/en-us/azure/storage/blobs/security-recommendations#networking
 
-## azureblob.blobfuse
-
-- https://learn.microsoft.com/en-us/azure/storage/blobs/blobfuse2-how-to-deploy
-- https://learn.microsoft.com/en-us/azure/storage/blobs/blobfuse2-troubleshooting
-- https://github.com/Azure/azure-storage-fuse/blob/main/TSG.md
-
 ## azureblob.debug
 
 ```

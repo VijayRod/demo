@@ -163,6 +163,8 @@ strace: Process 8302 attached with 5 threads
 [pid  8303] <... restart_syscall resumed>) = 0
 ```
 
+- https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/storage/mounting-azure-blob-storage-container-fail#cause1-for-blobfuse-error3: Destination port: 443 (if using BlobFuse)
+
 ## blobfuse.app.k8s.csi.azureblob.driver.parameter
 - https://github.com/kubernetes-sigs/blob-csi-driver/blob/master/docs/driver-parameters.md
 - https://learn.microsoft.com/en-us/azure/aks/azure-csi-blob-storage-provision?tabs=mount-nfs%2Csecret#storage-class-parameters-for-dynamic-persistent-volumes
@@ -545,12 +547,6 @@ mount -v -t nfs -o sec=sys,vers=3,nolock accountname.blob.core.windows.net:/acco
 # static
 # See the section on azureblob.driver.parameter.nodeStageSecretRef
 ```
-
-## blobfuse.app.k8s.csi.azureblob.driver.parameter.protocol.nfs.debug
-
-- https://learn.microsoft.com/en-us/azure/storage/blobs/network-file-system-protocol-support-how-to#step-2-configure-network-security: The NFS 3.0 protocol uses ports 111 and 2048.
-- https://learn.microsoft.com/en-us/azure/storage/blobs/network-file-system-protocol-support
-- https://github.com/kubernetes-sigs/blob-csi-driver/blob/master/docs/csi-debug.md: nfs
 
 ## blobfuse.app.k8s.csi.azureblob.driver.parameter.nodeStageSecretRef
 

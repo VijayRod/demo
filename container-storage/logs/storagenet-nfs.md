@@ -29,6 +29,29 @@ NFSv4
 - https://community.netapp.com/t5/Tech-ONTAP-Blogs/NFSv3-and-NFSv4-What-s-the-difference/ba-p/441316
 - https://datatracker.ietf.org/doc/html/rfc5661
 
+## nfs.app.azureblob
+
+- https://learn.microsoft.com/en-us/azure/aks/azure-blob-csi?tabs=NFS: The data on the object storage can be accessed by applications using BlobFuse or Network File System (NFS) 3.0 protocol.
+
+## nfs.app.azurefile
+
+- https://learn.microsoft.com/en-us/azure/storage/files/storage-files-introduction: Server Message Block (SMB) protocol, Network File System (NFS) protocol, and Azure Files REST API.
+
+## nfs.app.azurenetapp
+
+- https://learn.microsoft.com/en-us/azure/aks/azure-netapp-files: Azure NetApp Files is an enterprise-class, high-performance, metered file storage service running on Azure and supports volumes using NFS (NFSv3 or NFSv4.1), SMB, and dual-protocol (NFSv3 and SMB, or NFSv4.1 and SMB).
+
+## nfs.filesystem
+
+## nfs.protocol
+
+```
+# tcpdump
+tcpdump port 111 or port 2048
+```
+
+- https://unix.stackexchange.com/questions/90401/using-tcpdump-to-extract-nfs-rpc-contents
+
 ## nfs.mount.permission
 
 - https://learn.microsoft.com/en-us/azure/aks/azure-csi-blob-storage-provision?tabs=mount-nfs%2Csecret: Mounting Blob storage using the NFS v3 protocol doesn't authenticate using an account key. Your AKS cluster needs to reside in the same or peered virtual network as the agent node. The only way to secure the data in your storage account is by using a virtual network and other network security settings.

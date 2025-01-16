@@ -1,2 +1,0 @@
-- https://learn.microsoft.com/en-us/azure/aks/azure-csi-blob-storage-provision?tabs=mount-nfs%2Csecret#storage-class-using-blobfuse
-- https://github.com/Azure/azure-storage-fuse#cli-parameters

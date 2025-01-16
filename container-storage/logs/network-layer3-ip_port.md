@@ -53,6 +53,45 @@ ls >/dev/tcp/localhost/3333
 
 - https://www.unixfu.ch/use-netcat-instead-of-telnet/: telnet is history
 
+```
+# between pods on different nodes
+# run one to listen on
+kubectl run nc1 --image=nicolaka/netshoot -it --rm --overrides='{"spec": {"nodeSelector": {"kubernetes.io/hostname": "aks-nodepool1-39736488-vmss00000a"}}}' -- nc -k -l 8080
+# get ip
+NC1IP=$(kubectl get pod nc1 -o jsonpath='{.status.podIP}')
+echo $NC1IP
+# run one to query from
+kubectl run nc2 --image=nicolaka/netshoot -it --rm   --overrides='{"spec": {"nodeSelector": {"kubernetes.io/hostname": "aks-nodepool1-39736488-vmss00000b"}}}' -- sh
+# run timings on it
+export NC1IP=<ipfromabove>
+while true; do
+    date
+    time nc -zv $NC1IP 8080
+    sleep 0.5
+done
+```
+
+```
+# between nodes
+kubectl get no -owide
+
+kubectl node-shell aks-nodepool1-39736488-vmss000002
+root@aks-nodepool1-39736488-vmss000002:/# nc -k -l 8080
+
+kubectl node-shell aks-nodepool1-39736488-vmss000003
+root@aks-nodepool1-39736488-vmss000003:/# export NC1IP=10.224.0.4
+root@aks-nodepool1-39736488-vmss000003:/# while true; do
+    date
+    time nc -zv $NC1IP 8080
+    sleep 0.5
+done
+Thu Jan  9 18:31:19 UTC 2025
+Connection to 10.224.0.4 8080 port [tcp/http-alt] succeeded!
+real    0m0.003s
+user    0m0.002s
+sys     0m0.000s
+```
+
 ## ip.port.apps.netstat
 
 ```

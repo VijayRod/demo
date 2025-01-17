@@ -1,4 +1,0 @@
-- https://learn.microsoft.com/en-us/azure/virtual-machines/sizes-previous-gen
-- https://azure.microsoft.com/en-us/pricing/details/virtual-machines/series/: generation
-- TBD https://learn.microsoft.com/en-us/azure/virtual-machines/av2-series: VM Generation Support: Generation 1
-- TBD https://learn.microsoft.com/en-us/azure/virtual-machines/generation-2#generation-2-vm-sizes

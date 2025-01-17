@@ -1,1 +1,0 @@
-- https://learn.microsoft.com/en-us/azure/virtual-machines/nv-series-retirement#how-does-the-nv-series-migration-affect-me: will be set to a deallocated state. These virtual machines will be stopped and removed from the host. These virtual machines will no longer be billed in the deallocated state.

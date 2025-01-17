@@ -1,7 +1,0 @@
-```
-# See the sections on dedicated host and ppg
-```
-
-- https://azure.microsoft.com/en-us/explore/global-infrastructure/products-by-region/
-- https://aka.ms/aks/vm-size-selector
-- https://azure.microsoft.com/en-us/pricing/vm-selector/

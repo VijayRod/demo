@@ -1,5 +1,9 @@
 ## cpu.gpu
 
+```
+# aka HPC (high performance compute)
+```
+
 - https://lwn.net/Kernel/Index/#Device_drivers-Accelerators
 - https://learn.microsoft.com/en-us/azure/virtual-machines/sizes-gpu
 
@@ -246,7 +250,7 @@ cd "C:\Program Files\NVIDIA Corporation\NVSMI"
 
 - https://learn.microsoft.com/en-us/virtualization/windowscontainers/deploy-containers/gpu-acceleration#requirements
 
-## cpu.gpu.sku (HPC)
+## cpu.gpu.sku
 
 - https://learn.microsoft.com/en-us/azure/virtual-machines/sizes/overview#high-performance-compute
   

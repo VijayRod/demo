@@ -187,6 +187,17 @@ az network lb rule show -g $noderg --lb-name kubernetes -n a3d654cb447704508bc7b
 - https://learn.microsoft.com/en-us/azure/load-balancer/load-balancer-tcp-idle-timeout?tabs=tcp-reset-idle-cli
 - https://learn.microsoft.com/en-us/azure/aks/load-balancer-standard: IdleTimeoutInMinutes
 
+## lb.spec.sku.basic
+
+```
+# See the section on singlePlacementGroup (ppg)
+```
+
+- https://learn.microsoft.com/en-us/azure/load-balancer/skus: On September 30, 2025, Basic Load Balancer will be retired.
+- https://azure.microsoft.com/es-es/updates?id=azure-basic-load-balancer-will-be-retired-on-30-september-2025-upgrade-to-standard-load-balancer
+- https://learn.microsoft.com/en-us/answers/questions/1527390/retirement-announcement-basic-load-balancer-will-b
+- https://learn.microsoft.com/en-us/azure/load-balancer/load-balancer-basic-upgrade-guidance
+
 ## lb.spec.SLB/MUX
 
 - https://learn.microsoft.com/en-us/azure/azure-local/concepts/software-load-balancer: VIPs are located in the SLB Multiplexer (MUX). The MUX consists of one or more VMs. Network Controller provides each MUX with each VIP, and each MUX in turn uses Border Gateway Protocol (BGP) to advertise each VIP to routers on the physical network as a /32 route. 

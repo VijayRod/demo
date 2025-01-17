@@ -56,3 +56,16 @@ sync && echo 3 | sudo tee /proc/sys/vm/drop_caches
 
 - https://docs.kernel.org/admin-guide/mm/concepts.html#page-cache
 - https://www.linuxatemyram.com/
+
+## memory.perf.stressng
+
+```
+#!/usr/bin/env bash
+apt update
+apt install stress-ng -y
+swapoff -a
+for ((i = 0 ; i < 100 ; i++)); do
+  stress-ng --vm 1 --vm-bytes 5% -t 1h &> /dev/null &
+  sleep 1
+done
+```

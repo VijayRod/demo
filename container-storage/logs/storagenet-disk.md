@@ -82,11 +82,16 @@ root@aks-nodepool1-12740373-vmss000000:/# du -h /tmp
 - https://linuxconfig.org/introduction-to-the-lsblk-command
 - https://www.redhat.com/en/blog/du-command-options
 
-## storage.SCSI.device.type.disk.os
+## storage.SCSI.device.type.disk.space.garbagecollection.k8s
+
+- https://kubernetes.io/docs/concepts/architecture/garbage-collection/
+- https://kubernetes.io/blog/2024/01/23/kubernetes-separate-image-filesystem
+
+## storage.SCSI.device.type.disk.type.os
 
 - https://learn.microsoft.com/en-us/azure/virtual-machines/linux/tutorial-manage-disks: The OS disk is labeled /dev/sda by default.
 
-## storage.SCSI.device.type.disk.ephemeraldisk-os
+## storage.SCSI.device.type.disk.type.ephemeraldisk-os
 
 Here are the commands to create a cluster with an ephemeral OS disk.
 
@@ -126,7 +131,7 @@ az vm get-instance-view -g $rg -n vm
 
 - [virtual-machines/ephemeral-os-disks](https://learn.microsoft.com/en-us/azure/virtual-machines/ephemeral-os-disks).
 
-## storage.SCSI.device.type.disk.ephemeraldisk-os.iops
+## storage.SCSI.device.type.disk.type.ephemeraldisk-os.iops
 
 Here are the commands to benchmark the available IOPS.
 
@@ -191,7 +196,7 @@ spec:
 EOF
 ```
 
-## storage.SCSI.device.type.disk.temp
+## storage.SCSI.device.type.disk.type.temp
 
 ```
 # See the section on host node cache
@@ -207,3 +212,6 @@ EOF
 - https://learn.microsoft.com/en-us/azure/azure-sql/virtual-machines/windows/performance-guidelines-best-practices-storage?view=azuresql#cached-and-temp-storage-throughput: The Azure BlobCache consists of a combination of the VM host's random-access memory and locally attached SSD. The temp drive (D:\ drive) within the VM is also hosted on this local SSD.
   - The max cached and temp storage throughput limit governs the I/O against the local temp drive (D:\ drive) and the Azure BlobCache only if host caching is enabled.
 
+## storage.SCSI.device.type.disk.type.temp.k8s.csi
+
+- https://learn.microsoft.com/en-us/azure/storage/container-storage/use-container-storage-with-temp-ssd

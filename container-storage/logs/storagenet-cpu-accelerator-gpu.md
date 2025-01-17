@@ -245,6 +245,10 @@ cd "C:\Program Files\NVIDIA Corporation\NVSMI"
 ## cpu.gpu.driver.OS.windows.containers
 
 - https://learn.microsoft.com/en-us/virtualization/windowscontainers/deploy-containers/gpu-acceleration#requirements
+
+## cpu.gpu.sku (HPC)
+
+- https://learn.microsoft.com/en-us/azure/virtual-machines/sizes/overview#high-performance-compute
   
 ## cpu.gpu.tools.nvidia-smi
 

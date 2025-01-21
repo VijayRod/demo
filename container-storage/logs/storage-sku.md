@@ -8,6 +8,12 @@
 - https://aka.ms/aks/vm-size-selector
 - https://azure.microsoft.com/en-us/pricing/vm-selector/
 
+## sku.cpu
+
+```
+# See the section on cpu
+```
+
 ## sku.generation
 
 - https://learn.microsoft.com/en-us/azure/virtual-machines/sizes-previous-gen

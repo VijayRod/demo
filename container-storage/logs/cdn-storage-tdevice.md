@@ -208,3 +208,22 @@ $GetDisks = Get-AzureRMVM | where {$_.name -eq "VM name"}
 $GetDisks.StorageProfile.DataDisks
 ```
 - https://learn.microsoft.com/en-us/azure/virtual-machines/windows/azure-to-guest-disk-mapping?tabs=azure-cli
+
+```
+# lun.error.k8s.FailedMount.findDiskByLun(0) failed with error
+
+# This might be because of a disk attach failure, like if the VM and disk are in different zones.
+kubectl describe pod mypod-test-2
+# kubectl logs -n kube-system csi-azuredisk-node-xxxxx
+  Warning  FailedMount             <invalid> (x3 over <invalid>)  kubelet                  MountVolume.MountDevice failed for volume "pvc-12345678-abce-4ab1-1234-123456789123" : rpc error: code = Internal desc = failed to find disk on lun 0. azureDisk - findDiskByLun(0) failed with error(failed to find disk by lun 0)
+
+# Otherwise, it means the disk was attached to the node successfully but wasn't found in the LUN on the node. It's a VM issue, and usually, rescheduling the pod to another node fixes it.
+kubectl describe pod mypod-test-2
+# kubectl logs -n kube-system csi-azuredisk-node-xxxxx
+  Warning  FailedMount             <invalid> (x3 over <invalid>)  kubelet                  MountVolume.MountDevice failed for volume "pvc-12345678-abce-4ab1-1234-123456789123" : rpc error: code = Internal desc = failed to find disk on lun 0. azureDisk - findDiskByLun(7) failed with error(failed to find disk by lun 7)
+```
+
+- https://github.com/kubernetes-sigs/azuredisk-csi-driver/blob/master/pkg/azuredisk/azure_common_linux.go: device, err := findDiskByLunWithConstraint(lun, io, azureDisks)
+- https://github.com/kubernetes-sigs/azuredisk-csi-driver/blob/master/pkg/azuredisk/nodeserver.go: azureDisk - findDiskByLun(%v) failed with
+- https://github.com/kubernetes-sigs/azuredisk-csi-driver/issues/2777: nvme. kubectl apply -f https://raw.githubusercontent.com/andyzhangx/demo/refs/heads/master/aks/download-v6-disk-rules.yaml
+- https://stackoverflow.com/questions/79356118/azure-aks-wont-mount-disk: Check if disk attached to correct node or not. do lsblk and see. Disk should appear in the list. Do a dmesg | grep SCSI.

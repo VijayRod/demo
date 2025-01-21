@@ -29,3 +29,5 @@ nodepool1  True
 ```
 
 - https://learn.microsoft.com/en-us/azure/aks/enable-fips-nodes
+- https://github.com/Azure/AgentBaker/tree/master/vhdbuilder/release-notes/AKSAzureLinux/gen2fips
+- https://github.com/Azure/AgentBaker/tree/master/vhdbuilder/release-notes/AKSUbuntu/gen2/2004fipscontainerd

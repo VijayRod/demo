@@ -389,6 +389,11 @@ tbd Azure Premium SSD v2, ultra disks, Azure Container Storage
 ```
 
 ```
+# data transfer
+# Use curl to download a 5 GB file (like an iso) from the storage account to the worker node, and make sure to check the Average Speed
+```
+
+```
 # create
 echo Before starting the creation process...
 date

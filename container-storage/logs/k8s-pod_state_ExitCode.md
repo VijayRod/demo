@@ -13,7 +13,11 @@ kubectl describe po
 - https://docs.docker.com/engine/reference/run/#exit-status
 - https://github.com/kodekloudhub/throw-dice/blob/master/throw-dice.sh
 - https://github.com/kubernetes/kubernetes/issues/82519: The Exit Code is obtained from docker's ExitCode. Normally it will be the exit status of the process
-- https://komodor.com/learn/exit-codes-in-containers-and-kubernetes-the-complete-guide/
+- https://komodor.com/learn/exit-codes-in-containers-and-kubernetes-the-complete-guide/: SIGKILL, SIGSEGV, SIGTERM
+  - https://komodor.com/learn/what-is-sigkill-signal-9-fast-termination-of-linux-containers/
+  - https://komodor.com/learn/sigsegv-segmentation-faults-signal-11-exit-code-139/
+  - https://komodor.com/learn/sigterm-signal-15-exit-code-143-linux-graceful-termination/
+  - kill -l // 9) SIGKILL, 11) SIGSEGV, 15) SIGTERM // kill -n 9 <pid>
 - https://kubernetes.io/docs/tasks/debug/debug-application/determine-reason-pod-failure/
 - https://stackoverflow.com/questions/31297616/what-is-the-authoritative-list-of-docker-run-exit-codes
 - https://tldp.org/LDP/abs/html/exitcodes.html: Exit Codes With Special Meanings

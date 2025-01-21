@@ -34,6 +34,14 @@ url="https://google.com"; curl -Ss -m 10 -I $url >/dev/null 2>&1
 ```
 
 ```
+# curl.download
+curl -k -H "x-ms-version: 2019-12-12" "https://storacc5678xyz.blob.core.windows.net/datafiles123/install_win11_pro_2050.iso?$SASTOKEN" -o test.bytes
+curl https://storacc5678xyz.blob.core.windows.net/datafiles123/install_win11_pro_2050.iso -o test.bytes # without the SAS token
+curl https://ftp.hosteurope.de/mirror/releases.ubuntu.com/22.04.5/ubuntu-22.04.5-desktop-amd64.iso -o test.bytes
+```
+
+```
+# curl.k8s
 kubectl exec -it nginx -- /bin/bash # curl google.com -I
 ```
 

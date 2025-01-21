@@ -29,3 +29,8 @@ F12 browser trace
 - To get the session ID, just hit CTRL+ALT+D on the Azure Portal.
 - https://learn.microsoft.com/en-us/answers/questions/383171/how-to-get-unique-session-id-from-azure-b2c-sign-i
 - https://wmatthyssen.com/2019/12/19/azure-tip-use-ctrlaltd-to-check-azure-portal-load-times/
+
+## http.tools.AzurePortal
+
+- https://learn.microsoft.com/en-us/azure/azure-portal/azure-portal-keyboard-shortcuts
+- https://www.reddit.com/r/AZURE/comments/e6kjrq/hidden_azure_keyboard_shortcuts_including_secret/?rdt=37895

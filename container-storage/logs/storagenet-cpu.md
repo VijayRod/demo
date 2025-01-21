@@ -42,12 +42,22 @@
 
 - https://azure.microsoft.com/en-us/blog/now-in-preview-azure-virtual-machines-with-ampere-altra-armbased-processors/: Arm-based processor
     
-## cpu.architecture.arm.app.k8s
+## cpu.architecture.arm64
 
 - https://learn.microsoft.com/en-us/azure/aks/create-node-pools#arm64-node-pools
 - https://learn.microsoft.com/en-us/azure/aks/best-practices-cost: Arm64 VMs are power-efficient and cost effective but don't compromise on performance. With Arm64 node pool support in AKS, you can create Arm64 Ubuntu agent nodes...
+- https://techcommunity.microsoft.com/blog/azurecompute/announcing-the-support-of-arm-based-vm-solutions-on-azure-marketplace/3968235: Azure Arm-based Virtual Machines (VMs) deliver improved price-performance and power efficiency.
+- https://learn.microsoft.com/en-us/azure/virtual-machines/sizes/general-purpose/dpsv5-series?tabs=sizebasic: Specs. Ampere Altra [Arm64]
+- https://azure.microsoft.com/en-us/pricing/details/virtual-machines/linux/: Arm-based processor
+- https://github.com/Azure/AgentBaker/tree/master/vhdbuilder/release-notes/AKSUbuntu/gen2/2204arm64containerd
+
+## cpu.architecture.gpu
+
+```
+# See the section on gpu
+```
   
-## cpu.architecture.cpu-x86_64.md
+## cpu.architecture.x86_64.md
 
 - https://lwn.net/Kernel/Index/#Architectures-x86
 - https://www.kernel.org/doc/html/latest/arch/x86/x86_64/index.html

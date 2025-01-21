@@ -9,3 +9,4 @@ kubectl describe po
 ```
 
 - https://komodor.com/learn/how-to-fix-oomkilled-exit-code-137/
+- https://komodor.com/learn/exit-codes-in-containers-and-kubernetes-the-complete-guide/: Exit Code 137	Immediate termination (SIGKILL)	Container was immediately terminated by the operating system via SIGKILL signal

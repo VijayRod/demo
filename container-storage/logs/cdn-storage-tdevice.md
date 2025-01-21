@@ -203,7 +203,7 @@ smartctl -a /dev/sdb
 - https://learn.microsoft.com/en-us/azure/virtual-machines/linux/azure-to-guest-disk-mapping
 
 ```
-# windows
+# lun.windows
 $GetDisks = Get-AzureRMVM | where {$_.name -eq "VM name"}
 $GetDisks.StorageProfile.DataDisks
 ```

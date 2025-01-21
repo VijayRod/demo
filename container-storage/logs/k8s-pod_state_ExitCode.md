@@ -17,7 +17,7 @@ kubectl describe po
   - https://komodor.com/learn/what-is-sigkill-signal-9-fast-termination-of-linux-containers/
   - https://komodor.com/learn/sigsegv-segmentation-faults-signal-11-exit-code-139/
   - https://komodor.com/learn/sigterm-signal-15-exit-code-143-linux-graceful-termination/
-  - kill -l // 9) SIGKILL, 11) SIGSEGV, 15) SIGTERM // kill -n 9 <pid>
+  - bash: kill -l // 9) SIGKILL, 11) SIGSEGV, 15) SIGTERM // kill -n 9 <pid>
 - https://kubernetes.io/docs/tasks/debug/debug-application/determine-reason-pod-failure/
 - https://stackoverflow.com/questions/31297616/what-is-the-authoritative-list-of-docker-run-exit-codes
 - https://tldp.org/LDP/abs/html/exitcodes.html: Exit Codes With Special Meanings

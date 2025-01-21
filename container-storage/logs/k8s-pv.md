@@ -1,6 +1,8 @@
 ## pv
 
 ```
+# See the section on device LUN
+
 kubectl api-resources | grep pv
 NAME                                SHORTNAMES          APIVERSION                             NAMESPACED   KIND
 persistentvolumeclaims              pvc                 v1                                     true         PersistentVolumeClaim

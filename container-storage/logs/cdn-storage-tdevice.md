@@ -1,3 +1,7 @@
+```
+aka LUN
+```
+
 ## device.bus
 
 - https://tldp.org/HOWTO/SCSI-2.4-HOWTO/scsiaddr.html: SCSI Addressing. four level hierarchical addressing scheme for SCSI devices (Host:Bus:Target:LUN).
@@ -196,3 +200,11 @@ smartctl -a /dev/sdb
 - https://tldp.org/HOWTO/SCSI-2.4-HOWTO/scsiaddr.html: SCSI Addressing. "Lun" is the common SCSI abbreviation of Logical Unit Number. The terms in brackets are the name conventions used by device pseudo file system (devfs). "Bus" is used in preference to "channel" in the description below. arbitrary numbering of the adapter cards on the internal IO buses (e.g. PCI, PCMCIA, ISA etc) of the computer.
 - https://en.wikipedia.org/wiki/Logical_unit_number: logical unit number, or LUN. device addressed by the SCSI protocol or by Storage Area Network protocols that encapsulate SCSI, such as Fibre Channel or iSCSI
 - https://superuser.com/questions/901817/what-is-the-maximum-scsi-lun-size
+- https://learn.microsoft.com/en-us/azure/virtual-machines/linux/azure-to-guest-disk-mapping
+
+```
+# windows
+$GetDisks = Get-AzureRMVM | where {$_.name -eq "VM name"}
+$GetDisks.StorageProfile.DataDisks
+```
+- https://learn.microsoft.com/en-us/azure/virtual-machines/windows/azure-to-guest-disk-mapping?tabs=azure-cli

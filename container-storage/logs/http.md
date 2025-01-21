@@ -20,3 +20,12 @@ curl -v google.com
 F12 browser trace
 ```
 
+## http.logs.har
+
+- To enable HAR trace, follow the instructions here: [Capture a browser trace for troubleshooting - Azure portal | Microsoft Learn](https://learn.microsoft.com/en-us/azure/azure-portal/capture-browser-trace). Then, reproduce the issue and stop tracing.
+
+## http.logs.sessionid
+
+- To get the session ID, just hit CTRL+ALT+D on the Azure Portal.
+- https://learn.microsoft.com/en-us/answers/questions/383171/how-to-get-unique-session-id-from-azure-b2c-sign-i
+- https://wmatthyssen.com/2019/12/19/azure-tip-use-ctrlaltd-to-check-azure-portal-load-times/

@@ -1,5 +1,7 @@
 ```
-aka LUN
+# aka LUN
+
+iostat -x 1 # sudo apt install sysstat. disk activity in 'Device - %util'
 ```
 
 ## device.bus

@@ -137,6 +137,8 @@ kubectl delete pvc pvc-azuredisk
 
 ```
 # deploy with the same PV
+kubectl delete pvc pvc-azuredisk
+kubectl delete deploy nginx
 cat << EOF | kubectl create -f -
 apiVersion: v1
 kind: PersistentVolumeClaim

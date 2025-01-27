@@ -27,18 +27,18 @@
 - https://openai.com/index/scaling-kubernetes-to-2500-nodes/: etcd
 
 ```
-# etcd.perf.error.etcdserver: too many requests
-```
-
-- https://github.com/etcd-io/etcd/issues/8576: etcdserver: too many requests. Probably you need to figure out what the expensive operators are by querying metrics.
-
-```
 # etcd.perf.error.etcdserver: apply entries took too long
 # W | etcdserver: apply entries took too long [223.489001ms for 2 entries]
 # See the section on "etcdserver: too many requests"
 ```
 
 - https://etcd.io/docs/v3.4/faq/#what-does-the-etcd-warning-apply-entries-took-too-long-mean
+  
+```
+# etcd.perf.error.etcdserver: too many requests
+```
+
+- https://github.com/etcd-io/etcd/issues/8576: etcdserver: too many requests. Probably you need to figure out what the expensive operators are by querying metrics.
  
 ## k8s.etcd.space
 

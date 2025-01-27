@@ -77,14 +77,38 @@ root@aks-nodepool1-12740373-vmss000000:/# du -h /tmp
 4.0K    /tmp/.font-unix
 4.0K    /tmp/.Test-unix
 48K     /tmp
+
+# iostat -x 1
+# sudo apt install sysstat. disk activity in 'Device - %util'
+aks-nodepool1-37603350-vmss000000:/# iostat -x 1
+Linux 5.15.0-1078-azure (aks-nodepool1-37603350-vmss000000)     01/27/25        _x86_64_        (2 CPU)
+avg-cpu:  %user   %nice %system %iowait  %steal   %idle
+           5.36    0.00    1.77    0.73    0.00   92.14
+Device            r/s     rkB/s   rrqm/s  %rrqm r_await rareq-sz     w/s     wkB/s   wrqm/s  %wrqm w_await wareq-sz     d/s     dkB/s   drqm/s  %drqm d_await dareq-sz     f/s f_await  aqu-sz  %util
+sda              2.69    129.32     1.12  29.38    9.97    48.06    8.01    638.77     5.19  39.34   16.52    79.77    0.53  14604.96     0.18  25.85    2.57 27774.36    0.00    0.00    0.16   1.62
+sdb              0.05      1.39     0.00   0.27    1.82    29.80    0.05     41.89     0.13  74.46   61.37   912.52    0.02   4183.08     0.02  49.82    0.40 242133.87    0.00    0.00    0.00   0.05
+sr0              0.04      0.19     0.00   0.00    2.31     4.35    0.00      0.00     0.00   0.00    0.00     0.00    0.00      0.00     0.00   0.00    0.00     0.00    0.00    0.00    0.00   0.01
+avg-cpu:  %user   %nice %system %iowait  %steal   %idle
+           4.50    0.00    1.50    0.00    0.00   94.00
+Device            r/s     rkB/s   rrqm/s  %rrqm r_await rareq-sz     w/s     wkB/s   wrqm/s  %wrqm w_await wareq-sz     d/s     dkB/s   drqm/s  %drqm d_await dareq-sz     f/s f_await  aqu-sz  %util
+sda              0.00      0.00     0.00   0.00    0.00     0.00    0.00      0.00     0.00   0.00    0.00     0.00    0.00      0.00     0.00   0.00    0.00     0.00    0.00    0.00    0.00   0.00
+sdb              0.00      0.00     0.00   0.00    0.00     0.00    0.00      0.00     0.00   0.00    0.00     0.00    0.00      0.00     0.00   0.00    0.00     0.00    0.00    0.00    0.00   0.00
+sr0              0.00      0.00     0.00   0.00    0.00     0.00    0.00      0.00     0.00   0.00    0.00     0.00    0.00      0.00     0.00   0.00    0.00     0.00    0.00    0.00    0.00   0.00
+^C
 ```
 
 - https://linuxconfig.org/introduction-to-the-lsblk-command
 - https://www.redhat.com/en/blog/du-command-options
 
+## storage.SCSI.device.type.disk.space
+
+```
+# du, df, lsof
+```
+
 ## storage.SCSI.device.type.disk.space.garbagecollection.k8s
 
-- https://kubernetes.io/docs/concepts/architecture/garbage-collection/
+- https://kubernetes.io/docs/concepts/architecture/garbage-collection/: : Disk usage above the configured HighThresholdPercent value triggers garbage collection (by the kubelet)
 - https://kubernetes.io/blog/2024/01/23/kubernetes-separate-image-filesystem
 
 ## storage.SCSI.device.type.disk.type.os

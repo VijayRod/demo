@@ -134,3 +134,47 @@ kubectl delete pvc pvc-azuredisk
 - https://learn.microsoft.com/en-us/azure/aks/concepts-storage#azure-disk
 - https://cloud-provider-azure.sigs.k8s.io/faq/known-issues/azuredisk/
 - https://github.com/andyzhangx/demo/blob/master/linux/azuredisk/azuredisk-attachment-debugging.md#3-log-on-agent-node-and-check-device-info
+
+```
+# deploy with the same PV
+cat << EOF | kubectl create -f -
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvc-azuredisk
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: managed-csi-premium
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - image: nginx
+        name: nginx
+        volumeMounts:
+          - name: azuredisk01
+            mountPath: /mnt/azuredisk
+      volumes:
+      - name: azuredisk01
+        persistentVolumeClaim:
+          claimName: pvc-azuredisk
+EOF
+kubectl get deploy -w
+kubectl get po,pv,pvc
+```

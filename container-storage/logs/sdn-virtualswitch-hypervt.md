@@ -48,6 +48,10 @@ cat: /dev/vmbus/hv_kvp: Device or resource busy
 
 - https://learn.microsoft.com/en-us/windows-server/networking/technologies/pktmon/pktmon#overview: extended networking stack now includes components like the Virtual Switch that handle packet processing and switching.
 
+# hyperv.VMBus.child-partition[].kvp
+
+- * https://learn.microsoft.com/en-us/virtualization/hyper-v-on-windows/reference/integration-services#hyper-v-data-exchange-service-kvp: Windows Service Name: vmickvpexchange. Linux Daemon Name: hv_kvp_daemon
+
 ## hyperv.VMBus.parent-partition.IntelVT (AMD-V)
 
 - https://learn.microsoft.com/en-us/virtualization/hyper-v-on-windows/reference/hyper-v-architecture: Hyper-V requires a processor that includes hardware assisted virtualization, such as is provided with Intel VT or AMD Virtualization (AMD-V) technology.

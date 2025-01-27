@@ -1,5 +1,11 @@
 ## cpu
 
+```
+# bash
+
+top # %Cpu(s) - id (CPU idle), load average, Tasks - zombie
+```
+
 - https://lwn.net/Kernel/Index/#cpufreq
 - https://lwn.net/Kernel/Index/#CPUhog
 - https://lwn.net/Kernel/Index/#Cpusets

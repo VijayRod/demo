@@ -68,3 +68,4 @@ Name                                  ResourceGroup            Location       Zo
 - https://learn.microsoft.com/en-us/azure/aks/load-balancer-standard#scale-the-number-of-managed-outbound-public-ips: --load-balancer-managed-outbound-ip-count
 - https://learn.microsoft.com/en-us/azure/aks/load-balancer-standard#configure-the-allocated-outbound-ports:  use load-balancer-outbound-ports and either load-balancer-managed-outbound-ip-count, load-balancer-outbound-ips, or load-balancer-outbound-ip-prefixes
 - https://learn.microsoft.com/en-us/azure/load-balancer/outbound-rules: Outbound rules allow you to explicitly define SNAT(source network address translation) for a public standard load balancer.
+- https://learn.microsoft.com/en-us/azure/aks/azure-cni-overlay?tabs=kubectl#network-security-groups: Traffic from a pod to any destination outside of the pod CIDR block utilizes SNAT to set the source IP to the IP of the node where the pod runs.

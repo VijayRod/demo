@@ -56,3 +56,9 @@ apt update && apt install dnsutils -y
 ```
 kubectl create deploy hostnames --image=registry.k8s.io/serve_hostname # From another pod, use curl $hostnamesPodIp:9376
 ```
+
+# other
+```
+```
+- https://docs.dynatrace.com/docs/ingest-from/setup-on-container-platforms/docker/set-up-dynatrace-oneagent-as-docker-container: dynatrace/oneagent
+- https://github.com/prometheus/node_exporter: quay.io/prometheus/node-exporter

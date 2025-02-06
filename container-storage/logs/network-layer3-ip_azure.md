@@ -92,6 +92,39 @@ wireshark ip.addr==168.63.129.16
 1013	168.63.129.16	10.224.0.5	HTTP/XML	2508	HTTP/1.1 200 OK 
 ```
 
+```
+root@aks-nodepool1-22790412-vmss000000:/# curl -I http://168.63.129.16
+HTTP/1.1 400 Bad Request
+Content-Length: 323
+Content-Type: text/xml; charset=utf-8
+Server: Microsoft-IIS/10.0
+Date: Tue, 04 Feb 2025 18:19:18 GMT
+
+root@aks-nodepool1-22790412-vmss000000:/# curl -Iv https://168.63.129.16
+*   Trying 168.63.129.16:443...
+^C
+
+root@aks-nodepool1-22790412-vmss000000:/# curl -Iv http://168.63.129.16
+*   Trying 168.63.129.16:80...
+* Connected to 168.63.129.16 (168.63.129.16) port 80 (#0)
+> HEAD / HTTP/1.1
+> Host: 168.63.129.16
+> User-Agent: curl/7.81.0
+> Accept: */*
+>
+* Mark bundle as not supporting multiuse
+< HTTP/1.1 400 Bad Request
+HTTP/1.1 400 Bad Request
+< Content-Length: 323
+Content-Length: 323
+< Content-Type: text/xml; charset=utf-8
+Content-Type: text/xml; charset=utf-8
+< Server: Microsoft-IIS/10.0
+Server: Microsoft-IIS/10.0
+< Date: Tue, 04 Feb 2025 18:19:10 GMT
+Date: Tue, 04 Feb 2025 18:19:10 GMT
+```
+
 - https://learn.microsoft.com/en-us/azure/virtual-network/what-is-ip-address-168-63-129-16
 - https://microsoft.github.io/AzureTipsAndTricks/blog/tip242.html#what-is-ip-address-168-63-129-16
 

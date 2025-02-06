@@ -6,6 +6,11 @@
 top # %Cpu(s) - id (CPU idle), load average, Tasks - zombie
 ```
 
+```
+#ps
+get-process # CPU(s) column
+```
+
 - https://lwn.net/Kernel/Index/#cpufreq
 - https://lwn.net/Kernel/Index/#CPUhog
 - https://lwn.net/Kernel/Index/#Cpusets

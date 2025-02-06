@@ -32,6 +32,24 @@ Killed
 - https://komodor.com/learn/how-to-fix-oomkilled-exit-code-137/
 - add tbd https://mihai-albert.com/2022/02/13/out-of-memory-oom-in-kubernetes-part-2-the-oom-killer-and-application-runtime-implications/
 
+## memory.k8s
+
+```
+# Allocatable, Allocated resources - overcommitted, Non-terminated Pods - Memory Requests / Memory Limits
+kubectl describe no
+Allocatable:
+  memory:             5930240Ki
+Non-terminated Pods:          (8 in total)
+  Namespace                   Name                                   CPU Requests  CPU Limits  Memory Requests  Memory Limits  Age
+  ---------                   ----                                   ------------  ----------  ---------------  -------------  ---
+  kube-system                 azure-cns-55g95                        40m (2%)      40m (2%)    250Mi (4%)       250Mi (4%)     129m
+Allocated resources:
+  (Total limits may be over 100 percent, i.e., overcommitted.)
+  Resource           Requests    Limits
+  --------           --------    ------
+  memory             510Mi (8%)  4460Mi (77%)
+```
+  
 ## memory.page-cache
 
 ```

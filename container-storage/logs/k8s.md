@@ -279,6 +279,13 @@ sigs.k8s.io/cluster-api
 - https://kodekloud.com/courses/
 - https://devopscube.com/kodekloud-coupons/
 - https://www.cncf.io/training/kubestronaut/
+- https://dev.to/ptuladhar3/must-know-5-vim-tricks-with-gif-for-kubernetes-certification-52bn
+
+```
+k8s.other.certifications.CKS
+```
+
+- https://cks.purutuladhar.com/, https://github.com/tuladhar/certified-kubernetes-security-specialist-handbook/blob/main/README.md
 
 ## k8s.tools
 

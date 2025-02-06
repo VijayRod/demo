@@ -1,5 +1,9 @@
 ## dns
 
+```
+# A DNS name server is a server that stores the DNS records for a domain
+```
+
 - https://wizardzines.com/zines/dns/
 - https://www.cloudflare.com/learning/dns/what-is-dns/
 - https://learn.microsoft.com/en-us/azure/virtual-network/virtual-networks-name-resolution-for-vms-and-role-instances

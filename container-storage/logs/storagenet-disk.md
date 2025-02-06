@@ -111,6 +111,10 @@ sr0              0.00      0.00     0.00   0.00    0.00     0.00    0.00      0.
 - https://kubernetes.io/docs/concepts/architecture/garbage-collection/: : Disk usage above the configured HighThresholdPercent value triggers garbage collection (by the kubelet)
 - https://kubernetes.io/blog/2024/01/23/kubernetes-separate-image-filesystem
 
+## storage.SCSI.device.type.disk.type.data (datadisk)
+
+- https://github.com/kubernetes-sigs/azuredisk-csi-driver/blob/master/pkg/azuredisk/azure_controller_common.go: attachDiskMap.Store (diskMap)
+
 ## storage.SCSI.device.type.disk.type.os
 
 - https://learn.microsoft.com/en-us/azure/virtual-machines/linux/tutorial-manage-disks: The OS disk is labeled /dev/sda by default.

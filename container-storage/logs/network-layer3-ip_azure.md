@@ -121,8 +121,218 @@ Chain FORWARD (policy ACCEPT 276 packets, 32187 bytes)
 ```
 http://169.254.169.254/metadata/instance/compute?api-version=2021-01-01&format=json
 ```
-- https://learn.microsoft.com/en-us/azure/virtual-machines/instance-metadata-service?tabs=linux
 
+```
+root@aks-nodepool1-22790412-vmss000000:/# curl -I http://169.254.169.254
+HTTP/1.1 400 Bad Request
+Content-Length: 323
+Content-Type: text/xml; charset=utf-8
+Server: Microsoft-IIS/10.0
+Date: Tue, 04 Feb 2025 18:19:59 GMT
+
+root@aks-nodepool1-22790412-vmss000000:/# curl -Iv http://169.254.169.254
+*   Trying 169.254.169.254:80...
+* Connected to 169.254.169.254 (169.254.169.254) port 80 (#0)
+> HEAD / HTTP/1.1
+> Host: 169.254.169.254
+> User-Agent: curl/7.81.0
+> Accept: */*
+>
+* Mark bundle as not supporting multiuse
+< HTTP/1.1 400 Bad Request
+HTTP/1.1 400 Bad Request
+< Content-Length: 323
+Content-Length: 323
+< Content-Type: text/xml; charset=utf-8
+Content-Type: text/xml; charset=utf-8
+< Server: Microsoft-IIS/10.0
+Server: Microsoft-IIS/10.0
+< Date: Tue, 04 Feb 2025 18:20:10 GMT
+Date: Tue, 04 Feb 2025 18:20:10 GMT
+
+<
+* Connection #0 to host 169.254.169.254 left intact
+
+root@aks-nodepool1-22790412-vmss000000:/# curl -I https://169.254.169.254
+^C
+
+root@aks-nodepool1-22790412-vmss000000:/# curl -I http://169.254.169.254/metadata/instance/compute?api-version=2021-01-01&format=json
+[1] 12060
+root@aks-nodepool1-22790412-vmss000000:/# HTTP/1.1 400 Bad Request
+Content-Length: 323
+Content-Type: text/xml; charset=utf-8
+Server: Microsoft-IIS/10.0
+Date: Tue, 04 Feb 2025 18:20:21 GMT
+^C
+[1]+  Done                    curl -I http://169.254.169.254/metadata/instance/compute?api-version=2021-01-01
+
+root@aks-nodepool1-22790412-vmss000000:/# curl http://169.254.169.254/metadata/instance/compute?api-version=2021-01-01&format=json
+[1] 12261
+root@aks-nodepool1-22790412-vmss000000:/# { "error": "Bad request: . Required metadata header not specified" }
+[1]+  Done                    curl http://169.254.169.254/metadata/instance/compute?api-version=2021-01-01
+
+root@aks-nodepool1-22790412-vmss000000:/# curl -s -H Metadata:true --noproxy "*" "http://169.254.169.254/metadata/instance?api-version=2021-02-01" | jq
+{
+  "compute": {
+    "azEnvironment": "AzurePublicCloud",
+    "customData": "",
+    "evictionPolicy": "",
+    "isHostCompatibilityLayerVm": "false",
+    "licenseType": "",
+    "location": "SwedenCentral",
+    "name": "aks-nodepool1-22790412-vmss_0",
+    "offer": "",
+    "osProfile": {
+      "adminUsername": "azureuser",
+      "computerName": "aks-nodepool1-22790412-vmss000000",
+      "disablePasswordAuthentication": "true"
+    },
+    "osType": "Linux",
+    "placementGroupId": "28483844-a164-463b-a69e-9c5960a3011f",
+    "plan": {
+      "name": "",
+      "product": "",
+      "publisher": ""
+    },
+    "platformFaultDomain": "0",
+    "platformUpdateDomain": "0",
+    "priority": "",
+    "provider": "Microsoft.Compute",
+    "publicKeys": [
+      {
+        "keyData": "ssh-rsa AAAAB3NzaC1y...34L6H8S+Z",
+        "path": "/home/azureuser/.ssh/authorized_keys"
+      }
+    ],
+    "publisher": "",
+    "resourceGroupName": "MC_rg_aks_swedencentral",
+    "resourceId": "/subscriptions/redacts-1111-1111-1111-111111111111/resourceGroups/MC_rg_aks_swedencentral/providers/Microsoft.Compute/virtualMachineScaleSets/aks-nodepool1-22790412-vmss/virtualMachines/0",
+    "securityProfile": {
+      "secureBootEnabled": "false",
+      "virtualTpmEnabled": "false"
+    },
+    "sku": "",
+    "storageProfile": {
+      "dataDisks": [],
+      "imageReference": {
+        "id": "/subscriptions/109a5e88-1111-1111-1111-111111111111/resourceGroups/AKS-Ubuntu/providers/Microsoft.Compute/galleries/AKSUbuntu/images/2204gen2containerd/versions/202501.22.0",
+        "offer": "",
+        "publisher": "",
+        "sku": "",
+        "version": ""
+      },
+      "osDisk": {
+        "caching": "ReadOnly",
+        "createOption": "FromImage",
+        "diffDiskSettings": {
+          "option": ""
+        },
+        "diskSizeGB": "128",
+        "encryptionSettings": {
+          "enabled": "false"
+        },
+        "image": {
+          "uri": ""
+        },
+        "managedDisk": {
+          "id": "/subscriptions/redacts-1111-1111-1111-111111111111/resourceGroups/MC_rg_aks_swedencentral/providers/Microsoft.Compute/disks/aks-nodepool1-227904aks-nodepool1-2279041OS__1_3a7055da87954d7ca0025136347cbcbb",
+          "storageAccountType": "Premium_LRS"
+        },
+        "name": "aks-nodepool1-227904aks-nodepool1-2279041OS__1_3a7055da87954d7ca0025136347cbcbb",
+        "osType": "Linux",
+        "vhd": {
+          "uri": ""
+        },
+        "writeAcceleratorEnabled": "false"
+      },
+      "resourceDisk": {
+        "size": "50688"
+      }
+    },
+    "subscriptionId": "redacts-1111-1111-1111-111111111111",
+    "tags": "aks-managed-azure-cni-overlay:true;aks-managed-consolidated-additional-properties:0f926372-e302-11ef-8204-bacf181c0fef;aks-managed-coordination:true;aks-managed-createOperationID:f5c12aa3-bd67-45b2-968b-4cae3c00c277;aks-managed-creationSource:vmssclient-aks-nodepool1-22790412-vmss;aks-managed-enable-imds-restriction:false;aks-managed-kubeletIdentityClientID:a417d22a-2289-4f69-9a9e-a95fec7c1d50;aks-managed-orchestrator:Kubernetes:1.30.7;aks-managed-poolName:nodepool1;aks-managed-resourceNameSuffix:92427521;aks-managed-ssh-access:LocalUser",
+    "tagsList": [
+      {
+        "name": "aks-managed-azure-cni-overlay",
+        "value": "true"
+      },
+      {
+        "name": "aks-managed-consolidated-additional-properties",
+        "value": "0f926372-e302-11ef-8204-bacf181c0fef"
+      },
+      {
+        "name": "aks-managed-coordination",
+        "value": "true"
+      },
+      {
+        "name": "aks-managed-createOperationID",
+        "value": "f5c12aa3-bd67-45b2-968b-4cae3c00c277"
+      },
+      {
+        "name": "aks-managed-creationSource",
+        "value": "vmssclient-aks-nodepool1-22790412-vmss"
+      },
+      {
+        "name": "aks-managed-enable-imds-restriction",
+        "value": "false"
+      },
+      {
+        "name": "aks-managed-kubeletIdentityClientID",
+        "value": "a417d22a-2289-4f69-9a9e-a95fec7c1d50"
+      },
+      {
+        "name": "aks-managed-orchestrator",
+        "value": "Kubernetes:1.30.7"
+      },
+      {
+        "name": "aks-managed-poolName",
+        "value": "nodepool1"
+      },
+      {
+        "name": "aks-managed-resourceNameSuffix",
+        "value": "92427521"
+      },
+      {
+        "name": "aks-managed-ssh-access",
+        "value": "LocalUser"
+      }
+    ],
+    "userData": "",
+    "version": "202501.22.0",
+    "vmId": "d89dcaf9-bd2e-45f9-8435-a778a750d9ba",
+    "vmScaleSetName": "aks-nodepool1-22790412-vmss",
+    "vmSize": "Standard_B2ms",
+    "zone": ""
+  },
+  "network": {
+    "interface": [
+      {
+        "ipv4": {
+          "ipAddress": [
+            {
+              "privateIpAddress": "10.224.0.5",
+              "publicIpAddress": ""
+            }
+          ],
+          "subnet": [
+            {
+              "address": "10.224.0.0",
+              "prefix": "16"
+            }
+          ]
+        },
+        "ipv6": {
+          "ipAddress": []
+        },
+        "macAddress": "6045BDC89987"
+      }
+    ]
+  }
+}
+```
+
+- https://learn.microsoft.com/en-us/azure/virtual-machines/instance-metadata-service?tabs=linux
+  
 ## ip.IMDS.scheduledEvents
 
 ```

@@ -41,3 +41,22 @@ curl -m 5 -I https://acs-mirror.azureedge.net
 ```
 
 - https://learn.microsoft.com/en-us/azure/aks/outbound-rules-control-egress#azure-global-required-fqdn--application-rules
+
+```
+# See the section on IMDS
+
+curl -m 5 -I https://packages.microsoft.com
+HTTP/2 200
+date: Tue, 04 Feb 2025 18:11:49 GMT
+content-type: text/html
+content-length: 2711
+last-modified: Mon, 03 Feb 2025 01:23:59 GMT
+etag: "67a01aaf-a97"
+strict-transport-security: max-age=31536000; includeSubDomains
+x-content-type-options: nosniff
+x-azure-ref: 20250204T141149Z-r15774cf85dn94vbhC1LONxrx000000002d00000000017pf
+x-cache: TCP_HIT
+cache-control: public, max-age=15552000
+x-fd-int-roxy-purgeid: 66950501
+accept-ranges: bytes
+```

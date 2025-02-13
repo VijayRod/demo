@@ -88,6 +88,50 @@ Events:
 
 ## k8s-node-topology_zone.azure
 
+```
+az account list-locations -ojson | jq -r '.[].name' | while read; do printf "Subscription: $REPLY has eastus2-az3 as logical zone "; az account set --subscription "${REPLY}"; az account list-locations --include-extended-locations -ojson | jq -r 'map(select(.name=="eastus2"))[0].availabilityZoneMappings | map(select(.physicalZone=="eastus2-az3"))[].logicalZone'; done
+
+az account list-locations --include-extended-locations -ojson | jq 'map(select(.name=="eastus2"))'
+[
+  {
+    "availabilityZoneMappings": [
+      {
+        "logicalZone": "1",
+        "physicalZone": "eastus2-az2"
+      },
+      {
+        "logicalZone": "2",
+        "physicalZone": "eastus2-az3"
+      },
+      {
+        "logicalZone": "3",
+        "physicalZone": "eastus2-az1"
+      }
+    ],
+    "displayName": "East US 2",
+    "id": "/subscriptions/redacts-1111-1111-1111-111111111111/locations/eastus2",
+    "metadata": {
+      "geography": "United States",
+      "geographyGroup": "US",
+      "latitude": "36.6681",
+      "longitude": "-78.3889",
+      "pairedRegion": [
+        {
+          "id": "/subscriptions/redacts-1111-1111-1111-111111111111/locations/centralus",
+          "name": "centralus"
+        }
+      ],
+      "physicalLocation": "Virginia",
+      "regionCategory": "Other",
+      "regionType": "Physical"
+    },
+    "name": "eastus2",
+    "regionalDisplayName": "(US) East US 2",
+    "type": "Region"
+  }
+]
+```
+
 - https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview
   - https://learn.microsoft.com/en-us/azure/reliability/availability-zones-service-support#azure-regions-with-availability-zone-support
 

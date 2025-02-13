@@ -114,6 +114,10 @@ sr0              0.00      0.00     0.00   0.00    0.00     0.00    0.00      0.
 ## storage.SCSI.device.type.disk.type.data (datadisk)
 
 - https://github.com/kubernetes-sigs/azuredisk-csi-driver/blob/master/pkg/azuredisk/azure_controller_common.go: attachDiskMap.Store (diskMap)
+- https://learn.microsoft.com/en-us/azure/virtual-machines/nvme-linux#what-is-changing-for-your-vm
+  - OS disk - SCSI /dev/sda, NVMe /dev/nvme0n1
+  - Temp Disk - SCSI /dev/sdb, NVMe /dev/sda
+  - First Data Disk - SCSI /dev/sdc, NVMe /dev/nvme0n2
 
 ## storage.SCSI.device.type.disk.type.data.k8s.FailedAttachVolume
 
@@ -151,12 +155,23 @@ kubectl get no -o yaml | grep 83275555c84a4 -B 1000 | grep hostname
 - https://github.com/andyzhangx/demo/blob/master/issues/azuredisk-issues.md#25-multi-attach-error
 - https://github.com/Azure/AKS/issues/884: Trouble attaching volume. two kinds of Multi-Attach error issues
   - Multi-Attach error for volume "pvc-e9b72e86-129a-11ea-9a02-9abdbf393c78" Volume is already used by pod(s) (by design issue)
-  - Multi-Attach error for volume "pvc-0d7740b9-3a43-11e9-93d5-dee1946e6ce9" Volume is already exclusively attached to one node and can't be attached to another (fixed)
+  - Multi-Attach error for volume "pvc-0d7740b9-3a43-11e9-93d5-dee1946e6ce9" Volume is already exclusively attached to one node and can't be attached to another (fixed
+
+## storage.SCSI.device.type.disk.type.temp
+
+- https://learn.microsoft.com/en-us/azure/virtual-machines/nvme-linux#what-is-changing-for-your-vm
+  - OS disk - SCSI /dev/sda, NVMe /dev/nvme0n1
+  - Temp Disk - SCSI /dev/sdb, NVMe /dev/sda
+  - First Data Disk - SCSI /dev/sdc, NVMe /dev/nvme0n2
     
-## storage.SCSI.device.type.disk.type.os
+## storage.SCSI.device.type.disk.type.os (osdisk)
 
 - https://learn.microsoft.com/en-us/azure/virtual-machines/linux/tutorial-manage-disks: The OS disk is labeled /dev/sda by default.
-
+- https://learn.microsoft.com/en-us/azure/virtual-machines/nvme-linux#what-is-changing-for-your-vm
+  - OS disk - SCSI /dev/sda, NVMe /dev/nvme0n1
+  - Temp Disk - SCSI /dev/sdb, NVMe /dev/sda
+  - First Data Disk - SCSI /dev/sdc, NVMe /dev/nvme0n2
+    
 ## storage.SCSI.device.type.disk.type.ephemeraldisk-os
 
 Here are the commands to create a cluster with an ephemeral OS disk.

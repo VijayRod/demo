@@ -115,6 +115,44 @@ sr0              0.00      0.00     0.00   0.00    0.00     0.00    0.00      0.
 
 - https://github.com/kubernetes-sigs/azuredisk-csi-driver/blob/master/pkg/azuredisk/azure_controller_common.go: attachDiskMap.Store (diskMap)
 
+## storage.SCSI.device.type.disk.type.data.k8s.FailedAttachVolume
+
+```
+# to find the node where the volume is currently attached
+
+kubectl get pv PV-NAME -o yaml
+
+# to find the node using volumesAttached
+kubectl get no -o yaml | grep volumesAttached -B 10 -A 15 | grep pvc-c8382116-4b1a-41bb-8121-790d14091135 -B 10 -A 15
+      containerRuntimeVersion: containerd://1.7.25-1
+      kernelVersion: 5.15.0-1079-azure
+      kubeProxyVersion: v1.30.7
+      kubeletVersion: v1.30.7
+      machineID: 83275555c84a49878fc34c190a098c2d
+      operatingSystem: linux
+      osImage: Ubuntu 22.04.5 LTS
+      systemUUID: cc48fa0b-e1d8-4fbb-a68c-373e142140f3
+    volumesAttached:
+    - devicePath: ""
+      name: kubernetes.io/csi/disk.csi.azure.com^/subscriptions/redacts-1111-1111-1111-111111111111/resourceGroups/MC_rg_aksnvme_swedencentral/providers/Microsoft.Compute/disks/pvc-c8382116-4b1a-41bb-8121-790d14091135
+    volumesInUse:
+    - kubernetes.io/csi/disk.csi.azure.com^/subscriptions/redacts-1111-1111-1111-111111111111/resourceGroups/MC_rg_aksnvme_swedencentral/providers/Microsoft.Compute/disks/pvc-c8382116-4b1a-41bb-8121-790d14091135
+kind: List
+metadata:
+  resourceVersion: ""
+  
+kubectl get no -o yaml | grep 83275555c84a4
+      machineID: 83275555c84a49878fc34c190a098c2d
+      
+kubectl get no -o yaml | grep 83275555c84a4 -B 1000 | grep hostname
+      kubernetes.io/hostname: aks-nodepool1-23096385-vmss000000
+      kubernetes.io/hostname: aks-nodepool1-23096385-vmss000001
+```
+- https://github.com/andyzhangx/demo/blob/master/issues/azuredisk-issues.md#25-multi-attach-error
+- https://github.com/Azure/AKS/issues/884: Trouble attaching volume. two kinds of Multi-Attach error issues
+  - Multi-Attach error for volume "pvc-e9b72e86-129a-11ea-9a02-9abdbf393c78" Volume is already used by pod(s) (by design issue)
+  - Multi-Attach error for volume "pvc-0d7740b9-3a43-11e9-93d5-dee1946e6ce9" Volume is already exclusively attached to one node and can't be attached to another (fixed)
+    
 ## storage.SCSI.device.type.disk.type.os
 
 - https://learn.microsoft.com/en-us/azure/virtual-machines/linux/tutorial-manage-disks: The OS disk is labeled /dev/sda by default.

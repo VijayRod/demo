@@ -1,17 +1,109 @@
 ## pv
 
 ```
-# See the section on device LUN
+# See the section on PV provision and device LUN
 
 kubectl api-resources | grep pv
 NAME                                SHORTNAMES          APIVERSION                             NAMESPACED   KIND
 persistentvolumeclaims              pvc                 v1                                     true         PersistentVolumeClaim
 persistentvolumes                   pv                  v1                                     false        PersistentVolume
 ```
+  
+- https://kubernetes.io/docs/concepts/storage/volumes/#persistentvolumeclaim
+- https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.28/#volume-v1-core
+- https://kubernetes.io/docs/concepts/storage/persistent-volumes/
+- https://kubernetes.io/docs/tasks/configure-pod-container/configure-persistent-volume-storage/
+- https://learn.microsoft.com/en-us/azure/aks/concepts-storage#volumes
+- https://learn.microsoft.com/en-us/azure/aks/concepts-storage#persistent-volumes
+- https://github.com/container-storage-interface/spec/blob/master/spec.md#createvolume
 
-To manually define a persistent volume instead of using a persistent volume class, use the steps to statically provision a volume.
+## pv.provision
 
 ```
+# dynamic vs static PV
+# For PV, you can usually tell the difference by looking at the Name (due to the pvc-GUID), Annotations, Finalizers and VolumeAttributes
+# For PVC, the Volume (name) (again, due to not having the pvc-GUID) and Annotations are the key indicators
+
+kubectl describe pv
+# dynamic
+Name:              pvc-c50aa0c5-53e6-4769-b992-b8777a22f85d
+Labels:            <none>
+Annotations:       pv.kubernetes.io/provisioned-by: disk.csi.azure.com
+                   volume.kubernetes.io/provisioner-deletion-secret-name:
+                   volume.kubernetes.io/provisioner-deletion-secret-namespace:
+Finalizers:        [external-provisioner.volume.kubernetes.io/finalizer kubernetes.io/pv-protection external-attacher/disk-csi-azure-com]
+(not reliable to identify) StorageClass:      default
+(not reliable to identify) Claim:             default/pvc-azuredisk
+Node Affinity:
+  Required Terms:
+    Term 0:        topology.disk.csi.azure.com/zone in []
+Source:
+    Type:              CSI (a Container Storage Interface (CSI) volume source)
+    Driver:            disk.csi.azure.com
+    FSType:
+    VolumeHandle:      /subscriptions/redacts-1111-1111-1111-111111111111/resourceGroups/MC_rg_aks_swedencentral/providers/Microsoft.Compute/disks/pvc-c50aa0c5-53e6-4769-b992-b8777a22f85d
+    ReadOnly:          false
+    VolumeAttributes:      csi.storage.k8s.io/pv/name=pvc-c50aa0c5-53e6-4769-b992-b8777a22f85d
+                           csi.storage.k8s.io/pvc/name=pvc-azuredisk
+                           csi.storage.k8s.io/pvc/namespace=default
+                           requestedsizegib=10
+                           skuname=StandardSSD_LRS
+                           storage.kubernetes.io/csiProvisionerIdentity=1739442690824-8205-disk.csi.azure.com    
+# static
+Name:            pv-azuredisk2
+Labels:          <none>
+Annotations:     pv.kubernetes.io/bound-by-controller: yes
+                 pv.kubernetes.io/provisioned-by: disk.csi.azure.com
+Finalizers:      [kubernetes.io/pv-protection]
+(not reliable to identify) StorageClass:    default
+(not reliable to identify) Claim:             default/pvc-azuredisk
+Node Affinity:   <none>
+Source:
+    Type:              CSI (a Container Storage Interface (CSI) volume source)
+    Driver:            disk.csi.azure.com
+    FSType:
+    VolumeHandle:      /subscriptions/redacts-1111-1111-1111-111111111111/resourceGroups/MC_rg_aks_swedencentral/providers/Microsoft.Compute/disks/disk
+    ReadOnly:          false
+    VolumeAttributes:      fsType=ext4
+    
+kubectl describe pvc
+# dynamic
+(not reliable to identify) Name:          pvc-azuredisk
+(not reliable to identify) Namespace:     default
+(not reliable to identify) StorageClass:  default
+(not reliable to identify) Status:        Bound
+Volume:        pvc-c50aa0c5-53e6-4769-b992-b8777a22f85d
+Labels:        <none>
+Annotations:   pv.kubernetes.io/bind-completed: yes
+               pv.kubernetes.io/bound-by-controller: yes
+               volume.beta.kubernetes.io/storage-provisioner: disk.csi.azure.com
+               volume.kubernetes.io/selected-node: aks-nodepool1-24567707-vmss000001
+               volume.kubernetes.io/storage-provisioner: disk.csi.azure.com
+Finalizers:    [kubernetes.io/pvc-protection]
+Capacity:      10Gi
+Access Modes:  RWO
+VolumeMode:    Filesystem
+Used By:       nginx-azuredisk
+Events:
+# static
+(not reliable to identify) Name:          pvc-azuredisk2
+(not reliable to identify) Namespace:     default
+(not reliable to identify) StorageClass:  default
+(not reliable to identify) Status:        Pending
+Volume:        pv-azuredisk2
+Labels:        <none>
+Annotations:   <none>
+Finalizers:    [kubernetes.io/pvc-protection]
+Capacity:      0
+Access Modes:
+VolumeMode:    Filesystem
+Used By:       <none>
+Events:        <none>
+```
+
+```
+# dynamic
+
 cat << EOF | kubectl create -f -
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -45,18 +137,9 @@ sleep 30
 kubectl get po,pv,pvc
 # kubectl delete po nginx-azuredisk; kubectl delete pvc pvc-azuredisk
 ```
-    
-- https://kubernetes.io/docs/concepts/storage/volumes/#persistentvolumeclaim
-- https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.28/#volume-v1-core
-- https://kubernetes.io/docs/concepts/storage/persistent-volumes/
-- https://kubernetes.io/docs/tasks/configure-pod-container/configure-persistent-volume-storage/
-- https://learn.microsoft.com/en-us/azure/aks/concepts-storage#volumes
-- https://learn.microsoft.com/en-us/azure/aks/concepts-storage#persistent-volumes
-- https://github.com/container-storage-interface/spec/blob/master/spec.md#createvolume
-
-## pv.provision.static
 
 ```
+# static.pvc
 # **Since the (static) PV is created by the user, the storage class settings won't apply to it. However, if it's a dynamically provisioned PV, then the settings in the storage class will take effect.
 
 # az disk delete -g MC_rg_aks_swedencentral -n disk
@@ -115,14 +198,48 @@ pvc-azuredisk   Bound         pv-azuredisk   20Gi       RWO            managed-c
 
 - https://learn.microsoft.com/en-us/azure/aks/azure-csi-disk-storage-provision#statically-provision-a-volume
 
-## pv.reclaimPolicy
+## pv.reclaimPolicy (persistentVolumeReclaimPolicy)
 
 ```
 kubectl describe pv task-pv-volume
 Reclaim Policy:  Delete
 ```
 
+```
+kubectl patch pv pv-azuredisk -p '{"spec":{"persistentVolumeReclaimPolicy":"Delete"}}' # persistentvolume/pv-azuredisk patched
+kubectl get pv pv-azuredisk -oyaml | grep Reclaim # Delete
+```
+
 - https://kubernetes.io/docs/concepts/storage/persistent-volumes/#storage-object-in-use-protection: volumes can either be Retained, Recycled, or Deleted.
+```
+# persistentVolumeReclaimPolicy.delete.pv-protection-controller
+# user agent: pv-protection-controller
+
+kubectl describe pv pv-azuredisk # same for both static and dynamic provisioned PVs
+Finalizers:      [kubernetes.io/pv-protection external-provisioner.volume.kubernetes.io/finalizer]
+```
+
+- https://kubernetes.io/docs/reference/access-authn-authz/admission-controllers/#storageobjectinuseprotection: adds the kubernetes.io/pvc-protection or kubernetes.io/pv-protection finalizers to newly created Persistent Volume Claims (PVCs) or Persistent Volumes (PV). In case a user deletes a PVC or PV the PVC or PV is not removed until the finalizer is removed from the PVC or PV by PVC or PV Protection Controller.
+- https://kubernetes.io/docs/concepts/storage/persistent-volumes/#storage-object-in-use-protection
+- https://github.com/kubernetes/kubernetes/blob/master/pkg/controller/volume/pvprotection/pv_protection_controller.go
+// Controller is controller that removes PVProtectionFinalizer
+// from PVs that are not bound to PVCs.
+	if protectionutil.IsDeletionCandidate(pv, volumeutil.PVProtectionFinalizer) {
+		// PV should be deleted. Check if it's used and remove finalizer if
+		// it's not.
+		isUsed := c.isBeingUsed(pv)
+		if !isUsed {
+			return c.removeFinalizer(ctx, pv)
+		}
+		logger.V(4).Info("Keeping PV because it is being used", "PV", klog.KRef("", pvName))
+	}
+
+	if protectionutil.NeedToAddFinalizer(pv, volumeutil.PVProtectionFinalizer) {
+		// PV is not being deleted -> it should have the finalizer. The
+		// finalizer should be added by admission plugin, this is just to add
+		// the finalizer to old PVs that were created before the admission
+		// plugin was enabled.
+		return c.addFinalizer(ctx, pv)
 
 ## pv.status.bound
 

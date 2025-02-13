@@ -70,11 +70,26 @@ With AKS, you get an AKS image that already has the NVIDIA device plugin for Kub
 - https://techcommunity.microsoft.com/t5/containers/windows-gpus-for-aks/ba-p/4089292
 
 ## Monitor GPUs
-Kubernetes upstream stopped using kubelet to get GPU metrics and switched to vendor GPU drivers instead. Container insights can work with GPU drivers like NVIDIA.
+
+```
+# metrics.gpu, for example, nodeGpuAllocatable
+# Kubernetes upstream stopped using kubelet to get GPU metrics and switched to vendor GPU drivers instead. Container insights can work with GPU drivers like NVIDIA.
+```
+
 - https://kubernetes.io/blog/2020/12/16/third-party-device-metrics-reaches-ga/#nvidia-gpu-metrics-deprecated: The DisableAcceleratorMetrics feature (introduced in 1.19) is graduating to beta and will be enabled by default (With Kubernetes 1.20)
+  - With the graduation of the plugin monitoring system, Kubernetes is deprecating the NVIDIA GPU metrics that are being reported by the kubelet.
+    - With the DisableAcceleratorMetrics feature being enabled by default in Kubernetes 1.20, NVIDIA GPUs are no longer special citizens in Kubernetes. This is a good thing in the spirit of being vendor-neutral, and enables the most suited people to maintain their plugin on their own release schedule!
+    - Users will now need to either install the NVIDIA GDGM exporter or use bindings to gather more accurate and complete metrics about NVIDIA GPUs. This deprecation means that you can no longer rely on metrics that were reported by kubelet, such as container_accelerator_duty_cycle or container_accelerator_memory_used_bytes which were used to gather NVIDIA GPU memory utilization.
 - https://learn.microsoft.com/en-us/azure/azure-monitor/containers/container-insights-gpu-monitoring: Kubernetes is deprecating GPU metrics that are being reported by the kubelet, for Kubernetes version 1.20+. Container insights supports monitoring GPU clusters from the following GPU vendors.
 - https://learn.microsoft.com/en-us/azure/aks/gpu-cluster#use-container-insights-to-monitor-gpu-usage
 - https://learn.microsoft.com/en-us/azure/aks/gpu-cluster?tabs=add-ubuntu-gpu-node-pool#confirm-that-gpus-are-schedulable
+
+```
+# metrics.gpu.NVIDIA GDGM exporter
+```
+- https://kubernetes.io/blog/2020/12/16/third-party-device-metrics-reaches-ga/#nvidia-gpu-metrics-deprecated: Users will now need to either install the NVIDIA GDGM exporter or use bindings to gather more accurate and complete metrics about NVIDIA GPUs. This deprecation means that you can no longer rely on metrics that were reported by kubelet, such as container_accelerator_duty_cycle or container_accelerator_memory_used_bytes which were used to gather NVIDIA GPU memory utilization.
+- https://techcommunity.microsoft.com/blog/azureobservabilityblog/monitoring-gpu-metrics-in-aks-with-azure-managed-prometheus-dcgm-exporter-and-ma/4210672
+- https://learn.microsoft.com/en-us/azure/azure-monitor/containers/container-insights-prometheus-logs?tabs=cluster-wide
 
 ## More
 - How to schedule GPUs with Kubernetes - https://kubernetes.io/docs/tasks/manage-gpus/scheduling-gpus/

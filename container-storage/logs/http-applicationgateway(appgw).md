@@ -15,6 +15,36 @@ Hello World from host myVM1!
 - https://learn.microsoft.com/en-us/azure/application-gateway/application-gateway-faq
 - https://learn.microsoft.com/en-us/azure/architecture/web-apps/spring-apps/guides/spring-cloud-reverse-proxy: a common reverse proxy service like Azure Application Gateway
 
+```
+# applicationgateway.routing.rule
+```
+
+- https://learn.microsoft.com/en-us/azure/application-gateway/configuration-request-routing-rules: When you create an application gateway using the Azure portal, you create a default rule (rule1). This rule binds the default listener (appGatewayHttpListener) with the default backend pool (appGatewayBackendPool) and the default backend HTTP settings (appGatewayBackendHttpSettings). Rule type (basic and path-based). Order of processing rules
+
+```
+# applicationgateway.routing.rule.backend
+```
+
+- https://learn.microsoft.com/en-us/azure/application-gateway/configuration-request-routing-rules#associated-backend-pool
+
+```
+# applicationgateway.routing.rule.type.basic
+```
+
+- https://learn.microsoft.com/en-us/azure/application-gateway/configuration-request-routing-rules#rule-type: basic and path-based.
+- https://learn.microsoft.com/en-us/azure/application-gateway/application-gateway-components#request-routing-rules
+
+```
+# applicationgateway.routing.rule.type.path
+```
+
+```
+# applicationgateway.routing.rule.order
+```
+
+- https://learn.microsoft.com/en-us/azure/application-gateway/configuration-request-routing-rules#order-of-processing-rules
+- https://learn.microsoft.com/en-us/azure/application-gateway/multiple-site-overview#request-routing-rules-evaluation-order
+
 ## applicationgateway.spec.request.header
 
 - https://techcommunity.microsoft.com/t5/fasttrack-for-azure/end-to-end-logging-with-azure-front-door-application-gateway-and/ba-p/3673671: Application Gateway injects a "x-appgw-trace-id" header. 

@@ -1,3 +1,4 @@
+- https://learn.microsoft.com/en-us/windows/win32/vstor/about-vhd: An example of how VHD files are used is the Hyper-V feature in Windows 7, Windows Server 2008, Virtual Server, and Windows Virtual PC. These products use the VHD API to contain the Windows operating system image utilized by a virtual machine as its system boot disk.
 - https://www.microsoft.com/en-us/download/details.aspx?id=23850: VHD Specifications. This file contains the specifications for the .VHD format for Virtual Hard Disks
 - https://github.com/libyal/libvhdi/blob/main/documentation/Virtual%20Hard%20Disk%20%28VHD%29%20image%20format.asciidoc: Virtual Hard Disk (VHD) image format. A commonly image format used in Microsoft virtualization products is the Virtual Hard Disk (VHD) Image format. It is both used the store hard disk images and snapshots.
 - https://veeams.com/vhd-to-azure-the-ultimate-integration-tutorial/: Azure primarily supports fixed-size VHD files for VM disk images, meaning any dynamically expanding VHDs need to be converted beforehand. Before uploading, it’s wise to clean up your VHD files. This includes defragmenting the disk, removing unnecessary files, and truncating any sensitive data.
@@ -21,6 +22,7 @@
 - https://learn.microsoft.com/en-us/azure/virtual-machines/windows/download-vhd
 - https://learn.microsoft.com/en-us/windows-server/virtualization/hyper-v/get-started/create-a-virtual-machine-in-hyper-v?tabs=hyper-v-manager: Connect Virtual Hard Disk
 - https://learn.microsoft.com/en-us/azure/virtual-machines/windows/expand-disks
+- https://learn.microsoft.com/en-us/windows-server/storage/disk-management/manage-virtual-hard-disks
 
 ## storagenet-vhd.manageddisk(azuredisk)
 

@@ -2,6 +2,19 @@
 # See the section on k8s-pv, k8s-csi and k8s-pod_state_ExitCode
 ```
 
+## k8s.cri.containerd
+
+```
+# for example, /containerd/blob/main/core/mount/temp.go
+```
+
+```
+# containerd.error.failed to remove mount temp dir
+# syslog
+```
+
+- https://github.com/containerd/containerd/blob/main/core/mount/temp.go: os.MkdirTemp(tempMountLocation, "containerd-mount"). Error("failed to remove mount temp dir")
+
 ## k8s.etcd
 
 ```
@@ -40,15 +53,17 @@
 
 - https://github.com/etcd-io/etcd/issues/8576: etcdserver: too many requests. Probably you need to figure out what the expensive operators are by querying metrics.
  
-## k8s.etcd.space
+```
+# k8s.etcd.space
+```
 
 - https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/create-upgrade-delete/troubleshoot-apiserver-etcd?tabs=resource-specific#cause-2-an-offending-client-leaks-etcd-objects-and-results-in-a-slowdown-of-etcd
 - https://github.com/Azure/aks-engine/blob/master/examples/largeclusters/README.md: The current recommended maximum for etcd's storage size limit is 8GB
 - https://etcd.io/docs/v3.3/dev-guide/limit/#storage-size-limit: The default storage size limit is 2GB, configurable with --quota-backend-bytes flag. 8GB is a suggested maximum size for normal environments and etcd warns at startup if the configured value exceeds it.
 - https://aws.amazon.com/blogs/containers/managing-etcd-database-size-on-amazon-eks-clusters/
 
-````
-# error.mvcc: database space exceeded
+```
+# k8s.etcd.space.error.mvcc: database space exceeded
 ```
 
 - https://etcd.io/docs/v3.4/faq/#what-does-mvcc-database-space-exceeded-mean-and-how-do-i-fix-it

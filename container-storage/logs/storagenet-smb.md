@@ -12,9 +12,28 @@
 - https://github.com/torvalds/linux/tree/master/fs/smb
 - https://github.com/multipath-tcp/mptcp/blob/mptcp_v0.96/fs/cifs
 
-## smb.app.k8s.csi
+##smb.app.azurefile
+
+```
+# smb.azurefile
+```
 
 - https://learn.microsoft.com/en-us/azure/storage/files/storage-files-introduction: Server Message Block (SMB) protocol, Network File System (NFS) protocol, and Azure Files REST API.
+
+```
+# smb.azurefile.k8s.csi
+```
+  
+- https://github.com/kubernetes-sigs/azurefile-csi-driver/blob/master/pkg/azurefile/nodeserver.go: return SMBMount(d.mounter, source, cifsMountPath, mountFsType, mountOptions, sensitiveMountOptions)
+- https://github.com/kubernetes-sigs/azurefile-csi-driver/issues/1737#issuecomment-1973304377: this is all the Supported authentication scenarios for SMB file share mount:
+- https://learn.microsoft.com/en-us/azure/storage/files/storage-files-active-directory-overview#supported-authentication-scenarios
+
+##smb.app.azurenetapp
+
+```
+# smb.azurenetapp.k8s.csi
+```
+
 - https://learn.microsoft.com/en-us/azure/aks/azure-netapp-files: Azure NetApp Files is an enterprise-class, high-performance, metered file storage service running on Azure and supports volumes using NFS (NFSv3 or NFSv4.1), SMB, and dual-protocol (NFSv3 and SMB, or NFSv4.1 and SMB).
 
 ## smb.client

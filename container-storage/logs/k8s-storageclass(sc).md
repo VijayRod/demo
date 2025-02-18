@@ -6,7 +6,7 @@
 
 - If the storage account parameter has been changed: the existing pvc would still use old storage class config, should remove that pvc and try again (by creating a new pvc)
 
-## sc.parameters.useDataPlaneAPI
+## sc.spec.parameters.useDataPlaneAPI
 ```
 # useDataPlaneAPI aka storage account firewall
 # By setting useDataPlaneAPI to "true", there is almost no (throttling) limit for creating file share. Just remember to enable public access in the storage account firewall settings.
@@ -22,13 +22,13 @@
 - https://github.com/kubernetes-sigs/blob-csi-driver/blob/master/docs/driver-parameters.md: useDataPlaneAPI: specify whether use data plane API for blob container create/delete, this could solve the SRP API throttling issue since data plane API has almost no limit, while it would fail when there is firewall or vnet setting on storage account
 https://github.com/kubernetes-sigs/azuredisk-csi-driver/blob/master/docs/driver-parameters.md: No useDataPlaneAPI
 
-## sc.parameters.useDataPlaneAPI.azureblob
+## sc.spec.parameters.useDataPlaneAPI.azureblob
 
 - https://github.com/kubernetes-sigs/blob-csi-driver/blob/master/docs/driver-parameters.md: specify whether use data plane API for blob container create/delete, this could solve the SRP API throttling issue since data plane API has almost no limit, while it would fail when there is firewall or vnet setting on storage account i.e. make sure the storage account is not set to "Check Allow Access From (All Networks / Selected Networks)" "Selected Networks" i.e. set "Enabled from all networks" in the specified storage account
 - https://learn.microsoft.com/en-us/answers/questions/1166011/getting-a-403-error-when-connecting-to-a-blob-cont: "Selected Networks" - It means the storage account is firewall enabled.
 - https://github.com/kubernetes-sigs/blob-csi-driver/blob/master/pkg/blob/controllerserver.go: if len(secrets) == 0 && useDataPlaneAPI {... "failed to GetStorageAccesskey on account
 
-## sc.parameters.useDataPlaneAPI.azurefile
+## sc.spec.parameters.useDataPlaneAPI.azurefile
 
 ```
 kubectl delete pvc pvc-azurefile
@@ -78,3 +78,29 @@ az storage account list -g MC_rg_aks_swedencentral
 - https://github.com/Azure/AKS/issues/804: Azure Files PV AuthorizationFailure when using advanced networking - I know why this only allow access from selected network for storage account does not work on AKS, that's because k8s persistentvolume-controller is on AKS master node which is not in the selected network, and that's why it could not create file share on that storage account... And in the near future, I don't think we would support this feature: only allow access from selected network for storage account... one workaround is use azure file static provisioning, that is create azure file share by user, and then user provide the storage account and file share in k8s... I think azure file static provisioning would work on this case, while dynamic provisioning (*specifically the default azurefile storage classes*) won't work
   - i.e. https://learn.microsoft.com/en-us/azure/aks/azure-csi-files-storage-provision#statically-provision-a-volume
   - https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/storage/create-file-share-failed-storage-account: The Kubernetes persistentvolume-controller isn't on the network that was chosen when the Allow access from network setting was enabled for Selected networks on the storage account.
+
+## sc.spec.VolumeBindingMode
+
+```
+# See the section on zone
+
+kubectl describe sc | grep -E 'VolumeBindingMode|Provisioner'
+Provisioner:           file.csi.azure.com
+VolumeBindingMode:  Immediate
+Provisioner:           file.csi.azure.com
+VolumeBindingMode:  Immediate
+Provisioner:           file.csi.azure.com
+VolumeBindingMode:  Immediate
+Provisioner:           file.csi.azure.com
+VolumeBindingMode:  Immediate
+Provisioner:           disk.csi.azure.com
+VolumeBindingMode:     WaitForFirstConsumer
+Provisioner:           disk.csi.azure.com
+VolumeBindingMode:     WaitForFirstConsumer
+Provisioner:           disk.csi.azure.com
+VolumeBindingMode:     WaitForFirstConsumer
+Provisioner:           disk.csi.azure.com
+VolumeBindingMode:     WaitForFirstConsumer
+Provisioner:           disk.csi.azure.com
+VolumeBindingMode:     WaitForFirstConsumer
+```

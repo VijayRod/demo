@@ -35,9 +35,23 @@ NFSv4
 
 ## nfs.app.azurefile
 
+```
+# nfs.azurefile
+```
+
 - https://learn.microsoft.com/en-us/azure/storage/files/storage-files-introduction: Server Message Block (SMB) protocol, Network File System (NFS) protocol, and Azure Files REST API.
 
+```
+# nfs.azurefile.k8s.csi
+```
+
+- https://github.com/kubernetes-sigs/azurefile-csi-driver/issues/1737#issuecomment-2000784096: you could disable account key access if you are only using nfs file share
+
 ## nfs.app.azurenetapp
+
+```
+# nfs.azurenetapp.k8s.csi
+```
 
 - https://learn.microsoft.com/en-us/azure/aks/azure-netapp-files: Azure NetApp Files is an enterprise-class, high-performance, metered file storage service running on Azure and supports volumes using NFS (NFSv3 or NFSv4.1), SMB, and dual-protocol (NFSv3 and SMB, or NFSv4.1 and SMB).
 

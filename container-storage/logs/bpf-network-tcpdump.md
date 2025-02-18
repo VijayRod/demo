@@ -304,6 +304,98 @@ kubectl sniff nginx-azurefile -f "port 80" # tbd Error: exec: "wireshark": execu
 - https://github.com/eldadru/ksniff: ksniff use kubectl to upload a statically compiled tcpdump binary to your pod and redirecting it's output to your local Wireshark for smooth network debugging experience.
 - https://stackoverflow.com/questions/72388304/how-to-find-all-the-outgoing-network-traffic-from-a-pod-in-k8s
 
+## tcpdump.capture.tools.vm.iperf
+
+```
+# install
+
+sudo apt update -y && apt install -y iperf3
+iperf3 --version
+```
+
+- https://software.es.net/iperf/
+- https://github.com/esnet/iperf
+
+```
+# Ideally, we need two VMs that can run iperf, although both the server and the client can be on the same machine.
+
+On VM1, run: iperf3 -s # this starts the server to listen for client connections
+On VM2, run: iperf3 -c 10.224.0.5 # this connects the client to the server
+
+root@aks-nodepool1-24567707-vmss000002:/# iperf3 -s
+-----------------------------------------------------------
+Server listening on 5201
+-----------------------------------------------------------
+Accepted connection from 10.224.0.4, port 50654
+[  5] local 10.224.0.5 port 5201 connected to 10.224.0.4 port 50656
+[ ID] Interval           Transfer     Bitrate
+[  5]   0.00-1.00   sec   128 MBytes  1.07 Gbits/sec
+[  5]   1.00-2.00   sec   113 MBytes   950 Mbits/sec
+[  5]   2.00-3.00   sec   113 MBytes   952 Mbits/sec
+[  5]   3.00-4.00   sec   113 MBytes   951 Mbits/sec
+[  5]   4.00-5.00   sec   114 MBytes   953 Mbits/sec
+[  5]   5.00-6.00   sec   113 MBytes   951 Mbits/sec
+[  5]   6.00-7.00   sec   114 MBytes   954 Mbits/sec
+[  5]   7.00-8.00   sec   113 MBytes   951 Mbits/sec
+[  5]   8.00-9.00   sec   114 MBytes   954 Mbits/sec
+[  5]   9.00-10.00  sec   113 MBytes   952 Mbits/sec
+[  5]  10.00-10.04  sec  4.42 MBytes   905 Mbits/sec
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID] Interval           Transfer     Bitrate
+[  5]   0.00-10.04  sec  1.13 GBytes   964 Mbits/sec                  receiver
+-----------------------------------------------------------
+Server listening on 5201
+-----------------------------------------------------------
+
+root@aks-nodepool1-24567707-vmss000003:/# iperf3 -c 10.224.0.5
+Connecting to host 10.224.0.5, port 5201
+[  5] local 10.224.0.4 port 50656 connected to 10.224.0.5 port 5201
+[ ID] Interval           Transfer     Bitrate         Retr  Cwnd
+[  5]   0.00-1.00   sec   136 MBytes  1.14 Gbits/sec    0   2.34 MBytes
+[  5]   1.00-2.00   sec   112 MBytes   944 Mbits/sec    0   2.34 MBytes
+[  5]   2.00-3.00   sec   114 MBytes   954 Mbits/sec    0   2.34 MBytes
+[  5]   3.00-4.00   sec   114 MBytes   954 Mbits/sec    0   2.34 MBytes
+[  5]   4.00-5.00   sec   114 MBytes   954 Mbits/sec    0   2.34 MBytes
+[  5]   5.00-6.00   sec   114 MBytes   954 Mbits/sec    0   2.34 MBytes
+[  5]   6.00-7.00   sec   112 MBytes   944 Mbits/sec    0   2.34 MBytes
+[  5]   7.00-8.00   sec   114 MBytes   954 Mbits/sec    0   2.34 MBytes
+[  5]   8.00-9.00   sec   112 MBytes   944 Mbits/sec    0   2.34 MBytes
+[  5]   9.00-10.00  sec   114 MBytes   954 Mbits/sec    0   2.34 MBytes
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID] Interval           Transfer     Bitrate         Retr
+[  5]   0.00-10.00  sec  1.13 GBytes   969 Mbits/sec    0             sender
+[  5]   0.00-10.04  sec  1.13 GBytes   964 Mbits/sec                  receiver
+
+iperf Done.
+```
+
+- https://lindevs.com/install-iperf-on-ubuntu/
+- https://fasterdata.es.net/performance-testing/network-troubleshooting-tools/iperf/: can find sample commands
+
+```
+VM1: iperf3 -s -p 12555
+VM2: iperf3 -c 10.224.0.4 -p 12555 -i 1 -V -t 100
+
+  -i, --interval  #         seconds between periodic throughput reports
+  -V, --verbose             more detailed output
+  -t, --time      #         time in seconds to transmit for (default 10 secs)
+  -P, --parallel  #         number of parallel client streams to run # include the flag -P 1 (reducing from the default 50 flows to just 1 flow) to see if it changes the behavior
+
+# on the server (VM1) side, run the following command and check the output file to see if the missed packet counts are increasing.
+for count in {1..1000} ; do  (echo `date +"%Y-%m-%d %H:%M:%S"` >> phy_interface_stats.txt ; ip -s link show `ip link | awk -F: '/^[0-9]+: / {print $2}' | egrep enP` | egrep -A 1 '(RX|TX)' >> phy_interface_stats.txt; sleep 1); done
+# output sample:
+--
+    RX:  bytes packets errors dropped  missed   mcast
+       2125397    4771      0       0       0       0
+    TX:  bytes packets errors dropped carrier collsns
+      13811532    3342      0       0       0       0
+--
+    RX:  bytes packets errors dropped  missed   mcast
+       1097790    3052      0       0       0       0
+    TX:  bytes packets errors dropped carrier collsns
+       3839047    3262      0       0       0       0
+```
+
 ## tcpdump.capture.tools.windows.pktmon
 
 ```

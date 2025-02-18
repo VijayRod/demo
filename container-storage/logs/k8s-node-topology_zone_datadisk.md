@@ -224,6 +224,22 @@ kubectl logs -n kube-system -l app=csi-azuredisk-node -c azuredisk # no rows
 
 - https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/storage/fail-to-mount-azure-disk-volume#error1
 
+## datadisk.zone.node
+
+```
+# Instead of having multi-AZ nodepools, use one nodepool per zone.
+
+az aks nodepool create -z
+```
+
+## datadisk.zone.node.cluster-autoscaler
+
+```
+# avoid having multi-AZ nodepools and instead create one nodepool per zone, enabling the --balance-similar-node-group flag.
+```
+
+- https://github.com/kubernetes/autoscaler/blob/master/cluster-autoscaler/FAQ.md#im-running-cluster-with-nodes-in-multiple-zones-for-ha-purposes-is-that-supported-by-cluster-autoscaler: --balance-similar-node-groups flag to support this use case. If you set the flag to true, CA will automatically identify node groups with the same instance type and the same set of labels (except for automatically added zone label) and try to keep the sizes of those node groups balanced.
+
 ## datadisk.zone.pod.nodeAffinity
 
 ```
@@ -541,6 +557,7 @@ Provisioner:           disk.csi.azure.com
 
 ```
 # Use zone-redundant storage (ZRS) disks
+# Use ZRS disks: ZRS (Premium_ZRS, StandardSSD_ZRS) disks can be scheduled on both zone and non-zone agent nodes, without needing to keep the disk volume in the same zone as the node. Note that ZRS disks are only supported in a few regions, so check the details.
 
 kubectl delete pvc pvc-azuredisk
 kubectl delete po nginx
@@ -594,3 +611,28 @@ kubectl get po -w # Running
 
 - https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/storage/fail-to-mount-azure-disk-volume#solution-2-use-zone-redundant-storage-zrs-disks
 
+## datadisk.zone.sc.spec.volumeBindingMode
+
+```
+# Modify the volumeBindingMode to WaitForFirstConsumer
+
+kubectl describe sc | grep -E 'VolumeBindingMode|Provisioner'
+Provisioner:           file.csi.azure.com
+VolumeBindingMode:  Immediate
+Provisioner:           file.csi.azure.com
+VolumeBindingMode:  Immediate
+Provisioner:           file.csi.azure.com
+VolumeBindingMode:  Immediate
+Provisioner:           file.csi.azure.com
+VolumeBindingMode:  Immediate
+Provisioner:           disk.csi.azure.com
+VolumeBindingMode:     WaitForFirstConsumer
+Provisioner:           disk.csi.azure.com
+VolumeBindingMode:     WaitForFirstConsumer
+Provisioner:           disk.csi.azure.com
+VolumeBindingMode:     WaitForFirstConsumer
+Provisioner:           disk.csi.azure.com
+VolumeBindingMode:     WaitForFirstConsumer
+Provisioner:           disk.csi.azure.com
+VolumeBindingMode:     WaitForFirstConsumer
+```

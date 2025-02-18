@@ -72,8 +72,6 @@ kustomizations.kustomize.toolkit.fluxcd.io       2023-09-01T19:05:25Z
 ocirepositories.source.toolkit.fluxcd.io         2023-09-01T19:05:25Z
 providers.notification.toolkit.fluxcd.io         2023-09-01T19:05:25Z
 receivers.notification.toolkit.fluxcd.io         2023-09-01T19:05:25Z
-
-az k8s-configuration flux delete -g $rg -c aks -t managedClusters --name cluster-config -y
 ````
 
 - https://fluxcd.io/flux/installation/bootstrap/azure-devops/
@@ -83,3 +81,15 @@ az k8s-configuration flux delete -g $rg -c aks -t managedClusters --name cluster
 - https://learn.microsoft.com/en-us/azure/azure-arc/kubernetes/conceptual-gitops-flux2
 - https://learn.microsoft.com/en-us/azure/azure-arc/kubernetes/extensions-release#flux-gitops
 - https://learn.microsoft.com/en-us/azure/azure-arc/kubernetes/tutorial-use-gitops-flux2?tabs=azure-cli
+
+```
+# delete
+az k8s-configuration flux delete -g $rg -c aks -t managedClusters --name cluster-config -y
+
+# force delete
+az k8s-configuration flux delete -g $rg -n aks -t managedClusters -n cluster --force # force deletes all GitOps configurations
+az k8s-extension delete -g $rg -n aks --cluster-type managedClusters --name myextension --force # force deletes the extension
+```
+
+- https://learn.microsoft.com/en-us/cli/azure/k8s-extension?view=azure-cli-latest#az-k8s-extension-delete
+- https://learn.microsoft.com/en-us/cli/azure/k8s-configuration/flux?view=azure-cli-latest#az-k8s-configuration-flux-delete

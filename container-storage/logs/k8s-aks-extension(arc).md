@@ -3,7 +3,6 @@
 ```
 az k8s-extension list -g $rg -c aks-dapr --cluster-type managedClusters
 az k8s-extension show -g $rg --cluster-name aks2 --name azure-aks-backup --cluster-type managedClusters -otable
-az k8s-extension delete -g $rg --cluster-name aks2 -n azure-aks-backup --cluster-type managedClusters -y
 
 k get po -n kube-system --show-labels | grep ext
 kube-system   extension-agent-7bc85fbfc5-qmbvt           2/2     Running   0          24m     app.kubernetes.io/component=extension-agent,app.kubernetes.io/name=extension-manager,control-plane=extension-agent,kubernetes.azure.com/managedby=aks,pod-template-hash=7bc85fbfc5
@@ -30,6 +29,17 @@ k describe po -n kube-system -l app.kubernetes.io/component=extension-operator
 - https://learn.microsoft.com/en-us/azure/aks/outbound-rules-control-egress#cluster-extensions: dp.kubernetesconfiguration.azure.com...
 - https://aka.ms/k8s-extensions-TSG
 - https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/extensions/cluster-extension-deployment-errors
+
+```
+# delete
+az k8s-extension delete -g $rg --cluster-name aks2 -n azure-aks-backup --cluster-type managedClusters -y
+
+# force delete
+# az k8s-configuration flux delete -g $rg -c aks-dapr -t managedClusters -n cluster --force
+az k8s-extension delete -g $rg -c aks-dapr --cluster-type managedClusters --name myextension --force
+```
+
+- https://learn.microsoft.com/en-us/cli/azure/k8s-extension?view=azure-cli-latest#az-k8s-extension-delete
 
 ### k8s-aks-extension.debug.provisioningState
 

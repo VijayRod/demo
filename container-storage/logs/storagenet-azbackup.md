@@ -71,3 +71,27 @@ az dataprotection backup-instance create --backup-instance  /tmp/backupinstance.
 - https://learn.microsoft.com/en-us/azure/aks/hybrid/backup-workload-cluster
 - https://learn.microsoft.com/en-us/azure/backup/azure-kubernetes-service-cluster-backup-support-matrix#limitations
 - https://learn.microsoft.com/en-us/azure/backup/azure-kubernetes-service-cluster-backup-concept#aks-cluster: prerequisites
+
+```
+# portal to backup Azure managed disks linked with AKS PVs, meaning you can back them up though an AKS extension (backup extension is only for Azure managed disks with the cluster having CSI drivers)
+
+## Install backup extension: For an existing cluster without the backup extension enabled, create a storage account named devaksbackup02 in the cluster resource group, and a blob container named volume-backups-app1 in that account. Then, head over to the cluster in the portal and find the Backup section in Settings to install the backup extension.
+## Configure backup: Next, use the same Backup section in the cluster pane to set up a backup, which includes creating a backup recovery vault named contoso-bvault-aks-prod-westeu.
+## Take backup: Rightclick the backup instance and take a backup.
+## Test - detach and delete the managed disk: First, list the disk contents to test things out. Then, detach the disk from the node (without deleting the pod or the PVC) and delete the disk from the managed resource group. 
+## Test - restore the disk: Next, head over to the Backup Vault, check the Backup instances, and trigger the Restore. Click on the Backup instance to monitor the progress of restoring the disk in the MC group.
+k get po -owide
+### initially
+k exec -it nginx-azuredisk -- ls /mnt/azuredisk # lost+found
+### after disk detach from the node
+k exec -it nginx-azuredisk -- ls /mnt/azuredisk # ls: reading directory '/mnt/azuredisk': Input/output error. command terminated with exit code 2
+## Logs - In the selected folder, you'll find the snapshot resource (file name snapshot-). There are also files like velero-backup.json in the backup storage account container. Additionally, you can check the backup vault to see the snapshot and restore status.
+```
+
+```
+# portal to backup Azure file shares linked with AKS PVs
+
+## Configure: Pick the file share in the MC_ group and hit Backup in Operations. An AzureBackupProtectionLock storage account delete lock is automatically created based on your initial selection.
+### AzureBackupProtectionLock - Auto-created by Azure Backup for storage accounts registered with a Recovery Services Vault. This lock is intended to guard against deletion of backups due to accidental deletion of the storage account.
+## Logs - The Backup section in the file share shows the recovery points, and you can find the backups listed under the "Backup items" portal resource.
+```

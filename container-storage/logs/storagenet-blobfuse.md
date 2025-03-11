@@ -2,6 +2,9 @@
 
 - https://learn.microsoft.com/en-us/azure/storage/blobs/blobfuse2-what-is
 - https://github.com/kubernetes-sigs/blob-csi-driver/blob/master/docs/design.md: To prevent possible regression issues, Azure Blob Storage CSI driver use azure cloud provider library. Thus, all bug fixes in the built-in blobfuse plugin would be incorporated into this driver.
+- https://learn.microsoft.com/en-us/azure/storage/blobs/blobfuse2-commands-mount#flags-that-apply-only-to-the-blobfuse2-mount-command
+- https://github.com/Azure/azure-storage-fuse/blob/main/setup/baseConfig.yaml
+- https://github.com/Azure/azure-storage-fuse/blob/main/cmd/mountv1.go
 
 ## blobfuse.app.k8s.csi.azureblob
 

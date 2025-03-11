@@ -114,6 +114,26 @@ PORT     STATE SERVICE
 Nmap done: 1 IP address (1 host up) scanned in 0.39 seconds
 ```
 
+## ip.port.apps.ping
+
+```
+# ping.rtt
+# rtt avg 0.759 ms
+
+root@aks-nodepool1-98803342-vmss000000:/# ping 10.224.0.4
+PING 10.224.0.4 (10.224.0.4) 56(84) bytes of data.
+64 bytes from 10.224.0.4: icmp_seq=1 ttl=64 time=0.704 ms
+64 bytes from 10.224.0.4: icmp_seq=2 ttl=64 time=0.815 ms
+^C
+--- 10.224.0.4 ping statistics ---
+2 packets transmitted, 2 received, 0% packet loss, time 1006ms
+rtt min/avg/max/mdev = 0.704/0.759/0.815/0.055 ms
+```
+
+- https://developer.mozilla.org/en-US/docs/Glossary/Round_Trip_Time
+- https://www.imperva.com/learn/performance/round-trip-time-rtt/
+- https://networkengineering.stackexchange.com/questions/52232/whats-the-difference-between-latency-and-round-trip-time
+
 ## ip.port.apps.psping
 
 ```

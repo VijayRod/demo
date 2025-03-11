@@ -317,6 +317,25 @@ iperf3 --version
 - https://github.com/esnet/iperf
 
 ```
+# install2
+
+kubectl debug node/aks-nodepool1-xxxxxx-vmss000001 -it --image=mcr.microsoft.com/cbl-mariner/busybox:2.0
+apt-get update && apt-get install iperf3 -y
+apt-get update && apt-get install net-tools jq -y
+
+VM1: 
+iperf3 -s -p 20003
+# nohup iperf3 --server --port 20003 &> /dev/null &
+
+VM2: 
+for p in $(seq 1 5);
+do
+    iperf3 -c 10.224.0.4 -p 20003 -V -t 100 -i 0 -P $p
+    sleep 10
+done
+```
+
+```
 # Ideally, we need two VMs that can run iperf, although both the server and the client can be on the same machine.
 
 On VM1, run: iperf3 -s # this starts the server to listen for client connections

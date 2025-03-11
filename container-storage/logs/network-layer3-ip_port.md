@@ -117,7 +117,7 @@ Nmap done: 1 IP address (1 host up) scanned in 0.39 seconds
 ## ip.port.apps.ping
 
 ```
-# ping.rtt
+# ping.rtt (and latency)
 # rtt avg 0.759 ms
 
 root@aks-nodepool1-98803342-vmss000000:/# ping 10.224.0.4

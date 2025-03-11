@@ -200,8 +200,44 @@ Non-working environment - When running tcpdump in the app pod (which includes th
 
 - https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/extensions/istio-add-on-general-troubleshooting
 - https://istio.io/latest/docs/reference/commands/pilot-agent/: ads, all, ca, cache, citadelclient, default, dns, gcecred, grpc, healthcheck, iptables, klog, mockcred, monitoring, sds, security, spiffe, validation, wasm, xdsproxy
+- https://istio.io/latest/docs/ops/common-problems/injection/#limitations-for-using-tcpdump-in-pods: Tcpdump doesn’t work in the sidecar pod - the container doesn’t run as root. However any other container in the same pod will see all the packets, since the network namespace is shared. iptables will also see the pod-wide configuration.
+  Communication between Envoy and the app happens on 127.0.0.1, and is not encrypted.
 
-## k8s-servicemesh-istio.debug.iptables
+```
+# istio.sidecar.injection.pod.label.sidecar.istio.io/inject
+
+cat << EOF | kubectl create -f -
+  apiVersion: v1
+  kind: Pod
+  metadata:
+    name: example-pod
+    labels:
+      sidecar.istio.io/inject: false
+  spec:
+    containers:
+    - name: nginx
+      image: nginx
+EOF
+
+cat << EOF | kubectl create -f -
+  apiVersion: v1
+  kind: Pod
+  metadata:
+    name: example-pod-inject
+    labels:
+      sidecar.istio.io/inject: true
+  spec:
+    containers:
+    - name: nginx
+      image: nginx
+EOF
+```
+
+- https://istio.io/latest/docs/ops/common-problems/injection/#the-result-of-sidecar-injection-was-not-what-i-expected: Label value of true forces the sidecar to be injected while a value of false forces the sidecar to not be injected.
+
+```
+# istio.iptables
+```
 
 - https://github.com/istio/istio/wiki/Understanding-IPTables-snapshot: 1337 - uid and gid used to distinguish between traffic originating from proxy vs the applications.
 - https://jimmysong.io/en/blog/sidecar-injection-iptables-and-traffic-routing/

@@ -91,6 +91,24 @@ kubectl describe validatingwebhookconfiguration istio-validator-asm-1-21-aks-ist
   Failure Policy:  Fail
 ```
 
+```
+k get all -A | grep istio
+aks-istio-system   pod/istiod-asm-1-22-875d588-4xhs8         0/1     Pending   0          20m
+aks-istio-system   pod/istiod-asm-1-22-875d588-8lgkk         1/1     Running   0          21m
+aks-istio-system   service/istiod-asm-1-22   ClusterIP   10.0.86.240    <none>        15010/TCP,15012/TCP,443/TCP,15014/TCP   21m
+aks-istio-system   deployment.apps/istiod-asm-1-22      1/2     2            1           21m
+aks-istio-system   replicaset.apps/istiod-asm-1-22-875d588         2         2         1       21m
+aks-istio-system   horizontalpodautoscaler.autoscaling/istiod-asm-1-22   Deployment/istiod-asm-1-22   cpu: 0%/80%   2         5         2          21m
+
+k get all -A --show-labels | grep istio
+aks-istio-system   pod/istiod-asm-1-22-875d588-4xhs8         0/1     Pending   0          21m   app=istiod,install.operator.istio.io/owning-resource=unknown,istio.io/dataplane-mode=none,istio.io/rev=asm-1-22,istio=istiod,kubernetes.azure.com/managedby=aks,operator.istio.io/component=Pilot,pod-template-hash=875d588,sidecar.istio.io/inject=false
+aks-istio-system   pod/istiod-asm-1-22-875d588-8lgkk         1/1     Running   0          21m   app=istiod,install.operator.istio.io/owning-resource=unknown,istio.io/dataplane-mode=none,istio.io/rev=asm-1-22,istio=istiod,kubernetes.azure.com/managedby=aks,operator.istio.io/component=Pilot,pod-template-hash=875d588,sidecar.istio.io/inject=false
+aks-istio-system   service/istiod-asm-1-22   ClusterIP   10.0.86.240    <none>        15010/TCP,15012/TCP,443/TCP,15014/TCP   21m   app.kubernetes.io/managed-by=Helm,app=istiod,helm.toolkit.fluxcd.io/name=azure-service-mesh-istio-discovery-helmrelease,helm.toolkit.fluxcd.io/namespace=67c070eb396bc50001b592c5,install.operator.istio.io/owning-resource=unknown,istio.io/rev=asm-1-22,istio=pilot,operator.istio.io/component=Pilot,release=azure-service-mesh-istio-discovery
+aks-istio-system   deployment.apps/istiod-asm-1-22      1/2     2            1           21m   app.kubernetes.io/managed-by=Helm,app=istiod,helm.toolkit.fluxcd.io/name=azure-service-mesh-istio-discovery-helmrelease,helm.toolkit.fluxcd.io/namespace=67c070eb396bc50001b592c5,install.operator.istio.io/owning-resource=unknown,istio.io/rev=asm-1-22,istio=pilot,kubernetes.azure.com/managedby=aks,operator.istio.io/component=Pilot,release=azure-service-mesh-istio-discovery
+aks-istio-system   replicaset.apps/istiod-asm-1-22-875d588         2         2         1       21m   app=istiod,install.operator.istio.io/owning-resource=unknown,istio.io/dataplane-mode=none,istio.io/rev=asm-1-22,istio=istiod,kubernetes.azure.com/managedby=aks,operator.istio.io/component=Pilot,pod-template-hash=875d588,sidecar.istio.io/inject=false
+aks-istio-system   horizontalpodautoscaler.autoscaling/istiod-asm-1-22   Deployment/istiod-asm-1-22   cpu: 0%/80%   2         5         2          21m   app.kubernetes.io/managed-by=Helm,app=istiod,helm.toolkit.fluxcd.io/name=azure-service-mesh-istio-discovery-helmrelease,helm.toolkit.fluxcd.io/namespace=67c070eb396bc50001b592c5,install.operator.istio.io/owning-resource=unknown,istio.io/rev=asm-1-22,operator.istio.io/component=Pilot,release=azure-service-mesh-istio-discovery
+```
+
 - https://kubernetes.io/blog/2017/05/managing-microservices-with-istio-service-mesh/
 - https://learn.microsoft.com/en-us/azure/aks/istio-about
 - https://istio.io/latest/docs/
@@ -242,6 +260,11 @@ EOF
 - https://github.com/istio/istio/wiki/Understanding-IPTables-snapshot: 1337 - uid and gid used to distinguish between traffic originating from proxy vs the applications.
 - https://jimmysong.io/en/blog/sidecar-injection-iptables-and-traffic-routing/
 - https://github.com/istio/cni/blob/master/tools/packaging/common/istio-iptables.sh
+
+```
+# restart
+When the cilium pods restart, they shouldn't break datapath connectivity. 
+```
 
 ## k8s-servicemesh-istio.example
 

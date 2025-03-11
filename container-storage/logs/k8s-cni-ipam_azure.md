@@ -1,4 +1,0 @@
-- https://docs.cilium.io/en/v1.9/concepts/networking/ipam/azure/#ipam-azure
-- https://github.com/Azure/azure-container-networking/blob/master/docs/cni.md: azure-vnet-ipam CNI plugin implements the CNI IPAM plugin interface.
-- https://github.com/Azure/ipam
-- https://azure.github.io/ipam/#/

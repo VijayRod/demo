@@ -31,7 +31,7 @@ k describe po -n kube-system -l app.kubernetes.io/component=extension-operator
 - https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/extensions/cluster-extension-deployment-errors
 
 ```
-# delete
+# op.delete
 az k8s-extension delete -g $rg --cluster-name aks2 -n azure-aks-backup --cluster-type managedClusters -y
 
 # force delete
@@ -41,16 +41,25 @@ az k8s-extension delete -g $rg -c aks-dapr --cluster-type managedClusters --name
 
 - https://learn.microsoft.com/en-us/cli/azure/k8s-extension?view=azure-cli-latest#az-k8s-extension-delete
 
-### k8s-aks-extension.debug.provisioningState
+```
+# op.reconcile
+
+k patch deploy -n kube-system extension-operator --type=json -p='[{"op": "replace", "path": "/spec/template/spec/containers/0/resources/limits/memory", "value": "500Mi"}]'
+# k edit deploy -n kube-system extension-operator
+k describe deploy -n kube-system extension-operator | grep Limits -C 5 # the value reverts within a a minute as expected
+# az aks update -g $rg -n aks # reconcile
+```
 
 ```
-# creating
+# k8s-aks-extension.debug.provisioningState.creating
+
 az k8s-extension show -t managedClusters -g $rg -c aksdapr -n dapr
   "provisioningState": "Creating",
 ```
 
 ```
-# failed
+# k8s-aks-extension.debug.provisioningState.failed
+
 az k8s-extension list -g $rg -c aks-dapr --cluster-type managedClusters # shows failures etc. for all arc extensions
 az k8s-extension show -t managedClusters -g $rg -c aksdapr -n dapr
   "provisioningState": "Failed",

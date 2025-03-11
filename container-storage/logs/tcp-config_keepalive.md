@@ -30,5 +30,6 @@ sysctl -a | grep keepalive # net.ipv4.tcp_keepalive_intvl = 3
 
 k get envoyfilters -A
 ```
-https://my.f5.com/manage/s/article/K00026550: K00026550: Istio Ingress Gateway TCP keepalive
-https://github.com/istio/istio/issues/28879: Istio ingress gateway TCP keepalive setting for downstream connection
+
+- https://my.f5.com/manage/s/article/K00026550: K00026550: Istio Ingress Gateway TCP keepalive
+- https://github.com/istio/istio/issues/28879: Istio ingress gateway TCP keepalive setting for downstream connection

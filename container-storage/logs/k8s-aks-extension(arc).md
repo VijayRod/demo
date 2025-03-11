@@ -17,6 +17,18 @@ k describe po -n kube-system -l app.kubernetes.io/component=extension-operator
     Image:          mcr.microsoft.com/azurearck8s/aks/stable/fluent-bit-collector:1.20.1
 ```
 
+```
+k get all -n kube-system --show-labels | grep ext
+pod/extension-agent-5f58b9c69d-swjmr      2/2     Running   0          46s     app.kubernetes.io/component=extension-agent,app.kubernetes.io/name=extension-manager,control-plane=extension-agent,kubernetes.azure.com/managedby=aks,pod-template-hash=5f58b9c69d
+pod/extension-operator-64b9bdd474-gvrpm   2/2     Running   0          46s     app.kubernetes.io/component=extension-operator,app.kubernetes.io/name=extension-manager,control-plane=extension-operator,kubernetes.azure.com/managedby=aks,pod-template-hash=64b9bdd474
+service/extension-agent-metrics-service      ClusterIP   10.0.104.142   <none>        8443/TCP        52s     addonmanager.kubernetes.io/mode=Reconcile,app.kubernetes.io/component=extension-agent,app.kubernetes.io/name=extension-manager
+service/extension-operator-metrics-service   ClusterIP   10.0.33.222    <none>        8443/TCP        52s     addonmanager.kubernetes.io/mode=Reconcile,app.kubernetes.io/component=extension-operator,app.kubernetes.io/name=extension-manager
+deployment.apps/extension-agent      1/1     1            1           52s     addonmanager.kubernetes.io/mode=Reconcile,app.kubernetes.io/name=extension-agent,kubernetes.azure.com/managedby=aks
+deployment.apps/extension-operator   1/1     1            1           52s     addonmanager.kubernetes.io/mode=Reconcile,app.kubernetes.io/component=extension-operator,app.kubernetes.io/name=extension-manager,kubernetes.azure.com/managedby=aks
+replicaset.apps/extension-agent-5f58b9c69d      1         1         1       47s     app.kubernetes.io/component=extension-agent,app.kubernetes.io/name=extension-manager,control-plane=extension-agent,kubernetes.azure.com/managedby=aks,pod-template-hash=5f58b9c69d
+replicaset.apps/extension-operator-64b9bdd474   1         1         1       47s     app.kubernetes.io/component=extension-operator,app.kubernetes.io/name=extension-manager,control-plane=extension-operator,kubernetes.azure.com/managedby=aks,pod-template-hash=64b9bdd474
+```
+
 - https://learn.microsoft.com/en-us/azure/aks/cluster-extensions
 - https://learn.microsoft.com/en-us/azure/aks/cluster-extensions#currently-available-extensions
 - https://learn.microsoft.com/en-us/azure/aks/deploy-extensions-az-cli

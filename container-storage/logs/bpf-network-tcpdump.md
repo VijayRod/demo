@@ -140,6 +140,12 @@ tcpdump tcp port https
 tcpdump ip
 ```
 
+## tcpdump.capture.tools.k8s
+
+```
+
+```
+
 ## tcpdump.capture.tools.k8s.dumpy
 
 ```

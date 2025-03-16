@@ -16,6 +16,11 @@ kubectl get namespace default -o yaml # istio-injection: enabled, meaning each p
 kubectl logs nginx -c istio-proxy # istio proxy logs
 kubectl get serviceentry # add host in a service entry for exclusion since outbound traffic is blocked by default
 kubectl run nginx --image=nginx # test without Istio in a temporary pod in a non-Istio namespace or with sidecar.istio.io/inject:false as a pod label to override the namespace configuration. Also, test connectivity from a container like usual
+
+# appgateway
+## Here's the flow: Client -> Application Gateway -> Istio Ingress Service (Azure LB) -> Istio Ingress Pod -> Gateway and Virtual Service -> Backend Service -> Backend Pod
+## To test the flow: Client (Azure VM in the same VNet as Azure LB) -> Istio Ingress Service (Azure LB) -> Istio Ingress Pod -> Gateway and Virtual Service -> Backend Service -> Backend Pod
+
 ```
 
 
@@ -110,6 +115,6 @@ TX:             170
 ```
 
 ## conn.external
-```
 
+```
 ```

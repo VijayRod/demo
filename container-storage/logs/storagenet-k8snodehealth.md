@@ -4,6 +4,19 @@
 # Adds/removes nodes dynamically - Use cluster-autoscaler --nodes=1:10
 ```
 
+## k8s.cri.containerd
+
+```
+# for example, /containerd/blob/main/core/mount/temp.go
+```
+
+```
+# containerd.error.failed to remove mount temp dir
+# syslog
+```
+
+- https://github.com/containerd/containerd/blob/main/core/mount/temp.go: os.MkdirTemp(tempMountLocation, "containerd-mount"). Error("failed to remove mount temp dir")
+  
 ## Eviction Manager
 
 ```

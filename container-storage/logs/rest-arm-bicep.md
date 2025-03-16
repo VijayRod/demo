@@ -38,6 +38,10 @@ resource rg 'Microsoft.Resources/resourceGroups@2021-04-01' = {
 ```
 
 - https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/file
+- https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/scenarios-rbac: Common scenarios
+- https://learn.microsoft.com/en-us/azure/templates/microsoft.authorization/roleassignments?pivots=deployment-language-bicep#usage-examples: Usage examples on some pages
+- https://learn.microsoft.com/en-us/samples/browse/?expanded=azure&products=azure-resource-manager&languages=bicep
+- https://github.com/Azure/azure-quickstart-templates/blob/master/modules/Microsoft.ManagedIdentity/user-assigned-identity-role-assignment/1.0/main.bicep
 
 ```
 # Deploy a Bicep file with a parameter file to set up a resource group. Keep an eye on the targetScope

@@ -2,7 +2,7 @@
 
 
 ```
-# See the section on iperf3
+# See the section on iperf3, kube-proxy
 
 # coredns
 kubectl exec -it nginx -- nslookup kubernetes.default.svc.cluster.local # if the issue is connectivity to the API server. Otherwise, try combinations of FQDNs and (CoreDNS IPs, Azure virtual IP, custom DNS server IP, or public DNS IP 8.8.8.8), and test from the node instead of the pod whenever possible

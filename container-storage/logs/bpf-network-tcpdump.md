@@ -468,12 +468,28 @@ pktmon etl2pcap pktmon.etl # pktmon.pcapng (wireshark)
 - https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/pktmon
 - https://learn.microsoft.com/en-us/windows-server/networking/technologies/pktmon/pktmon: The tool is especially helpful in virtualization scenarios, like container networking and SDN, because it provides visibility within the networking stack
 
-## tcpdump.debug.Challenge-ACK
+## tcpdump.debug
+
+```
+# error.socket hang up
+# error: Error: socket hang up
+
+Do they have a keepalive mechanism in their app?
+How are they handling exceptions?
+Do they retry the request if it fails?
+Do we have a more detailed call stack from that node.js app? Just curious, but we won't be supporting it anyway...
+```
+
+- https://github.com/nodejs/node/blob/main/lib/_http_client.js: nodejs. emitErrorEvent(req, new ConnResetException('socket hang up'));
+
+```
+# rst.Challenge-ACK
+```
 
 - https://knowledgebase.paloaltonetworks.com/KCSArticleDetail?id=kA10g000000boBJCAY: Firewall dropping RST from Client after Server's Challenge-ACK. While dropping the out of window RST (in the Palo Alto firewall) is actually an intended behavior, it breaks the Challenge-ACK mechanism.
 - https://datatracker.ietf.org/doc/html/rfc5961#section-4: the handling of the SYN in the synchronized state SHOULD be performed as follows: 1) If the SYN bit is set, irrespective of the sequence number, TCP MUST send an ACK (also referred to as challenge ACK) to the remote peer
 - https://www.networkdefenseblog.com/post/wireshark-tcp-challenge-ack
-
+  
 ## tcpdump.debug.faqs
 
 - Frequently Asked Questions

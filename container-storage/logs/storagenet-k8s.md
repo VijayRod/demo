@@ -2,19 +2,6 @@
 # See the section on k8s-pv, k8s-csi and k8s-pod_state_ExitCode
 ```
 
-## k8s.cri.containerd
-
-```
-# for example, /containerd/blob/main/core/mount/temp.go
-```
-
-```
-# containerd.error.failed to remove mount temp dir
-# syslog
-```
-
-- https://github.com/containerd/containerd/blob/main/core/mount/temp.go: os.MkdirTemp(tempMountLocation, "containerd-mount"). Error("failed to remove mount temp dir")
-
 ## k8s.etcd
 
 ```

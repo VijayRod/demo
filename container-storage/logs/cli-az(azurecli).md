@@ -66,3 +66,26 @@ Use --debug for more information
 - https://github.com/azure/azure-cli/releases: for the most recent version of azure-cli and approximately when it became publicly available as an upgrade (in azure-cli).
 - https://github.com/MicrosoftDocs/azure-docs-cli/pulls?q=is%3Apr+is%3Aopen+release+note: PR detailing the fixes that have been included for the upcoming release
 - https://learn.microsoft.com/en-us/cli/azure/release-notes-azure-cli
+
+```
+# Initialize Azure PowerShell (admin window)
+Get-Module -ListAvailable Az # No rows if not installed
+Install-Module -Name Az -Scope CurrentUser -Repository PSGallery -Force # -AllowClobber
+Get-Module -ListAvailable Az
+
+# connect
+Import-Module Az
+Connect-AzAccount
+
+# connect.context
+Set-AzContext -SubscriptionId "<subscription-id>"
+Update-AzConfig -DefaultSubscriptionForLogin <subscription-id>
+
+# list subs
+Get-AzSubscription
+
+# list resource groups
+Get-AzResourceGroup | Format-Table -AutoSize
+```
+
+- https://learn.microsoft.com/en-us/powershell/azure/install-azure-powershell

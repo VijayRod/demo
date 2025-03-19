@@ -17,7 +17,7 @@ persistentvolumes                   pv                  v1                      
 - https://learn.microsoft.com/en-us/azure/aks/concepts-storage#persistent-volumes
 - https://github.com/container-storage-interface/spec/blob/master/spec.md#createvolume
 
-## pv.provision
+## pv.op.create
 
 ```
 # dynamic vs static PV
@@ -198,6 +198,71 @@ pvc-azuredisk   Bound         pv-azuredisk   20Gi       RWO            managed-c
 
 - https://learn.microsoft.com/en-us/azure/aks/azure-csi-disk-storage-provision#statically-provision-a-volume
 
+## pv.op.delete
+
+- https://kubernetes.io/docs/concepts/storage/persistent-volumes/#storage-object-in-use-protection: If a user deletes a PVC in active use by a Pod, the PVC is not removed immediately. PVC removal is postponed until the PVC is no longer actively used by any Pods. Also, if an admin deletes a PV that is bound to a PVC, the PV is not removed immediately. PV removal is postponed until the PV is no longer bound to a PVC.
+You can see that a PVC is protected when the PVC's status is Terminating and the Finalizers list includes kubernetes.io/pvc-protection
+You can see that a PV is protected when the PV's status is Terminating and the Finalizers list includes kubernetes.io/pv-protection too
+
+```
+# pv.delete.bound_pv.delete_pv
+# pv is stuck in a Terminating state, and the pod can continue writing to the volume
+# delete the po and pvc to remove this PV.
+
+kubectl get po,pv,pvc
+NAME                  READY   STATUS    RESTARTS   AGE
+pod/nginx-azuredisk   1/1     Running   0          30s
+NAME                                                        CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                       STORAGECLASS        VOLUMEATTRIBUTESCLASS   REASON   AGE
+persistentvolume/pvc-02f76403-276c-4c3b-afd4-eb5427153c3e   10Gi       RWO            Delete           Bound    default/pvc-azuredisk       managed-csi         <unset>                          28s
+NAME                                      STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS        VOLUMEATTRIBUTESCLASS   AGE
+persistentvolumeclaim/pvc-azuredisk       Bound    pvc-02f76403-276c-4c3b-afd4-eb5427153c3e   10Gi       RWO            managed-csi         <unset>                 32s
+
+k delete pv pvc-02f76403-276c-4c3b-afd4-eb5427153c3e
+persistentvolume "pvc-02f76403-276c-4c3b-afd4-eb5427153c3e" deleted
+^C
+
+kubectl get po,pv,pvc
+NAME                                       CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS        CLAIM                       STORAGECLASS        VOLUMEATTRIBUTESCLASS   REASON   AGE
+pvc-02f76403-276c-4c3b-afd4-eb5427153c3e   10Gi       RWO            Delete           Terminating   default/pvc-azuredisk       managed-csi         <unset>                          90s
+NAME                STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS        VOLUMEATTRIBUTESCLASS   AGE
+pvc-azuredisk       Bound    pvc-02f76403-276c-4c3b-afd4-eb5427153c3e   10Gi       RWO            managed-csi         <unset>                 2m33s
+
+k exec -it nginx-azuredisk -- touch /mnt/azuredisk/testfile
+k exec -it nginx-azuredisk -- ls /mnt/azuredisk # lost+found  outfile  testfile
+```
+
+```
+# pod is in a pending state with FailedAttachVolume PersistentVolume "is marked for deletion"
+# This issue can occur after an earlier PV delete attempt where the pod remains in the Running state. However, after a cluster upgrade and the restore from etcd, or for static PVs or stateful pods, the PV stays the same in these cases
+ Warning  FailedAttachVolume  204s (x11 over 25m)  attachdetach-controller  AttachVolume.Attach failed for volume "pvc-11111" : PersistentVolume "pvc-11111" is marked for deletion
+```
+
+```
+# pv.delete.bound_pv.delete_pvc
+# pvc is stuck in Terminating state
+# delete the po to delete this PV.
+
+kubectl get po,pv,pvc
+NAME                  READY   STATUS    RESTARTS   AGE
+pod/nginx-azuredisk   1/1     Running   0          30s
+NAME                                                        CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                   STORAGECLASS   VOLUMEATTRIBUTESCLASS   REASON   AGE
+persistentvolume/pvc-71859231-bc2f-4506-86aa-32c8241e7338   10Gi       RWO            Delete           Bound    default/pvc-azuredisk   managed-csi    <unset>                          27s
+NAME                                  STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   VOLUMEATTRIBUTESCLASS   AGE
+persistentvolumeclaim/pvc-azuredisk   Bound    pvc-71859231-bc2f-4506-86aa-32c8241e7338   10Gi       RWO            managed-csi    <unset>                 31s
+
+k delete pvc pvc-azuredisk
+persistentvolumeclaim "pvc-azuredisk" deleted
+^C
+
+k get po,pv,pvc
+NAME                  READY   STATUS    RESTARTS   AGE
+pod/nginx-azuredisk   1/1     Running   0          56s
+NAME                                                        CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                   STORAGECLASS   VOLUMEATTRIBUTESCLASS   REASON   AGE
+persistentvolume/pvc-71859231-bc2f-4506-86aa-32c8241e7338   10Gi       RWO            Delete           Bound    default/pvc-azuredisk   managed-csi    <unset>                          53s
+NAME                                  STATUS        VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   VOLUMEATTRIBUTESCLASS   AGE
+persistentvolumeclaim/pvc-azuredisk   Terminating   pvc-71859231-bc2f-4506-86aa-32c8241e7338   10Gi       RWO            managed-csi    <unset>                 57s
+```
+
 ## pv.reclaimPolicy (persistentVolumeReclaimPolicy)
 
 ```
@@ -241,9 +306,11 @@ Finalizers:      [kubernetes.io/pv-protection external-provisioner.volume.kubern
 		// plugin was enabled.
 		return c.addFinalizer(ctx, pv)
 
-## pv.status.bound
+## pv.status
 
 ```
+# pv.status.bound
+
 storageclass.volumeBindingMode
 ```
 

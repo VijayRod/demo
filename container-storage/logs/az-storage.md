@@ -10,6 +10,7 @@ az storage account create -g $rg -n $storage
 az storage account list -g $rg
 
 storageId=$(az storage account show -g $rg -n $storage --query id -otsv); echo $storageId
+# /subscriptions/redacts-1111-1111-1111-111111111111/resourceGroups/rg/providers/Microsoft.Storage/storageAccounts/storage1919215345
 ```
 
 ## az-storage.api

@@ -145,3 +145,72 @@ go run main.go # Resource Group criado com sucesso: MeuResourceGroup
 
 - https://marketplace.visualstudio.com/items?itemName=golang.go
 - https://github.com/Azure/azure-sdk-for-go/tree/main?tab=readme-ov-file#packages-available: Each service can have both 'client' and 'management' modules. 'Client' modules are used to consume the service, whereas 'management' modules are used to configure and manage the service.
+
+
+```
+# go.sdk.azure-sdk-for-go.sample.azblob
+
+# Add a blob file to Azure Blob Storage
+rg=rg
+az group create -g $rg -l $loc
+storage="storage$RANDOM$RANDOM"; echo $storage
+az storage account create -g $rg -n $storage
+storageId=$(az storage account show -g $rg -n $storage --query id -otsv); echo $storageId
+az storage container create --name backups --account-name $storage --auth-mode login
+# upload a sample file to the blob container
+
+# A sample
+
+package main
+
+import (
+	"context"
+	"fmt"
+	"log"
+
+	"github.com/Azure/azure-sdk-for-go/sdk/azidentity"
+	"github.com/Azure/azure-sdk-for-go/sdk/storage/azblob"
+)
+
+func main() {
+	accountName := "storage1919215345"
+	containerName := "backups"
+
+	// Criar DefaultAzureCredential
+	cred, err := azidentity.NewDefaultAzureCredential(nil)
+	if err != nil {
+		log.Fatalf("Erro ao criar credenciais: %v", err)
+	}
+
+	// Criar URL do serviço Blob
+	serviceURL := fmt.Sprintf("https://%s.blob.core.windows.net/", accountName)
+	client, err := azblob.NewClient(serviceURL, cred, nil)
+	if err != nil {
+		log.Fatalf("Erro ao criar cliente: %v", err)
+	}
+
+	// Listar blobs no container
+	pager := client.NewListBlobsFlatPager(containerName, nil)
+	fmt.Println("Blobs encontrados:")
+	for pager.More() {
+		resp, err := pager.NextPage(context.TODO())
+		if err != nil {
+			log.Fatalf("Erro ao listar blobs: %v", err)
+		}
+		for _, blob := range resp.Segment.BlobItems {
+			fmt.Println(" -", *blob.Name)
+		}
+	}
+}
+
+# Azure CloudShell
+mkdir azblob-go-test
+cd azblob-go-test
+# Upload main.go (Update the storage account and container name)
+copy /home/vijay/main.go .; dir
+go mod init azblob-test
+go get github.com/Azure/azure-sdk-for-go/sdk/storage/azblob
+go get github.com/Azure/azure-sdk-for-go/sdk/azidentity
+go run main.go # (tbd) AuthorizationPermissionMismatch
+# (tbd) az role assignment create --assignee myemail --role "Storage Blob Data Contributor" --scope /subscriptions/redacts-1111-1111-1111-111111111111/resourceGroups/rg/providers/Microsoft.Storage/storageAccounts/storage1919215345
+```

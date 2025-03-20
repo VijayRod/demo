@@ -48,7 +48,14 @@ curl openai.com -v
 ## rest.api.app.bruno
 
 ```
-# Windows, Bruno install: Create Collection, then proceed to create a New Request using GET https://example.com/test.txt, and then run it
+# Windows, Bruno install
+
+# app configuration
+Mode = Developer Mode
+Collection, Preferences, General = uncheck "SSL/TLS Certificate Verification"
+
+# app usage
+Create Collection, then proceed to create a New Request using GET https://example.com/test.txt, and then run it
 ```
 
 - https://docs.usebruno.com/scripting/getting-started

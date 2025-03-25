@@ -2,6 +2,7 @@
 
 ```
 # See the section on container logs
+# Refer to CNI - pod-to-pod traffic between nodes
 
 akscal
 cat /var/run/azure-vnet.json
@@ -664,3 +665,74 @@ for i in {2..100}; do az aks nodepool delete -g $rg --cluster-name aks -n nodepo
 - https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/connectivity/insufficientsubnetsize-error-advanced-networking
 - https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/create-upgrade-delete/error-code-subnetisfull-upgrade
 - https://github.com/Azure/aks-engine/blob/master/examples/largeclusters/README.md
+
+## k8s-cni.azure.traffic
+
+```
+# cni.azure.pod-to-pod traffic between nodes
+# no NAT, enable IP forwarding, route table (likely a VFP configuration if not found, tbd for azure-cni)
+
+kubectl get no -owide; kubectl get po -owide
+kubectl delete po nginx; kubectl run nginx --image=nginx --overrides='{"spec": { "nodeSelector": {"kubernetes.io/hostname": "aks-nodepool1-60478455-vmss000000"}}}'
+kubectl delete po nginx2; kubectl run nginx2 --image=nginx --overrides='{"spec": { "nodeSelector": {"kubernetes.io/hostname": "aks-nodepool1-60478455-vmss000001"}}}'
+kubectl exec -it nginx -- curl -I http://10.224.0.31
+
+# --network-plugin azure (tbd likely the same for --network-plugin kubenet and --network-plugin azure --network-plugin-mode overlay)
+## source: pod (10.224.0.45)
+## destination: pod (10.224.0.31)
+## wireshark
+2995	2025-03-24 18:16:02.899163	10.224.0.45	10.224.0.31	TCP	TCP	80	0x0df6 (3574)	37808 ? 80 [SYN] Seq=0 Win=64240 Len=0 MSS=1460 SACK_PERM TSval=1120769543 TSecr=0 WS=128
+3001	2025-03-24 18:16:02.927440	10.224.0.31	10.224.0.45	TCP	TCP	80	0x0000 (0)	80 ? 37808 [SYN, ACK] Seq=0 Ack=1 Win=65160 Len=0 MSS=1410 SACK_PERM TSval=3543942995 TSecr=1120769543 WS=128
+3004	2025-03-24 18:16:02.927495	10.224.0.45	10.224.0.31	TCP	TCP	72	0x0df7 (3575)	37808 ? 80 [ACK] Seq=1 Ack=1 Win=64256 Len=0 TSval=1120769572 TSecr=3543942995
+3007	2025-03-24 18:16:02.927570	10.224.0.45	10.224.0.31	HTTP	TCP	148	0x0df8 (3576)	HEAD / HTTP/1.1 
+3010	2025-03-24 18:16:02.927642	10.224.0.31	10.224.0.45	TCP	TCP	72	0x89a8 (35240)	80 ? 37808 [ACK] Seq=1 Ack=77 Win=65152 Len=0 TSval=3543943008 TSecr=1120769572
+3013	2025-03-24 18:16:02.927738	10.224.0.31	10.224.0.45	TCP	TCP	310	0x89a9 (35241)	80 ? 37808 [PSH, ACK] Seq=1 Ack=77 Win=65152 Len=238 TSval=3543943008 TSecr=1120769572
+3016	2025-03-24 18:16:02.927748	10.224.0.45	10.224.0.31	TCP	TCP	72	0x0df9 (3577)	37808 ? 80 [ACK] Seq=77 Ack=239 Win=64128 Len=0 TSval=1120769572 TSecr=3543943008
+3019	2025-03-24 18:16:02.927939	10.224.0.45	10.224.0.31	TCP	TCP	72	0x0dfa (3578)	37808 ? 80 [FIN, ACK] Seq=77 Ack=239 Win=64128 Len=0 TSval=1120769572 TSecr=3543943008
+3026	2025-03-24 18:16:02.928043	10.224.0.31	10.224.0.45	TCP	TCP	72	0x89aa (35242)	80 ? 37808 [FIN, ACK] Seq=239 Ack=78 Win=65152 Len=0 TSval=3543943008 TSecr=1120769572
+3030	2025-03-24 18:16:02.928058	10.224.0.45	10.224.0.31	TCP	TCP	72	0x0dfb (3579)	37808 ? 80 [ACK] Seq=78 Ack=240 Win=64128 Len=0 TSval=1120769572 TSecr=3543943008
+## tcpdump destinationPodIp
+aks-nodepool1-31795678-vmss000001:/# tcpdump host 10.244.0.8
+tcpdump: verbose output suppressed, use -v[v]... for full protocol decode
+listening on eth0, link-type EN10MB (Ethernet), snapshot length 262144 bytes
+^C18:28:21.294495 IP 10.244.2.4.54450 > 10.244.0.8.http: Flags [S], seq 1339508035, win 64240, options [mss 1418,sackOK,TS val 2685917755 ecr 0,nop,wscale 7], length 0
+18:28:21.294591 IP 10.244.0.8.http > 10.244.2.4.54450: Flags [S.], seq 2306304410, ack 1339508036, win 65160, options [mss 1460,sackOK,TS val 1239010359 ecr 2685917755,nop,wscale 7], length 0
+18:28:21.294891 IP 10.244.2.4.54450 > 10.244.0.8.http: Flags [.], ack 1, win 502, options [nop,nop,TS val 2685917756 ecr 1239010359], length 0
+18:28:21.295812 IP 10.244.2.4.54450 > 10.244.0.8.http: Flags [P.], seq 1:76, ack 1, win 502, options [nop,nop,TS val 2685917757 ecr 1239010359], length 75: HTTP: HEAD / HTTP/1.1
+18:28:21.295839 IP 10.244.0.8.http > 10.244.2.4.54450: Flags [.], ack 76, win 509, options [nop,nop,TS val 1239010361 ecr 2685917757], length 0
+18:28:21.296005 IP 10.244.0.8.http > 10.244.2.4.54450: Flags [P.], seq 1:239, ack 76, win 509, options [nop,nop,TS val 1239010361 ecr 2685917757], length 238: HTTP: HTTP/1.1 200 OK
+18:28:21.296103 IP 10.244.2.4.54450 > 10.244.0.8.http: Flags [.], ack 239, win 501, options [nop,nop,TS val 2685917757 ecr 1239010361], length 0
+18:28:21.299914 IP 10.244.2.4.54450 > 10.244.0.8.http: Flags [F.], seq 76, ack 239, win 501, options [nop,nop,TS val 2685917761 ecr 1239010361], length 0
+18:28:21.300066 IP 10.244.0.8.http > 10.244.2.4.54450: Flags [F.], seq 239, ack 77, win 509, options [nop,nop,TS val 1239010365 ecr 2685917761], length 0
+18:28:21.300185 IP 10.244.2.4.54450 > 10.244.0.8.http: Flags [.], ack 240, win 501, options [nop,nop,TS val 2685917761 ecr 1239010365], length 0
+```
+
+```
+## enableIPForwarding, route table
+--network-plugin azure
+az vmss nic show -g MC_rg_akscni_swedencentral --vmss-name aks-nodepool1-60478455-vmss -n aks-nodepool1-60478455-vmss --instance-id 0 --query enableIPForwarding # false
+az resource list -g MC_rg_akscni_swedencentral -otable # no route table
+--network-plugin kubenet
+az vmss nic show -g MC_rg_akskube_swedencentral --vmss-name aks-nodepool1-31795678-vmss -n aks-nodepool1-31795678-vmss --instance-id 0 --query enableIPForwarding # true
+az resource list -g MC_rg_akskube_swedencentral -otable # aks-agentpool-12544801-routetable
+--network-plugin azure --network-plugin-mode overlay
+az vmss nic show -g MC_rg_akscnioverlay_swedencentral --vmss-name aks-nodepool1-17217300-vmss -n aks-nodepool1-17217300-vmss --instance-id 0 --query enableIPForwarding # true
+az resource list -g MC_rg_akscnioverlay_swedencentral -otable # no route table
+```
+
+```
+## other
+ip route show
+iptables -L -t nat
+ip -d link show
+tcpdump -i any port 4789 -nn
+```
+
+- https://learn.microsoft.com/en-us/azure/aks/azure-cni-overlay?tabs=kubectl: A separate routing domain is created in the Azure Networking stack for the pod's private CIDR space, which creates an Overlay network for direct communication between pods. There's no need to provision custom routes on the cluster subnet or use an encapsulation method to tunnel traffic between pods
+
+```
+# cni.azure.pod-to-external traffic
+# NAT
+```
+
+- https://learn.microsoft.com/en-us/azure/aks/azure-cni-overlay?tabs=kubectl: Network Address Translation (NAT) uses the node's IP address to reach resources outside the cluster.

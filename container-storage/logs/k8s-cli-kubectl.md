@@ -19,7 +19,7 @@ sudo az aks install-cli
 
 - https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/connectivity/config-file-is-not-available-when-connecting: The az aks get-credentials command in Azure CLI, which is used to get access credentials for a managed Kubernetes cluster, modifies the ~/.kube/config file. The kubectl command uses the kubeconfig (kubectl configuration) file in the $HOME/.kube directory. C:\Users\A\.kube\config file.
 
-## kubectl.spec.discovery/memcache
+## kubectl.spec..discovery/memcache
 ```
 # stopped the cluster
 
@@ -228,6 +228,46 @@ curl --header "Authorization: Bearer $token" https://$fqdn -k # ok
 ```
 
 - https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/#manually-create-an-api-token-for-a-serviceaccount
+
+```
+# Refer to serviceAccountToken
+kubectl create token <service-account-name> --duration=12h
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: my-pod
+spec:
+  serviceAccountName: my-service-account
+  containers:
+  - name: my-container
+    image: my-image
+    volumeMounts:
+    - name: token-volume
+      mountPath: /var/run/secrets/tokens
+      readOnly: true
+  volumes:
+  - name: token-volume
+    projected:
+      sources:
+      - serviceAccountToken:
+          path: token
+          expirationSeconds: 43200  # 12 hours
+```
+
+```
+# token.apiserver.service-account-extend-token-expiration
+```
+
+- https://kubernetes.io/docs/reference/command-line-tools-reference/kube-apiserver/: --service-account-extend-token-expiration     Default: true
+
+```
+# token.volume.serviceAccountToken
+# Refer to kubectl create token <service-account-name>
+```
+
+- https://kubernetes.io/docs/reference/access-authn-authz/service-accounts-admin/: A token served for a TokenRequest expires either when the pod is deleted or after a defined lifespan (by default, that is 1 hour). 
+  The kubelet also refreshes that token before the token expires. The token is bound to the specific Pod and has the kube-apiserver as its audience. This mechanism superseded an earlier mechanism that added a volume based on a Secret, where the Secret represented the ServiceAccount for the Pod, but did not expire.
   
 ## kubectl.spec.output
 

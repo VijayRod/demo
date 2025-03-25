@@ -10,6 +10,28 @@ az ssh vm -g $rgname -n $vm
 
 - https://learn.microsoft.com/en-us/cli/azure/ssh
 
+## ssh.spec.other.bash
+
+```
+# manually copy ssh creds from one system to another
+
+# source
+ls -l ~/.ssh/
+cat ~/.ssh/id_rsa
+cat ~/.ssh/id_rsa.pub
+
+# destination
+mkdir ~/.ssh/
+cat EOF > ~/.ssh/id_rsa
+-----BEGIN RSA PRIVATE KEY-----
+content==
+-----END RSA PRIVATE KEY-----
+EOF
+cat EOF > ~/.ssh/id_rsa.pub
+ssh-rsa content
+EOF
+```
+
 ## ssh.spec.other.keys
 
 ```

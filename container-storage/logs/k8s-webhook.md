@@ -22,6 +22,12 @@ aks-node-validating-webhook   1          2d13h
 - https://learn.microsoft.com/en-us/azure/aks/faq: admission controllers
 - https://learn.microsoft.com/en-us/azure/architecture/operator-guides/aks/aks-triage-controllers
 
+## webhook.create
+
+- tbd https://github.com/alex-leonhardt/k8s-mutate-webhook/blob/master/cmd/main.go
+- tbd https://mycloudjourney.medium.com/what-is-mutatingwebhook-in-kubernetes-a62f79598ecb (in yaml and in go)
+- tbd https://github.com/alex-leonhardt/k8s-mutate-webhook/blob/master/pkg/mutate/mutate.go
+
 ## webhook.disable
 
 - https://discuss.elastic.co/t/can-i-disable-the-webhook/226113: the easiest way to disable the webhook is to remove its configuration from Kubernetes: kubectl delete validatingwebhookconfiguration. If you want to re-enable it later, just reapply ECK yaml manifests.

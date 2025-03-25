@@ -176,7 +176,8 @@ strace: Process 8302 attached with 5 threads
 - https://github.com/Azure/azure-storage-fuse/issues/1114#issuecomment-1635272833: limit in config file, its not a hard limit... log_debug
 
 ```
-# data.corruption
+# blobfuse2.data.corruption
+# The data path does not go through the CSI driver; the storage team is appropriate.
 ```
 - https://github.com/Azure/azure-storage-fuse?tab=readme-ov-file#about: it is recommended that multiple clients do not modify the same blob/file simultaneously to ensure data integrity. Blobfuse2 does not guarantee continuous synchronization of data written to the same blob/file using multiple clients or across multiple mounts of Blobfuse2 concurrently.
 - https://learn.microsoft.com/en-us/azure/storage/blobs/blobfuse2-what-is#data-integrity: For data integrity, we recommend that multiple sources don't modify the same blob, especially at the same time...

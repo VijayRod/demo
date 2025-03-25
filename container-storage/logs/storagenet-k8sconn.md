@@ -40,7 +40,11 @@ kubectl get nnc <node-name> -n kube-system -o yaml
 # the azure-vnet files are applicable if using azure-cni
 ```
 
+- https://github.com/sturrent/aks-node-outbound-check/blob/main/outbound-check.sh
+
 ```
+# conn.node.interface
+
 root@aks-nodepool1-24567707-vmss00000A:/# cat /etc/sysctl.d/999-sysctl-aks.conf
 # This is a partial workaround to this upstream Kubernetes issue:
 # https://github.com/kubernetes/kubernetes/issues/41916#issuecomment-312428731

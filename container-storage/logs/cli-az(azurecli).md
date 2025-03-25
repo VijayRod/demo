@@ -24,6 +24,7 @@ az account show -s $subId --query isDefault
 # login - tenant
 az account tenant list
 az login -t redactt-1111-1111-1111-111111111111 # --use-device-code # tenant ID
+az login -t redactt-1111-1111-1111-111111111111 --debug --verbose # msal.oauth2cli.authcode: Open a browser on this device to visit: https:...
 
 # query
 az aks show -g $rg -n aks --query nodeResourceGroup -o tsv # MC_rgredis12_aks_swedencentral

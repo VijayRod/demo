@@ -285,6 +285,13 @@ I1015 11:31:13.209240       1 utils.go:102] GRPC request: {"staging_target_path"
 - https://github.com/kubernetes-csi/external-provisioner: The external-provisioner is a sidecar container that dynamically provisions volumes by calling CreateVolume and DeleteVolume functions of CSI drivers. It is necessary because internal persistent volume controller running in Kubernetes controller-manager does not have any direct interfaces to CSI drivers.
 - https://kubernetes.io/docs/concepts/storage/storage-classes/#provisioner: You can also run and specify external provisioners, which are independent programs that follow a specification defined by Kubernetes. Authors of external provisioners have full discretion over where their code lives, how the provisioner is shipped, how it needs to be run, what volume plugin it uses (including Flex), etc. The repository kubernetes-sigs/sig-storage-lib-external-provisioner houses a library for writing external provisioners that implements the bulk of the specification. Some external provisioners are listed under the repository kubernetes-sigs/sig-storage-lib-external-provisioner.
 
+## k8s-csi.datapath
+
+```
+# data.corruption
+# the data path does not go through the CSI driver. The storage team is appropriate for this issue, which lies between the driver (blobfuse2, cifs) and storage.
+```
+
 ## k8s-csi.error.GetDiskLun.Cannot find Lun for disk
 
 ```

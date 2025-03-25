@@ -5,6 +5,10 @@
 - https://learn.microsoft.com/en-us/azure/storage/blobs/blobfuse2-commands-mount#flags-that-apply-only-to-the-blobfuse2-mount-command
 - https://github.com/Azure/azure-storage-fuse/blob/main/setup/baseConfig.yaml
 - https://github.com/Azure/azure-storage-fuse/blob/main/cmd/mountv1.go
+- https://learn.microsoft.com/en-us/azure/storage/blobs/blobfuse2-commands-mount
+- https://github.com/Azure/azure-storage-fuse/blob/main/README.md#frequently-asked-questions
+- https://github.com/Azure/azure-storage-fuse#cli-parameters
+- https://learn.microsoft.com/en-us/azure/storage/blobs/blobfuse2-how-to-deploy
 
 ## blobfuse.app.k8s.csi.azureblob
 
@@ -167,7 +171,19 @@ strace: Process 8302 attached with 5 threads
 ```
 
 - https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/storage/mounting-azure-blob-storage-container-fail#cause1-for-blobfuse-error3: Destination port: 443 (if using BlobFuse)
+- https://techcommunity.microsoft.com/blog/azurepaasblog/how-to-troubleshoot-blobfuse2-issues/4110844
+- https://github.com/Azure/azure-storage-fuse/issues/1114#issuecomment-1633704535: files remain forever in your disk cache...
+- https://github.com/Azure/azure-storage-fuse/issues/1114#issuecomment-1635272833: limit in config file, its not a hard limit... log_debug
 
+```
+# data.corruption
+```
+- https://github.com/Azure/azure-storage-fuse?tab=readme-ov-file#about: it is recommended that multiple clients do not modify the same blob/file simultaneously to ensure data integrity. Blobfuse2 does not guarantee continuous synchronization of data written to the same blob/file using multiple clients or across multiple mounts of Blobfuse2 concurrently.
+- https://learn.microsoft.com/en-us/azure/storage/blobs/blobfuse2-what-is#data-integrity: For data integrity, we recommend that multiple sources don't modify the same blob, especially at the same time...
+- https://github.com/Azure/azure-storage-fuse/issues/1512#issuecomment-2322778169: direct-io: true. set file cache timeout to 0. ...direct-io is the recommendation when multiple readers/writers are involved. ...enable direct-io to bypass kernel cache and disable caching (both attribute and file cache) in blobfuse.
+- https://github.com/Azure/azure-storage-fuse/issues/1512#issuecomment-2342481655: If file-cahe and attribute-cache are enabled then 'direct-io' is nullified
+- https://github.com/Azure/azure-storage-fuse/issues/1512#issuecomment-2339899291: one file on one server only, then attribute and kernel cache (using direct-io) can be disabled. Content cache (or file cache) can be enabled
+  
 ## blobfuse.app.k8s.csi.azureblob.driver.parameter
 - https://github.com/kubernetes-sigs/blob-csi-driver/blob/master/docs/driver-parameters.md
 - https://learn.microsoft.com/en-us/azure/aks/azure-csi-blob-storage-provision?tabs=mount-nfs%2Csecret#storage-class-parameters-for-dynamic-persistent-volumes

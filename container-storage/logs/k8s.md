@@ -4,6 +4,8 @@
 - https://book.kubebuilder.io/reference/using-finalizers.html
 - https://kubebyexample.com/learning-paths/operator-framework/kubernetes-api-fundamentals/finalizers
 - https://github.com/shubheksha/kubernetes-internals
+- https://github.com/jamiehannaford/what-happens-when-k8s
+- https://devopswithkubernetes.com/part-5/1-kubernetes-internals
 
 ## k8s.spec.addons
 - https://kubernetes.io/docs/concepts/overview/components/#addons

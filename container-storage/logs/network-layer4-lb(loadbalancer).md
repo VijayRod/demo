@@ -147,6 +147,8 @@ az network lb list -g $noderg
 ]
 ```
 
+- https://cloud-provider-azure.sigs.k8s.io/topics/loadbalancer/
+
 ## lb.spec.FastPath
 
 - https://documents.uow.edu.au/~blane/netapp/ontap/nag/networking/concept/c_oc_netw_routing_understanding_fastpath.html: Using fast path provides the following advantages: Load balancing between multiple storage system interfaces on the same subnet. Load balancing is achieved by sending responses on the same interface of your storage system that receive incoming requests. Increased storage system performance by skipping routing table lookups.

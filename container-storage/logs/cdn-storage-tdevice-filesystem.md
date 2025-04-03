@@ -25,6 +25,26 @@ nvme0n1
 - https://www.codecademy.com/courses/fundamentals-of-operating-systems/lessons/os-filesystems/exercises/introduction-to-filesystems (click on the Syllabus link for more pages)
 - https://www.codecademy.com/learn/fundamentals-of-operating-systems/modules/os-filesystems/cheatsheet
 
+> ## storage.SCSI.device.type.disk.filesystem.error.ReadonlyFilesystem
+
+```
+# ReadonlyFilesystem
+# aka FilesystemIsReadOnly
+# Check out the node syslog
+# If the issue persists and there is no syslog, or if you need to find the volume mapping (e.g., for sdc, which is the data disk), obtain the output of the mount command on the node.
+
+kubectl describe no 
+Conditions:
+  Type                          Status  LastHeartbeatTime                 LastTransitionTime                Reason                          Message
+  ----                          ------  -----------------                 ------------------                ------                          -------
+  ReadonlyFilesystem            False   Thu, 23 Nov 2023 19:02:02 +0000   Thu, 23 Nov 2023 18:11:19 +0000   FilesystemIsNotReadOnly         Filesystem is not read-only
+
+# https://bbs.archlinux.org/viewtopic.php?id=175948
+[  283.365317] JBD2: Error -5 detected when updating journal superblock for sdb1-8. # error when updating journal
+[  313.114350] end_request: I/O error, dev sdb, sector 352389680 # I/O error
+[  313.123970] EXT4-fs (sdb1): Remounting filesystem read-only # sdb1
+```
+
 ## storage.SCSI.device.type.disk.filesystem.type.fat
 
 ```

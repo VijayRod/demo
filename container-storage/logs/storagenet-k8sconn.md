@@ -6,6 +6,7 @@
 # Refer to CNI - pod-to-pod traffic between nodes
 
 # coredns
+# https://learn.microsoft.com/en-us/azure/aks/coredns-custom#enable-dns-query-logging
 kubectl exec -it nginx -- nslookup kubernetes.default.svc.cluster.local # if the issue is connectivity to the API server. Otherwise, try combinations of FQDNs and (CoreDNS IPs, Azure virtual IP, custom DNS server IP, or public DNS IP 8.8.8.8), and test from the node instead of the pod whenever possible
 kubectl logs -n kube-system -l k8s-app=kube-dns # if "nslookup kubernetes.default.svc.cluster.local" fails
 
@@ -111,6 +112,28 @@ TX:             170
 ```
 
 - https://github.com/kubernetes/kubernetes/issues/41916#issuecomment-312428731: net.ipv4.tcp_keepalive_time
+
+```
+# conn.pod
+# cat /etc/hosts
+kind: Pod
+spec:
+  dnsConfig:
+    nameservers:
+    - 8.8.8.8
+  dnsPolicy: None
+```
+
+```
+# conn.vnet
+az network vnet show
+  "dhcpOptions": {
+    "dnsServers": [
+      "8.8.8.8",
+      "8.8.4.4"
+    ]
+  },
+```
 
 ## conn.apiserver
 

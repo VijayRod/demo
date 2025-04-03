@@ -197,8 +197,14 @@ kubectl get no -o yaml | grep 83275555c84a4 -B 1000 | grep hostname
   - OS disk - SCSI /dev/sda, NVMe /dev/nvme0n1
   - Temp Disk - SCSI /dev/sdb, NVMe /dev/sda
   - First Data Disk - SCSI /dev/sdc, NVMe /dev/nvme0n2
-    
-## storage.SCSI.device.type.disk.type.ephemeraldisk-os
+- https://learn.microsoft.com/en-us/azure/virtual-machines/managed-disks-overview#os-disk
+  
+## storage.SCSI.device.type.disk.type.os.data (datadisk)
+
+```
+```
+
+## storage.SCSI.device.type.disk.type.os.ephemeraldisk-os
 
 Here are the commands to create a cluster with an ephemeral OS disk.
 
@@ -238,7 +244,7 @@ az vm get-instance-view -g $rg -n vm
 
 - [virtual-machines/ephemeral-os-disks](https://learn.microsoft.com/en-us/azure/virtual-machines/ephemeral-os-disks).
 
-## storage.SCSI.device.type.disk.type.ephemeraldisk-os.iops
+## storage.SCSI.device.type.disk.type.os.ephemeraldisk-os.iops
 
 Here are the commands to benchmark the available IOPS.
 
@@ -303,7 +309,7 @@ spec:
 EOF
 ```
 
-## storage.SCSI.device.type.disk.type.temp
+## storage.SCSI.device.type.disk.type.temp (tempdisk)
 
 ```
 # See the section on host node cache
@@ -318,7 +324,8 @@ EOF
 - https://learn.microsoft.com/en-us/azure/azure-sql/virtual-machines/windows/performance-guidelines-best-practices-storage?view=azuresql#cached-and-temp-storage-throughput: locally attached SSD. The temp drive (D:\ drive) within the VM is also hosted on this local SSD.
 - https://learn.microsoft.com/en-us/azure/azure-sql/virtual-machines/windows/performance-guidelines-best-practices-storage?view=azuresql#cached-and-temp-storage-throughput: The Azure BlobCache consists of a combination of the VM host's random-access memory and locally attached SSD. The temp drive (D:\ drive) within the VM is also hosted on this local SSD.
   - The max cached and temp storage throughput limit governs the I/O against the local temp drive (D:\ drive) and the Azure BlobCache only if host caching is enabled.
-
+- https://learn.microsoft.com/en-us/azure/virtual-machines/managed-disks-overview#temporary-disk
+  
 ## storage.SCSI.device.type.disk.type.temp.k8s.csi
 
 - https://learn.microsoft.com/en-us/azure/storage/container-storage/use-container-storage-with-temp-ssd

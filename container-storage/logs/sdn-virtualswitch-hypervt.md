@@ -48,6 +48,11 @@ cat: /dev/vmbus/hv_kvp: Device or resource busy
 
 - https://learn.microsoft.com/en-us/windows-server/networking/technologies/pktmon/pktmon#overview: extended networking stack now includes components like the Virtual Switch that handle packet processing and switching.
 
+## hyperv.VMBus.child-partition[].IntegrationServices.VSC.storvsc
+
+- https://github.com/torvalds/linux/blob/master/drivers/scsi/storvsc_drv.c
+- https://stackoverflow.com/questions/27830812/when-installing-ubuntu-on-hyper-v-disk-becomes-read-only: storvsc driver with ext4 file systems, with SCSI WRITE_SAME command
+
 # hyperv.VMBus.child-partition[].kvp
 
 - * https://learn.microsoft.com/en-us/virtualization/hyper-v-on-windows/reference/integration-services#hyper-v-data-exchange-service-kvp: Windows Service Name: vmickvpexchange. Linux Daemon Name: hv_kvp_daemon
@@ -85,3 +90,7 @@ cat: /dev/vmbus/hv_kvp: Device or resource busy
   - There can only be four VSPs running on a Hyper-V Server in the Parent Partition, but there could be multiple VSCs running on the same Hyper-V Server as part of the child partitions (four in each child partition).
   - VSPs are multithreading components that are running as part of the VMMS.exe and can serve multiple VSCs requests simultaneously.
 - https://techcommunity.microsoft.com/blog/coreinfrastructureandsecurityblog/hyper-v-integration-services-where-are-we-today/259554: Services running in the Guest/Host
+
+## hyperv.VMBus.parent-partition.VSP.StorVSP
+
+- https://sensepost.com/blog/2020/let-me-store-that-for-you/: Hyper-V STORVSP stands for ‘Storage Virtual Service Provider’...

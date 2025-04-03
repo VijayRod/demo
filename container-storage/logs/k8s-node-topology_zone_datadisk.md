@@ -44,6 +44,73 @@ Provisioner:           disk.csi.azure.com
 - https://learn.microsoft.com/en-us/azure/virtual-machines/disks-redundancy
 - https://learn.microsoft.com/en-us/azure/aks/aks-zone-resiliency#make-your-storage-disk-decision
 
+```
+```
+
+- https://learn.microsoft.com/en-us/azure/virtual-machines/managed-disks-overview#data-disk: Data disks are registered as SCSI drives and are labeled with a letter that you choose
+- https://learn.microsoft.com/en-us/azure/virtual-machines/disks-scalability-targets: For optimal performance, limit the number of highly utilized disks attached to the virtual machine to avoid possible throttling. If all attached disks aren't highly utilized at the same time, the virtual machine can support a larger number of disks.
+
+> ## datadisk.error.MaxVolumeCountExceeded
+
+```
+clear
+kubectl delete pvc --all
+kubectl delete pod --all
+rm /tmp/pods.yaml
+for i in $(seq -f "%03g" 1 30)
+do
+cat <<EOF >> /tmp/pods.yaml
+# cat << EOF | kubectl create -f -
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvc-azuredisk$i
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: managed-csi-premium
+---
+kind: Pod
+apiVersion: v1
+metadata:
+  name: nginx-azuredisk$i
+spec:
+  nodeSelector:
+    kubernetes.io/hostname: aks-nodepool1-37603350-vmss000002 #
+  containers:
+    - image: nginx
+      name: nginx-azuredisk
+      volumeMounts:
+        - name: azuredisk01
+          mountPath: /mnt/azuredisk
+  volumes:
+    - name: azuredisk01
+      persistentVolumeClaim:
+        claimName: pvc-azuredisk$i
+EOF
+done
+# cat /tmp/pods.yaml
+kubectl create -f /tmp/pods.yaml
+date
+kubectl get po -w
+kubectl get po,pv,pvc
+kubectl describe po | grep Events -A 20
+
+Events:
+  Type     Reason            Age   From               Message
+  ----     ------            ----  ----               -------
+  Warning  FailedScheduling  55s   default-scheduler  0/2 nodes are available: 1 node(s) didn't match Pod's node affinity/selector, 1 node(s) exceed max volume count. preemption: 0/2 nodes are available: 1 No preemption victims found for incoming pod, 1 Preemption is not helpful for scheduling.
+```
+
+- https://github.com/kubernetes/kubernetes/blob/master/pkg/scheduler/framework/plugins/nodevolumelimits/csi.go: // ErrReasonMaxVolumeCountExceeded is used for MaxVolumeCount predicate error.
+	ErrReasonMaxVolumeCountExceeded = "node(s) exceed max volume count"
+- https://learn.microsoft.com/en-us/azure/virtual-machines/sizes/memory-optimized/dv2-dsv2-series-memory: Max data disks
+- https://github.com/kubernetes-sigs/azuredisk-csi-driver/issues/1842: csi_node does not respect max_volumes_per_node value provided by VM. is there any data disk attached to the node without using CSI driver? since that data disk is not managed by csi driver, the max volumes should be n-1 now.
+
 ## datadisk.zone..none
 
 ```

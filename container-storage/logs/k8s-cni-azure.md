@@ -299,7 +299,7 @@ kube-proxy-qdfmq                      1/1     Running   0          12h   10.224.
 - https://blog.teknews.cloud/aks/network/2023/11/02/AKS_Networking-considerationspart2.html
 - https://blog.cloudtrooper.net/2019/01/23/a-day-in-the-life-of-a-packet-in-aks-part-2-kubenet-and-ingress-controller/
 
-## k8s-cni.azure.networkProfile
+## k8s-cni.azure..networkProfile
 
 ```
 az aks create -g $rg -n akscni --network-plugin azure -s $vmsize -c 2
@@ -590,6 +590,134 @@ aks-nodepool1-30840492-vmss000001:/# cat cat /var/run/azure-vnet.json
 ```
 
 - https://learn.microsoft.com/en-us/azure/aks/azure-cni-overlay?tabs=kubectl
+
+## k8s-cni.azure.byo (byo cni)
+
+```
+# k8s-cni.azure.byo 
+
+rg=rgbyo
+az group create -n $rg -l $loc
+az aks create -g $rg -n aks  --network-plugin none -s $vmsize -c 2
+az aks get-credentials -g $rg -n aks --overwrite-existing
+kubectl get no; kubectl get po -A
+
+NAME                                STATUS     ROLES    AGE   VERSION
+aks-nodepool1-36608186-vmss000000   NotReady   <none>   98s   v1.30.10
+aks-nodepool1-36608186-vmss000001   NotReady   <none>   85s   v1.30.10
+NAMESPACE     NAME                                  READY   STATUS    RESTARTS   AGE
+kube-system   cloud-node-manager-hlmx5              1/1     Running   0          86s
+kube-system   cloud-node-manager-sq5tf              1/1     Running   0          99s
+kube-system   coredns-659fcb469c-4bkl9              0/1     Pending   0          2m44s
+kube-system   coredns-autoscaler-6f7d6d6464-9g7rr   0/1     Pending   0          2m44s
+kube-system   csi-azuredisk-node-28bj2              3/3     Running   0          86s
+kube-system   csi-azuredisk-node-k9f8n              3/3     Running   0          99s
+kube-system   csi-azurefile-node-bcb9w              3/3     Running   0          86s
+kube-system   csi-azurefile-node-bd79w              3/3     Running   0          99s
+kube-system   konnectivity-agent-655bbc4455-265rr   1/1     Running   0          2m44s
+kube-system   konnectivity-agent-655bbc4455-l9kp8   1/1     Running   0          2m44s
+kube-system   kube-proxy-7plvk                      1/1     Running   0          99s
+kube-system   kube-proxy-fw796                      1/1     Running   0          85s
+kube-system   metrics-server-696749dc54-bv992       0/2     Pending   0          2m44s
+kube-system   metrics-server-696749dc54-dw7bt       0/2     Pending   0          2m44s
+
+# k describe po
+  Warning  FailedScheduling  3m53s (x7 over 33m)  default-scheduler  0/2 nodes are available: 2 node(s) had untolerated taint {node.kubernetes.io/not-ready: }. preemption: 0/2 nodes are available: 2 Preemption is not helpful for scheduling.
+
+kubectl get node -o custom-columns='NAME:.metadata.name,STATUS:.status.conditions[?(@.type=="Ready")].message'
+NAME                                STATUS
+aks-nodepool1-36608186-vmss000000   container runtime network not ready: NetworkReady=false reason:NetworkPluginNotReady message:Network plugin returns error: cni plugin not initialized
+aks-nodepool1-36608186-vmss000001   container runtime network not ready: NetworkReady=false reason:NetworkPluginNotReady message:Network plugin returns error: cni plugin not initialized
+
+az aks show -g $rg -n aks --query networkProfile
+  "networkPlugin": "none",
+  "networkPolicy": "none",
+```
+
+- https://learn.microsoft.com/en-us/azure/aks/use-byo-cni?tabs=azure-cli
+
+```
+# k8s-cni.azure.byo.calico
+
+rg=rgbyo
+az group create -n $rg -l $loc
+az aks create -g $rg -n aks --pod-cidr 192.168.0.0/16 --network-plugin none -s $vmsize -c 2
+az aks get-credentials -g $rg -n aks --overwrite-existing
+kubectl get no; kubectl get po -A
+
+kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.29.3/manifests/tigera-operator.yaml
+kubectl create -f - <<EOF
+kind: Installation
+apiVersion: operator.tigera.io/v1
+metadata:
+  name: default
+spec:
+  kubernetesProvider: AKS
+  cni:
+    type: Calico
+  calicoNetwork:
+    bgp: Disabled
+    ipPools:
+     - cidr: 192.168.0.0/16
+       encapsulation: VXLAN
+---
+apiVersion: operator.tigera.io/v1
+kind: APIServer
+metadata:
+   name: default
+spec: {}
+EOF
+watch kubectl get pods -n calico-system
+
+NAME                                       READY   STATUS    RESTARTS   AGE
+calico-kube-controllers-75d656cb66-bjz54   1/1     Running   0          66s
+calico-node-l5hj8                          1/1     Running   0          66s
+calico-node-tln9f                          1/1     Running   0          66s
+calico-typha-b5f98dcc4-g74lf               1/1     Running   0          66s
+csi-node-driver-mb8fj                      2/2     Running   0          66s
+csi-node-driver-sn5h8                      2/2     Running   0          66s
+
+kubectl get no; kubectl get po -A
+NAME                                STATUS   ROLES    AGE     VERSION
+aks-nodepool1-37563806-vmss000000   Ready    <none>   5m58s   v1.30.10
+aks-nodepool1-37563806-vmss000001   Ready    <none>   5m55s   v1.30.10
+aks-nodepool1-37563806-vmss000002   Ready    <none>   5m59s   v1.30.10
+NAMESPACE          NAME                                      READY   STATUS    RESTARTS   AGE
+calico-apiserver   calico-apiserver-5bbbc95699-9qtd7         1/1     Running   0          2m44s
+calico-apiserver   calico-apiserver-5bbbc95699-qnpr2         1/1     Running   0          2m44s
+calico-system      calico-kube-controllers-d7d576855-ztx8n   1/1     Running   0          2m44s
+calico-system      calico-node-6jssl                         1/1     Running   0          103s
+calico-system      calico-node-gpphh                         1/1     Running   0          103s
+calico-system      calico-node-jn48g                         1/1     Running   0          103s
+calico-system      calico-typha-58864b9977-gclkr             1/1     Running   0          2m35s
+calico-system      calico-typha-58864b9977-jvnrx             1/1     Running   0          2m44s
+calico-system      csi-node-driver-5nkgn                     2/2     Running   0          2m44s
+calico-system      csi-node-driver-gmhf9                     2/2     Running   0          2m44s
+calico-system      csi-node-driver-nh7mb                     2/2     Running   0          2m44s
+kube-system        cloud-node-manager-6km2n                  1/1     Running   0          5m56s
+kube-system        cloud-node-manager-q7twk                  1/1     Running   0          5m59s
+kube-system        cloud-node-manager-x664p                  1/1     Running   0          6m
+kube-system        coredns-659fcb469c-2vg6s                  1/1     Running   0          6m16s
+kube-system        coredns-659fcb469c-z6vxs                  1/1     Running   0          84s
+kube-system        coredns-autoscaler-6f7d6d6464-fl7rr       1/1     Running   0          6m16s
+kube-system        csi-azuredisk-node-2tbvb                  3/3     Running   0          5m56s
+kube-system        csi-azuredisk-node-5mhkr                  3/3     Running   0          6m
+kube-system        csi-azuredisk-node-ctqbc                  3/3     Running   0          5m59s
+kube-system        csi-azurefile-node-gfxk9                  3/3     Running   0          5m56s
+kube-system        csi-azurefile-node-m9x85                  3/3     Running   0          5m59s
+kube-system        csi-azurefile-node-n8gct                  3/3     Running   0          6m
+kube-system        konnectivity-agent-6bffff765-mzxkz        1/1     Running   0          6m16s
+kube-system        konnectivity-agent-6bffff765-tktms        1/1     Running   0          6m16s
+kube-system        kube-proxy-9v6k7                          1/1     Running   0          5m56s
+kube-system        kube-proxy-llrh9                          1/1     Running   0          6m
+kube-system        kube-proxy-zfqtb                          1/1     Running   0          5m59s
+kube-system        metrics-server-cd969dd86-dc8gk            2/2     Running   0          73s
+kube-system        metrics-server-cd969dd86-ldbdc            2/2     Running   0          73s
+tigera-operator    tigera-operator-797db67f8-85dq5           1/1     Running   0          2m50s
+```
+
+- https://docs.tigera.io/calico/latest/getting-started/kubernetes/managed-public-cloud/aks#install-aks-with-calico-networking
+- https://www.tigera.io/blog/byocni-introducing-calico-cni-for-azure-aks/
 
 ## k8s-cni.azure.IPs
 

@@ -1,6 +1,32 @@
-```
-# See the section on k8s-pv, k8s-csi and k8s-pod_state_ExitCode
-```
+> See the section on k8s-pv, k8s-csi and k8s-pod_state_ExitCode
+
+## k8s.apiserver
+
+> Refer to apiserver
+
+> ## k8s.apiserver.memory.cache
+
+> See the section on etcd
+
+- https://kubernetes.io/blog/2016/03/1000-nodes-and-beyond-updates-to-kubernetes-performance-and-scalability-in-12/: the API server’s clients can read data from an in-memory cache in the API server instead of reading it from etcd. The cache is updated directly from etcd via watch in the background. Those clients that can tolerate latency in retrieving data (usually the lag of cache is on the order of tens of milliseconds) can be served entirely from cache, reducing the load on etcd and increasing the throughput of the server.
+- https://learn.microsoft.com/en-us/azure/aks/best-practices-performance-scale-large#aks-and-kubernetes-control-plane-scalability: While AKS optimizes the Kubernetes control plane and its components for scalability and performance, it's still bound by the upstream project limits.
+- https://learn.microsoft.com/en-us/azure/aks/best-practices-performance-scale-large#kubernetes-clients: The load on etcd and API server primarily relies on the number of objects that exist...
+- https://learn.microsoft.com/en-us/azure/aks/control-plane-metrics-monitor#query-control-plane-metrics: https://grafana.com/grafana/dashboards/20330-kubernetes-etcd/. 
+- https://learn.microsoft.com/en-us/azure/aks/control-plane-metrics-monitor#customize-control-plane-metrics: default controlplane-etcd = true
+- https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/create-upgrade-delete/troubleshoot-apiserver-etcd?tabs=resource-specific
+- https://kubernetes.io/blog/2024/12/17/kube-apiserver-api-streaming/: A significant challenge with large clusters is the memory overhead caused by list requests. This situation poses a genuine risk, potentially overwhelming and crashing any kube-apiserver within seconds due to out-of-memory (OOM) conditions.
+- https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/create-upgrade-delete/aks-at-scale-troubleshoot-guide
+
+> ## k8s.apiserver.burst
+
+- https://kubernetes.io/docs/concepts/cluster-administration/flow-control/: Within a priority level, a fair-queuing algorithm prevents requests from different flows from starving each other, and allows for requests to be queued to prevent bursty traffic from causing failed requests when the average load is acceptably low.
+- https://kubernetes.io/docs/reference/command-line-tools-reference/kubelet/: --kube-api-burst int32     Default: 100. Burst to use while talking with kubernetes API server. --kube-api-qps int32     Default: 50
+
+> ## k8s.apiserver.burst.ACI
+
+- https://learn.microsoft.com/en-us/azure/aks/concepts-scale#burst-to-azure-container-instances-aci
+- https://www.linkedin.com/pulse/power-burst-scaling-azure-kubernetes-services-rohan-vekaria: scale with Virtual Nodes and Azure Container Instances.
+- https://azure.github.io/aks-advanced-autoscaling/modules/Module3/: Module 3 - Rapid Burst Scaling with ACI and Azure Load Testing
 
 ## k8s.etcd
 

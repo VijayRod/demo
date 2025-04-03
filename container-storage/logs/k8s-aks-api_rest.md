@@ -1,5 +1,7 @@
 ## k8s-aks-api_rest
 
+> ## rest.app.ContainerService/managedCluster (aks)
+
 ```
 token=$(az account get-access-token|jq -r .accessToken)
 curl -H "Authorization: Bearer $token" -X GET https://management.azure.com/subscriptions/$subId/providers/Microsoft.ContainerService/managedClusters?api-version=2025-01-01|jq -r .value.[].id # list resource IDs of the clusters in this sub
@@ -16,8 +18,6 @@ curl -s -H "Authorization: Bearer $token" -X GET https://management.azure.com/su
 done
 date
 ```
-
-> ## rest.app.ContainerService/managedCluster (aks)
 
 - https://learn.microsoft.com/en-us/rest/api/aks/operation-groups
 

@@ -56,7 +56,18 @@ systemctl restart containerd
 - https://learn.microsoft.com/en-us/azure/aks/learn/quick-windows-container-deploy-cli#connect-to-the-cluster
 - https://docs.docker.com/desktop/features/containerd/#what-is-containerd
 - https://cloud.google.com/kubernetes-engine/docs/troubleshooting/container-runtime
-  
+
+```
+# for example, /containerd/blob/main/core/mount/temp.go
+```
+
+```
+# containerd.error.failed to remove mount temp dir
+# syslog
+```
+
+- https://github.com/containerd/containerd/blob/main/core/mount/temp.go: os.MkdirTemp(tempMountLocation, "containerd-mount"). Error("failed to remove mount temp dir")  
+
 ## k8s.cri.containerd.containerd-shim
 
 ```

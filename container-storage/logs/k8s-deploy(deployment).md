@@ -8,6 +8,8 @@ kubectl create deploy nginx --image=nginx --dry-run=client -oyaml
 kubectl rollout restart deploy nginx
 kubectl delete deploy nginx
 
+kubectl create deploy nginx --image=nginx --replicas=10 --dry-run=client -o yaml | kubectl set resources --local -f - --requests=cpu=1 --dry-run=client -o yaml | kubectl apply -f -
+
 kubectl delete deploy nginx
 cat << EOF | kubectl create -f -
 apiVersion: apps/v1

@@ -10,8 +10,25 @@
 - https://azure.microsoft.com/en-us/updates/public-preview-azure-container-storage/
 - https://azure.microsoft.com/en-us/blog/transforming-containerized-applications-with-azure-container-storage-now-in-preview/
 - https://learn.microsoft.com/en-us/azure/storage/container-storage/troubleshoot-container-storage
-  
-### earlier
+
+> ## k8s-csi-acstor.misc.pods.extension.error
+
+```
+az aks create...
+Azure Container Storage failed to install.
+Error: (ExtensionOperationFailed) The extension operation failed with the following error: Error: [ InnerError: [Helm installation failed InnerError: Helm installation failed :  : InnerError [release azurecontainerstorage failed, and has been uninstalled due to atomic being set: context deadline exceeded]]] occurred while doing the operation : [Create] on the config, For general troubleshooting visit: https://aka.ms/k8s-extension-TSG. 
+
+k logs -n kube-system extension-operator-64b9bdd474-7dh55
+Defaulted container "manager" out of: manager, fluent-bit
+{"Message":"Helm installation failed InnerError: Helm installation failed :  : InnerError [release azurecontainerstorage failed, and has been uninstalled due to atomic being set: context deadline exceeded]","LogType":"ConfigAgentTrace","LogLevel":"Error","Environment":"prod","Role":"ClusterConfigAgent","Location":"northeurope","ArmId":"/subscriptions/redacts-1111-1111-1111-111111111111/resourceGroups/rg/providers/Microsoft.ContainerService/managedclusters/acstoragetest-451e10/providers/Microsoft.KubernetesConfiguration/extensions/azurecontainerstorage","CorrelationId":"8091fe0f-a45a-44fc-9d7d-db6fbfa7f8e5","AgentName":"ExtensionController microsoft.azurecontainerstorage:1.2.0","AgentVersion":"1.20.1","AgentTimestamp":"2025/01/28 18:14:37.073"}
+
+k logs -n kube-system extension-agent-5f58b9c69d-wrhpv
+Defaulted container "manager" out of: manager, fluent-bit
+{"Message":"POST status returned response code {400}","LogType":"ConfigAgentTrace","LogLevel":"Information","Environment":"prod","Role":"ClusterConfigAgent","Location":"northeurope","ArmId":"/subscriptions/efec8e52-e1ad-4ae1-8598-f243e56e2b08/resourceGroups/rg/providers/Microsoft.ContainerService/managedclusters/acstoragetest-451e10","CorrelationId":"8091fe0f-a45a-44fc-9d7d-db6fbfa7f8e5","AgentName":"ConfigAgent","AgentVersion":"1.20.1","AgentTimestamp":"2025/01/28 14:35:54.949"}
+{"Message":"The payload for configuration : {{\"id\":\"azurecontainerstorage\",\"clientAppliedTime\":\"2025-01-28T18:35:46.584Z\",\"clientLastSeen\":\"2025-01-28T18:34:53.575Z\",\"complianceState\":5,\"provisioningState\":4,\"clientStatus\":\"{\\\"ErrorStatus\\\":{\\\"code\\\":\\\"Failed to install the extension\\\",\\\"message\\\":\\\"Error: [ InnerError: [Helm installation failed :  : InnerError [release azurecontainerstorage failed, and has been uninstalled due to atomic being set: context deadline exceeded]]] occurred while doing the operation : [Create] on the config\\\"},\\\"retryCount\\\":\\\"\\\"}\",\"configKind\":\"Extension\",\"installArtifacts\":{\"autoUpgrade\":false,\"releaseTrain\":\"\",\"version\":\"1.2.0\",\"acrFullPath\":\"https://mcr.microsoft.com/acstor/chart\",\"systemParameters\":\"\"},\"extensionRegistrationTime\":1731366209443,\"extensionType\":\"microsoft.azurecontainerstorage\",\"operationId\":\"8196507f-3a28-4b8f-9aff-9c94b4d87b74\",\"agentVersion\":\"1.20.1\"}} failed with error {\u003cnil\u003e}","LogType":"ConfigAgentTrace","LogLevel":"Error","Environment":"prod","Role":"ClusterConfigAgent","Location":"northeurope","ArmId":"/subscriptions/redacts-1111-1111-1111-111111111111/resourceGroups/rg/providers/Microsoft.ContainerService/managedclusters/acstoragetest-451e10","CorrelationId":"8091fe0f-a45a-44fc-9d7d-db6fbfa7f8e5","AgentName":"ConfigAgent","AgentVersion":"1.20.1","AgentTimestamp":"2025/01/28 18:34:53.648"}
+```
+
+> ## earlier
 ```
 rg=rgcsi
 az group create -n $rg -l $loc

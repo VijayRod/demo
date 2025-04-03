@@ -10,6 +10,7 @@ az group create -n $rg -l $loc
 az aks create -g $rg -n aksnap --node-provisioning-mode Auto --network-plugin azure --network-plugin-mode overlay --network-dataplane cilium -s $vmsize
 az aks get-credentials -g $rg -n aksnap --overwrite-existing
 
+# The node pool resource includes a reference to the associated aksnodeclass
 k api-resources | grep karp
 aksnodeclasses                      aksnc,aksncs                        karpenter.azure.com/v1alpha2           false        AKSNodeClass
 nodeclaims                                                              karpenter.sh/v1beta1                   false        NodeClaim
@@ -21,6 +22,124 @@ k get po -A # No karpenter pods
 ```
 
 - https://learn.microsoft.com/en-us/azure/aks/node-autoprovision?tabs=azure-cli#sku-selectors-with-well-known-labels
+- https://github.com/Azure/karpenter-provider-azure
+- https://karpenter.sh/
+
+```
+# node pools
+```
+
+- https://github.com/Azure/karpenter-provider-azure?tab=readme-ov-file#create-nodepool
+- https://github.com/Azure/karpenter-provider-azure/tree/main/examples
+- https://learn.microsoft.com/en-us/azure/aks/node-autoprovision?tabs=azure-cli#sku-selectors-with-well-known-labels
+
+```
+# skus
+# faster in CloudShell
+az vm list-skus --resource-type virtualMachines -l $loc --output table
+```
+
+```
+# test
+
+kubectl create deploy nginx --image=nginx --replicas=10 --dry-run=client -o yaml | kubectl set resources --local -f - --requests=cpu=1 --dry-run=client -o yaml | kubectl apply -f -
+kubectl scale deploy nginx --replicas=10
+kubectl get no,po
+
+## the node pool resource includes a "default" resource, which is why the nodes named as shown below.
+NAME                                     STATUS   ROLES    AGE    VERSION
+node/aks-default-2cqc5                   Ready    <none>   102s   v1.30.10
+node/aks-default-jwbr6                   Ready    <none>   107s   v1.30.10
+node/aks-default-nr8zv                   Ready    <none>   81s    v1.30.10
+node/aks-nodepool1-34147650-vmss000000   Ready    <none>   18m    v1.30.10
+node/aks-nodepool1-34147650-vmss000001   Ready    <none>   18m    v1.30.10
+node/aks-nodepool1-34147650-vmss000002   Ready    <none>   18m    v1.30.10
+
+## there is no node pool named "default"
+az aks nodepool list -g $rg --cluster-name aksnap -otable
+Name       OsType    VmSize         Count    MaxPods    ProvisioningState    Mode
+---------  --------  -------------  -------  ---------  -------------------  ------
+nodepool1  Linux     Standard_B2ms  3        250        Succeeded            System
+
+## karpenter.sh/nodepool contains the node pool name, but kubernetes.azure.com/agentpool does not
+k describe no aks-default-28dxd
+Labels:             agentpool=
+                    karpenter.azure.com/sku-cpu=8
+                    karpenter.azure.com/sku-encryptionathost-capable=true
+                    karpenter.azure.com/sku-family=D
+                    karpenter.azure.com/sku-gpu-count=0
+                    karpenter.azure.com/sku-memory=16384
+                    karpenter.azure.com/sku-name=Standard_D8ls_v5
+                    karpenter.azure.com/sku-networking-accelerated=true
+                    karpenter.azure.com/sku-storage-premium-capable=true
+                    karpenter.azure.com/sku-version=5
+                    karpenter.sh/capacity-type=on-demand
+                    karpenter.sh/nodepool=default
+                    kubernetes.azure.com/agentpool=
+                    kubernetes.azure.com/azure-cni-overlay=true
+                    kubernetes.azure.com/cluster=MC_rg2_aksnap_swedencentral
+                    kubernetes.azure.com/ebpf-dataplane=cilium
+                    kubernetes.azure.com/mode=user
+                    kubernetes.azure.com/network-subnet=aks-subnet
+                    kubernetes.azure.com/nodenetwork-vnetguid=e9c03cff-7f9e-4e4a-a774-2dec2a94dde7
+                    kubernetes.azure.com/podnetwork-type=overlay
+                    kubernetes.azure.com/role=agent
+                    kubernetes.io/arch=amd64
+                    kubernetes.io/hostname=aks-default-28dxd
+                    kubernetes.io/os=linux
+                    node.kubernetes.io/instance-type=Standard_D8ls_v5
+                    topology.disk.csi.azure.com/zone=swedencentral-2
+                    topology.kubernetes.io/region=swedencentral
+                    topology.kubernetes.io/zone=swedencentral-2
+
+```
+
+- https://github.com/Azure/karpenter-provider-azure?tab=readme-ov-file#scale-up-deployment
+
+```
+# test.nap tbd (no auto scale-up)
+
+rg=rgkata
+az group create -n $rg -l $loc
+az aks create -g $rg -n aks -s $vmsize -c 2 --node-provisioning-mode Auto --network-plugin azure --network-plugin-mode overlay --network-dataplane cilium
+az aks get-credentials -g $rg -n aks --overwrite-existing
+kubectl get no; kubectl get po -A
+
+az aks nodepool add -g $rg --cluster-name aks -n npkata --os-sku AzureLinux --workload-runtime KataMshvVmIsolation --node-vm-size Standard_D4s_v3 -c 1
+kubectl get no; kubectl get po -A
+
+cat << EOF | kubectl create -f -
+kind: Pod
+apiVersion: v1
+metadata:
+  name: untrusted
+spec:
+  runtimeClassName: kata-mshv-vm-isolation
+  containers:
+  - name: untrusted
+    image: mcr.microsoft.com/aks/fundamental/base-ubuntu:v0.0.11
+    command: ["/bin/sh", "-ec", "while :; do echo '.'; sleep 5 ; done"]
+EOF
+kubectl get po -owide -w
+
+kubectl create deploy nginx --image=nginx --replicas=10 --dry-run=client -o yaml | kubectl set resources --local -f - --requests=cpu=1 --dry-run=client -o yaml | kubectl apply -f -
+kubectl scale deploy nginx --replicas=10
+kubectl get no,po
+```
+
+```
+# unsupported
+
+## https://github.com/Azure/karpenter-provider-azure/blob/main/pkg/providers/imagefamily/customscriptsbootstrap/provisionclientbootstrap.go
+		// AgentPoolWindowsProfile: &models.AgentPoolWindowsProfile{},               // Unsupported as of now; TODO(Windows)
+		// KubeletDiskType:         lo.ToPtr(models.KubeletDiskTypeUnspecified),    // Unsupported as of now
+		// CustomLinuxOSConfig:     &models.CustomLinuxOSConfig{},                   // Unsupported as of now (sysctl)
+		// EnableFIPS:              lo.ToPtr(false),                                 // Unsupported as of now
+		// GpuInstanceProfile:      lo.ToPtr(models.GPUInstanceProfileUnspecified), // Unsupported as of now (MIG)
+		// WorkloadRuntime:         lo.ToPtr(models.WorkloadRuntimeUnspecified),    // Unsupported as of now (Kata)
+```
+
+- https://github.com/Azure/karpenter-provider-azure/blob/main/pkg/providers/imagefamily/customscriptsbootstrap/provisionclientbootstrap.go
 
 ### k8s-scale-app.karpenter.aks.apiresources.aksnodeclass
 
@@ -95,6 +214,8 @@ No resources found
 ### k8s-scale-app.karpenter.aks.apiresources.nodepool
 
 ```
+# The node pool resource includes a reference to the associated aksnodeclass
+
 k get nodepools
 NAME           NODECLASS
 default        default

@@ -16,6 +16,7 @@
 - https://learn.microsoft.com/en-us/azure/aks/best-practices-performance-scale-large#kubernetes-clients: etcd
 - https://learn.microsoft.com/en-us/azure/aks/control-plane-metrics-monitor#query-control-plane-metrics: etcd
 - https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/create-upgrade-delete/troubleshoot-apiserver-etcd?tabs=resource-specific
+- https://etcd.io/docs/v3.4/op-guide/maintenance/
 
 ```
 # etcd.perf

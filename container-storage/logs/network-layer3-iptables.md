@@ -11,6 +11,7 @@ cat /tmp/iptables
   - https://www.frozentux.net/iptables-tutorial/chunkyhtml/
 - https://wiki.centos.org/HowTos/Network/IPTables
 - https://www.man7.org/linux/man-pages/man8/iptables.8.html
+- https://blog.stevegriffith.nyc/posts/aks-networking-iptables
 - tbd https://www.baeldung.com/linux/iptables-intro
 
 ## iptables.app.k8s.node

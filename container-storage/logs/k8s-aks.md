@@ -15,6 +15,11 @@ az aks nodepool delete -g $rg --cluster-name aks -n np2 --no-wait
 ```
 az aks create -g $rg -n akseph -s $vmsize -c 1 --node-osdisk-type Ephemeral -s Standard_DS3_v2
 az aks create -g $rg -n aksgen -s $vmsize -c 1 -s Standard_D4s_v5 # Also non-ephemeral
+az aks create -g $rg -n akscni --network-plugin azure -s $vmsize -c 1
+az aks create -g $rg -n akscilium --network-plugin azure --network-dataplane cilium -s $vmsize -c 1
+az aks create -g $rg -n aksblob --enable-blob-driver -s $vmsize -c 1
+az aks create -g $rg -n aksapproute --enable-app-routing -s $vmsize
+cd /tmp/tcpdump
 ```
 
 ```

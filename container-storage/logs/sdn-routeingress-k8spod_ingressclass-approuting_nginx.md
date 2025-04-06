@@ -593,3 +593,7 @@ iptables-save | grep loadbal
 -A KUBE-SEP-7PTWPOJIQ22BXKMQ -s 10.244.2.1/32 -m comment --comment "app-routing-system/nginx:http" -j KUBE-MARK-MASQ
 -A KUBE-SEP-7PTWPOJIQ22BXKMQ -p tcp -m comment --comment "app-routing-system/nginx:http" -m tcp -j DNAT --to-destination 10.244.2.1:8080
 ```
+
+> ## example
+
+- https://learn.microsoft.com/en-us/azure/aks/azure-cni-overlay?tabs=kubectl#create-an-example-workload

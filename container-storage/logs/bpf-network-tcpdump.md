@@ -130,9 +130,13 @@ tcpdump 'tcp[((tcp[12:1] & 0xf0) >> 2):4] = 0x48454144' # HEAD
 ## tcpdump.capture.filter.https
 
 ```
+# Refer to https
+
 tcpdump tcp port https
 
 ```
+
+- tbd https://www.netnea.com/cms/2022/01/20/decrypt-tls-encrypted-http-traffic-for-debugging/
 
 ## tcpdump.capture.filter.ip
 

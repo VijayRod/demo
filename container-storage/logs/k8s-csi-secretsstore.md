@@ -447,3 +447,39 @@ I1120 18:34:04.946994       1 nodeserver.go:306] "node unpublish volume complete
 - https://learn.microsoft.com/en-us/azure/aks/csi-secrets-store-driver
 - https://secrets-store-csi-driver.sigs.k8s.io/known-limitations
 - https://github.com/kubernetes-sigs/secrets-store-csi-driver/issues
+
+> ##secrets-store.key.debug
+
+```
+# secret.plain-text
+
+path=/var/lib/kubelet/pods/e0e13dfa-61f1-46d4-ad32-78471ebc750c/volumes/kubernetes.io~csi
+ls $path # secrets-store01-inline
+ls $path/secrets-store01-inline # mount  vol_data.json
+
+cat ls $path/secrets-store01-inline/vol_data.json
+{"attachmentID":"csi-1dc02516447a61ea2b247511d7057774a605c4419f72dd435def8dbfb6a7aba1","driverName":"secrets-store.csi.k8s.io","nodeName":"aks-nodepool1-34137564-vmss000000","specVolID":"secrets-store01-inline","volumeHandle":"csi-75fdc8ff6f0827161b25f96398c40ed524e1ce351b20ceb5e1b5333b143944f2","volumeLifecycleMode":"Ephemeral"}
+
+cat $path/secrets-store01-inline/mount/ExampleSecret # MyAKSExampleSecretroot (non-TLS secret)
+```
+
+```
+# secret.corruption
+# az keyvault certificate download --encoding DER/PEM to obtain the cert
+# Then use openssl to compare the downloaded cert with the one in the /var/lib/kubelet/pods path.
+# tbd p12: openssl pkcs12 -info -in cert.p12 # for a PEM cert i.e. base64 PEM x509 certificate
+# tbd crt: openssl x509 -in cert.crt -text -noout # for a DER cert i.e. binary DER formatted x509 certificate
+
+# Download a certificate as PEM and check its fingerprint in openssl.
+az keyvault certificate download --vault-name vault -n cert-name -f cert.pem && \
+       openssl x509 -in cert.pem -inform PEM  -noout -sha1 -fingerprint
+
+# Download a certificate as DER and check its fingerprint in openssl.
+az keyvault certificate download --vault-name vault -n cert-name -f cert.crt -e DER && \
+       openssl x509 -in cert.crt -inform DER  -noout -sha1 -fingerprint        
+```
+
+```
+# secret.corruption.tls
+# the key vault contains two files: crt and key. The same two files are located in the /var/lib/kubelet/pods path.
+```

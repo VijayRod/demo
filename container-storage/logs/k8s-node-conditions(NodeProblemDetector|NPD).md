@@ -72,6 +72,8 @@ systemctl status node-problem-detector.service
 Mar 07 18:50:52 aks-nodepool1-14317786-vmss000000 node-problem-detector-startup.sh[8082]: I0307 18:50:52.259312...
 
 systemctl restart node-problem-detector.service
+
+cat /usr/local/bin/node-problem-detector-startup.sh # script file
 ```
 
 ```

@@ -1,8 +1,10 @@
-```
-# k8snode.aks-log-collector
-```
+> ## k8snode.log.aks-log-collector
 
 - https://github.com/Azure/AgentBaker/blob/master/parts/linux/cloud-init/artifacts/aks-log-collector.sh
+
+> ## k8snode.log.azure-diskinspect-service
+
+- https://github.com/Azure/azure-diskinspect-service/blob/master/manifests/linux/aks
 
 ## Cluster Autoscaler
 

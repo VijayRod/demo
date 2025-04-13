@@ -1,3 +1,0 @@
-- https://learn.microsoft.com/en-us/azure/dns/dns-overview
-- https://learn.microsoft.com/en-us/azure/virtual-network/virtual-networks-name-resolution-for-vms-and-role-instances
-- https://learn.microsoft.com/en-us/azure/virtual-network/virtual-networks-faq#name-resolution-dns

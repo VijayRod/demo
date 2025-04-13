@@ -97,15 +97,13 @@ Labels:             agentpool=
 - https://github.com/Azure/karpenter-provider-azure?tab=readme-ov-file#scale-up-deployment
 
 ```
-# test.nap tbd (no auto scale-up)
+# test.nap (works)
 
-rg=rgkata
+rg=rg
 az group create -n $rg -l $loc
-az aks create -g $rg -n aks -s $vmsize -c 2 --node-provisioning-mode Auto --network-plugin azure --network-plugin-mode overlay --network-dataplane cilium
-az aks get-credentials -g $rg -n aks --overwrite-existing
-kubectl get no; kubectl get po -A
-
-az aks nodepool add -g $rg --cluster-name aks -n npkata --os-sku AzureLinux --workload-runtime KataMshvVmIsolation --node-vm-size Standard_D4s_v3 -c 1
+az aks create -g $rg -n aksnap3 --node-provisioning-mode Auto --network-plugin azure --network-plugin-mode overlay --network-dataplane cilium \
+	--os-sku AzureLinux --workload-runtime KataMshvVmIsolation --node-vm-size Standard_D4s_v3
+az aks get-credentials -g $rg -n aksnap --overwrite-existing
 kubectl get no; kubectl get po -A
 
 cat << EOF | kubectl create -f -

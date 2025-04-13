@@ -92,10 +92,6 @@ Address: 2a00:1450:400f:80c::200e
 ## dns..spec.record
 
 - https://learn.microsoft.com/en-us/azure/dns/dns-zones-records#dns-records
-  
-> ## dns.azure.zone.private-dns (private DNS zone)
-
-> Refer to private dns
 
 > ## dns.azure.azuredns
 - https://learn.microsoft.com/en-us/azure/dns/dns-overview
@@ -122,6 +118,15 @@ sudo dhclient -r eth0 && sudo dhclient eth0
 - https://learn.microsoft.com/en-us/azure/architecture/networking/architecture/azure-dns-private-resolver
 - https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/azure-subscription-service-limits#azure-provided-dns-resolver-vm-limits
 - tbd https://techcommunity.microsoft.com/blog/azureinfrastructureblog/centralized-private-resolver-architecture-implementation-using-azure-private-dns/4132622
+
+> ## dns.azure.zone
+
+- https://learn.microsoft.com/en-us/azure/dns/dns-zones-records#dns-zones
+- https://www.cloudflare.com/learning/dns/glossary/dns-zone/
+    
+> ## dns.azure.zone.private-dns (private DNS zone)
+
+> Refer to private dns
 
 > ## dns.k8s.coredns
 

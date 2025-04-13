@@ -27,6 +27,8 @@ az aks get-credentials -g $rg -n akscnioverlay --overwrite-existing
 - ** https://www.tkng.io/cni/: The Kubernetes Networking Guide
 - https://docs.tigera.io/calico-cloud/networking/
 - https://github.com/tigera-solutions/install-calico-on-aks: Networking options for AKS cluster
+- https://github.com/jamiehannaford/what-happens-when-k8s?tab=readme-ov-file#cni-and-pod-networking
+- https://github.com/shubheksha/kubernetes-internals?tab=readme-ov-file#networking
 
 More:
 - https://www.caseyc.net/cni-talk-kubecon-18.pdf

@@ -2,6 +2,7 @@
 
 - https://curl.se/docs/manual.html
 - https://everything.curl.dev/usingcurl/verbose
+- https://everything.curl.dev/cmdline/exitcode.html
 - TBD https://unix.stackexchange.com/questions/497706/does-curl-v-show-the-complete-http-request-including-the-body
 
 ## curl.debug.common

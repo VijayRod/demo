@@ -6,6 +6,7 @@
 - https://github.com/shubheksha/kubernetes-internals
 - https://github.com/jamiehannaford/what-happens-when-k8s
 - https://devopswithkubernetes.com/part-5/1-kubernetes-internals
+- https://github.com/undergroundwires/CEH-in-bullet-points/blob/master/chapters/16-cloud-computing/container-security.md
 
 ## k8s.spec.addons
 - https://kubernetes.io/docs/concepts/overview/components/#addons

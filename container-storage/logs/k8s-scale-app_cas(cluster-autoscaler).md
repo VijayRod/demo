@@ -3,7 +3,7 @@
 ```
 rg=rgscale
 az group create -n $rg -l $loc
-az aks create -g $rg -n aks --enable-cluster-autoscaler --min-count 1 --max-count 3 -s $vmsize -c 1
+az aks create -g $rg -n aks --enable-cluster-autoscaler --min-count 1 --max-count 10 -s $vmsize -c 1 # max 10 for cost optimization limit
 az aks get-credentials -g $rg -n aks --overwrite-existing
 
 az aks nodepool add -g $rg --cluster-name aks -n np2 --enable-cluster-autoscaler --min-count 1 --max-count 3 -s $vmsize # --os-sku Mariner
@@ -29,6 +29,11 @@ az aks nodepool delete -g $rg --cluster-name aks -n np2 --no-wait
 
 ```
 # cas..debug..test
+
+kubectl delete deploy nginx
+kubectl create deploy nginx --image=nginx --replicas=10
+kubectl scale deploy nginx --replicas=500
+kubectl get no,po
 
 kubectl delete deploy nginx
 kubectl create deploy nginx --image=nginx --replicas=10 --dry-run=client -o yaml | kubectl set resources --local -f - --requests=cpu=1 --dry-run=client -o yaml | kubectl apply -f -

@@ -142,4 +142,5 @@ az account list-locations --include-extended-locations -ojson | jq 'map(select(.
 ## k8s-node-topology_zone.azure.vm.vmss
 
 - https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/virtual-machine-scale-sets-use-availability-zones
+- https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/virtual-machine-scale-sets-use-availability-zones?tabs=portal-2
 

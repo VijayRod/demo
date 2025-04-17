@@ -141,6 +141,10 @@ Events:
 
 ## k8s-node-topology_zone.azure.vm.vmss
 
+```
+az vmss list-instances -g MC_rg_akszone_swedencentral -n aks-nodepool1-14795161-vmss --query "[].{Instance:instanceId, Zone:zones[0]}" -o table
+```
+
 - https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/virtual-machine-scale-sets-use-availability-zones
 - https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/virtual-machine-scale-sets-use-availability-zones?tabs=portal-2
 

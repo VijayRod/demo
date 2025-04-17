@@ -10,10 +10,11 @@ az aks nodepool add -g $rg --cluster-name aks -n np2 --enable-cluster-autoscaler
 ```
 
 ```
+az aks update -g $rg -n akszone --enable-cluster-autoscaler --min-count 1 --max-count 10
+az aks update -g $rg -n akszone --update-cluster-autoscaler --min-count 1 --max-count 10
+
 az aks nodepool update -g $rg --cluster-name aks -n np2 --update-cluster-autoscaler --min-count 1 --max-count 10 # update min or max count
-
 az aks nodepool update -g $rg --cluster-name aks -n np2 --disable-cluster-autoscaler # disable
-
 az aks nodepool delete -g $rg --cluster-name aks -n np2 --no-wait
 ```
 

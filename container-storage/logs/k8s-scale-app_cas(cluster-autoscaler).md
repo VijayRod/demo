@@ -36,6 +36,9 @@ kubectl get no,po
 
 ```
 # cas..debug.logs
+
+kubectl get events --field-selector source=cluster-autoscaler
+kubectl get configmap -n kube-system cluster-autoscaler-status -o yaml
 ```
 
 - https://learn.microsoft.com/en-us/azure/aks/cluster-autoscaler?tabs=azure-cli#retrieve-cluster-autoscaler-logs-and-status

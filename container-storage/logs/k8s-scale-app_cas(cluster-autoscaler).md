@@ -29,6 +29,7 @@ az aks nodepool delete -g $rg --cluster-name aks -n np2 --no-wait
 ```
 # cas..debug..test
 
+kubectl delete deploy nginx
 kubectl create deploy nginx --image=nginx --replicas=10 --dry-run=client -o yaml | kubectl set resources --local -f - --requests=cpu=1 --dry-run=client -o yaml | kubectl apply -f -
 kubectl scale deploy nginx --replicas=10
 kubectl get no,po

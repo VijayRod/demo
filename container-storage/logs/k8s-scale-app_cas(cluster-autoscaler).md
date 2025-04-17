@@ -40,10 +40,7 @@ kubectl create deploy nginx --image=nginx --replicas=10 --dry-run=client -o yaml
 kubectl scale deploy nginx --replicas=10
 kubectl get no,po
 
-k get po | grep Runnin | wc -l
-k get po | grep Pending | wc -l
-k get no | wc -l
-k get no | grep NotReady | wc -l
+k get po | grep Runnin | wc -l; k get po | grep Pending | wc -l; k get no | wc -l; k get no | grep NotReady | wc -l
 
 kubectl get events --field-selector source=cluster-autoscaler
 kubectl get configmap -n kube-system cluster-autoscaler-status -o yaml

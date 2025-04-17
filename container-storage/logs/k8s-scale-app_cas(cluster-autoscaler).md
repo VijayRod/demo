@@ -27,13 +27,21 @@ az aks nodepool delete -g $rg --cluster-name aks -n np2 --no-wait
 - https://kubernetes.io/docs/concepts/cluster-administration/cluster-autoscaling/
 
 ```
-# cas.debug.logs
+# test
+
+kubectl create deploy nginx --image=nginx --replicas=10 --dry-run=client -o yaml | kubectl set resources --local -f - --requests=cpu=1 --dry-run=client -o yaml | kubectl apply -f -
+kubectl scale deploy nginx --replicas=10
+kubectl get no,po
+```
+
+```
+# cas..debug.logs
 ```
 
 - https://learn.microsoft.com/en-us/azure/aks/cluster-autoscaler?tabs=azure-cli#retrieve-cluster-autoscaler-logs-and-status
 
 ```
-# cas.debug.metrics
+# cas..debug.metrics
 ```
 
 - https://learn.microsoft.com/en-us/azure/aks/cluster-autoscaler?tabs=azure-cli#cluster-autoscaler-metrics

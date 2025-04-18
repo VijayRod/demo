@@ -22,12 +22,12 @@ cat ~/.ssh/id_rsa.pub
 
 # destination
 mkdir ~/.ssh/
-cat EOF > ~/.ssh/id_rsa
+cat << EOF > ~/.ssh/id_rsa
 -----BEGIN RSA PRIVATE KEY-----
 content==
 -----END RSA PRIVATE KEY-----
 EOF
-cat EOF > ~/.ssh/id_rsa.pub
+cat << EOF > ~/.ssh/id_rsa.pub
 ssh-rsa content
 EOF
 ```

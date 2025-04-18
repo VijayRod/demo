@@ -290,6 +290,105 @@ kubectl exec -it dnsutils -- nslookup db.private.contoso.com
 - https://coredns.io/plugins/log/
 - https://kubernetes.io/docs/tasks/administer-cluster/dns-debugging-resolution/#are-dns-queries-being-received-processed: You can verify if queries are being received by CoreDNS by adding the log plugin to the CoreDNS configuration (aka Corefile).
 
+> ## dns.k8s.InspektorGadget (ig)
+
+> ### ig.aks
+
+```
+# client
+kubectl krew install gadget
+kubectl gadget version
+
+# cluster deploy
+kubectl gadget deploy
+kubectl gadget version
+
+k get all -n gadget --show-labels
+NAME               READY   STATUS    RESTARTS   AGE   LABELS
+pod/gadget-xwtcn   1/1     Running   0          55s   controller-revision-hash=64cb8b4d7,k8s-app=gadget,pod-template-generation=1
+pod/gadget-zw4b4   1/1     Running   0          55s   controller-revision-hash=64cb8b4d7,k8s-app=gadget,pod-template-generation=1
+NAME                    DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR            AGE   LABELS
+daemonset.apps/gadget   2         2         2       2            2           kubernetes.io/os=linux   56s   k8s-app=gadget
+```
+
+- https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/logs/capture-system-insights-from-aks
+
+> ### ig..parameter.filter
+
+```
+kubectl gadget trace dns -l app=test-pod -o columns=k8s,id,qtype,qr,name,rcode,numAnswers,addresses -F name:~myheadless
+```
+
+- https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/connectivity/troubleshoot-dns-failures-across-an-aks-cluster-in-real-time#step-5-verify-dns-responses-contain-the-expected-ip-addresses: kubectl gadget trace dns -l app=test-pod  -o columns=k8s,id,qtype,qr,name,rcode,numAnswers,addresses -F name:~myheadless
+
+> ### ig..parameter.label (pod etc.)
+
+```
+# -l app=test-pod i.e. trace DNS query from any pod
+
+# shell 2
+kubectl run dnsutils --image=registry.k8s.io/e2e-test-images/jessie-dnsutils:1.3 --command -- sh -c 'sleep infinity'
+kubectl exec -it dnsutils -- nslookup google.com
+# shell 1
+kubectl gadget trace dns -l run=dnsutils --output columns=k8s,id,qtype,qr,name,rcode,latency --filter name:google.com.
+K8S.NODE             K8S.NAMESPACE        K8S.PODNAME         K8S.CONTAINERNAME   ID   QTYPE      QR NAME                RCODE        LATENCY   
+aks-nodepo…mss000000 default              dnsutils            dnsutils            cb7e A          Q  google.com.                                
+aks-nodepo…mss000000 default              dnsutils            dnsutils            cb7e A          R  google.com.         No Error     6.793145ms
+```
+
+- https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/connectivity/troubleshoot-dns-failures-across-an-aks-cluster-in-real-time#step-4-verify-dns-queries-get-responses-in-a-timely-manner: kubectl gadget trace dns -l app=test-pod --output columns=k8s,id,qtype,qr,name,rcode,latency --filter name:microsoft.com.
+
+> ### ig..parameter.label.coredns **
+
+```
+# -n kube-system -l k8s-app=kube-dns i.e. trace coredns quering azure-dns
+
+# shell 2
+kubectl run dnsutils --image=registry.k8s.io/e2e-test-images/jessie-dnsutils:1.3 --command -- sh -c 'sleep infinity'
+kubectl exec -it dnsutils -- nslookup google.com
+# shell 1
+kubectl gadget trace dns -n kube-system -l k8s-app=kube-dns -o columns=k8s,id,qr,name,rcode,nameserver,latency -F nameserver:168.63.129.1616
+K8S.NODE            K8S.NAMESPACE       K8S.PODNAME         K8S.CONTAINERNAME  ID   QR NAME               RCODE        NAMESERVER      LATENCY  
+aks-nodep…mss000001 kube-system         coredns-5…994-lm9f8 coredns            6e16 Q  google.com.                     168.63.129.16            
+aks-nodep…mss000001 kube-system         coredns-5…994-lm9f8 coredns            6e16 R  google.com.        No Error     168.63.129.16   5.67599ms
+```
+
+- https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/connectivity/troubleshoot-dns-failures-across-an-aks-cluster-in-real-time#step-3-verify-the-health-of-the-upstream-dns-servers: kubectl gadget trace dns -n kube-system -l k8s-app=kube-dns -o columns=k8s,id,qr,name,rcode,nameserver,latency -F nameserver:168.63.129.16
+
+> ### ig..parameter..output.columns
+
+```
+# shell 2
+kubectl run dnsutils --image=registry.k8s.io/e2e-test-images/jessie-dnsutils:1.3 --command -- sh -c 'sleep infinity'
+kubectl exec -it dnsutils -- nslookup google.com
+# shell 1
+kubectgadget trace dns --output columns=+nameserver
+K8S.NODE      K8S.NAMESPACE K8S.PODNAME   PID     TID     PPID    COMM    PCOMM  QR TYPE    QTYPE  NAME         RCODE        NU… NAMESERVER     
+aks-no…000000 default       dnsutils      335602  335608  329772  nslook… conta… Q  OUTGOI… A      google.com.…              0   10.0.0.10      
+aks-no…000000 default       dnsutils      335602  335608  329772  nslook… conta… R  HOST    A      google.com.… Non-Existen… 0   10.0.0.10 
+```
+
+- https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/logs/capture-system-insights-from-aks#demo: kubectl gadget trace dns --namespace my-ns --output columns=+nameserver
+
+```
+# shell 2
+kubectl run dnsutils --image=registry.k8s.io/e2e-test-images/jessie-dnsutils:1.3 --command -- sh -c 'sleep infinity'
+k exec -it dnsutils -- nslookup google.com
+# shell 1
+k gadget trace dns --output columns=k8s,id,qtype,qr,name,rcode,latency | tee dnstrace
+K8S.NODE                       K8S.NAMESPACE                  K8S.PODNAME                    K8S.CONTAINERNAME              ID   QTYPE            QR NAME                           RCODE            LATENCY
+aks-nodepool1-3…974-vmss000002 default                        dnsutils                       dnsutils                       f2b1 A                Q  google.com.default.svc.cluste…                                  
+aks-nodepool1-3…974-vmss000002 default                        dnsutils                       dnsutils                       f2b1 A                R  google.com.default.svc.cluste… Non-Existent Do… 2.36739ms       
+aks-nodepool1-3…974-vmss000002 default                        dnsutils                       dnsutils                       2348 A                Q  google.com.svc.cluster.local.                                   
+aks-nodepool1-3…974-vmss000002 default                        dnsutils                       dnsutils                       2348 A                R  google.com.svc.cluster.local.  Non-Existent Do… 988.495µs       
+aks-nodepool1-3…974-vmss000002 default                        dnsutils                       dnsutils                       91a0 A                Q  google.com.cluster.local.                                       
+aks-nodepool1-3…974-vmss000002 default                        dnsutils                       dnsutils                       91a0 A                R  google.com.cluster.local.      Non-Existent Do… 646.297µs       
+aks-nodepool1-3…974-vmss000002 default                        dnsutils                       dnsutils                       437f A                Q  google.com.fwrbuenwudfepnfskp…                                  
+aks-nodepool1-3…974-vmss000002 default                        dnsutils                       dnsutils                       437f A                R  google.com.fwrbuenwudfepnfskp… Non-Existent Do… 10.429756ms     
+aks-nodepool1-3…974-vmss000002 default                        dnsutils                       dnsutils                       9ea9 A                Q  google.com.                                                     
+aks-nodepool1-3…974-vmss000002 default                        dnsutils                       dnsutils                       9ea9 A                R  google.com.                    No Error         19.144319ms  
+```
+
 > ## dns.k8s.pod
 
 ```

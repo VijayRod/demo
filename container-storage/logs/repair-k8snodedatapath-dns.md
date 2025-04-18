@@ -142,19 +142,19 @@ kubectl -n kube-system top pod | grep coredns
 - https://github.com/kubernetes/dns: repository for Kubernetes DNS(kube-dns and nodelocaldns)
 - https://github.com/kubernetes/kubernetes/blob/v1.24.9/cluster/addons/dns/coredns/coredns.yaml.base
 - https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/connectivity/troubleshoot-dns-failures-across-an-aks-cluster-in-real-time
+- https://kubernetes.io/docs/tasks/administer-cluster/dns-custom-nameservers/#coredns: complying with the DNS specifications
+- https://github.com/kubernetes/dns/blob/master/docs/specification.md
 
-> ## dns.k8s.coredns.plugin
-- https://coredns.io/plugins/
-- https://github.com/coredns/coredns/blob/master/plugin/cache/README.md: README for each plugin
-- https://learn.microsoft.com/en-us/azure/aks/coredns-custom#plugin-support
-
-> ## dns.k8s.coredns.configmap.custom
+> ## dns.k8s.coredns.configmap.custom (corefile)
 
 ```
 kubectl describe cm -n kube-system coredns-autoscaler # in a default cluster
 ```
 
 - https://github.com/kubernetes-sigs/cluster-proportional-autoscaler#control-patterns-and-configmap-formats
+- https://kubernetes.io/docs/tasks/administer-cluster/dns-custom-nameservers/#coredns-configmap-options: The CoreDNS server can be configured by maintaining a Corefile, which is the CoreDNS configuration file.
+- https://coredns.io/2017/07/23/corefile-explained/
+- https://kubernetes.io/docs/tasks/administer-cluster/dns-debugging-resolution/#are-dns-queries-being-received-processed: After saving the changes, it may take up to minute or two for Kubernetes to propagate these changes to the CoreDNS pods.
 
 > ## dns.k8s.coredns.configmap.custom.ladder
 
@@ -219,6 +219,11 @@ metadata:
 - https://learn.microsoft.com/en-us/azure/aks/coredns-custom#configure-coredns-pod-scaling: Sudden spikes in DNS traffic... Out of memory issues
 - TBD https://creators-note.chatwork.com/entry/stabilize-kubernetes-dns: Deploy dns-autoscaler
 
+> ## dns.k8s.coredns.plugin
+- https://coredns.io/plugins/
+- https://github.com/coredns/coredns/blob/master/plugin/cache/README.md: README for each plugin
+- https://learn.microsoft.com/en-us/azure/aks/coredns-custom#plugin-support
+  
 > ## dns.k8s.coredns.plugin..custom-domain
 ```
 # These steps are similar to those for a private cluster with a private DNS zone
@@ -263,18 +268,92 @@ kubectl exec -it dnsutils -- nslookup db.private.contoso.com
 
 - https://learn.microsoft.com/en-us/azure/aks/coredns-custom#use-custom-domains
 
-> ## dns.coredns.plugin.header
+> ## dns.k8s.coredns.plugin.header
 - https://coredns.io/plugins/header/
 - https://qasim-sarfraz.medium.com/dns-caching-gone-wrong-a329dc00452e
 
-> ## dns.coredns.plugin.forward
+> ## dns.k8s.coredns.plugin.forward
+```
+# force_tcp, use TCP even when the request comes in over UDP
+```
 - https://coredns.io/plugins/forward/
 - https://learn.microsoft.com/en-us/azure/aks/coredns-custom#custom-forward-server
 
-> ## dns.coredns.plugin.hosts
+> ## dns.k8s.coredns.plugin.hosts
 - https://coredns.io/plugins/hosts/
 - https://learn.microsoft.com/en-us/azure/aks/coredns-custom#hosts-plugin
 
-> ## dns.coredns.plugin.log
+> ## dns.k8s.coredns.plugin.log
 - https://learn.microsoft.com/en-us/azure/aks/coredns-custom#enable-dns-query-logging
 - https://coredns.io/plugins/log/
+- https://kubernetes.io/docs/tasks/administer-cluster/dns-debugging-resolution/#are-dns-queries-being-received-processed: You can verify if queries are being received by CoreDNS by adding the log plugin to the CoreDNS configuration (aka Corefile).
+
+> ## dns.k8s.pod
+
+```
+kubectl run nginx --image=nginx
+kubectl exec -it nginx -- /bin/bash # -- curl google.com -I # apt-get update -y && apt-get install dnsutils tcpdump -y
+```
+
+- https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/
+- https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#pods
+
+> ## dns.k8s.pod.container./etc/resolv.conf ndots
+
+```
+kubectl exec -it nginx -- cat /etc/resolv.conf
+search default.svc.cluster.local svc.cluster.local cluster.local ib5kedtkaf2udoxrc5h1huub5a.gvxx.internal.cloudapp.net
+nameserver 10.0.0.10
+options ndots:5
+
+# tcpdump "Query name" for request for example.com
+example.com.<namespace>.svc.cluster.local
+example.com.svc.cluster.local
+example.com.cluster.local
+example.com
+
+kubectl exec -it nginx -- curl https://openai.com
+aks-nodepool1-14795161-vmss000004:/# tcpdump port 53
+18:54:05.151003 IP 10.244.3.15.60716 > 10.244.4.31.domain: 13930+ A? openai.com.default.svc.cluster.local. (54)
+18:54:05.151013 IP 10.244.3.15.60716 > 10.244.4.31.domain: 30567+ AAAA? openai.com.default.svc.cluster.local. (54)
+18:54:05.162666 IP aks-nodepool1-14795161-vmss000004.internal.cloudapp.net.48408 > 168.63.129.16.domain: 34640+ PTR? 31.4.244.10.in-addr.arpa. (42)
+18:54:05.168102 IP 10.244.4.31.domain > 10.244.3.15.60716: 30567 NXDomain*- 0/1/0 (147)
+18:54:05.168102 IP 10.244.4.31.domain > 10.244.3.15.60716: 13930 NXDomain*- 0/1/0 (147)
+18:54:05.168759 IP 10.244.3.15.35829 > 10.244.4.31.domain: 11031+ A? openai.com.y3zj2hw02zpergryuyvnedbohd.gvxx.internal.cloudapp.net. (82)
+18:54:05.168767 IP 10.244.3.15.35829 > 10.244.4.31.domain: 28949+ AAAA? openai.com.y3zj2hw02zpergryuyvnedbohd.gvxx.internal.cloudapp.net. (82)
+18:54:05.175930 IP 10.244.4.31.domain > 10.244.3.15.35829: 28949 NXDomain*- 0/0/0 (82)
+18:54:05.175930 IP 10.244.4.31.domain > 10.244.3.15.35829: 11031 NXDomain*- 0/0/0 (82)
+18:54:05.175979 IP 10.244.3.15.41922 > 10.244.4.31.domain: 47994+ A? openai.com. (28)
+18:54:05.175985 IP 10.244.3.15.41922 > 10.244.4.31.domain: 16764+ AAAA? openai.com. (28)
+18:54:05.176916 IP 168.63.129.16.domain > aks-nodepool1-14795161-vmss000004.internal.cloudapp.net.48408: 34640 NXDomain 0/1/0 (131)
+18:54:05.177019 IP aks-nodepool1-14795161-vmss000004.internal.cloudapp.net.44962 > 168.63.129.16.domain: 25244+ PTR? 15.3.244.10.in-addr.arpa. (42)
+18:54:05.194925 IP 168.63.129.16.domain > aks-nodepool1-14795161-vmss000004.internal.cloudapp.net.44962: 25244 NXDomain 0/1/0 (131)
+18:54:05.204677 IP 10.244.4.31.domain > 10.244.3.15.41922: 47994 2/0/0 A 172.64.154.211, A 104.18.33.45 (80)
+18:54:05.210187 IP 10.244.4.31.domain > 10.244.3.15.41922: 16764 0/1/0 (127)
+18:54:05.262584 IP aks-nodepool1-14795161-vmss000004.internal.cloudapp.net.44609 > 168.63.129.16.domain: 36315+ PTR? 16.129.63.168.in-addr.arpa. (44)
+18:54:05.292833 IP 168.63.129.16.domain > aks-nodepool1-14795161-vmss000004.internal.cloudapp.net.44609: 36315 NXDomain 0/1/0 (130)
+18:54:05.292985 IP aks-nodepool1-14795161-vmss000004.internal.cloudapp.net.54824 > 168.63.129.16.domain: 20844+ PTR? 7.0.224.10.in-addr.arpa. (41)
+18:54:05.313986 IP 168.63.129.16.domain > aks-nodepool1-14795161-vmss000004.internal.cloudapp.net.54824: 20844 1/0/0 PTR aks-nodepool1-14795161-vmss000004.internal.cloudapp.net. (110)
+
+kubectl exec -it nginx -- curl https://bing.com
+aks-nodepool1-14795161-vmss000004:/# tcpdump port 53
+18:54:20.870458 IP 10.244.3.15.40801 > 10.244.4.31.domain: 4511+ A? bing.com.default.svc.cluster.local. (52)
+18:54:20.870468 IP 10.244.3.15.40801 > 10.244.4.31.domain: 55197+ AAAA? bing.com.default.svc.cluster.local. (52)
+18:54:20.879466 IP 10.244.4.31.domain > 10.244.3.15.40801: 55197 NXDomain*- 0/1/0 (145)
+18:54:20.879466 IP 10.244.4.31.domain > 10.244.3.15.40801: 4511 NXDomain*- 0/1/0 (145)
+18:54:20.879835 IP 10.244.3.15.41003 > 10.244.4.31.domain: 55966+ A? bing.com.cluster.local. (40)
+18:54:20.879843 IP 10.244.3.15.41003 > 10.244.4.31.domain: 43164+ AAAA? bing.com.cluster.local. (40)
+18:54:20.897798 IP 10.244.4.31.domain > 10.244.3.15.41003: 43164 NXDomain*- 0/1/0 (133)
+18:54:20.897799 IP 10.244.4.31.domain > 10.244.3.15.41003: 55966 NXDomain*- 0/1/0 (133)
+18:54:20.898151 IP 10.244.3.15.53706 > 10.244.4.31.domain: 4276+ A? bing.com. (26)
+18:54:20.898160 IP 10.244.3.15.53706 > 10.244.4.31.domain: 7862+ AAAA? bing.com. (26)
+18:54:20.902750 IP 10.244.4.31.domain > 10.244.3.15.53706: 4276 2/0/0 A 150.171.28.10, A 150.171.27.10 (74)
+18:54:20.905864 IP 10.244.4.31.domain > 10.244.3.15.53706: 7862 2/0/0 AAAA 2620:1ec:33::10, AAAA 2620:1ec:33:1::10 (98)
+```
+- https://pracucci.com/kubernetes-dns-resolution-ndots-options-and-why-it-may-affect-application-performances.html
+- https://manpages.ubuntu.com/manpages/en/man5/resolv.conf.5.html
+
+> ## dns.k8s.service
+
+- https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/
+- https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#services

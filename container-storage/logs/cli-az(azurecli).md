@@ -1,3 +1,5 @@
+> ## cli
+
 ```
 # Initialize CLI.
 sudo apt-get update
@@ -46,6 +48,13 @@ az aks show -g $rg -n aks | jq .accessToken
 az extension remove --name aks-preview
 ```
 
+- https://docs.microsoft.com/en-us/cli/azure
+- https://github.com/azure/azure-cli/releases: for the most recent version of azure-cli and approximately when it became publicly available as an upgrade (in azure-cli).
+- https://github.com/MicrosoftDocs/azure-docs-cli/pulls?q=is%3Apr+is%3Aopen+release+note: PR detailing the fixes that have been included for the upcoming release
+- https://learn.microsoft.com/en-us/cli/azure/release-notes-azure-cli
+
+> ## cli.aks
+
 ```
 az aks install-cli
 The detected architecture of current device is "x86_64", and the binary for "amd64" will be downloaded. If the detection is wrong, please download and install the binary corresponding to the appropriate architecture.
@@ -63,10 +72,10 @@ Latest version of 'aks-preview' is already installed.
 Use --debug for more information
 ```
 
-- https://docs.microsoft.com/en-us/cli/azure
-- https://github.com/azure/azure-cli/releases: for the most recent version of azure-cli and approximately when it became publicly available as an upgrade (in azure-cli).
-- https://github.com/MicrosoftDocs/azure-docs-cli/pulls?q=is%3Apr+is%3Aopen+release+note: PR detailing the fixes that have been included for the upcoming release
-- https://learn.microsoft.com/en-us/cli/azure/release-notes-azure-cli
+- https://learn.microsoft.com/en-us/cli/azure/release-notes-azure-cli#aks
+- https://github.com/Azure/AKS/blob/master/CHANGELOG.md: CLI
+
+> ## cli.ps
 
 ```
 # Initialize Azure PowerShell (admin window)

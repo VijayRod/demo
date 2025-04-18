@@ -98,6 +98,8 @@ Address: 2a00:1450:400f:80c::200e
 - https://learn.microsoft.com/en-us/azure/virtual-network/virtual-networks-name-resolution-for-vms-and-role-instances
 - https://learn.microsoft.com/en-us/azure/virtual-network/virtual-networks-faq#name-resolution-dns
 - https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/connectivity/troubleshoot-dns-failures-across-an-aks-cluster-in-real-time#step-3-verify-the-health-of-the-upstream-dns-servers: kubectl gadget trace dns -n kube-system -l k8s-app=kube-dns -o columns=k8s,id,qr,name,rcode,nameserver,latency -F nameserver:168.63.129.16
+- https://learn.microsoft.com/en-us/azure/virtual-network/what-is-ip-address-168-63-129-16?tabs=windows: Enables communication with the DNS virtual server. 168.63.129.16 can provide DNS services to the VM.
+- https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/connectivity/troubleshoot-dns-failures-across-an-aks-cluster-in-real-time#step-3-verify-the-health-of-the-upstream-dns-servers: the default Azure DNS Server (IP address 168.63.129.16)
 
 > ## dns.azure.azuredns..custom-dns
 - https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/connectivity/troubleshoot-dns-failures-across-an-aks-cluster-in-real-time#step-3-verify-the-health-of-the-upstream-dns-servers

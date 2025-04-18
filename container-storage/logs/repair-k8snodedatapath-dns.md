@@ -11,6 +11,21 @@
 ## dns..debug
 
 ```
+# misc
+
+nslookup example.com
+
+grep ' R ' dnstrace-file  | awk '{print $NF}' | grep -v -e ms -e µs | sort -nr | head # dnstrace a example.com 8.8.8.8
+
+dig example.com
+
+Steady ping to the custom DNS server, e.g., ping -D -O -n -W 20 8.8.8.8 >l 2>&1 # grep -A 2 -B 2 'no answer' l 
+# grep 'no answer yet for icmp_seq=' # grep 'timed'
+
+wireshark: dns.qry.name=="example.com" and ip.addr==168.63.129.16
+```
+
+```
 # See the note below on https://www.digwebinterface.com/
 
 # dig google.com

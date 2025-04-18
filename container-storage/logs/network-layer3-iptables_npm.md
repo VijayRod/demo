@@ -21,6 +21,18 @@ azure-npm   1         1         1       1            1           <none>         
 - https://learn.microsoft.com/en-us/azure/aks/use-network-policies#network-policy-options-in-aks
 - https://github.com/Azure/AKS/issues/2792: NPM pods watch pod, namespace and netpol related events
 - https://learn.microsoft.com/en-us/azure/aks/use-network-policies#network-policy-options-in-aks: To enforce the specified policies, Azure Network Policy Manager for Linux uses Linux IPTables. Azure Network Policy Manager for Windows uses Host Network Service (HNS) ACLPolicies. Policies are translated into sets of allowed and disallowed IP pairs. These pairs are then programmed as IPTable or HNS ACLPolicy filter rules.
+
+> ## k8s-networkpolicy.spec.provider.azure.policy.npm.debug
+
+```
+# The performance of NPM depends on pod labels as one of the factors.
+kubectl get pods --all-namespaces -o jsonpath='{range .items[*]}{.metadata.labels}{"\n"}{end}' | jq -c 'to_entries[] | "\(.key)=\(.value)"' | sort | uniq | wc -l
+
+# The recommendation is to transition from npm to Cilium.
+```
+
+- https://github.com/Azure/azure-container-networking/blob/master/docs/npm.md#troubleshooting
+- https://learn.microsoft.com/en-us/azure/aks/use-network-policies#limitations-of-azure-network-policy-manager
   
 ## k8s-networkpolicy.spec.provider.azure.policy.npm.disable
 

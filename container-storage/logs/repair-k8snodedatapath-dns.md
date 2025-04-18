@@ -307,10 +307,21 @@ kubectl exec -it dnsutils -- nslookup db.private.contoso.com
 
 > ## dns.k8s.InspektorGadget (ig)
 
+- https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/logs/capture-system-insights-from-aks
+- https://www.inspektor-gadget.io/docs/latest/core-concepts/architecture/
+- https://www.inspektor-gadget.io/docs/latest/ig/: It uses eBPF as its underlying core technology
+- https://github.com/inspektor-gadget/inspektor-gadget
+
+> ### ig..gadgets
+
+- https://inspektor-gadget.io/docs/latest/gadgets/
+  
 > ### ig.aks
 
 ```
 # without install
+
+root@aks-nodepool1-26220731-vmss000000:/# ig version
 
 kubectl run busybox --image=busybox --command -it --rm -- wget https://www.example.com
 root@aks-nodepool1-26220731-vmss000000:/# ig trace tcp -F dst.addr:93.184.216.34

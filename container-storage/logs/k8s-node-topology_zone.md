@@ -135,6 +135,30 @@ Events:
 - https://learn.microsoft.com/en-us/azure/aks/availability-zones: The availability zones that the managed control plane components are deployed into are not controlled by this parameter (az aks create --zones). They are automatically spread across all availability zones (if present) in the region during cluster deployment.
 - https://github.com/Azure/AKS/issues/3493: [Feature] Convert all clusters with non-AZ enabled control planes to be AZ enabled
 
+> ## k8s-node-topology_zone.azure.aks.cluster-autoscaler
+
+```
+rg=rg
+az group create -n $rg -l $loc
+az aks create -g $rg -n akszone --zones 1 2 3 --enable-cluster-autoscaler --min-count 1 --max-count 10 -s $vmsize -c 2 # max 10 for cost optimization limit
+# az aks update -g $rg -n akszone --enable-cluster-autoscaler --min-count 1 --max-count 10
+# az aks update -g $rg -n akszone --update-cluster-autoscaler --min-count 1 --max-count 10
+az aks get-credentials -g $rg -n akszone --overwrite-existing
+kubectl get no; kubectl get po -A
+
+az vmss list-instances -g MC_rg_akszone_swedencentral -n aks-nodepool1-14795161-vmss --query "[].{Instance:instanceId, Zone:zones[0]}" -o table
+Instance    Zone
+----------  ------
+1           2
+2           1
+3           3
+4           1
+5           2
+```
+
+- https://learn.microsoft.com/en-us/azure/aks/cluster-autoscaler?tabs=azure-cli: If you plan on using the cluster autoscaler with node pools that span multiple zones and leverage scheduling features related to zones, such as volume topological scheduling, we recommend you have one node pool per zone and enable --balance-similar-node-groups through the autoscaler profile. This ensures the autoscaler can successfully scale up and keep the sizes of the node pools balanced.
+- https://github.com/kubernetes/autoscaler/blob/master/cluster-autoscaler/FAQ.md#im-running-cluster-with-nodes-in-multiple-zones-for-ha-purposes-is-that-supported-by-cluster-autoscaler
+
 ## k8s-node-topology_zone.azure.vm
 
 - https://learn.microsoft.com/en-us/azure/virtual-machines/availability

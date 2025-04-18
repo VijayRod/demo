@@ -188,6 +188,12 @@ az group delete -n $rgname -y --no-wait
 - https://learn.microsoft.com/en-us/azure/virtual-machines/sizes/gpu-accelerated/nc-series?tabs=sizebasic: NC-series VMs are powered by the NVIDIA Tesla K80 card and the Intel Xeon E5-2690 v3 (Haswell) processor.
 - https://learn.microsoft.com/en-us/azure/virtual-machines/sizes/gpu-accelerated/nd-series?tabs=sizebasic: ND instances are powered by NVIDIA Tesla P40 GPUs and Intel Xeon E5-2690 v4 (Broadwell) CPUs.
 
+> ## nvidia.cuda.mps (Multi-Process Service)
+
+- https://cloud.google.com/kubernetes-engine/docs/how-to/nvidia-mps-gpus
+- https://massedcompute.com/faq-answers/?question=How%20do%20I%20configure%20NVIDIA%20MPS%20in%20a%20Kubernetes%20cluster
+- https://learn.microsoft.com/en-us/azure/databox-online/azure-stack-edge-gpu-deploy-kubernetes-gpu-sharing
+
 ## cpu.gpu.driver.nvidia.cuda.version
 
 - *https://docs.nvidia.com/cuda/cuda-toolkit-release-notes/index.html#id5: Table 3 CUDA Toolkit and Corresponding Driver Versions

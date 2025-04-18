@@ -27,6 +27,26 @@ apt update -y && apt install tcpdump -y && tcpdump host redis3696.redis.cache.wi
 - https://wizardzines.com/zines/tcpdump/: tutorial
 - https://superuser.com/questions/925286/does-tcpdump-bypass-iptables: tcpdump is the first software found after the wire (and the NIC, if you will) on the way IN, and the last one on the way OUT....
 
+```
+# single command tcpdump
+
+timeout 5 tcpdump port 443 &
+curl https://example.com
+wait
+
+tcpdump port 443 &
+TCPDUMP_PID=$!
+curl https://example.com
+sleep 2
+kill $TCPDUMP_PID
+
+tcpdump &
+TCPDUMP_PID=$!
+curl https://coredns.io
+sleep 2
+kill $TCPDUMP_PID
+```
+
 ## tcpdump.capture.export.etl.pcapng
 
 ```

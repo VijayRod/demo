@@ -171,4 +171,4 @@ az vmss list-instances -g MC_rg_akszone_swedencentral -n aks-nodepool1-14795161-
 
 - https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/virtual-machine-scale-sets-use-availability-zones
 - https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/virtual-machine-scale-sets-use-availability-zones?tabs=portal-2
-
+- https://learn.microsoft.com/en-us/answers/questions/2244697/how-can-i-check-the-availability-of-nodes-in-a-zon: Azure does not guarantee an even distribution of nodes across those zones, it tries to balance them, but availability and quota per zone can affect placement.

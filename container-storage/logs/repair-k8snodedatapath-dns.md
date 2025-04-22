@@ -125,6 +125,11 @@ pod.dnspolicy set to default, rather than ClusterFirst, will not use coredns but
 - https://learn.microsoft.com/en-us/azure/dns/dns-zones-records#dns-records
 
 > ## dns.azure.azuredns
+
+```
+# Refer azurevm
+```
+
 - https://learn.microsoft.com/en-us/azure/dns/dns-overview
 - https://learn.microsoft.com/en-us/azure/virtual-network/virtual-networks-name-resolution-for-vms-and-role-instances
 - https://learn.microsoft.com/en-us/azure/virtual-network/virtual-networks-faq#name-resolution-dns
@@ -151,6 +156,31 @@ sudo dhclient -r eth0 && sudo dhclient eth0
 - https://learn.microsoft.com/en-us/azure/architecture/networking/architecture/azure-dns-private-resolver
 - https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/azure-subscription-service-limits#azure-provided-dns-resolver-vm-limits
 - tbd https://techcommunity.microsoft.com/blog/azureinfrastructureblog/centralized-private-resolver-architecture-implementation-using-azure-private-dns/4132622
+
+> ## dns.azure.azurevm (virtual machine)
+
+```
+# Refer azuredns
+```
+
+- https://xkln.net/blog/dns-name-resolution-in-azure/
+
+```
+# limit.azuredns.vm
+# Alternatives: caching (dnsmasq/CoreDNS), DNS forwarding, Azure DNS Private Resolver, distributing DNS query load across VMs (application dependent)
+```
+- https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/azure-subscription-service-limits#azure-dns-limits
+- https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/azure-subscription-service-limits#azure-provided-dns-resolver-vm-limits: These limits are applied to every individual virtual machine.. DNS queries exceeding these limits are dropped.. apply to the default Azure resolver (168.63.129.16)
+- https://learn.microsoft.com/en-gb/answers/questions/1332572/can-we-have-more-than-1000-queries-on-virtual-mach
+- https://learn.microsoft.com/en-us/answers/questions/1375896/where-can-i-find-azure-%28private%29-dns-network-limit: NSG flow logs
+- https://learn.microsoft.com/en-us/azure/dns/dns-faq#what-are-the-usage-limits-for-azure-dns-
+
+```
+# limit.network-throughput.azurevm
+# scale up (increase SKU) or scale out (distribute application load)
+```
+- https://learn.microsoft.com/en-us/azure/virtual-network/virtual-machine-network-throughput: Larger virtual machines are allocated relatively more bandwidth than smaller virtual machines.
+- https://learn.microsoft.com/en-us/azure/virtual-machines/sizes/general-purpose/d-family: Network (Mbps)
 
 > ## dns.azure.zone
 

@@ -93,6 +93,22 @@ Address: 2a00:1450:400f:80c::200e
 
 - https://www.digwebinterface.com/: type the fqdn, and press Dig. It will display the IP if the full fqdn can be resolved publicly, even if its linked to a private IP, like those used in AKS private clusters. If not, , it will show the part of the fqdn that can be resolved by the dns server.
 
+```
+# ttl (seconds) in the DNS protocol
+# different from ttl (hops) in the IP protocol
+
+dig +nocmd example +noall +answer # example.com.            295     IN      A       23.192.228.80 (i.e., 295 seconds)
+
+wireshark: dns and dns.qry.name=="example.com" and ip.addr==168.63.129.16 # check if A record requests for the same fqdn are repeated in less than the ttl time, for example, by coredns. 
+# this indicates caching issues and results in load on the dns query path
+
+coredns.configmap: cache 30
+
+coredns.configmap: forward . /etc/resolv.conf # the upstream dns server might have a lower ttl, which can be checked using dig
+
+pod.dnspolicy set to default, rather than ClusterFirst, will not use coredns but will instead use the host's dns.
+```
+
 ## dns..server.relay
 
 - https://support.huawei.com/enterprise/en/knowledge/EKB1000075807: FAQ-In What Scenarios Should I Use the DNS Relay Function. The DNS proxy or relay function enables a DNS client on a LAN to connect to an external DNS server. After the external DNS server translates the domain name of the DNS client to an IP address, the DNS client can access the Internet.
@@ -161,6 +177,90 @@ kubectl -n kube-system top pod | grep coredns
 - https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/connectivity/troubleshoot-dns-failures-across-an-aks-cluster-in-real-time
 - https://kubernetes.io/docs/tasks/administer-cluster/dns-custom-nameservers/#coredns: complying with the DNS specifications
 - https://github.com/kubernetes/dns/blob/master/docs/specification.md
+
+```
+# app and coredns pods on different nodes
+k get po -A -owide | grep -E 'coredns|nginx'; k get no
+kubectl delete po nginx
+kubectl run nginx --image=nginx --overrides='{"spec": { "nodeSelector": {"kubernetes.io/hostname": "aks-nodepool1-16317344-vmss000001"}}}' # --dry-run client -oyaml
+kubectl exec -it nginx -- curl https://openai.com
+k cordon aks-nodepool1-16317344-vmss000001 aks-nodepool1-16317344-vmss000002
+kubectl -n kube-system rollout restart deployment coredns
+clear; tcpdump port 53
+
+# app pod node
+# nginx pod 10.244.1.48 in node vmss000001; 10.244.0.229 and 10.244.0.241 are coredns pods in node vmss000000
+# app pod queries the coredns pod for the A record
+root@aks-nodepool1-16317344-vmss000001:/# tcpdump port 53
+tcpdump: verbose output suppressed, use -v[v]... for full protocol decode
+listening on eth0, link-type EN10MB (Ethernet), snapshot length 262144 bytes
+^C18:07:11.872179 IP 10.244.1.48.58473 > 10.244.0.229.domain: 14937+ A? openai.com.default.svc.cluster.local. (54)
+18:07:11.872190 IP 10.244.1.48.58473 > 10.244.0.229.domain: 17316+ AAAA? openai.com.default.svc.cluster.local. (54)
+18:07:11.887111 IP 10.244.0.229.domain > 10.244.1.48.58473: 17316 NXDomain*- 0/1/0 (147)
+18:07:11.887111 IP 10.244.0.229.domain > 10.244.1.48.58473: 14937 NXDomain*- 0/1/0 (147)
+18:07:11.887198 IP 10.244.1.48.40978 > 10.244.0.229.domain: 51534+ A? openai.com.svc.cluster.local. (46)
+18:07:11.887204 IP 10.244.1.48.40978 > 10.244.0.229.domain: 41804+ AAAA? openai.com.svc.cluster.local. (46)
+18:07:11.888046 IP 10.244.0.229.domain > 10.244.1.48.40978: 41804 NXDomain*- 0/1/0 (139)
+18:07:11.888046 IP 10.244.0.229.domain > 10.244.1.48.40978: 51534 NXDomain*- 0/1/0 (139)
+18:07:11.888094 IP 10.244.1.48.49922 > 10.244.0.241.domain: 25886+ A? openai.com.cluster.local. (42)
+18:07:11.888100 IP 10.244.1.48.49922 > 10.244.0.241.domain: 2816+ AAAA? openai.com.cluster.local. (42)
+18:07:11.889558 IP 10.244.0.241.domain > 10.244.1.48.49922: 2816 NXDomain*- 0/1/0 (135)
+18:07:11.889559 IP 10.244.0.241.domain > 10.244.1.48.49922: 25886 NXDomain*- 0/1/0 (135)
+18:07:11.889595 IP 10.244.1.48.59423 > 10.244.0.241.domain: 35643+ A? openai.com.l13s53dgmqzeng4qvhnihfn1bc.gvxx.internal.cloudapp.net. (82)
+18:07:11.889601 IP 10.244.1.48.59423 > 10.244.0.241.domain: 62781+ AAAA? openai.com.l13s53dgmqzeng4qvhnihfn1bc.gvxx.internal.cloudapp.net. (82)
+18:07:11.898616 IP 10.244.0.241.domain > 10.244.1.48.59423: 35643 NXDomain*- 0/0/0 (82)
+18:07:11.898616 IP 10.244.0.241.domain > 10.244.1.48.59423: 62781 NXDomain*- 0/0/0 (82)
+18:07:11.898672 IP 10.244.1.48.58210 > 10.244.0.241.domain: 33240+ A? openai.com. (28)
+18:07:11.898678 IP 10.244.1.48.58210 > 10.244.0.241.domain: 63454+ AAAA? openai.com. (28)
+18:07:11.906718 IP 10.244.0.241.domain > 10.244.1.48.58210: 63454 0/1/0 (127)
+18:07:11.907595 IP 10.244.0.241.domain > 10.244.1.48.58210: 33240 2/0/0 A 172.64.154.211, A 104.18.33.45 (80)
+18:07:11.987967 IP aks-nodepool1-16317344-vmss000001.internal.cloudapp.net.38296 > 168.63.129.16.domain: 27347+ PTR? 229.0.244.10.in-addr.arpa. (43)
+18:07:12.011232 IP 168.63.129.16.domain > aks-nodepool1-16317344-vmss000001.internal.cloudapp.net.38296: 27347 NXDomain 0/1/0 (132)
+18:07:12.011362 IP aks-nodepool1-16317344-vmss000001.internal.cloudapp.net.33550 > 168.63.129.16.domain: 20675+ PTR? 48.1.244.10.in-addr.arpa. (42)
+18:07:12.014900 IP 168.63.129.16.domain > aks-nodepool1-16317344-vmss000001.internal.cloudapp.net.33550: 20675 NXDomain 0/1/0 (131)
+18:07:12.051257 IP aks-nodepool1-16317344-vmss000001.internal.cloudapp.net.42760 > 168.63.129.16.domain: 34735+ PTR? 241.0.244.10.in-addr.arpa. (43)
+18:07:12.061228 IP 168.63.129.16.domain > aks-nodepool1-16317344-vmss000001.internal.cloudapp.net.42760: 34735 NXDomain 0/1/0 (132)
+18:07:12.061398 IP aks-nodepool1-16317344-vmss000001.internal.cloudapp.net.40797 > 168.63.129.16.domain: 16911+ PTR? 16.129.63.168.in-addr.arpa. (44)
+18:07:12.062860 IP 168.63.129.16.domain > aks-nodepool1-16317344-vmss000001.internal.cloudapp.net.40797: 16911 NXDomain 0/1/0 (130)
+18:07:12.062921 IP aks-nodepool1-16317344-vmss000001.internal.cloudapp.net.38976 > 168.63.129.16.domain: 52539+ PTR? 5.0.224.10.in-addr.arpa. (41)
+18:07:12.073303 IP 168.63.129.16.domain > aks-nodepool1-16317344-vmss000001.internal.cloudapp.net.38976: 52539 1/0/0 PTR aks-nodepool1-16317344-vmss000001.internal.cloudapp.net. (110)
+
+# coredns pods on this node
+# coredns pod queries the default azure dns server for the A record
+root@aks-nodepool1-16317344-vmss000000:/# tcpdump port 53
+tcpdump: verbose output suppressed, use -v[v]... for full protocol decode
+listening on eth0, link-type EN10MB (Ethernet), snapshot length 262144 bytes
+^C18:07:11.884017 IP 10.244.1.48.58473 > 10.244.0.229.domain: 14937+ A? openai.com.default.svc.cluster.local. (54)
+18:07:11.884017 IP 10.244.1.48.58473 > 10.244.0.229.domain: 17316+ AAAA? openai.com.default.svc.cluster.local. (54)
+18:07:11.884306 IP 10.244.0.229.domain > 10.244.1.48.58473: 17316 NXDomain*- 0/1/0 (147)
+18:07:11.884336 IP 10.244.0.229.domain > 10.244.1.48.58473: 14937 NXDomain*- 0/1/0 (147)
+18:07:11.887538 IP 10.244.1.48.40978 > 10.244.0.229.domain: 51534+ A? openai.com.svc.cluster.local. (46)
+18:07:11.887538 IP 10.244.1.48.40978 > 10.244.0.229.domain: 41804+ AAAA? openai.com.svc.cluster.local. (46)
+18:07:11.887697 IP 10.244.0.229.domain > 10.244.1.48.40978: 41804 NXDomain*- 0/1/0 (139)
+18:07:11.887765 IP 10.244.0.229.domain > 10.244.1.48.40978: 51534 NXDomain*- 0/1/0 (139)
+18:07:11.888883 IP 10.244.1.48.49922 > 10.244.0.241.domain: 25886+ A? openai.com.cluster.local. (42)
+18:07:11.888883 IP 10.244.1.48.49922 > 10.244.0.241.domain: 2816+ AAAA? openai.com.cluster.local. (42)
+18:07:11.889037 IP 10.244.0.241.domain > 10.244.1.48.49922: 2816 NXDomain*- 0/1/0 (135)
+18:07:11.889058 IP 10.244.0.241.domain > 10.244.1.48.49922: 25886 NXDomain*- 0/1/0 (135)
+18:07:11.895243 IP 10.244.1.48.59423 > 10.244.0.241.domain: 35643+ A? openai.com.l13s53dgmqzeng4qvhnihfn1bc.gvxx.internal.cloudapp.net. (82)
+18:07:11.895243 IP 10.244.1.48.59423 > 10.244.0.241.domain: 62781+ AAAA? openai.com.l13s53dgmqzeng4qvhnihfn1bc.gvxx.internal.cloudapp.net. (82)
+18:07:11.895362 IP 10.244.0.241.domain > 10.244.1.48.59423: 35643 NXDomain*- 0/0/0 (82)
+18:07:11.895389 IP 10.244.0.241.domain > 10.244.1.48.59423: 62781 NXDomain*- 0/0/0 (82)
+18:07:11.903133 IP 10.244.1.48.58210 > 10.244.0.241.domain: 33240+ A? openai.com. (28)
+18:07:11.903133 IP 10.244.1.48.58210 > 10.244.0.241.domain: 63454+ AAAA? openai.com. (28)
+18:07:11.903311 IP aks-nodepool1-16317344-vmss000000.internal.cloudapp.net.52267 > 168.63.129.16.domain: 7764+ [1au] AAAA? openai.com. (39)
+18:07:11.903369 IP aks-nodepool1-16317344-vmss000000.internal.cloudapp.net.54632 > 168.63.129.16.domain: 20080+ [1au] A? openai.com. (39)
+18:07:11.905989 IP 168.63.129.16.domain > aks-nodepool1-16317344-vmss000000.internal.cloudapp.net.52267: 7764 0/1/1 (122)
+18:07:11.906071 IP 10.244.0.241.domain > 10.244.1.48.58210: 63454 0/1/0 (127)
+18:07:11.907270 IP 168.63.129.16.domain > aks-nodepool1-16317344-vmss000000.internal.cloudapp.net.54632: 20080 2/0/1 A 172.64.154.211, A 104.18.33.45 (71)
+18:07:11.907347 IP 10.244.0.241.domain > 10.244.1.48.58210: 33240 2/0/0 A 172.64.154.211, A 104.18.33.45 (80)
+18:07:11.940285 IP aks-nodepool1-16317344-vmss000000.internal.cloudapp.net.54797 > 168.63.129.16.domain: 11467+ PTR? 229.0.244.10.in-addr.arpa. (43)
+18:07:11.943980 IP 168.63.129.16.domain > aks-nodepool1-16317344-vmss000000.internal.cloudapp.net.54797: 11467 NXDomain 0/1/0 (132)
+18:07:11.944063 IP aks-nodepool1-16317344-vmss000000.internal.cloudapp.net.52304 > 168.63.129.16.domain: 9955+ PTR? 48.1.244.10.in-addr.arpa. (42)
+18:07:11.955673 IP 168.63.129.16.domain > aks-nodepool1-16317344-vmss000000.internal.cloudapp.net.52304: 9955 NXDomain 0/1/0 (131)
+18:07:11.955811 IP aks-nodepool1-16317344-vmss000000.internal.cloudapp.net.54891 > 168.63.129.16.domain: 61926+ PTR? 241.0.244.10.in-addr.arpa. (43)
+18:07:11.959192 IP 168.63.129.16.domain > aks-nodepool1-16317344-vmss000000.internal.cloudapp.net.54891: 61926 NXDomain 0/1/0 (132)
+```
 
 > ## dns.k8s.coredns.configmap.custom (corefile)
 
@@ -446,6 +546,7 @@ aks-nodepool1-3…974-vmss000002 default                        dnsutils        
 ```
 kubectl run nginx --image=nginx
 kubectl exec -it nginx -- /bin/bash # -- curl google.com -I # apt-get update -y && apt-get install dnsutils tcpdump -y
+kubectl exec -it nginx -- curl https://openai.com
 ```
 
 - https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/

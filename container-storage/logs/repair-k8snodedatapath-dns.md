@@ -431,11 +431,46 @@ kubectl exec -it dnsutils -- nslookup db.private.contoso.com
 - https://qasim-sarfraz.medium.com/dns-caching-gone-wrong-a329dc00452e
 
 > ## dns.k8s.coredns.plugin.forward
-```
-# force_tcp, use TCP even when the request comes in over UDP
-```
+
 - https://coredns.io/plugins/forward/
 - https://learn.microsoft.com/en-us/azure/aks/coredns-custom#custom-forward-server
+
+```
+# force_tcp, use TCP even when the request comes in over UDP
+
+# coredns is in CrashLoopBackOff with "Unknown directive 'force_tcp'" if the forward plugin is not specified for a particular zone, as it otherwise conflicts with the main coredns configmap
+cat << EOF | kubectl apply -f -
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: coredns-custom
+  namespace: kube-system
+data:
+  custom.server: |
+    openai.com:53 {
+      forward . /etc/resolv.conf {
+        force_tcp
+      }
+    }
+EOF
+kubectl get cm -n kube-system coredns-custom -oyaml
+kubectl -n kube-system rollout restart deployment coredns
+kubectl get po -n kube-system -l k8s-app=kube-dns
+
+kubectl exec -it nginx -- curl https://openai.com
+
+# node hosting coredns shows tcp used for the A record per the flag [P.], seq etc.
+root@aks-nodepool1-16317344-vmss000000:/# tcpdump port 53
+18:01:22.312965 IP aks-nodepool1-16317344-vmss000000.internal.cloudapp.net.55916 > 168.63.129.16.domain: Flags [P.], seq 1:31, ack 1, win 502, options [nop,nop,TS val 1638839261 ecr 725819951], length 30 2541+ A? openai.com. (28)
+
+# dig server response indicates tcp; otherwise, it says udp
+dig +tcp openai.com
+;; ANSWER SECTION:
+openai.com.             36      IN      A       172.64.154.211
+openai.com.             36      IN      A       104.18.33.45
+;; Query time: 291 msec
+;; SERVER: 168.63.129.16#53(168.63.129.16) (TCP)
+```
 
 > ## dns.k8s.coredns.plugin.hosts
 - https://coredns.io/plugins/hosts/

@@ -651,7 +651,7 @@ aks-nodepool1-14795161-vmss000004:/# tcpdump port 53
 > ## dns.k8s.pod.dnsconfig
 
 ```
-kubectl delete po nginx
+kubectl delete po dns-example
 cat << EOF | kubectl apply -f -
 apiVersion: v1
 kind: Pod
@@ -662,10 +662,12 @@ spec:
   containers:
     - name: test
       image: nginx
-  dnsPolicy: "None"
+  dnsPolicy: None
   dnsConfig:
     nameservers:
       - 168.63.129.16 # this is an example
+  nodeSelector:
+    kubernetes.io/hostname: aks-nodepool1-16317344-vmss000002
 EOF
 sleep 10
 kubectl get po dns-example -owide

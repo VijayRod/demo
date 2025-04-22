@@ -48,6 +48,10 @@ cat: /dev/vmbus/hv_kvp: Device or resource busy
 
 - https://learn.microsoft.com/en-us/windows-server/networking/technologies/pktmon/pktmon#overview: extended networking stack now includes components like the Virtual Switch that handle packet processing and switching.
 
+## hyperv.VMBus.child-partition[].IntegrationServices.VSC.hvnetvsc.VirtualSwitch.VFP (Virtual Filtering Platform)
+
+- https://www.microsoft.com/en-us/research/wp-content/uploads/2017/03/vfp-nsdi-2017-final.pdf: VFP: A Virtual Switch Platform for Host SDN in the Public Cloud
+
 ## hyperv.VMBus.child-partition[].IntegrationServices.VSC.storvsc
 
 - https://github.com/torvalds/linux/blob/master/drivers/scsi/storvsc_drv.c

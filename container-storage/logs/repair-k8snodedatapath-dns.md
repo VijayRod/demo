@@ -168,6 +168,7 @@ sudo dhclient -r eth0 && sudo dhclient eth0
 ```
 # limit.azuredns.vm
 # Alternatives: caching (dnsmasq/CoreDNS), DNS forwarding, Azure DNS Private Resolver, distributing DNS query load across VMs (application dependent)
+# https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/azure-subscription-service-limits#azure-provided-dns-resolver-vm-limits: DNS queries exceeding these limits are dropped
 ```
 - https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/azure-subscription-service-limits#azure-dns-limits
 - https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/azure-subscription-service-limits#azure-provided-dns-resolver-vm-limits: These limits are applied to every individual virtual machine.. DNS queries exceeding these limits are dropped.. apply to the default Azure resolver (168.63.129.16)
@@ -181,6 +182,16 @@ sudo dhclient -r eth0 && sudo dhclient eth0
 ```
 - https://learn.microsoft.com/en-us/azure/virtual-network/virtual-machine-network-throughput: Larger virtual machines are allocated relatively more bandwidth than smaller virtual machines.
 - https://learn.microsoft.com/en-us/azure/virtual-machines/sizes/general-purpose/d-family: Network (Mbps)
+- https://learn.microsoft.com/en-us/azure/virtual-network/virtual-machine-network-throughput#expected-network-throughput
+
+```
+# limit.network-flow.azurevm
+# https://learn.microsoft.com/en-us/azure/virtual-network/virtual-machine-network-throughput#network-flow-limits: Once this limit is hit, other connections are dropped.
+```
+
+- https://learn.microsoft.com/en-us/azure/virtual-network/virtual-machine-network-throughput#network-flow-limits: VMs that belong to a virtual network can handle 500k active connections for all VM sizes with 500k active flows in each direction.
+  VMs with NVAs such as gateway, proxy, firewall can handle 250k active connections with 500k active flows in each direction..
+  Once this limit is hit, other connections are dropped.
 
 > ## dns.azure.zone
 

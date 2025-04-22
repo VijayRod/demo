@@ -306,7 +306,63 @@ listening on eth0, link-type EN10MB (Ethernet), snapshot length 262144 bytes
 > ## dns.k8s.coredns.configmap.custom (corefile)
 
 ```
-kubectl describe cm -n kube-system coredns-autoscaler # in a default cluster
+# a default-created aks cluster includes the coredns and the empty coredns-custom config maps
+
+k describe cm -n kube-system coredns-custom
+Name:         coredns-custom
+Namespace:    kube-system
+Labels:       addonmanager.kubernetes.io/mode=EnsureExists
+              k8s-app=kube-dns
+              kubernetes.io/cluster-service=true
+Annotations:  <none>
+Data
+====
+BinaryData
+====
+Events:  <none>
+
+k describe cm -n kube-system coredns
+Name:         coredns
+Namespace:    kube-system
+Labels:       addonmanager.kubernetes.io/mode=Reconcile
+              k8s-app=kube-dns
+              kubernetes.io/cluster-service=true
+Annotations:  <none>
+Data
+====
+Corefile:
+----
+.:53 {
+    errors
+    ready
+    health {
+      lameduck 5s
+    }
+    kubernetes cluster.local in-addr.arpa ip6.arpa {
+      pods insecure
+      fallthrough in-addr.arpa ip6.arpa
+      ttl 30
+    }
+    prometheus :9153
+    forward . /etc/resolv.conf
+    cache 30
+    loop
+    reload
+    loadbalance
+    import custom/*.override
+    template ANY ANY internal.cloudapp.net {
+      match "^(?:[^.]+\.){4,}internal\.cloudapp\.net\.$"
+      rcode NXDOMAIN
+      fallthrough
+    }
+    template ANY ANY reddog.microsoft.com {
+      rcode NXDOMAIN
+    }
+}
+import custom/*.server
+BinaryData
+====
+Events:  <none>
 ```
 
 - https://github.com/kubernetes-sigs/cluster-proportional-autoscaler#control-patterns-and-configmap-formats
@@ -314,9 +370,16 @@ kubectl describe cm -n kube-system coredns-autoscaler # in a default cluster
 - https://coredns.io/2017/07/23/corefile-explained/
 - https://kubernetes.io/docs/tasks/administer-cluster/dns-debugging-resolution/#are-dns-queries-being-received-processed: After saving the changes, it may take up to minute or two for Kubernetes to propagate these changes to the CoreDNS pods.
 
-> ## dns.k8s.coredns.configmap.custom.ladder
+> ## dns.k8s.coredns.pod.autoscaler
 
 ```
+kubectl describe cm -n kube-system coredns-autoscaler # in a default cluster
+```
+- https://learn.microsoft.com/en-us/azure/aks/coredns-custom#configure-coredns-pod-scaling
+
+```
+# coredns-autoscaler.configmap.data.ladder
+
 # 8 replicas
 k get po -n kube-system -l k8s-app=kube-dns
 cat << EOF | kubectl apply -f -
@@ -332,13 +395,6 @@ k get po -n kube-system -l k8s-app=kube-dns -w
 ```
 
 - https://github.com/kubernetes-sigs/cluster-proportional-autoscaler?tab=readme-ov-file#ladder-mode
-
-> ## dns.k8s.coredns.pod.autoscaler
-
-```
-# See coredns config map
-```
-- https://learn.microsoft.com/en-us/azure/aks/coredns-custom#configure-coredns-pod-scaling
 
 > ## dns.k8s.coredns.pod.autoscaler.OOMKilled
 
@@ -425,6 +481,10 @@ kubectl exec -it dnsutils -- nslookup db.private.contoso.com
 ```
 
 - https://learn.microsoft.com/en-us/azure/aks/coredns-custom#use-custom-domains
+
+
+> ## dns.k8s.coredns.plugin.cache
+- https://github.com/coredns/coredns/blob/master/plugin/cache/README.md
 
 > ## dns.k8s.coredns.plugin.header
 - https://coredns.io/plugins/header/

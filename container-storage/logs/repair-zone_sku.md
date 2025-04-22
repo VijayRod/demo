@@ -1,4 +1,4 @@
-## sku
+## sku (vmsize)
 
 ```
 # See the sections on dedicated host and ppg
@@ -21,7 +21,12 @@ virtualMachines Standard_D4ls_v5 westeurope {1, 2, 3} type: Zone, locations: wes
 - https://azure.microsoft.com/en-us/pricing/vm-selector/
 
 ```
-# error.SkuNotAvailable.The requested size for resource '/subscriptions/.../virtualMachines/myVM' is currently not available in location 'westeurope' zones '2' for subscription '111.....111'
+# sku.api
+```
+- https://github.com/Azure/skewer/blob/main/sku.go
+
+```
+# sku.error.SkuNotAvailable.The requested size for resource '/subscriptions/.../virtualMachines/myVM' is currently not available in location 'westeurope' zones '2' for subscription '111.....111'
 
 # Get-AzVMSize in that sub
 ```

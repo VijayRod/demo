@@ -58,6 +58,17 @@ for i in {2..100}; do az aks nodepool delete -g $rg --cluster-name aks -n nodepo
 - https://github.com/Azure/AKS/?tab=readme-ov-file#important-links
 - https://cloud.google.com/kubernetes-engine/docs/troubleshooting
 
+```
+# logs node
+
+noderg=$(az aks show -g $rg -n aks --query nodeResourceGroup -o tsv)   
+az vmss run-command invoke -g $noderg -n aks --instance-id 0 --command-id RunShellScript --scripts 'zip -r /tmp/varlog-vmss000000.zip /var/log/*' --query value[0].message -o tsv
+
+kubectl cp node-debugger-{node-name-xxxx}:/host/var/log/messages /tmp/messages
+kubectl cp node-debugger-{node-name-xxxx}:/host/var/log/syslog /tmp/syslog
+kubectl cp node-debugger-{node-name-xxxx}:/host/var/log/kern.log /tmp/kern.log
+```
+
 ## aks.core.reconcile
 
 ```

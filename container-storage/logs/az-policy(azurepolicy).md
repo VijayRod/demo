@@ -1,3 +1,7 @@
+## az-policy
+- https://play.openpolicyagent.org/
+- https://play.openpolicyagent.org/p/Ru3SQhM4PZ
+
 ## az-policy.builtin
 
 ```
@@ -17,6 +21,8 @@ az policy assignment list -otable | grep c5110b6e # success
 ```
 
 - https://github.com/Azure/azure-policy/tree/master/built-in-policies/policyDefinitions
+- https://learn.microsoft.com/en-us/azure/defender-for-cloud/faq-general#are-there-any-recommendations-that-don-t-support-exemption-
+- https://ms.portal.azure.com/#view/Microsoft_Azure_Policy/PolicyMenuBlade/~/Definitions
 
 ## az-policy.builtin.DINE (DeployIfNotExists)
 
@@ -43,9 +49,25 @@ az policy assignment list -otable | grep AKS_AzurePolicyAddOn_DINE
 
                                                          Default            TEST-AKS_AzurePolicyAddOn_DINE
                /providers/Microsoft.Authorization/policyDefinitions/a8eff44f-8c92-45c3-a3fb-9880802d67a7     /subscriptions/redacts-1111-1111-1111-111111111111  swedencentral
+
+k get constraints -o yaml: violations:
+kubectl get pods -n gatekeeper-system -o wide - kubectl logs gatekeeper-controller*: deny, gatekeeper-audit*: deny
+
+k get constrainttemplate # k8sazurev1blockdefault
+kubectl get constraint| grep k8sazurev1blockdefault
+kubectl describe k8sazurev1blockdefault azurepolicy-container-* # Violations: # or k get constraints -o yaml
 ```
 
 - https://github.com/Azure/azure-policy/blob/master/built-in-policies/policyDefinitions/Kubernetes/AKS_AzurePolicyAddOn_DINE.json
+- https://learn.microsoft.com/en-us/azure/defender-for-cloud/recommendations-reference-container#azure-container-recommendations
+- https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/extensions/troubleshoot-azure-policy-add-on-aks
+- https://learn.microsoft.com/en-us/azure/aks/policy-reference
+- https://github.com/Azure/azure-policy/tree/master/samples/KubernetesService
+
+> ## aks.Running containers as root user should be avoided
+- https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/extensions/avoid-running-as-root-in-containers
+- https://stackoverflow.com/questions/69387966/how-to-fulfill-aks-advisor-recommendation-running-containers-as-root-user-shoul: bcs when the container image is build to with UID 0 it is still root. You would need both settings: runAsNonRoot: true & runAsUser: 1001
+- https://snyk.io/blog/10-kubernetes-security-context-settings-you-should-understand/
 
 ## az-policy.custom.example
 

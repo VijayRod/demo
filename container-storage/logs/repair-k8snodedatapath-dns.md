@@ -498,7 +498,7 @@ kubectl exec -it dnsutils -- nslookup db.private.contoso.com
 - https://learn.microsoft.com/en-us/azure/aks/coredns-custom#custom-forward-server
 
 ```
-# force_tcp, use TCP even when the request comes in over UDP
+# force_tcp, use TCP even when the request comes in over UDP. TCP is preferred for reliability
 
 # coredns is in CrashLoopBackOff with "Unknown directive 'force_tcp'" if the forward plugin is not specified for a particular zone, as it otherwise conflicts with the main coredns configmap
 cat << EOF | kubectl apply -f -

@@ -186,12 +186,14 @@ sudo dhclient -r eth0 && sudo dhclient eth0
 
 ```
 # limit.network-flow.azurevm
+# a typical TCP/UDP connection, it creates two flows: one for inbound traffic and another for outbound traffic
 # https://learn.microsoft.com/en-us/azure/virtual-network/virtual-machine-network-throughput#network-flow-limits: Once this limit is hit, other connections are dropped.
 ```
 
 - https://learn.microsoft.com/en-us/azure/virtual-network/virtual-machine-network-throughput#network-flow-limits: VMs that belong to a virtual network can handle 500k active connections for all VM sizes with 500k active flows in each direction.
   - VMs with NVAs such as gateway, proxy, firewall can handle 250k active connections with 500k active flows in each direction..
   - Once this limit is hit, other connections are dropped.
+- https://learn.microsoft.com/en-us/azure/virtual-network/virtual-machine-network-throughput: a typical TCP/UDP connection, it creates two flows: one for inbound traffic and another for outbound traffic
 
 > ## dns.azure.zone
 

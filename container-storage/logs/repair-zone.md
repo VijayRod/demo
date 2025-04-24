@@ -62,6 +62,12 @@ az aks show -g $r -n akszone --query agentPoolProfiles[0].availabilityZones
   "2"
 ]
 
+kubectl get nodes -o custom-columns='NAME:metadata.name, REGION:metadata.labels.topology\.kubernetes\.io/region, ZONE:metadata.labels.topology\.kubernetes\.io/zone'
+NAME                                 REGION          ZONE
+aks-nodepool1-10253607-vmss000000   swedencentral   0
+aks-nodepool1-10253607-vmss000001   swedencentral   0
+aks-nodepool1-10253607-vmss000002   swedencentral   0
+
 # node pool create without specifying --zone
 # k describe no | grep -E 'name|zone'
 k describe no | grep zone

@@ -13,11 +13,10 @@ clustername=akswin
 az group create -n $rgname -l swedencentral
 az aks create -g $rgname -n $clustername --windows-admin-username $WINDOWS_USERNAME --windows-admin-password $WINDOWS_PASSWORD --network-plugin azure
 az aks nodepool add -g $rgname --cluster-name $clustername --name npwin --os-type Windows --mode user # --os-sku Windows2019
-```
-
-```
 az aks get-credentials -g $rgname -n $clustername --overwrite-existing
+```
 
+```
 kubectl get no --selector kubernetes.io/os=windows -owide
 
 # Here is a sample output below.
@@ -33,6 +32,15 @@ kubectl get no --selector kubernetes.io/os=windows
 # aksnpwin000000   Ready    agent   29h   v1.25.6
 # aksnpwin000001   Ready    agent   29h   v1.25.6
 # aksnpwin000002   Ready    agent   29h   v1.25.6
+
+az aks get-credentials -g $rgname -n $clustername --overwrite-existing
+kubectl get no | grep win; k get po -A -owide | grep win
+
+kubectl delete po aspnetapp
+kubectl run --image=mcr.microsoft.com/dotnet/framework/samples:aspnetapp aspnetapp --overrides='{ "spec": { "template": { "spec": { "nodeSelector": { "kubernetes.io/os": "windows" } } } } }' --port 80
+# kubectl run --image=mcr.microsoft.com/dotnet/framework/samples:aspnetapp aspnetapp --overrides='{ "spec": { "template": { "spec": { "nodeSelector": { "kubernetes.io/hostname": "aksnpwin000002" } } } } }' --port 80
+kubectl get po -owide -w
+kubectl exec -it aspnetapp -- ping 127.0.0.1
 ```
 
 ```

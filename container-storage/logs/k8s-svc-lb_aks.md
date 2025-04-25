@@ -572,8 +572,8 @@ Target: networkProfile.loadBalancerProfile.allocatedOutboundPorts
 
 # az aks update -h | grep load-balancer-idle-timeout # Desired idle timeout for load balancer outbound flows, default is 30 minutes.
 az aks update -g $rg -n aks --load-balancer-idle-timeout 30
-az network lb outbound-rule list -g $noderg --lb-name kubernetes -o table # verify
-az network lb outbound-rule show -g $noderg --lb-name kubernetes -n aksOutboundRule # verify
+az network lb outbound-rule list -g $noderg --lb-name kubernetes -o table
+az network lb outbound-rule show -g $noderg --lb-name kubernetes -n aksOutboundRule
 ```
 - https://learn.microsoft.com/en-us/azure/aks/load-balancer-standard#configure-the-load-balancer-idle-timeout: When SNAT port resources are exhausted, outbound flows fail until existing flows release SNAT ports.. load balancer uses a 30-minute idle timeout for reclaiming SNAT ports from idle flows.
 - https://learn.microsoft.com/en-us/azure/load-balancer/load-balancer-tcp-idle-timeout?tabs=tcp-reset-idle-cli: If a period of inactivity is longer than the timeout value, there's no guarantee that the TCP or HTTP session is maintained between the client and your service.
@@ -584,8 +584,8 @@ az network lb outbound-rule show -g $noderg --lb-name kubernetes -n aksOutboundR
 ```
 # lb.timeout.inbound
 # the default value is 4 and will reconcile to the default value during any PUT operation on the cluster if changed
-az network lb rule list -g $noderg --lb-name kubernetes -o table # verify
-az network lb rule show -g $noderg --lb-name kubernetes -n <rule-name> # verify
+az network lb rule list -g $noderg --lb-name kubernetes -o table
+az network lb rule show -g $noderg --lb-name kubernetes -n <rule-name>
 
 kind: Service
 annotations:

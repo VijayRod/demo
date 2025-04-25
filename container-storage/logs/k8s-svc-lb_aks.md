@@ -505,7 +505,17 @@ az network lb show -g MC_rg_akscni_swedencentral -n kubernetes # same
   ],
 ```
 
-## k8s-svc-lb.aks.outbound
+## k8s-svc-lb.aks.user.connectiondrops.intermittent
+```
+# cause: the LB backend was marked unhealthy, probe failures, no application response
+```
+
+## k8s-svc-lb.aks.user.lb.healthprobe.unavailable
+```
+# cause: app health probe did not receive a response with status code 200
+```
+
+## k8s-svc-lb.aks.user.outbound (SNAT port exhaustion)
 
 - A single outbound IP address
 
@@ -531,7 +541,7 @@ kubectl exec -it nginx2 -- curl ifconfig.me # 74.241.163.46 (Shows the same IP)
 
 - https://learn.microsoft.com/en-us/azure/load-balancer/outbound-rules#scale
 
-## k8s-svc-lb.aks.outbound.port
+## k8s-svc-lb.aks.user.outbound.port
 
 ```
 az aks create
@@ -549,7 +559,7 @@ az aks create
 - https://learn.microsoft.com/en-us/azure/aks/load-balancer-standard#configure-outbound-ports-and-idle-timeout
 - https://learn.microsoft.com/en-us/azure/aks/load-balancer-standard#scale-the-number-of-managed-outbound-public-ips
 
-## k8s-svc-lb.aks.outbound.port.error.InvalidLoadBalancerProfileAllocatedOutboundPorts
+## k8s-svc-lb.aks.user.outbound.port.error.InvalidLoadBalancerProfileAllocatedOutboundPorts
 
 ```
 # (64000 ports per IP / 50000 outbound ports configured) * 1 outbound IP configured = 1.n = max of 1 node

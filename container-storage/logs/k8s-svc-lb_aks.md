@@ -575,6 +575,11 @@ Target: networkProfile.loadBalancerProfile.allocatedOutboundPorts
 
 - https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/create-upgrade-delete/error-code-invalidloadbalancerprofileallocatedoutboundports
 
+## k8s-svc-lb.aks.user.service.no-external-IP
+```
+# cause: Quota limit of public IPs, kubectl describe svc
+```
+
 ## k8s-svc-lb.aks.user.timeout.idle
 
 ```
@@ -603,3 +608,23 @@ annotations:
 ```
 - https://learn.microsoft.com/en-us/azure/aks/load-balancer-standard#customizations-via-kubernetes-annotations: time in minutes for TCP connection idle timeouts to occur on the load balancer. The default and minimum value is 4. The maximum value is 30.
 - https://learn.microsoft.com/en-us/answers/questions/1350652/idle-timeout-of-load-balancing-rules-belonging-to
+
+## k8s-svc-lb.aks.user.traffic.blocked.inbound
+```
+# cause: nsg (subnet or NIC), or route table (UDR sending to NVA/firewall)
+```
+
+## k8s-svc-lb.aks.user.traffic.dns.service
+```
+# cause: kubectl get service, dig
+```
+
+## k8s-svc-lb.aks.user.traffic.latency
+```
+# cause: metrics, increase the number of application instances
+```
+
+## k8s-svc-lb.aks.user.traffic.other
+```
+# cause: az network watcher flow-log show, tcpdump in node
+```

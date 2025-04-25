@@ -587,7 +587,7 @@ az network lb outbound-rule show -g $noderg --lb-name kubernetes -n aksOutboundR
 az network lb rule list -g $noderg --lb-name kubernetes -o table # verify
 az network lb rule show -g $noderg --lb-name kubernetes -n <rule-name> # verify
 
-# service annotation
+kind: Service
 annotations:
   service.beta.kubernetes.io/azure-load-balancer-tcp-idle-timeout: 4
 ```

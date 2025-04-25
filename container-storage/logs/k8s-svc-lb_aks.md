@@ -565,10 +565,10 @@ Target: networkProfile.loadBalancerProfile.allocatedOutboundPorts
 
 - https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/create-upgrade-delete/error-code-invalidloadbalancerprofileallocatedoutboundports
 
-## k8s-svc-lb.aks.timeout
+## k8s-svc-lb.aks.user.timeout.idle
 
 ```
-# lb.timeout.outbound (SNAT) (not related to k8s svc)
+# lb.timeout.idle.outbound (SNAT) (not related to k8s svc)
 
 # az aks update -h | grep load-balancer-idle-timeout # Desired idle timeout for load balancer outbound flows, default is 30 minutes.
 az aks update -g $rg -n aks --load-balancer-idle-timeout 30
@@ -582,7 +582,7 @@ az network lb outbound-rule show -g $noderg --lb-name kubernetes -n aksOutboundR
 - https://learn.microsoft.com/en-us/answers/questions/1350652/idle-timeout-of-load-balancing-rules-belonging-to
 
 ```
-# lb.timeout.inbound
+# lb.timeout.idle.inbound
 # the default value is 4 and will reconcile to the default value during any PUT operation on the cluster if changed
 az network lb rule list -g $noderg --lb-name kubernetes -o table
 az network lb rule show -g $noderg --lb-name kubernetes -n <rule-name>

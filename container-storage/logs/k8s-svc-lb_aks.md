@@ -564,3 +564,32 @@ Target: networkProfile.loadBalancerProfile.allocatedOutboundPorts
 ```
 
 - https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/create-upgrade-delete/error-code-invalidloadbalancerprofileallocatedoutboundports
+
+## k8s-svc-lb.aks.timeout
+
+```
+# lb.timeout.outbound (SNAT) (not related to k8s svc)
+
+# az aks update -h | grep load-balancer-idle-timeout # Desired idle timeout for load balancer outbound flows, default is 30 minutes.
+az aks update -g $rg -n aks --load-balancer-idle-timeout 30
+az network lb outbound-rule list -g $noderg --lb-name kubernetes -o table # verify
+az network lb outbound-rule show -g $noderg --lb-name kubernetes -n aksOutboundRule # verify
+```
+- https://learn.microsoft.com/en-us/azure/aks/load-balancer-standard#configure-the-load-balancer-idle-timeout: When SNAT port resources are exhausted, outbound flows fail until existing flows release SNAT ports.. load balancer uses a 30-minute idle timeout for reclaiming SNAT ports from idle flows.
+- https://learn.microsoft.com/en-us/azure/load-balancer/load-balancer-tcp-idle-timeout?tabs=tcp-reset-idle-cli: If a period of inactivity is longer than the timeout value, there's no guarantee that the TCP or HTTP session is maintained between the client and your service.
+- https://learn.microsoft.com/en-us/azure/load-balancer/load-balancer-tcp-reset#configurable-tcp-idle-timeout: default is 4 minutes
+- https://stackoverflow.com/questions/50706483/what-azure-kubernetes-aks-time-out-happens-to-disconnect-connections-in-out: best way (I feel) to handle this is to leave the timeout at 4 minutes (since it has to exist anyway) and then setup your infrastructure to disconnect your connections in a graceful way (when idle) prior to hitting the Load Balancer timeout.
+- https://learn.microsoft.com/en-us/answers/questions/1350652/idle-timeout-of-load-balancing-rules-belonging-to
+
+```
+# lb.timeout.inbound
+# the default value is 4 and will reconcile to the default value during any PUT operation on the cluster if changed
+az network lb rule list -g $noderg --lb-name kubernetes -o table # verify
+az network lb rule show -g $noderg --lb-name kubernetes -n <rule-name> # verify
+
+# service annotation
+annotations:
+  service.beta.kubernetes.io/azure-load-balancer-tcp-idle-timeout: 4
+```
+- https://learn.microsoft.com/en-us/azure/aks/load-balancer-standard#customizations-via-kubernetes-annotations: time in minutes for TCP connection idle timeouts to occur on the load balancer. The default and minimum value is 4. The maximum value is 30.
+- https://learn.microsoft.com/en-us/answers/questions/1350652/idle-timeout-of-load-balancing-rules-belonging-to

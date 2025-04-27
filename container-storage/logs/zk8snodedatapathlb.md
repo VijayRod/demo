@@ -324,6 +324,7 @@ kubectl get events --sort-by='.lastTimestamp' # check pod events for ip exhausti
 kubectl get pods -o wide # view IPs and their corresponding subnet
 
 # pod-to-pod azure-cni/kubenet dns
+# kubenet: pod-to-pod traffic within the same node is not NATed as it uses the same cbr0 bridge. sudo tcpdump -i cbr0 host <IP_POD_1> and host <IP_POD_2>
 # refer to iptables/kube-proxy for service
 curl http://<IP-do-pod> # udr issue if kubenet
 curl http://nome-do-pod.namespace.svc.cluster.local # Or nome-do-service
@@ -332,6 +333,8 @@ kubectl exec <pod-name> -- ping <service-name> # unless it's kubenet or ping is 
 
 # pod-to-pod azure-cni/kubenet network policy
 # network policy is only for ingress/egress and applicable namespaces
+# network policies are implemented in iptables for kubenet, azure-cni, or calico, typically as KUBE-NWPLCY-*, KUBE-FORWARD, KUBE-POD-FW-*
+# network policies are implemented in ebpf for cilium
 az network nsg rule list -g -n # udr or nsg
 kubectl create networkpolicy # create one with all ingress and egress allowed and all podSelector for that *namespace* for test
 kubectl describe pod <pod-name> # annotation for network policy

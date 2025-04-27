@@ -1,0 +1,401 @@
+```
+layer 3 (tcp/udp):
+./layer3 lb
+./k8s svc lb
+./private link (private cluster)
+
+layer 7 (dns):
+./dns zone
+
+layer 7 (http/https):
+./agc
+./agic
+```
+
+> ## .traffic.k8s
+
+```
+# destination is within vnet
+azure-cni: Pod > IP direto
+kubenet: Pod > Node NAT (IP vNet) > IP (*no double outbound NAT since the destination is a private IP within the same vnet)
+```
+
+```
+# lb
+
+# client to LB to pod for kubenet and azure-cni during the initial TCP handshake
+# O TCP handshake (SYN, SYN-ACK, ACK) é feito entre o cliente e o IP do Load Balancer (frontend IP).
+[Client (Internet)]
+   |
+   |  TCP SYN para IP público (e.g. 20.45.123.10:443) [LB Frontend IP]
+   |
+[Azure Load Balancer (L4)]
+   |
+   |  Encaminha para IP privado do Node AKS (e.g. 10.240.0.4) [Backend Pool]
+   |
+[AKS Node (10.240.0.4)]
+   |
+   | kube-proxy gere regras iptables > iptables (DNAT para o pod IP)
+   |
+[Pod (10.240.1.18)]
+
+
+# client to LB to pod for kubenet and azure-cni after the initial TCP handshake
+[Client]
+   |
+   |  Pacotes TCP (ex: HTTP) > IP público (20.45.123.10:443) [LB Frontend IP]
+   |
+[Azure Load Balancer (L4)] (*the LB is not in use; it is mentioned here since the public (frontend) IP is associated with it)
+   |
+   |  Encaminha diretamente (*por sessão mantida)
+   |
+[AKS Node (10.240.0.4)]
+   |
+   |  Regras iptables redirecionam
+   |
+[Pod (10.240.1.18:443)]
+
+
+# client (within vnet) to azure-cni pod (without LB) is using the pod IP
+[Cliente (VM)]
+  > [Diretamente para Pod (IP da vNet)]
+
+
+# client (within vnet) to kubenet pod (without LB) is using the node IP
+[Origem Interna (ex: VM na vNet)]
+     |
+[Não consegue comunicar com IP do pod diretamente]
+     |
+[Tem de comunicar com o IP do Node AKS ]
+     |
+[kube-proxy faz DNAT para o Pod]
+     |
+[Pod (IP interno não roteável)]
+
+# layer 7 ingress controller in AKS without Application Gateway
+[Client]
+   > [LB]
+     > [Node]
+       > [Ingress Controller / Proxy (ex: NGINX) (L7)]
+         > [Escolhe outro destino (ex: outro pod, outro IP)]
+         
+# lb supports UDP because its on layer 4
+[Client]
+   |
+   |  UDP packet para IP público do Azure LB (porta 53, por ex.)
+   |
+[Azure Load Balancer (L4)]
+   |
+   | Encaminha para IP privado de um Node AKS
+   |
+[AKS Node]
+   |
+   | Regras iptables DNAT
+   |
+[Pod (ex: CoreDNS ou app UDP)]
+
+# snat is only used for outbound, i.e., outbound snat
+## azure-cni
+[Pod (10.240.1.10)] > [Azure SNAT para IP Público do LB (20.45.123.10)] > [Internet]
+## kubenet (double {outbound} snat)
+[Pod (IP bridge NAT interno)]
+   |
+[NAT para IP do Node]
+   |
+[Azure LB SNAT para IP Público]
+   |
+[Internet]
+```
+
+```
+# agic
+# tcp handshake + tls, which involves the layer 4 and the beginning of layer 7
+# the application gateway (AGIC) does not support UDP, meaning it cannot handle tls termination, routing, rewrites or WAF with UDP. It operates on layer 7, which is higher than tcp
+[Client (Internet)]
+   |
+   |  TCP SYN > IP público do Application Gateway (ex: 20.45.123.10:443)
+   |
+[Application Gateway (AGIC - Layer 7)] (vNet)
+   |
+   |  Termina a conexão TLS (SSL offload ou passthrough)
+   |
+[Regras L7 (Host/Path Based Routing)]
+   |
+   |  Decide para qual Service/*Ingress ir
+   |
+[AKS Node (IP privado)]
+   |
+   |  Envia tráfego para o pod correto via ClusterIP ou diretamente
+   |
+[Pod (ex: 10.240.1.18)]
+
+# http request, i.e., after the tcp handshake
+[Client]
+   |
+   |  Envia HTTPS > IP público do Application Gateway (ex: 20.45.123.10:443)
+   |
+[Application Gateway] (vNet)
+   |
+   |  Decodifica pedido HTTP (L7)
+   |  Aplica regras (ex: path-based routing, rewrite, redirect)
+   |
+azure-cni: [ClusterIP Service] > [Pod (IP da vNet)]
+kubenet: [NodePort Service] > [Node (IP da vNet)] > [iptables (DNAT)] > [Pod (IP da bridge)]
+
+# inbound snat
+# the app gateway terminates tls and initiates a new conection with the pod, using the private IP of the app gateway as the origin IP
+# X-Forwarded-For is used to preserve the original IP
+## azure-cni
+[Client]
+   |
+[App Gateway (L7)]
+   |
+[Pod (IP da vNet)]
+## kubenet
+[Client]
+   |
+[App Gateway]
+   |
+[AKS Node (vNet IP)]
+   |
+[NAT para Pod (bridge IP)]
+
+# outbound snat from agic pod (itself) to internet e.g. to DNS, metrics, ARM API
+azure-cni: Pod (IP vNet) > Azure LB SNAT > Internet
+kubenet: Pod (bridge IP) > Node IP (NAT) > Azure LB SNAT > Internet
+# outbound snat from application pod to internet
+azure-cni: Pod (IP vNet) < AGIC > Pod > Azure LB SNAT > Internet
+kubenet: Pod (bridge IP) < AGIC > Pod > Node NAT > Azure LB SNAT > Internet
+```
+
+```
+# private link (private apiserver fqdn) (private cluster)
+# services such as storage accounts are accessible via a private IP
+Pod (Azure CNI ou Kubenet)
+   > DNS resolve FQDN para IP privado (via Private DNS Zone)
+   > Tráfego direto para IP privado do Private Link
+   > Sem SNAT
+
+# destination is internet
+azure-cni: Pod > Azure LB SNAT
+kubenet: Pod > Node SNAT (IP vNet)
+
+# destination is within vnet
+azure-cni: Pod > IP direto
+kubenet: Pod > Node NAT (IP vNet) > IP (*no double outbound NAT since the destination is a private IP within the same vnet)
+
+# destination is private link (private api server fqdn)
+azure-cni: Pod > IP privado
+kubenet: Pod > Node NAT (IP vNet) > IP
+```
+
+```
+# tcp
+
+# tcp error "Connection refused" - tcp rst sent immediately because no one is listening on the port, due to the service not running or kube-proxy/iptable issues
+# tcp error "Connection reset by peer" - tcp rst sent by the destination, possibly due to service crash, firewall issues, or timeout
+# tcp error "i/o timeout" - no tcp response and not a timeout, possibly due to network congestion, snat exhaustion, or firewall dropping packets
+
+# tcp connection pooling
+# reduce open tcp connections
+.net: services.AddHttpClient
+java (apache httpclient): new PoolingHttpClientConnectionManager
+java (okhttp): OkHttpClient client = new OkHttpClient.Builder().connectionPool(new ConnectionPool(10, 5, TimeUnit.MINUTES)).build();
+nginx (reverse proxy): upstream backend { server backend1.example.com; server backend2.example.com; keepalive 32; # keepalive specifies the number of open tcp connections to maintain
+node.js (http client): const agent = new http.Agent..; http.request({ agent: agent # requires agent since no pooling by default
+node.js (https client): const agent = new https.Agent
+```
+
+```
+# kernel (node)
+
+# conntrack
+cat /proc/net/nf_conntrack | wc -l # current number of entries
+cat /proc/sys/net/netfilter/nf_conntrack_count # conntrack is full if this is equal to nf_conntrack_max
+cat /proc/sys/net/netfilter/nf_conntrack_max # limit of number of entries
+dmesg | grep -i connection # refer to the other dmesg
+dmesg | grep conntrack # packet drops (conntrack failures). e.g. "nf_conntrack: table full, dropping packet", "ip_conntrack: table full"
+kubectl get configmap kube-proxy -n kube-system -o yaml # "conntrack" config: maxPerCore, min (absolute), tcpEstablishedTimeout (time to keep TCP ESTABLISHED connection), tcpCloseWaitTimeout (timeout of CLOSE_WAIT connections)
+metrics, Insights: ContainerLog | where LogEntry contains "connection reset" or LogEntry contains "connection refused"
+metrics, Log analytics: Syslog | where Facility == "kern" and (Message contains "conntrack" or Message contains "connection")
+metrics, Prometheus: 
+sudo conntrack -L -p udp # udp conntrack burst indicates burst in dns traffic
+sudo conntrack -L | grep FAIL # failed connections
+sudo conntrack -S # stats. Elevated insert_failed or drop indicate conntrack table is full if entries=nf_conntrack_max
+sudo netstat -nat | grep -i tcp # see if many in SYN_SENT, CLOSE_WAIT or TIME_WAIT indicating connections could have been closed sooner by client app
+sudo sysctl -w net.netfilter.nf_conntrack_max=262144 # to see if temporary limit increase resolves issue (does not persist after reboot) (daemonset or add to /etc/sysctl.conf to persist after reboot)
+
+# ip-masq-agent (snat)
+# daemonset that controls when to masquerade (nat) traffic leaving the nodes to the internet. Only for snat, as it is used to modify the source ip in network packets
+# not applicable for private IPs since these are not SNATed
+curl # telnet # the destination must see the private ip of the pod and not the ip of the node
+kubectl edit configmap ip-masq-agent -n kube-system # to include private endpoint, private link, and private dns zone IPs in nonMasqueradeCIDRs, as these are private IPs and do not require NAT. kubectl delete pod -n kube-system -l k8s-app=ip-masq-agent
+kubectl get configmap ip-masq-agent -n kube-system -o yaml # traffic to nonMasqueradeCIDRs is not NATed (snat), has the virtual network range by default. 
+kubectl get daemonset -n kube-system ip-masq-agent # NOT READY, CrashLoopBackOff
+kubectl logs -n kube-system -l k8s-app=ip-masq-agent # "Failed to update iptables rules", "Unable to set masquerade rules", "invalid config", "error loading nonMasqueradeCIDRs"
+kubectl run debug-pod --rm -i --tty --image=busybox -- sh # wget -O- https://ifconfig.me # Or curl ifconfig.me # must see node ip, not the private IP 10.x.x.x ou 192.168.x.x of the pod to confirm snat is fine
+sudo iptables-save | grep MASQUERADE # -A POSTROUTING -s 10.244.0.0/16 ! -d 10.0.0.0/8 -j MASQUERADE i.e., masquerade (nat) if from this source cidr and not to this destination cidr
+tcpdump -i eth0 src <pod_ip> and dst <private_endpoint_ip> # working without snat if traffic is seen. Similar in destination e.g., sql to see private ip of pod
+
+# snat port exhaustion
+# node ip has a pool of snat ports
+# refer to conntrack for its exhaustion
+# mitigate, azure: use nat gateway as each public ip supports ~64k snat ports
+# mitigate, aks: az aks create --max-pods 30 # to reduce max pods
+# mitigate, azure: use private endpoints or service endpoints since they are private IPs and do not require snat
+# mitigate app: reduce TCP connections with connection pooling
+# mitigate app: use aggressive connection timeouts to avoid leaving dead connections
+kubectl get pods -A -o wide | grep 10.244.1.23 # to find the pod with the pod ip that's consuming max snat
+metrics, Azure Monitor LB: Allocated SNAT Ports avg, Used SNAT Ports avg. # Property = Backend IP Address to identify the (node) ip
+sudo conntrack -L -p tcp | grep -E "src=.* snat=" # src is IP of the pod, *snat has the ip of the node*, [ASSURED] is an established connection, repeat "sport" indicates port exhaustion
+sudo conntrack -L -p tcp | grep -E "src=10\." # watch in real-time every 5 seconds # watch -n 5 'sudo conntrack -L -p tcp | grep -E "src=10\." | grep "snat=" | awk '\''{for(i=1;i<=NF;i++) if ($i ~ /^src=/) print $i}'\'' | cut -d= -f2 | sort | uniq -c | sort -nr'
+sudo conntrack -L -p tcp | grep -E "src=10\." | grep "snat=" | awk '{for(i=1;i<=NF;i++) if ($i ~ /^src=/) print $i}' | cut -d= -f2 | sort | uniq -c | sort -nr # to find the pod with the pod ip that's consuming most snat. Modify 10. to the pod ip range
+sudo conntrack -L | grep "snat=10.0.1.100" | wc -l # replace with node/egress IP
+sudo conntrack -L | grep ESTABLISHED # src is (SNATed) ip of the node for azure-cni/kubenet
+sudo iptables -t nat -L -n -v # check "pkts" for target=MASQUERADE (snat) rules
+sudo netstat -an | grep ESTABLISHED | wc -l # number of used ports
+sysctl net.netfilter.nf_conntrack_max # refer to conntrack for nf_conntrack_max. Increase to mitigate snat exhaustion
+
+# iptables / ipvs
+# traffic routing of services (ClusterIP, NodePort, etc.), kernel snat (configured by ip-masq-agent) / kernel dnat (configured by kube-proxy), load balancing backend pods
+# sudo iptables -t nat -L -n -v # target=DNAT, target=MASQUERADE (snat) # to identify snat or dnat
+# refer to kube-proxy
+curl http://nome-do-service.namespace.svc.cluster.local # curl service-name # *timeout/reset indicate iptable/kube-proxy issue. dns/nslookup works however http/tcp fail.
+kubectl get endpoints # for services e.g. 10.244.2.14:8080 however curl fails
+kubectl get no | wc -l # use ipvs if > 1000
+kubectl get pods -n kube-system -l k8s-app=kube-proxy # CrashLoopBackOff, Error
+kubectl logs -n kube-system -l k8s-app=kube-proxy # refer to kube-proxy
+lsmod | grep ip_tables # to see if ip_tables module is loaded in the kernel
+sudo iptables-save | grep KUBE # KUBE-NODEPORTS
+sudo iptables-save | grep KUBE # KUBE-SERVICES. if no entry, then kube-proxy issue
+sudo ipvsadm -L -n # only for IPVS # working e.g. TCP  10.0.0.1:443 rr -> 10.244.0.2:6443 Masq
+## for example, iptables-save.KUBE-SERVICES, where KUBE-SEP-* are the backend pods
+-A PREROUTING -j KUBE-SERVICES
+  > -A KUBE-SERVICES -d 10.0.32.15/32 -p tcp -m tcp --dport 80 -j KUBE-SVC-XXXXX
+    > -A KUBE-SVC-XXXXXXXX -m statistic --mode random --probability 0.5 -j KUBE-SEP-YYYYYYYY
+      > -A KUBE-SVC-XXXXXXXX -j KUBE-SEP-ZZZZZZZZ
+        > -A KUBE-SEP-YYYYYYYY -s 10.244.1.25/32 -j DNAT --to-destination 10.244.1.25:8080
+## for example, ipvsadm -Ln, where rr stands for round-robin and Masq (kernel DNAT) is the forwarding mode
+TCP  10.0.0.100:80 rr
+  -> 10.244.1.25:8080 Masq 1 0 0
+  -> 10.244.1.26:8080 Masq 1 0 0
+
+# kube-proxy (dnat)
+# refer to iptables/IPVS
+# routing between pods and services (especially ClusterIP), dnat of service ip to pod ip
+# also intermittent issue on random nodes
+curl http://<IP-do-pod> # works
+curl http://nome-do-service.namespace.svc.cluster.local # curl service-name # *timeout/reset indicates iptable/kube-proxy issue. dns/nslookup works but http/tcp fail.
+kubectl delete pod -n kube-system -l k8s-app=kube-proxy # to recreate the rules
+kubectl get configmap kube-proxy -n kube-system -o yaml # mode: "ipvs" # or "iptables"
+kubectl get pods -n kube-system -l k8s-app=kube-proxy -o wide # Running, not CrashLoopBackOff
+kubectl logs -n kube-system -l k8s-app=kube-proxy # "failed to sync proxy rules", "error setting up IPVS", "iptables-restore: invalid command", "conntrack failure"
+
+# cni
+cat /var/log/syslog | grep "failed to set up sandbox container network"
+kubectl describe node <nome-do-node> | grep Allocatable -A5 # tbd - ip assignment of nodes
+kubectl get events --sort-by='.lastTimestamp' # check pod events for ip exhaustion. pod state Pending with "Failed to assign IP".
+kubectl get pods -o wide # view IPs and their corresponding subnet
+
+# pod-to-pod azure-cni/kubenet dns
+# refer to iptables/kube-proxy for service
+curl http://<IP-do-pod> # udr issue if kubenet
+curl http://nome-do-pod.namespace.svc.cluster.local # Or nome-do-service
+kubectl exec <pod-name> -- nslookup <service-name> # dns test
+kubectl exec <pod-name> -- ping <service-name> # unless it's kubenet or ping is blocked by an nsg
+
+# pod-to-pod azure-cni/kubenet network policy
+# network policy is only for ingress/egress and applicable namespaces
+az network nsg rule list -g -n # udr or nsg
+kubectl create networkpolicy # create one with all ingress and egress allowed and all podSelector for that *namespace* for test
+kubectl describe pod <pod-name> # annotation for network policy
+kubectl exec -it <pod-name> -- /bin/sh # curl http://<ip-ou-nome-do-service> # refer wget
+kubectl exec -it <pod-name> -- /bin/sh # wget --spider nome-do-service.namespace.svc.cluster.local # http test. If "timeout" or "connection refused" and dns lookup is working, then it's a network policy issue.
+kubectl get networkpolicy --A # issue with network policy if it works after removing or changing one
+kubectl get networkpolicy -o yaml | grep -B 10 <nome-do-pod-ou-label>
+kubectl get pods -o wide # pods and IPs
+kubectl get svc -o wide # services (especially ClusterIP services) and IPs
+kubectl logs -n kube-system -l k8s-app=calico-node
+```
+
+```
+# pod
+
+# pod dns with dnsConfig / dnsPolicy
+kubectl exec -n <namespace> <nome-do-pod> -- cat /etc/resolv.conf # nameserver 10.0.0.10 (kube-dns/coredns service ip), search domain default.svc.cluster.local svc.cluster.local cluster.local, option ndots:5
+kubectl exec -n <namespace> <nome-do-pod> -- dig kubernetes.default.svc.cluster.local # refer nslookup
+kubectl exec -n <namespace> <nome-do-pod> -- nslookup kubernetes.default # failure indicates dns config issues
+kubectl get pod <nome-do-pod> -n <namespace> -o jsonpath='{.spec.dnsConfig.searches}' # to resolve private links, for example: privatelink.database.windows.net, privatelink.vaultcore.azure.net, privatelink.blob.core.windows.net
+kubectl get pod <nome-do-pod> -n <namespace> -o jsonpath='{.spec.dnsConfig}'
+kubectl get pod <nome-do-pod> -n <namespace> -o jsonpath='{.spec.dnsPolicy}' # ClusterFirst (default) - use /etc/resolv.conf of node to use kube-dns/coredns, None - use dnsConfig, ClusterFirstWithHostNet for pods with hostNetwork: true
+
+# pod network with hostNetwork
+# pod using node network and is not isolated in its own netns
+kubectl exec -n <namespace> <nome-do-pod> -- cat /etc/resolv.conf # nameserver is vnet dns server for pod with hostNetwork. This also means the pod cannot use kube-dns/coredns and cannot resolves services
+kubectl exec -n <namespace> <nome-do-pod> -- ip addr # refer to ip route
+kubectl exec -n <namespace> <nome-do-pod> -- ip route # hostnetwork pod can see all physical interfaces of the node, not just veth
+kubectl get pod <nome-do-pod> -n <namespace> -o jsonpath='{.spec.hostNetwork}' # true means it is using the host network, not veth
+kubectl get pod <nome-do-pod> -n <namespace> -o wide # pod with hostNetwork has the same ip as the node. kubectl get node -o wide
+sudo netstat -tulnp | grep :<porta> # hostnetwork pod uses port of node. For example, if it uses port 80, then other services like ingress controller or nginx cannot use these ports
+sudo ss -tulnp | grep :<porta> # refer to sudo netstat -tulnp
+
+# pod dns where the pod does not use dnsConfig / dnsPolicy/hostNetwork
+# issue in pod, node or coredns
+# mitigate: add private ip to /etc/hosts (Linux) or C:\Windows\System32\drivers\etc\hosts (Windows) to check if the issue only with dns
+kubectl exec -n <namespace> <nome-do-pod> -- cat /etc/resolv.conf
+kubectl exec -n <namespace> <nome-do-pod> -- curl http://<service>
+kubectl exec -n <namespace> <nome-do-pod> -- dig kubernetes.default.svc.cluster.local # refer to nslookup
+kubectl exec -n <namespace> <nome-do-pod> -- ip route
+kubectl exec -n <namespace> <nome-do-pod> -- nc -vz 10.0.0.10 53 # if not connected, i.e., if timeout, then blocked due to network policy, kube-proxy/iptable
+kubectl exec -n <namespace> <nome-do-pod> -- nslookup google.com # if it works, then the problem in the app
+kubectl exec -n <namespace> <nome-do-pod> -- nslookup kubernetes.default # if it works, then the problem is in the app
+kubectl exec -n <namespace> <nome-do-pod> -- telnet 10.0.0.10 53 # refer to nc
+kubectl get networkpolicy -A # refer to network policy and see if policies block UDP 53 or TCP 53 between pods and kube-dns (coredns)
+kubectl get pods -n kube-system -l k8s-app=kube-dns # Running
+kubectl logs -n kube-system -l k8s-app=kube-dns --tail=50 # SERVFAIL, NXDOMAIN, "upstream failure", "timeout"
+kubectl run net-debugger --image=nicolaka/netshoot --restart=Never --command -- sleep infinity # See netshoot. To keep the pod running. kubectl exec -it net-debugger -- bash
+kubectl run net-debugger --rm -i --tty --image=nicolaka/netshoot --restart=Never -- bash # debugger pod netshoot - dns (nslookup, dig, host), network (curl, wget, telnet, nc), packet capture (tcpdump), iptables routes interfaces (ip, ss, netstat). Exit will automatically delete the pod
+sudo iptables -t filter -L -n -v | grep 53 # rule for dnat/forward to coredns
+sudo iptables -t nat -L -n -v | grep 53 # rule for dnat/forward to coredns
+tcpdump -i any port 53
+```
+
+```
+# private
+
+# private link (private cluster)
+# Refer to the private dns zone if the dns server does not resolve to the private ip
+# Refer to the private endpoint if you cannot connect to the private endpoint ip
+az network nic show-effective-route-table -g -n # effective route is not through the virtual network but instead through the internet
+az network nsg flow
+az network nsg rule list -g -n # NSGs of client (subnet/VM) or private link must allow traffic
+az network private-dns link vnet list -g --zone-name # virtual network is IsAutoRegistrationEnabled: true or Manual
+az network private-endpoint-connection list --id <resource-id> # Approved, not Awaiting Approval
+az network vnet subnet show -g --vnet-name -n # ip conflict, i.e., the private link ip is being used by another resource too
+curl -v https://<your-service>.blob.core.windows.net --resolve <your-service>.blob.core.windows.net:<port>:<private_link_ip> # if this works, then the private link is working.
+dig +short <serviço>.privatelink.<domain>.windows.net # same as nslookup
+ipconfig /flushdns # flush dns in windows if dns or its records were updated
+kubectl exec -it <pod-name> -- nslookup yourapp.privatelink.database.windows.net # pod/name must be able to resolve to the private IP
+nc -vz yourapp.privatelink.database.windows.net 443 # tcp (https) error "Connection timed out" or "No route to host". Connection error or traffic does not reach the private link. Missing permissions or ACLs # or telnet
+nslookup yourapp.privatelink.database.windows.net # normally the destination IP is a private IP 10.x.x.x or 172.x.x.x in a virtual network, not a public IP for example 20.x.x.x. If so, it is a private DNS issue # Or dig since it also shows the DNS server
+openssl s_client -connect yourapp.privatelink.database.windows.net:443 # see CN and SAN # hostname resolves to private ip, but the SSL certificate is not as expected ("certificate verify failed" or "hostname mismatch")
+sudo systemd-resolve --flush-caches # flush dns in linux if DNS or its records were updated
+tcpdump -i any host <private_link_ip> # source ip is the node/pod ip, not the SNATed ip. SYN-ACK to confirm the issue is after SNAT
+telnet <serviço>.privatelink.<domain>.windows.net 443 # same as nc
+
+# private dns zone
+# Refer to private link if there is an issue after resolving to a private ip
+# Refer to private endpoint if you cannot connect to the private endpoint ip
+az network private-dns record-set a list -g --zone-name # an A record is required, or else a lookup failure will occur
+az network private-dns zone list-virtual-network-links -g --zone-name # resolution failure if the zone is not associated with the virtual network and to see if registrationEnabled: false
+az network private-endpoint show -g -n --query customDnsConfigs # resolution failure if no private fqdn+ipAddresses
+dig +short <serviço>.privatelink.<domain>.windows.net # same as nslookup
+nslookup yourapp.privatelink.database.windows.net # typically, the destination IP is a private IP (10.x.x.x or 172.x.x.x) in a virtual network, not a public ip (e.g., 20.x.x.x), else it is a private DNS issue # Alternatively, use dig since it also shows the DNS server
+
+# private endoint
+# Refer to private dns to see if it can connect to the private endpoint IP
+az network private-endpoint show -g -n --query "customDnsConfigs[].ipAddresses[]" -o tsv
+az network private-endpoint show -g -n --query "{name:name, ipAddresses:customDnsConfigs[].ipAddresses[]}" -o table # verify if the PE exists as this shows the name and the private ip
+nc -zv <private-endpoint-ip> 443 # if this tcp/https test is fine, the issue is with the private dns zone
+telnet <private-endpoint-ip> 443 # same as nc
+```

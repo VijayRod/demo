@@ -190,7 +190,7 @@ kubenet: Pod > Node NAT (IP vNet) > IP
 ```
 
 ```
-# aks with commands
+# problem with a component in aks. with commands
 ```
 
 ```

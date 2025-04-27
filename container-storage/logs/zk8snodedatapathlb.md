@@ -190,6 +190,10 @@ kubenet: Pod > Node NAT (IP vNet) > IP
 ```
 
 ```
+# aks with commands
+```
+
+```
 # tcp
 
 # tcp error "Connection refused" - tcp rst sent immediately because no one is listening on the port, due to the service not running or kube-proxy/iptable issues

@@ -211,6 +211,28 @@ node.js (https client): const agent = new https.Agent
 ```
 
 ```
+# hyper-v (host)
+
+# vfp (virtual filtering platform)
+# symptom: communication breaks even though everything (pod, service, node) looks healthy
+# symptom: pod ip responds to ping; however, no tcp handshake occurs due to failure in nat/snat in vfp
+# symptom: open tcp connections without traffic due to acl or rule inconsistencies in vfp
+# symptom: pod is Ready; however, there is no communication due to corrupt vfp rules
+# mitigate: az aks nodepool restart
+# mitigate: cordon + drain + recreate the node
+Get-NetAdapter # see vfp adapters
+Get-Service vfp # to see if it is functioning
+Get-VMSwitch # to see rules
+Get-VMSwitchExtension # to see "VFP Extension" is active
+Get-VfpPolicy | Format-List # to see rules applied to the hyper-v switch
+Get-VfpPort # to see port id for VfpPortRule
+Get-VfpPortRule -PortId <PORT-ID> # to see rules for DNAT, SNAT, ACL are correct
+Test-NetConnection <Pod-IP> -Port 443 # see open port
+ping <Pod-IP> # validate connectivity
+route print # analyze routes
+```
+
+```
 # kernel (node)
 
 # conntrack
@@ -323,7 +345,7 @@ kubectl logs -n kube-system -l k8s-app=calico-node
 ```
 
 ```
-# pod
+# container
 
 # pod dns with dnsConfig / dnsPolicy
 kubectl exec -n <namespace> <nome-do-pod> -- cat /etc/resolv.conf # nameserver 10.0.0.10 (kube-dns/coredns service ip), search domain default.svc.cluster.local svc.cluster.local cluster.local, option ndots:5
@@ -343,7 +365,7 @@ kubectl get pod <nome-do-pod> -n <namespace> -o wide # pod with hostNetwork has 
 sudo netstat -tulnp | grep :<porta> # hostnetwork pod uses port of node. For example, if it uses port 80, then other services like ingress controller or nginx cannot use these ports
 sudo ss -tulnp | grep :<porta> # refer to sudo netstat -tulnp
 
-# pod dns where the pod does not use dnsConfig / dnsPolicy/hostNetwork
+# pod dns with azure dns (168.63.129.16) (where the pod does not use dnsConfig, dnsPolicy or hostNetwork)
 # issue in pod, node or coredns
 # mitigate: add private ip to /etc/hosts (Linux) or C:\Windows\System32\drivers\etc\hosts (Windows) to check if the issue only with dns
 kubectl exec -n <namespace> <nome-do-pod> -- cat /etc/resolv.conf
@@ -362,6 +384,48 @@ kubectl run net-debugger --rm -i --tty --image=nicolaka/netshoot --restart=Never
 sudo iptables -t filter -L -n -v | grep 53 # rule for dnat/forward to coredns
 sudo iptables -t nat -L -n -v | grep 53 # rule for dnat/forward to coredns
 tcpdump -i any port 53
+
+# pod dns with external (custom) dns configured in a virtual network or coredns forwarder
+# mitigate, pod: overwrite in /etc/resolv.conf
+# mitigate, pod: use dnsPolicy:None, dnsConfig.nameservers (e.g., 1.1.1.1 and 8.8.8.8), dnsConfig.searches with mydomain.local as the search domain. Start with a test pod.
+kubectl exec <pod-name> -- cat /etc/resolv.conf # nameserver is not 168.63.129.16 if using custom dns
+kubectl exec <pod-name> -- dig @<custom-dns-ip> openai.com # refer nslookup
+kubectl exec <pod-name> -- nc -vuz <custom-dns-ip> 53 # test udp. If it fails, it's a network/firewall/nsg/udr issue; check if dns traffic is allowed in a peered vnet 
+kubectl exec <pod-name> -- nc -vz <custom-dns-ip> 53 # test tcp. see nc -vuz
+kubectl exec <pod-name> -- nslookup openai.com <custom-dns-ip> # timeout or SERVFAIL indicates a problem with the external dns server
+kubectl logs -n kube-system -l k8s-app=kube-dns # if coredns forwarder is being used; errors - SERVFAIL, upstream unreachable, timeout
+
+# service externalTrafficPolicy
+# for traffic from outside the cluster when it reaches the LoadBalancer or NodePort
+# externalTrafficPolicy Cluster (default): reponds to external traffic on any node (snat)
+# externalTrafficPolicy Local: responds only on the node where the pods exists (*without snat, client ip is preserved*)
+# Applicable only for LoadBalancer or NodePort, not ClusterIP since it is not accessible outside the cluster
+# If externalTrafficPolicy is set to Cluster, the receiving node NATs the traffic to the pod's node
+# Applicable for all traffic including during the tcp handshake
+# symptoms: the traffic reaches the node but no pod, client ip is not available and is required by the app, app health probe failures with externalTrafficPolicy Cluster
+# mitigate: kubectl expose pod <nome-do-pod> --type=LoadBalancer --name=<nome-do-service> --internal-traffic-policy=Local
+curl http://<node-ip>:<nodeport>/ # only the specific node will accept if externalTrafficPolicy is Local
+kubectl exec -it <pod-name> -- tcpdump -i any port 80 # to verify external ip, and not the node ip i.e. without snat, is seen in the required port
+kubectl get no | wc -l # use Local for large clusters with > 100 nodes
+kubectl get nodes -o wide # vnet ip of the node
+kubectl get pods -o wide -l app=<app-label> # check the nodes hosting the pods
+kubectl get svc <service-name> -o jsonpath='{.spec.externalTrafficPolicy}' # Cluster, Local
+
+# service internalTrafficPolicy
+# for internal traffic within the cluster when the traffic reached the LoadBalancer or NodePort
+# internalTrafficPolicy Cluster (default): pod can receive traffic from any cluster node. Used to balance internal cluster traffic between all pods in all nodes
+# internalTrafficPolicy Local: only pods in the same node can receive internal traffic
+# Applicable only for LoadBalancer or NodePort, not ClusterIP since this does not receive traffic from outside the cluster
+# Applicable for all traffic, including during the tcp handshake
+# symptoms: experiencing "timeout" due to no pod in that node and internalTrafficPolicy set to Local and even though dns resolves, InternalTrafficPolicy set to Cluster causes slow traffic per snat and traffic jumps between nodes
+# mitigate: kubectl expose pod <nome-do-pod> --type=LoadBalancer --name=<nome-do-service> --external-traffic-policy=Local
+kubectl debug node/<nome-node> -it --image=mcr.microsoft.com/dotnet/runtime-deps:6.0 # curl http://<service-cluster-ip>:<port> # can fail if internalTrafficPolicy: Local
+kubectl get endpoints <nome-do-service> -o wide # lists pod IPs by node
+kubectl get no | wc -l # use Local for large cluster with > 100 nodes
+kubectl get pods -o wide -l app=<app-label> # pod distribution
+kubectl get svc <nome-do-service> -o jsonpath='{.spec.internalTrafficPolicy}' # Cluster is the default value if it does not exist
+kubectl logs -n kube-system -l k8s-app=kube-proxy # error "No available endpoints for service xyz" and internalTrafficPolicy: Local
+
 ```
 
 ```

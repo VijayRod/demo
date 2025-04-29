@@ -37,6 +37,24 @@ Mar  7 18:50:52 aks-nodepool1-14317786-vmss000000 node-problem-detector-startup.
 
 ```
 # npd.init.configuration
+
+grep -r "reason" /etc/node-problem-detector.d/
+/etc/node-problem-detector.d/system-log-monitor/kernel-monitor.json:                    "reason": "FilesystemIsReadOnly",
+/etc/node-problem-detector.d/custom-plugin-monitor/custom-node-not-ready-monitor.json:      "reason": "NodeNotReadyDetected",
+..
+
+ls /var/log/azure/Microsoft.AKS.Compute.AKS.Linux.AKSNode
+cat extension.log | tail
+2025/04/29 18:11:21 [Microsoft.AKS.Compute.AKS.Linux.AKSNode-1.0.0.0] JSON config: {"runtimeSettings": [{"handlerSettings": {"publicSettings": {"disable-uu": "true", "enable-uu": "false", "node-exporter-tls": "false"}, "protectedSettings": null, "protectedSettingsCertThumbprint": null}}]}
+2025/04/29 18:11:22 [Microsoft.AKS.Compute.AKS.Linux.AKSNode-1.0.0.0] node-problem-detector verified to be installed
+2025/04/29 18:11:22 [Microsoft.AKS.Compute.AKS.Linux.AKSNode-1.0.0.0] Systemctl daemon-reload was successful
+2025/04/29 18:11:22 [Microsoft.AKS.Compute.AKS.Linux.AKSNode-1.0.0.0] node-problem-detector was successfully enabled
+2025/04/29 18:11:22 [Microsoft.AKS.Compute.AKS.Linux.AKSNode-1.0.0.0] node-problem-detector start was successful
+2025/04/29 18:11:23 [Microsoft.AKS.Compute.AKS.Linux.AKSNode-1.0.0.0] node-exporter verified to be installed
+2025/04/29 18:11:23 [Microsoft.AKS.Compute.AKS.Linux.AKSNode-1.0.0.0] Systemctl daemon-reload was successful
+2025/04/29 18:11:24 [Microsoft.AKS.Compute.AKS.Linux.AKSNode-1.0.0.0] node-exporter was successfully enabled
+2025/04/29 18:11:24 [Microsoft.AKS.Compute.AKS.Linux.AKSNode-1.0.0.0] node-exporter start was successful
+2025/04/29 18:11:24 [Microsoft.AKS.Compute.AKS.Linux.AKSNode-1.0.0.0] Enable,success,0,Successfully enabled Compute.
 ```
 
 - https://kubernetes.io/docs/tasks/debug/debug-cluster/monitor-node-health/#overwrite-the-configuration: you can use a ConfigMap to overwrite the configuration
@@ -123,38 +141,13 @@ cat /etc/node-problem-detector.d/custom-plugin-monitor/custom-egress-monitor.jso
 
 cat /etc/node-problem-detector.d/plugin/check_egress.sh
 
-cat /etc/node-problem-detector.d/custom-plugin-monitor/* | grep reason
-      "reason": "EgressBlocked",
-      "reason": "FilesystemIsOK",
-      "reason": "FilesystemCorruptionDetected",
-      "reason": "FilesystemCorruptionDetected",
-        "reason": "KubeletIsUp",
-        "reason": "KubeletIsDown",
-        "reason": "KubeletIsDown",
-      "reason": "KubeletServingCertificateInvalid",
-      "reason": "ContainerRuntimeIsUp",
-      "reason": "ContainerRuntimeIsDown",
-      "reason": "ContainerRuntimeIsDown",
-      "reason": "NoVMEventScheduled",
-      "reason": "VMEventScheduled",
-      "reason": "FreezeScheduled",
-      "reason": "RebootScheduled",
-      "reason": "RedeployScheduled",
-      "reason": "TerminateScheduled",
-      "reason": "PreemptScheduled",
-        "reason": "DNSProblem",
-        "reason": "UnbalancedIRQs",
-      "reason": "NoFrequentUnregisterNetDevice",
-      "reason": "UnregisterNetDevice",
-      "reason": "ConntrackFull",
-      "reason": "NoFrequentKubeletRestart",
-      "reason": "NoFrequentDockerRestart",
-      "reason": "NoFrequentContainerdRestart",
-      "reason": "FrequentKubeletRestart",
-      "reason": "FrequentDockerRestart",
-      "reason": "FrequentContainerdRestart",
-        "reason": "UnattendedUpgradeEnabled",
+grep -r "reason" /etc/node-problem-detector.d/ | grep /custom-plugin
+```
 
+```
+# npd.system-log-monitor
+
+grep -r "reason" /etc/node-problem-detector.d/ | grep /system-log
 ```
 
 ## k8s-node-conditions_NodeProblemDetector.events

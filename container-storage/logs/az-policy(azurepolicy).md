@@ -56,6 +56,10 @@ kubectl get pods -n gatekeeper-system -o wide - kubectl logs gatekeeper-controll
 k get constrainttemplate # k8sazurev1blockdefault
 kubectl get constraint| grep k8sazurev1blockdefault
 kubectl describe k8sazurev1blockdefault azurepolicy-container-* # Violations: # or k get constraints -o yaml
+
+portal, Azure Policy: Authoring, Definitions. Search for the required policies.
+portal, aks: Policies. This will take you to the Compliance page.
+portal, Azure Policy: Complaince
 ```
 
 - https://github.com/Azure/azure-policy/blob/master/built-in-policies/policyDefinitions/Kubernetes/AKS_AzurePolicyAddOn_DINE.json
@@ -65,10 +69,15 @@ kubectl describe k8sazurev1blockdefault azurepolicy-container-* # Violations: # 
 - https://github.com/Azure/azure-policy/tree/master/samples/KubernetesService
 
 > ## aks.Running containers as root user should be avoided
+```
+# apply SecurityContext at both the container level and the pod level
+```
 - https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/extensions/avoid-running-as-root-in-containers
 - https://stackoverflow.com/questions/69387966/how-to-fulfill-aks-advisor-recommendation-running-containers-as-root-user-shoul: bcs when the container image is build to with UID 0 it is still root. You would need both settings: runAsNonRoot: true & runAsUser: 1001
 - https://snyk.io/blog/10-kubernetes-security-context-settings-you-should-understand/
-
+- https://www.azadvertizer.net/azpolicyadvertizer_all.html: Ideally, search using the policy id
+- https://github.com/Azure/azure-policy/blob/master/built-in-policies/policyDefinitions/Kubernetes/AllowedUsersGroups.json
+  
 ## az-policy.custom.example
 
 - https://github.com/Azure/azure-policy/blob/master/samples/ResourceGroup/audit-resourceGroup-resourceLocks/azurepolicy.json

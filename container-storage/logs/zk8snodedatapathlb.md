@@ -211,7 +211,7 @@ node.js (https client): const agent = new https.Agent
 ```
 
 ```
-# hyper-v (host)
+# hyper-v (host/vm)
 
 # vfp (virtual filtering platform)
 # symptom: communication breaks even though everything (pod, service, node) looks healthy
@@ -230,6 +230,130 @@ Get-VfpPortRule -PortId <PORT-ID> # to see rules for DNAT, SNAT, ACL are correct
 Test-NetConnection <Pod-IP> -Port 443 # see open port
 ping <Pod-IP> # validate connectivity
 route print # analyze routes
+
+# netvsp (NetVSP)
+# part of the physical host stack, netvsc communicates with netvsp (sr-iov does not bypasses this stack)
+ethtool -i eth0 # driver: hv_netvsc, then the communication is with netvsp
+vm: refer to netvsc failures
+ls /sys/class/net/: only has the virtual eth0. VF system interfaces like ens5f0 indicate sr-iov
+ls /sys/class/net/eth0/device/driver: .../hv_netvsc # confirms the channel VMBus/NetVSP
+
+# hvnetvsc (windows)
+# network driver for the virtual interface (vNIC) in hyper-v
+# dhcp/azure networking, heartbeat, time synchronization, and graceful shutdown
+# mitigate: Disable-NetAdapter -Name "Ethernet" -Confirm:$false; Enable-NetAdapter -Name "Ethernet"
+# mitigate: restart/reimage the node
+vm: Get-NetAdapter | Format-Table Name, InterfaceDescription, Status, ifIndex # InterfaceDescription=Microsoft Hyper-V Network Adapter, Status=Up
+vm: Get-PnpDevice -FriendlyName "*Hyper-V*" | Where-Object { $_.Class -eq "Net" } # FriendlyName=Microsoft Hyper-V Network Adapter, Status=OK
+vm: Get-WinEvent -LogName System | Where-Object {  $_.Message -like "*hvnetvsc*" -or $_.Message -like "*Hyper-V*Network*"  } | Select-Object TimeCreated, Id, Message | Sort-Object TimeCreated -Descending | Select-Object -First 10 # "hvnetvsc failed to initialize network interface", ""The network adapter encountered an internal error"
+vm: Test-NetConnection google.com
+
+# hv_netvsc (linux)
+# linux kernel driver for the hyper-v virtual network via vmbus
+# virtual network interface (eth0, etc.) communication with the azure sdn
+# vm traffic: hv_netvsc (virtual driver) > vmbus > netvsp (hyper-v host) > azure sdn stack
+# can be bypassed or dual-stack with sr-iov
+# mitigate: sudo systemctl restart systemd-networkd
+# mitigate: sudo ip link set eth0 down; sudo ip link set eth0 up # prefer systemctl restart
+az vm show -g <rg> -n <vm-name> --query "networkProfile.networkInterfaces[].enableAcceleratedNetworking" # "false" uses hv_netvsc
+vm: dmesg | grep -i hv_netvsc # "hv_netvsc vmbus_0_XX: device reset", "netvsc: device removed"
+vm: ethtool -i eth0 # driver: hv_netvsc
+vm: ip a / ping / nslookup # to see if the interface is functional
+vm: ip a show eth0 # interface down, without inet ip, incorrect mtu (expected is 1500 or 1400, depending on overlay)
+vm: iperf between VMs on different nodes: ~1–2 Gbps even if the vm size supports more
+vm: journalctl -k -n 100 | grep -i netvsc # "hv_netvsc: device reported link down"
+vm: lsmod | grep hv_netvsc # hv_netvsc             32768  0; netvsc                49152  1 hv_netvsc
+
+# sr-iov (Single Root I/O Virtualization) (srvio)
+# hardware virtualization technology that divides a single physical nic into virtual instances
+# hardware + hypervisor, not in vm
+# accelerated networking uses sr-iov
+# vm traffic: physical vf (driver mlx5_core, ixgbevf, etc.) > bypass vmbus and netvsp > physical nic
+az network nic show --ids <nic-id> --query "enableAcceleratedNetworking" # if AN is active, then sr-iov is active
+vm: ethtool -i <interface> # driver: mlx5_core (AN is active) driver: hv_netvsc (without sr-iov)
+vm: lsmod | grep hv_netvsc # if running and driver is mlx5_core, then dual-stack fallback (normal in azure)
+vm: journalctl -u systemd-udevd | grep -i vf # virtual function (vf) messages indicate sr-iov is active. udevd managed devices in linux, including creation of VFs which are essential for sr-iov
+vm: lspci | grep -i ethernet # "Ethernet controller: Mellanox", "Intel ... SR-IOV capable"
+
+# vf (virtual function)
+# a virtual mini-instance of a physical nic (pf - physical function), created with sr-iov that can be attributed to a vm, container or pod.
+# ideal for hpc/ai/rt workloads due to low latency direct access to hardware
+cat /sys/class/net/<vf-interface>/device/virtfn*/net/*/address # or ls -l /sys/class/net/<pf>/device/virtfn*/net/ # vf is not associated and is "dead" if net/ is empty
+dmesg | grep -i vf # "mlx5_core: Failed to allocate VF", "vfio-pci: probe failed"
+ethtool -S <vf-interface> | grep -i error # see tx_dropped, rx_errors
+ethtool -i <vf-interface> # driver:mlx5_core, vf is not connected if bus-info is empty
+grep 00:11:22:33:44:55 /var/lib/cni/sriov/* # to see the associated pod for this vf
+host: echo 8 > /sys/class/net/<interface>/device/sriov_numvfs # to create 8 VFs
+ip -d link show | grep -B1 vf # "vf 2 MAC 52:54:00:11:22:33, spoof checking on, link-state auto" # vf has associated mac, and link-state is not "disable"
+journalctl -k | grep -i mlx
+pod: cat /sys/class/net/net1/address # compare with mac in vm to see the associated vf for this pod
+
+# accelerated networking (Azure)
+# uses sr-iov with azure optimizations for lower latency (bypassing the network stack on host), higher bandwidth (~30 Gbps), less jitter, less cpu overhead
+azure monitor: latency between nodes, high tcp retransmissions, network interface metrics
+az vm list -g $noderg --query "[].{name:name, AN:networkProfile.networkInterfaceConfigurations[].enableAcceleratedNetworking}" -o table
+az vm list-skus -l westus --all true --resource-type virtualMachines --query '[].{size:size, name:name, acceleratedNetworkingEnabled: capabilities[?name==`AcceleratedNetworkingEnabled`].value | [0]}' --output table # SKUs that support AN. https://learn.microsoft.com/en-us/azure/virtual-network/accelerated-networking-overview?tabs=redhat#supported-vm-instances
+iperf or netperf, between VMs on different nodes: < 4-5 Gbps indicates AN is not active or is failing
+kubectl get nodes -o wide # sku
+## iperf
+kubectl run iperf-server --image=networkstatic/iperf3 --port=5201 --command -- iperf3 -s
+kubectl run iperf-client --image=networkstatic/iperf3 --command -- sleep 3600
+kubectl exec -it iperf-client -- iperf3 -c iperf-server
+
+# mellanox (mlx5_core)
+# mellanox is a company that makes high performance NICs, such as ConnectX, and has been acquired by nvidia
+# the mellanox kernel driver for NICs (ConnectX-4, 5, 6...) is mlx5_core 
+# mlx5_core utilizes sr-iov, making it an accelerated networking driver
+# vm traffic: vf (mlx5_core) > sr-iov i.e. bypasses netvsp
+cat /sys/class/net/eth0/device/sriov_numvfs # if 0, then no VFs are active
+cat /sys/class/net/eth0/device/sriov_totalvfs
+dmesg | grep -i mlx5 # "mlx5_core: failed to activate port", "mlx5_core: firmware error"
+ethtool -i eth0 # driver: mlx5_core i.e. VF Mellanox
+ip link show dev eth0 # state DOWN or NO-CARRIER indicates a VF is assigned but inactive
+journalctl -k | grep -i mlx5
+kubectl get sriovnetworknodestates -n kube-system -o yaml # kind: SriovNetworkNodeState, spec.interfaces[0].name=eth0/driver=mlx5_core, status.syncStatus=Succeeded/lastSyncError=""
+lspci | grep Mellanox # 05:00.0 Ethernet controller: Mellanox Technologies MT27800 Family [ConnectX-5]
+
+# mana (microsoft azure network adapter)
+# it is a microsoft network driver that interfaces with sr-iov to support AN in new generation azure VMs (ex: series Dasv5, Easv5, Dpsv5, etc.)
+# replacement for mlx5_core (Mellanox) and hv_netvsc
+# pod without connectivity indicates vf/mana is not initialized correctly
+dmesg | grep -i mana # "mana: failed to initialize device" "RX queue allocation failed"
+ethtool -S <interface> | grep -i 'drop\|err' # rx_errors, tx_errors, rx_dropped. high values indicate issue in vf/nic. 
+ethtool -i <interface> # driver: mana. "link down" indicates sr-iov failure or binding
+journalctl -k | grep -i mana
+ls -l /sys/class/net/<interface>/device/physfn/virtfn*/ # verify vf is active
+lspci -nnk | grep -A3 -i ethernet # "Ethernet controller [0200]: Microsoft Corporation Device 00XX (rev 01)". "Subsystem: Microsoft Corporation Device 0001". "Kernel driver in use: mana"
+modinfo mana # "filename: /lib/modules/.../kernel/drivers/net/ethernet/microsoft/mana/mana.ko". "license: GPL". If this does not exist, then the kernel does not support mana, and can fallback to hv_netvsc
+
+# fpga in azure
+# part of SmartNICs and sdn stack
+# accelerated load balancing, packet encryption, virtual network functions (vnf), offload of vxlan qos etc.
+# invisible to VMs, unless for VMs with fpga: Standard_PB6s, https://learn.microsoft.com/en-us/azure/virtual-machines/sizes/overview#fpga-accelerated
+
+# SoC (system-on-chip) in azure
+# in SmartNICs (with azure boost or earlier with fpga). There is also an SoC arm + fpga combination
+# network acceleration, storage encryption, dns resolver local, cpu offload
+# arm-based VMs (arm64): Standard_NP10s, Dplsv5
+# invisible to VMs, ?except for arm64 ones?
+# https://learn.microsoft.com/en-us/azure/azure-boost/overview#current-availability
+
+# azure sdn (software defined network)
+# vfp is the internal engine of azure sdn in the host
+# symptom: pod has ip but no traffic (vfp/sdn); failed ping between IPs in the same subnet (vfp/sdn)
+AzureDiagnostics | where Category == "NetworkSecurityGroupFlowEvent" | where FlowStatus_s == "D" | summarize count() by SourceIP_s, DestinationIP_s, L4Protocol_s, DestinationPort_s # real-time monitor drop in vpf
+az network nic show --ids <nic-id> # nic associated with subnet/vnet with gateway/subnet ipConfigurations without duplicate privateIPAddress
+az network watcher configure --resource-group <rg-name> --locations westeurope --enabled true
+az network watcher connection-monitor create -g -n -l --source-resource <pod-nic-id> --dest-address <ip-ou-host> --protocol TCP # hop-by-hop diagnostic like tracepath. Check if traffic left the pod, was dropped in sdn, or issue is with external dns/gateway/etc.
+az network watcher flow-log configure --nsg <nsg-name> --enabled true --retention 7 --storage-account <storage-name> --log-version 2 # nsg flow logs to see if traffic is being blocked by vfp based on nsg or internal rules
+az network watcher test-connectivity --source-resource <vm-nic> --dest-address <dest-ip> --dest-port 443 # simulate traffic, works with pod NICs too
+host: vfpctrl /list flows # state of vfp flows
+kubectl get pod -o wide # to see az network nic for the ip
+kubectl logs -n kube-system -l app=cns # "Added flow for pod IP: 10.244.1.5", "Programmed SNAT rule for endpoint ID xyz123"
+nstat -az | grep Tcp # TcpRetransSegs, TcpExtTCPAbortOnTimeout
+pod: curl http://169.254.169.254/metadata/instance?api-version=2021-02-01 -H Metadata:true
+pod: ip route # see if the default route has a subnet ip "default via 10.x.x.1 dev eth0"
+pod: ping <gateway> # ip route
 ```
 
 ```

@@ -28,7 +28,7 @@ nvme0n1
 > ## storage.SCSI.device.type.disk.filesystem.error.ReadonlyFilesystem
 
 ```
-# ReadonlyFilesystem
+# node: ReadonlyFilesystem
 # aka FilesystemIsReadOnly
 # Check out the node syslog
 # If the issue persists and there is no syslog, or if you need to find the volume mapping (e.g., for sdc, which is the data disk), obtain the output of the mount command on the node.
@@ -43,6 +43,19 @@ Conditions:
 [  283.365317] JBD2: Error -5 detected when updating journal superblock for sdb1-8. # error when updating journal
 [  313.114350] end_request: I/O error, dev sdb, sector 352389680 # I/O error
 [  313.123970] EXT4-fs (sdb1): Remounting filesystem read-only # sdb1
+```
+
+```
+# pod: volume is readonly from within the pod even though the node shows the mount as read-write
+# logs: syslog from node and pod, "cat /proc/mounts" from node and pod, storage class driver pod logs from the node
+
+# sample output showing rw:
+# pod: cat /proc/mounts | grep nfs
+f71c2467512884c5aad0080.file.core.windows.net:/f71c2467512884c5aad0080/pvcn-231aebc3-a72a-41de-8529-59f21153e83a /volume nfs4 rw,relatime,vers=4.1,rsize=1048576,wsize=1048576,namlen=255,acregmin=30,acregmax=30,acdirmax=30,hard,noresvport,proto=tcp,nconnect=4,timeo=600,retrans=2,sec=sys,clientaddr=10.224.0.4,local_lock=none,addr=20.60.79.8 0 0
+# node: cat /proc/mounts | grep nfs
+cat /proc/mounts | grep nfs | grep pvcn-231aebc3-a72a-41de-8529-59f21153e83a
+f71c2467512884c5aad0080.file.core.windows.net:/f71c2467512884c5aad0080/pvcn-231aebc3-a72a-41de-8529-59f21153e83a /var/lib/kubelet/plugins/kubernetes.io/csi/file.csi.azure.com/e15a0e289ca1ad200c5fb5956e31a0b4feead98001c8de4d40c3467427fac035/globalmount nfs4 rw,relatime,vers=4.1,rsize=1048576,wsize=1048576,namlen=255,acregmin=30,acregmax=30,acdirmax=30,hard,noresvport,proto=tcp,nconnect=4,timeo=600,retrans=2,sec=sys,clientaddr=10.224.0.4,local_lock=none,addr=20.60.79.8 0 0
+f71c2467512884c5aad0080.file.core.windows.net:/f71c2467512884c5aad0080/pvcn-231aebc3-a72a-41de-8529-59f21153e83a /var/lib/kubelet/pods/b074c326-38ed-47c9-90f6-173856c466e9/volumes/kubernetes.io~csi/pvc-231aebc3-a72a-41de-8529-59f21153e83a/mount nfs4 rw,relatime,vers=4.1,rsize=1048576,wsize=1048576,namlen=255,acregmin=30,acregmax=30,acdirmax=30,hard,noresvport,proto=tcp,nconnect=4,timeo=600,retrans=2,sec=sys,clientaddr=10.224.0.4,local_lock=none,addr=20.60.79.8 0 0
 ```
 
 ## storage.SCSI.device.type.disk.filesystem.type.fat

@@ -139,7 +139,7 @@ kubectl get po,pv,pvc
 ```
 
 ```
-# static.pvc
+# static.pv
 # **Since the (static) PV is created by the user, the storage class settings won't apply to it. However, if it's a dynamically provisioned PV, then the settings in the storage class will take effect.
 
 # az disk delete -g MC_rg_aks_swedencentral -n disk
@@ -196,7 +196,36 @@ pvc-azuredisk   Pending       pv-azuredisk   0                         managed-c
 pvc-azuredisk   Bound         pv-azuredisk   20Gi       RWO            managed-csi    <unset>                 15s
 ```
 
+```
+# static pv without a defined storage class means that a storage class is not used, and the mount uses the driver from the node
+# It is using the k8s NFS plugin instead of the Azure CSI driver.
+
+Name:            pv-irsvxttn
+Labels:          pv-name=pv-jrjmmtlo
+                 pvc-namespace-name=cbueitcp
+Annotations:     <none>
+Finalizers:      [kubernetes.io/pv-protection]
+StorageClass:    
+Status:          Bound
+Claim:           dyqxgmkg/gepabinu
+Reclaim Policy:  Retain
+Access Modes:    RWX
+VolumeMode:      Filesystem
+Capacity:        1Ti
+Node Affinity:   <none>
+Message:         
+Source:
+    Type:      NFS (an NFS mount that lasts the lifetime of a pod)
+    Server:    96.71.156.142
+    Path:      /export/mlojprwe
+    ReadOnly:  false
+Events:        <none>
+```
+
 - https://learn.microsoft.com/en-us/azure/aks/azure-csi-disk-storage-provision#statically-provision-a-volume
+- https://kubernetes.io/docs/concepts/storage/persistent-volumes/#static
+
+
 
 ## pv.op.delete
 

@@ -41,6 +41,7 @@ replicaset.apps/extension-operator-64b9bdd474   1         1         1       47s 
 - https://learn.microsoft.com/en-us/azure/aks/outbound-rules-control-egress#cluster-extensions: dp.kubernetesconfiguration.azure.com...
 - https://aka.ms/k8s-extensions-TSG
 - https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/extensions/cluster-extension-deployment-errors
+- https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/extension-resource-types#microsoftkubernetesconfiguration
 
 ```
 # op.delete

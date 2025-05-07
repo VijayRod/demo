@@ -2,8 +2,17 @@
 # k8s.csi
 ```
 
-- https://github.com/kubernetes-csi/external-attacher
 - https://github.com/kubernetes/kubernetes/blob/master/pkg/volume/csi/csi_attacher.go
+
+```
+# k8s.csi.sidecar
+```
+- https://kubernetes-csi.github.io/docs/sidecar-containers.html
+
+```
+# k8s.csi.sidecar.external-attacher
+```
+- https://github.com/kubernetes-csi/external-attacher
 
 ```
 # k8s.csi.mount.tmpmounts

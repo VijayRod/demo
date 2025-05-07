@@ -141,6 +141,7 @@ kubectl get po,pv,pvc
 ```
 # static.pv
 # **Since the (static) PV is created by the user, the storage class settings won't apply to it. However, if it's a dynamically provisioned PV, then the settings in the storage class will take effect.
+# Refer to pv.storageclass if the PV does not have a defined storage class
 
 # az disk delete -g MC_rg_aks_swedencentral -n disk
 az disk create -g MC_rg_aks_swedencentral -n disk --size-gb 20 --query id --output tsv
@@ -194,32 +195,6 @@ kubectl get pvc -w
 NAME            STATUS    VOLUME         CAPACITY   ACCESS MODES   STORAGECLASS   VOLUMEATTRIBUTESCLASS   AGE
 pvc-azuredisk   Pending       pv-azuredisk   0                         managed-csi    <unset>                 0s
 pvc-azuredisk   Bound         pv-azuredisk   20Gi       RWO            managed-csi    <unset>                 15s
-```
-
-```
-# static pv without a defined storage class means that a storage class is not used, and the mount uses the driver from the node
-# It is using the k8s NFS plugin instead of the Azure CSI driver.
-
-Name:            pv-irsvxttn
-Labels:          pv-name=pv-jrjmmtlo
-                 pvc-namespace-name=cbueitcp
-Annotations:     <none>
-Finalizers:      [kubernetes.io/pv-protection]
-StorageClass:    
-Status:          Bound
-Claim:           dyqxgmkg/gepabinu
-Reclaim Policy:  Retain
-Access Modes:    RWX
-VolumeMode:      Filesystem
-Capacity:        1Ti
-Node Affinity:   <none>
-Message:         
-Source:
-    Type:      NFS (an NFS mount that lasts the lifetime of a pod)
-    Server:    96.71.156.142
-    Path:      /export/mlojprwe
-    ReadOnly:  false
-Events:        <none>
 ```
 
 - https://learn.microsoft.com/en-us/azure/aks/azure-csi-disk-storage-provision#statically-provision-a-volume
@@ -342,6 +317,38 @@ Finalizers:      [kubernetes.io/pv-protection external-provisioner.volume.kubern
 
 storageclass.volumeBindingMode
 ```
+
+# pv.storageclass
+
+```
+# clusters without a defined default storage class do not use a storage class, and the mount relies on the driver from the node. Specifically, for nfs mounts, the k8s nfs plugin is used instead of the azure csi driver. The k8s nfs plugin is a different driver from the csi driver, and the mount is performed by the k8s kubelet
+
+Name:            pv-irsvxttn
+Labels:          pv-name=pv-jrjmmtlo
+                 pvc-namespace-name=cbueitcp
+Annotations:     <none>
+Finalizers:      [kubernetes.io/pv-protection]
+StorageClass:    
+Status:          Bound
+Claim:           dyqxgmkg/gepabinu
+Reclaim Policy:  Retain
+Access Modes:    RWX
+VolumeMode:      Filesystem
+Capacity:        1Ti
+Node Affinity:   <none>
+Message:         
+Source:
+    Type:      NFS (an NFS mount that lasts the lifetime of a pod)
+    Server:    96.71.156.142
+    Path:      /export/mlojprwe
+    ReadOnly:  false
+Events:        <none>
+```
+
+- https://kubernetes.io/docs/concepts/storage/persistent-volumes/#dynamic: This provisioning is based on StorageClasses: the PVC must request a storage class and the administrator must have created and configured that class for dynamic provisioning to occur. Claims that request the class "" effectively disable dynamic provisioning for themselves.
+- https://kubernetes.io/docs/concepts/storage/persistent-volumes/#reserving-a-persistentvolume: storageClassName: "" # Empty string must be explicitly set otherwise default StorageClass will be set
+- https://kubernetes.io/docs/concepts/storage/persistent-volumes/#class
+- https://kubernetes.io/docs/concepts/storage/persistent-volumes/#class-1: Only PVs of the requested class, ones with the same storageClassName as the PVC, can be bound to the PVC.. If the ( DefaultStorageClass) admission plugin is turned on, the administrator may specify a default StorageClass.
 
 ## pv.volumeAttributes
 

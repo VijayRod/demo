@@ -24,6 +24,10 @@ az aks nodepool operation-abort -g $rg --cluster-name aks --nodepool-name nodepo
 ## k8s-aks-op.delete.cluster
 
 ```
+# (OperationNotAllowed) Cluster in Deleting provisioning state cannot be reconciled. The only allowed operation after deletion has started is to retry cluster deletion.
+```
+
+```
 # The node resource group was removed before the cluster deletion was fully completed
 noderg=$(az aks show -g $rg -n aks --query nodeResourceGroup -o tsv)   
 az group delete -n $noderg -y -f # --no-wait

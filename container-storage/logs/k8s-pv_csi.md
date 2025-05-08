@@ -5,6 +5,25 @@
 - https://github.com/kubernetes/kubernetes/blob/master/pkg/volume/csi/csi_attacher.go
 
 ```
+# k8s.csi.driver
+```
+- Here is the list of supported storage drivers. All other drivers, including those maintained by Microsoft employees, are not supported by the AKS or the Azure Container Storage team and are generally supported online in their repository:
+  - Azure Blob Storage CSI driver - https://learn.microsoft.com/en-us/azure/aks/azure-blob-csi
+  - Azure Disk CSI driver - https://learn.microsoft.com/en-us/azure/aks/azure-disk-csi
+  - Azure File CSI driver - https://learn.microsoft.com/en-us/azure/aks/azure-files-csi
+  - Azure Container Storage driver with Azure Disk - https://learn.microsoft.com/en-us/azure/storage/container-storage/use-container-storage-with-managed-disk
+  - Azure Container Storage driver with Elastic SAN - https://learn.microsoft.com/en-us/azure/storage/container-storage/use-container-storage-with-elastic-san
+  - Azure Container Storage driver with Ephemeral Disk NVMe - https://learn.microsoft.com/en-us/azure/storage/container-storage/use-container-storage-with-local-disk
+  - Azure Container Storage driver with Ephemeral Disk Temp SSD - https://learn.microsoft.com/en-us/azure/storage/container-storage/use-container-storage-with-local-disk
+
+
+- Examples of drivers that are not supported include:
+  - https://github.com/kubernetes-csi/csi-driver-nfs (Andy)
+  - https://github.com/kubernetes-sigs/azuredisk-csi-driver/ (Andy)
+  - https://github.com/kubernetes-sigs/azurefile-csi-driver/ (Andy)
+  - https://github.com/kubernetes-sigs/blob-csi-driver (Andy)
+
+```
 # k8s.csi.sidecar
 ```
 - https://kubernetes-csi.github.io/docs/sidecar-containers.html

@@ -59,6 +59,66 @@ rg=rg
 az group create -n $rg -l $loc
 az aks create -g $rg -n aksdisk -s Standard_D4s_v3 --enable-azure-container-storage azureDisk
 az aks get-credentials -g $rg -n aksdisk --overwrite-existing
+
+k get crd | grep containerstor
+capacityprovisionerconfigs.containerstorage.azure.com   2025-05-05T18:38:31Z
+diskpools.containerstorage.azure.com                    2025-05-05T18:38:31Z
+etcdrecoveries.containerstorage.azure.com               2025-05-05T18:38:31Z
+storagepools.containerstorage.azure.com                 2025-05-05T18:38:32Z
+
+k api-resources | grep containerstor
+capacityprovisionerconfigs                              containerstorage.azure.com/v1      true         CapacityProvisionerConfig
+diskpools                           dp                  containerstorage.azure.com/v1      true         DiskPool
+etcdrecoveries                      er                  containerstorage.azure.com/v1      true         EtcdRecovery
+storagepools                        sp                  containerstorage.azure.com/v1      true         StoragePool
+
+k get csidrivers
+NAME                             ATTACHREQUIRED   PODINFOONMOUNT   STORAGECAPACITY   TOKENREQUESTS                REQUIRESREPUBLISH   MODES                  AGE
+containerstorage.csi.azure.com   true             false            false             <unset>                      false               Persistent             6m25s
+disk.csi.azure.com               true             false            false             <unset>                      false               Persistent             16m
+file.csi.azure.com               false            true             false             api://AzureADTokenExchange   false               Persistent,Ephemeral   16m
+
+k get sc
+NAME                                  PROVISIONER                      RECLAIMPOLICY   VOLUMEBINDINGMODE      ALLOWVOLUMEEXPANSION   AGE
+acstor-azuredisk                      containerstorage.csi.azure.com   Delete          WaitForFirstConsumer   true                   61s
+acstor-azuredisk-internal             disk.csi.azure.com               Retain          WaitForFirstConsumer   true                   6m26s
+acstor-azuredisk-internal-azuredisk   disk.csi.azure.com               Delete          WaitForFirstConsumer   true                   61s
+
+k describe sc
+Name:                  acstor-azuredisk
+IsDefaultClass:        No
+Annotations:           <none>
+Provisioner:           containerstorage.csi.azure.com
+Parameters:            acstor.azure.com/storagepool=azuredisk,enableDBProfile=false,ioTimeout=60,proto=nvmf,repl=1
+AllowVolumeExpansion:  True
+MountOptions:          <none>
+ReclaimPolicy:         Delete
+VolumeBindingMode:     WaitForFirstConsumer
+Events:                <none>
+
+
+Name:                  acstor-azuredisk-internal
+IsDefaultClass:        No
+Annotations:           meta.helm.sh/release-name=azurecontainerstorage,meta.helm.sh/release-namespace=acstor
+Provisioner:           disk.csi.azure.com
+Parameters:            skuName=Premium_LRS
+AllowVolumeExpansion:  True
+MountOptions:          <none>
+ReclaimPolicy:         Retain
+VolumeBindingMode:     WaitForFirstConsumer
+Events:                <none>
+
+
+Name:                  acstor-azuredisk-internal-azuredisk
+IsDefaultClass:        No
+Annotations:           <none>
+Provisioner:           disk.csi.azure.com
+Parameters:            skuName=Premium_LRS
+AllowVolumeExpansion:  True
+MountOptions:          <none>
+ReclaimPolicy:         Delete
+VolumeBindingMode:     WaitForFirstConsumer
+Events:                <none>
 ```
 
 - https://learn.microsoft.com/en-us/azure/storage/container-storage/use-container-storage-with-managed-disks
@@ -82,7 +142,53 @@ az extension add --upgrade --name k8s-extension
 rg=rg
 az group create -n $rg -l $loc
 az aks create -g $rg -n aksnvme -s standard_l8s_v3 --enable-azure-container-storage ephemeralDisk --storage-pool-option NVMe # Alternatively, you can use the same command with Standard_D4s_v3 if you're running tests without NVMe
-az aks get-credentials -g $rg -n akseph --overwrite-existing
+az aks get-credentials -g $rg -n aksnvme --overwrite-existing
+
+k get crd | grep containerstor
+capacityprovisionerconfigs.containerstorage.azure.com   2025-05-05T18:39:26Z
+diskpools.containerstorage.azure.com                    2025-05-05T18:39:26Z
+etcdrecoveries.containerstorage.azure.com               2025-05-05T18:39:26Z
+storagepools.containerstorage.azure.com                 2025-05-05T18:39:26Z
+
+k api-resources | grep containerstor
+capacityprovisionerconfigs                              containerstorage.azure.com/v1      true         CapacityProvisionerConfig
+diskpools                           dp                  containerstorage.azure.com/v1      true         DiskPool
+etcdrecoveries                      er                  containerstorage.azure.com/v1      true         EtcdRecovery
+storagepools                        sp                  containerstorage.azure.com/v1      true         StoragePool
+
+k get csidrivers
+NAME                             ATTACHREQUIRED   PODINFOONMOUNT   STORAGECAPACITY   TOKENREQUESTS                REQUIRESREPUBLISH   MODES                  AGE
+containerstorage.csi.azure.com   true             false            false             <unset>                      false               Persistent             12m
+disk.csi.azure.com               true             false            false             <unset>                      false               Persistent             22m
+file.csi.azure.com               false            true             false             api://AzureADTokenExchange   false               Persistent,Ephemeral   22m
+
+k get sc
+NAME                        PROVISIONER                      RECLAIMPOLICY   VOLUMEBINDINGMODE      ALLOWVOLUMEEXPANSION   AGE
+acstor-azuredisk-internal   disk.csi.azure.com               Retain          WaitForFirstConsumer   true                   12m
+acstor-ephemeraldisk-nvme   containerstorage.csi.azure.com   Delete          WaitForFirstConsumer   true                   4m30s
+
+k describe sc
+Name:                  acstor-azuredisk-internal
+IsDefaultClass:        No
+Annotations:           meta.helm.sh/release-name=azurecontainerstorage,meta.helm.sh/release-namespace=acstor
+Provisioner:           disk.csi.azure.com
+Parameters:            skuName=Premium_LRS
+AllowVolumeExpansion:  True
+MountOptions:          <none>
+ReclaimPolicy:         Retain
+VolumeBindingMode:     WaitForFirstConsumer
+Events:                <none>
+
+Name:                  acstor-ephemeraldisk-nvme
+IsDefaultClass:        No
+Annotations:           <none>
+Provisioner:           containerstorage.csi.azure.com
+Parameters:            acstor.azure.com/storagepool=ephemeraldisk-nvme,enableDBProfile=false,hyperconverged=true,ioTimeout=60,proto=nvmf,repl=1
+AllowVolumeExpansion:  True
+MountOptions:          <none>
+ReclaimPolicy:         Delete
+VolumeBindingMode:     WaitForFirstConsumer
+Events:                <none>
 ```
 
 - https://learn.microsoft.com/en-us/azure/storage/container-storage/use-container-storage-with-local-disk
@@ -114,7 +220,13 @@ Labels:             acstor.azure.com/io-engine=acstor
                     topology.containerstorage.csi.azure.com/zone=
 
 kubectl get no -l acstor.azure.com/io-engine=acstor
-                    
+
+k get crd | grep containerstor
+k api-resources | grep containerstor
+k get csidrivers
+k get sc
+k describe sc
+
 k get crd | grep stor
 billingstorages.clusterconfig.azure.com                 2024-10-15T18:46:25Z
 capacityprovisionerconfigs.containerstorage.azure.com   2024-10-15T18:47:25Z

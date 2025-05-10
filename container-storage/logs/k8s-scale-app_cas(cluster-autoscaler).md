@@ -71,6 +71,7 @@ az aks update -g $rg -n aks --cluster-autoscaler-profile scan-interval=30s
 
 ```
 # cas.settings.scale-down
+# check nodepool count for scale-down to min-count 0
 ```
 
 - https://learn.microsoft.com/en-us/azure/aks/cluster-autoscaler-overview#scale-down-operation-failures

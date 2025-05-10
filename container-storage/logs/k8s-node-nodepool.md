@@ -1,3 +1,40 @@
+## nodepool.spec.agentPoolProfiles
+
+```
+# nodepool.agentPoolProfiles
+az aks show -g $rg -n aks --query agentPoolProfiles
+az aks nodepool show -g $rg --cluster-name aks -n nodepool1
+```
+
+```
+# agentPoolProfiles.count - is it possible for a customer to update the capacity of the aks vmss to zero?
+
+az aks nodepool update -h | grep count -A 5
+    --max-count                           : Maximum nodes count used for autoscaler, when "--enable-
+                                            cluster-autoscaler" specified. Please specify the value
+                                            in the range of [0, 1000] for user nodepool, and
+                                            [1,1000] for system nodepool.
+    --min-count                           : Minimun nodes count used for autoscaler, when "--enable-
+                                            cluster-autoscaler" specified. Please specify the value
+                                            in the range of [0, 1000] for user nodepool, and
+                                            [1,1000] for system nodepool.
+                 
+# nodepool without cluster-autoscaler
+az aks nodepool add -g $rg --cluster-name aks -n np0manual -c 2
+k get no # 2
+az aks nodepool update -g $rg --cluster-name aks -n np0manual -c 0 # unrecognized arguments: -c 0
+az aks nodepool stop -g $rg --cluster-name aks -n np0manual
+k get no # 0
+
+# nodepool with cluster-autoscaler
+az aks nodepool add -g $rg --cluster-name aks -n np0cas --min-count 2 --max-count 10
+k get no # 2
+az aks nodepool update -g $rg --cluster-name aks -n np0cas --update-cluster-autoscaler --min-count 0 --max-count 10
+k get no # 2
+az aks update -g $rg -n aks --cluster-autoscaler-profile scale-down-unneeded-time=1m
+k get no # 0, after 10 minutes (default) depending on the scale-down-unneeded-time
+```
+
 ## nodepool.spec.scale-down-mode
 
 This uses commands from https://learn.microsoft.com/en-us/azure/aks/scale-down-mode.

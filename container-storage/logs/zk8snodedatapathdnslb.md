@@ -594,3 +594,13 @@ az network private-endpoint show -g -n --query "{name:name, ipAddresses:customDn
 nc -zv <private-endpoint-ip> 443 # if this tcp/https test is fine, the issue is with the private dns zone
 telnet <private-endpoint-ip> 443 # same as nc
 ```
+
+```
+# scenario.asymmetric-routing
+# tcpdump, traceroute, dig @168.63.129.16 fqdn, tbd https://bgp.he.net/
+# source >< firewall/gateway >< destination
+# tcpdump: traffic must reach the AKS node that hosts the pod
+# mitigate - udr, policy routing (firewall, router): force inbound traffic to use the same route as outbound, for example, by using asymmetric routing policies
+# mitigate - firewall: with snat
+# mitigate - udr: add route "0.0.0.0/0 > Azure Firewall" to force all traffic to use the same path
+```

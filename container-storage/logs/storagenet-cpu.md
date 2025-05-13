@@ -4,6 +4,7 @@
 # bash
 
 top # %Cpu(s) - id (CPU idle), load average, Tasks - zombie
+aks-nodepool1-29985679-vmss000004:/# lscpu # "CPU(s):                   2" # number of vCPUs, also known as logical CPUs or hyper-threaded processors
 ```
 
 ```

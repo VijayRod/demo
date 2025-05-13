@@ -34,6 +34,13 @@ az aks nodepool operation-abort -g $rg --cluster-name aks --nodepool-name nodepo
 ```
 
 ```
+# cluster.delete.sub-resource.NotFound.networkSecurityGroups
+# ask the customer to recreate the NSG, then delete the VMSS (not a cluster delete, as the VMSS delete can still fail due to its reference to the NSG if the NSG gets deleted earlier by the cluster delete op). After that, please retry the cluster delete
+az vmss show -g MC_rg_aks_swedencentral -n aks-nodepool1-29985679-vmss --query virtualMachineProfile.networkProfile.networkInterfaceConfigurations[0].networkSecurityGroup
+az vmss get-instance-view -g MC_rg_aks_swedencentral -n aks-nodepool1-29985679-vmss --query statuses[0].code -otsv # ProvisioningState/failed
+```
+
+```
 # The node resource group was removed before the cluster deletion was fully completed
 noderg=$(az aks show -g $rg -n aks --query nodeResourceGroup -o tsv)   
 az group delete -n $noderg -y -f # --no-wait

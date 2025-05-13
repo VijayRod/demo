@@ -1,17 +1,5 @@
 ## cpu
 
-```
-# bash
-
-top # %Cpu(s) - id (CPU idle), load average, Tasks - zombie
-aks-nodepool1-29985679-vmss000004:/# lscpu # "CPU(s):                   2" # number of vCPUs, also known as logical CPUs or hyper-threaded processors
-```
-
-```
-#ps
-get-process # CPU(s) column
-```
-
 - https://lwn.net/Kernel/Index/#cpufreq
 - https://lwn.net/Kernel/Index/#CPUhog
 - https://lwn.net/Kernel/Index/#Cpusets
@@ -44,6 +32,26 @@ get-process # CPU(s) column
 - https://www.codecademy.com/courses/fundamentals-of-operating-systems/lessons/os-synchronization (click on the Syllabus link for more pages)
 - https://www.codecademy.com/learn/fundamentals-of-operating-systems/modules/os-synchronization/cheatsheet
 - https://www.geeksforgeeks.org/computer-network-concepts-a-software-engineer-should-learn/#computer-network-concepts-should-a-software-engineer-learn
+
+```
+# bash
+
+top # %Cpu(s) - id (CPU idle), load average, Tasks - zombie
+```
+
+```
+# cpu.vcpu
+# vCPUs, also known as logical CPUs or hyper-threaded processors
+
+# number of vCPUs
+aks-nodepool1-29985679-vmss000004:/# lscpu
+CPU(s):                   2
+```
+
+```
+#ps
+get-process # CPU(s) column
+```
 
 ## cpu.architecture.arm
 

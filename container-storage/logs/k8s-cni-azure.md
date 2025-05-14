@@ -864,3 +864,42 @@ tcpdump -i any port 4789 -nn
 ```
 
 - https://learn.microsoft.com/en-us/azure/aks/azure-cni-overlay?tabs=kubectl: Network Address Translation (NAT) uses the node's IP address to reach resources outside the cluster.
+
+```
+# scenario: inbound traffic from sources outside the virtual network
+# cni.kubenet (likely relevant for all CNIs in a default cluster with nodes in the same subnet)
+
+kubectl delete po nginx
+kubectl run --image=nginx nginx --port=80
+kubectl expose po nginx --type=LoadBalancer
+kubectl get po -owide; kubectl get svc; kubectl get no
+
+curl -I 10.0.37.70 # HTTP/1.1 200 OK from any node for curl to pod.ip, service.clusterIp or service.externalIp. This can be used to test curl to service.clusterIp from the same virtual network.
+curl -I service.externalIp # HTTP/1.1 200 OK from any external system, such as my laptop
+
+# node hosting the pod
+# source (laptop): curl -I service.externalIp
+# node: tcpdump '((host 10.244.2.89) or (host 10.0.37.70) or (host 9.223.171.103))'
+# the following single request (no other row that has the laptop IP .4) shows the request from the laptop to the service.externalIp .103
+18:11:28.729687 IP 1.2.3.4.31278 > 9.223.171.103.http: Flags [R.], seq 0, ack 1626419784, win 0, length 0
+# the following shows the request from the node to the pod.ip .89, including the "HEAD / HTTP/1.1" and the "HTTP/1.1 200 OK"
+18:11:42.645242 IP aks-nodepool1-29985679-vmss000006.internal.cloudapp.net.46228 > 10.244.2.89.http: Flags [S], seq 4116679701, win 64240, options [mss 1336,sackOK,TS val 2836559684 ecr 0,nop,wscale 7], length 0
+18:11:42.645276 IP 10.244.2.89.http > aks-nodepool1-29985679-vmss000006.internal.cloudapp.net.46228: Flags [S.], seq 3763781999, ack 4116679702, win 65160, options [mss 1460,sackOK,TS val 1692379210 ecr 2836559684,nop,wscale 7], length 0
+18:11:42.712230 IP aks-nodepool1-29985679-vmss000006.internal.cloudapp.net.46228 > 10.244.2.89.http: Flags [.], ack 1, win 502, options [nop,nop,TS val 2836559755 ecr 1692379210], length 0
+18:11:42.713757 IP aks-nodepool1-29985679-vmss000006.internal.cloudapp.net.46228 > 10.244.2.89.http: Flags [P.], seq 1:78, ack 1, win 502, options [nop,nop,TS val 2836559755 ecr 1692379210], length 77: HTTP: HEAD / HTTP/1.1
+18:11:42.713786 IP 10.244.2.89.http > aks-nodepool1-29985679-vmss000006.internal.cloudapp.net.46228: Flags [.], ack 78, win 509, options [nop,nop,TS val 1692379278 ecr 2836559755], length 0
+18:11:42.713866 IP 10.244.2.89.http > aks-nodepool1-29985679-vmss000006.internal.cloudapp.net.46228: Flags [P.], seq 1:239, ack 78, win 509, options [nop,nop,TS val 1692379279 ecr 2836559755], length 238: HTTP: HTTP/1.1 200 OK
+18:11:42.779699 IP aks-nodepool1-29985679-vmss000006.internal.cloudapp.net.46228 > 10.244.2.89.http: Flags [.], ack 239, win 501, options [nop,nop,TS val 2836559825 ecr 1692379279], length 0
+18:11:42.780413 IP aks-nodepool1-29985679-vmss000006.internal.cloudapp.net.46228 > 10.244.2.89.http: Flags [F.], seq 78, ack 239, win 501, options [nop,nop,TS val 2836559825 ecr 1692379279], length 0
+18:11:42.780466 IP 10.244.2.89.http > aks-nodepool1-29985679-vmss000006.internal.cloudapp.net.46228: Flags [F.], seq 239, ack 79, win 509, options [nop,nop,TS val 1692379345 ecr 2836559825], length 0
+18:11:42.851135 IP aks-nodepool1-29985679-vmss000006.internal.cloudapp.net.46228 > 10.244.2.89.http: Flags [.], ack 240, win 501, options [nop,nop,TS val 2836559898 ecr 1692379345], length 0
+
+# scenario: traffic is reaching the node (destination vm) hosting the pod, but not reaching the pod 
+# logs
+simultaneous tcpdump captures from source (jumpbox) and destination VMs containing the issue repro
+the gmt time of the issue
+syslog of the destination vm
+kubectl describe of the pod and node
+additionally, create an nginx pod with a similar LB config and check if the source receives traffic from this pod
+set expectations that this may require additional captures
+```

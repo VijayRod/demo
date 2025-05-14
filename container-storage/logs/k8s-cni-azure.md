@@ -894,7 +894,9 @@ curl -I service.externalIp # HTTP/1.1 200 OK from any external system, such as m
 18:11:42.780466 IP 10.244.2.89.http > aks-nodepool1-29985679-vmss000006.internal.cloudapp.net.46228: Flags [F.], seq 239, ack 79, win 509, options [nop,nop,TS val 1692379345 ecr 2836559825], length 0
 18:11:42.851135 IP aks-nodepool1-29985679-vmss000006.internal.cloudapp.net.46228 > 10.244.2.89.http: Flags [.], ack 240, win 501, options [nop,nop,TS val 2836559898 ecr 1692379345], length 0
 
-# scenario: traffic is reaching the node (destination vm) hosting the pod, but not reaching the pod 
+# scenario.no traffic to the pod for traffic originating from outside the vnet
+# traffic is reaching the node (destination vm) hosting the pod, but not reaching the pod
+# tcpdump: traffic must reach the AKS node that hosts the pod
 # logs
 simultaneous tcpdump captures from source (jumpbox) and destination VMs containing the issue repro
 the gmt time of the issue
@@ -902,4 +904,15 @@ syslog of the destination vm
 kubectl describe of the pod and node
 additionally, create an nginx pod with a similar LB config and check if the source receives traffic from this pod
 set expectations that this may require additional captures
+```
+
+```
+# scenario.asymmetric-routing
+# internet traffic routing can be asymmetric due to varying router paths
+# tcpdump, traceroute, dig @168.63.129.16 fqdn, tbd https://bgp.he.net/
+# source >< firewall/gateway >< destination
+# tcpdump: traffic must reach the AKS node that hosts the pod
+# mitigate - udr, policy routing (firewall, router): force inbound traffic to use the same route as outbound, for example, by using asymmetric routing policies
+# mitigate - firewall: with snat
+# mitigate - udr: add route "0.0.0.0/0 > Azure Firewall" to force all traffic to use the same path
 ```

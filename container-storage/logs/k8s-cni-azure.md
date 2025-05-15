@@ -898,12 +898,73 @@ curl -I service.externalIp # HTTP/1.1 200 OK from any external system, such as m
 # traffic is reaching the node (destination vm) hosting the pod, but not reaching the pod
 # tcpdump: traffic must reach the AKS node that hosts the pod
 # logs
-simultaneous tcpdump captures from source (jumpbox) and destination VMs containing the issue repro
+simultaneous tcpdump captures from source (jumpbox) and destination VMs (all VMs with the pod replicas) containing the issue repro
 the gmt time of the issue
 syslog of the destination vm
-kubectl describe of the pod and node
+kubectl describe of the pod to get details like pod.ip, node.name/ip, container[].Ports
+optionally, describe the service if there's no traffic flow to the pod (this includes the NodePort)
+additionally, you can describe the node for it's node.name/ip and Allocated resources, though this is optional since node details are available in the pod describe
+output from iptables-save on the node
+additionally, the backend instance internal IPs of the azure firewall are important because the traffic will originate from these IPs if the internet traffic is routed through the Azure firewall, which is SNATing the traffic. This is not applicable for peered vnets, as there is no SNAT; therefore, the destination tcpdump will show the source internal IPs, not the firewall internal IPs.
 additionally, create an nginx pod with a similar LB config and check if the source receives traffic from this pod
 set expectations that this may require additional captures
+```
+
+```
+# scenario: outbound traffic to the api server from the cluster
+
+# in pod (no snat)
+# curl https://kubernetes.default -k
+  "reason": "Unauthorized",
+  "code": 401
+# apt update -y && apt install iputils-ping
+# ping kubernetes.default
+PING kubernetes.default.svc.cluster.local (10.0.0.1) 56(84) bytes of data.
+
+# in node (snat according to the iptables rule)
+root@aks-nodepool1-29985679-vmss000008:/# curl -v -k -H "Authorization: Bearer $(cat /var/run/secrets/kubernetes.io/serviceaccount/token)" https://$KUBERNETES_SERVICE_HOST:$KUBERNETES_SERVICE_PORT/api/v1/namespaces/default/pods
+cat: /var/run/secrets/kubernetes.io/serviceaccount/token: No such file or directory
+*   Trying 10.0.0.1:443...
+* Connected to 10.0.0.1 (10.0.0.1) port 443 (#0)
+  "reason": "Unauthorized",
+  "code": 401
+
+root@aks-nodepool1-29985679-vmss000008:/# iptables-save | grep 10.0.0.1/
+-A KUBE-SERVICES -d 10.0.0.1/32 -p tcp -m comment --comment "default/kubernetes:https cluster IP" -j KUBE-SVC-NPX46M4PTMTKRN6Y
+-A KUBE-SVC-NPX46M4PTMTKRN6Y -d 10.0.0.1/32 ! -i azv+ -p tcp -m comment --comment "default/kubernetes:https cluster IP" -j KUBE-MARK-MASQ
+
+root@aks-nodepool1-29985679-vmss000008:/# traceroute 10.0.0.1
+traceroute to 10.0.0.1 (10.0.0.1), 30 hops max, 60 byte packets
+ 1  * * *
+ 
+root@aks-nodepool1-29985679-vmss000008:/# curl -vk https://10.0.0.1:443
+*   Trying 10.0.0.1:443...
+* Connected to 10.0.0.1 (10.0.0.1) port 443 (#0)
+  "reason": "Unauthorized",
+  
+## .4 is the node ip, 10.224.0.1 is the default gateway of the subnet (assuming no udr or nsg)
+root@aks-nodepool1-29985679-vmss000008:/# ip route get 10.0.0.1
+10.0.0.1 via 10.224.0.1 dev eth0 src 10.224.0.4 uid 0
+    cache
+root@aks-nodepool1-29985679-vmss000008:/# ip route get 8.8.8.8
+8.8.8.8 via 10.224.0.1 dev eth0 src 10.224.0.4 uid 0
+    cache
+    
+# in node or laptop (snat since internet traffic)
+root@aks-nodepool1-29985679-vmss000008:/# curl -v -k -H "Authorization: Bearer $(cat /var/run/secrets/kubernetes.io/serviceaccount/token)" https://aks-rg-efec8e-rnbou1qj.hcp.swedencentral.azmk8s.io:$KUBERNETES_SERVICE_PORT/api/v1/namespaces/default/pods
+cat: /var/run/secrets/kubernetes.io/serviceaccount/token: No such file or directory
+* Host aks-rg-efec8e-rnbou1qj.hcp.swedencentral.azmk8s.io:443 was resolved.
+* IPv6: (none)
+* IPv4: 9.223.174.144
+*   Trying 9.223.174.144:443...
+* Connected to aks-rg-efec8e-rnbou1qj.hcp.swedencentral.azmk8s.io (9.223.174.144) port 443
+  "reason": "Unauthorized",
+  "code": 401
+  
+root@aks-nodepool1-29985679-vmss000008:/# iptables-save | grep masq -I
+-A POSTROUTING -m comment --comment "\"ip-masq-agent: ensure nat POSTROUTING directs all non-LOCAL destination traffic to our custom IP-MASQ-AGENT chain\"" -m addrtype ! --dst-type LOCAL -j IP-MASQ-AGENT
+-A IP-MASQ-AGENT -d 10.244.0.0/16 -m comment --comment "ip-masq-agent: local traffic is not subject to MASQUERADE" -j RETURN
+-A IP-MASQ-AGENT -m comment --comment "ip-masq-agent: outbound traffic is subject to MASQUERADE (must be last in chain)" -j MASQUERADE
 ```
 
 ```

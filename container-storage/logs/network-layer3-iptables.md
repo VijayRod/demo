@@ -93,6 +93,15 @@ aks-nodepool1-12914153-vmss000000:/# iptables-save | grep nginx
 -A KUBE-SVC-2CMXP7HKUVJN7L6M ! -s 10.244.0.0/16 -d 10.0.91.63/32 -p tcp -m comment --comment "default/nginx cluster IP" -j KUBE-MARK-MASQ
 -A KUBE-SVC-2CMXP7HKUVJN7L6M -m comment --comment "default/nginx -> 10.244.0.13:80" -j KUBE-SEP-RPYTXMYI33B6SF5E
 
+i.e.
+Serviço: default/nginx
+IP do serviço (ClusterIP): 10.0.91.63
+Pod onde corre o nginx: 10.244.0.13
+Sub-rede de pods: 10.244.0.0/16
+Also, 
+KUBE-MARK-MASQ is snat, DNAT is dnat
+The client sends traffic to 10.0.91.63 (ClusterIP) (KUBE-SERVICES)
+
 aks-nodepool1-12914153-vmss000000:/# iptables -vnL # No new entries
 aks-nodepool1-12914153-vmss000000:/# ipset -L # No rows
 ```

@@ -8,13 +8,18 @@
 # k8s.csi.driver
 ```
 - Here is the list of supported storage drivers. All other drivers, including those maintained by Microsoft employees, are not supported by the AKS or the Azure Container Storage team and are generally supported online in their repository:
-  - Azure Blob Storage CSI driver - https://learn.microsoft.com/en-us/azure/aks/azure-blob-csi
+  - Azure Blob Storage CSI driver (blobfuse2, nfs) - https://learn.microsoft.com/en-us/azure/aks/azure-blob-csi
+    - "blobfuse2 mount" sets up a virtual fs mountpoint in memory using FUSE (Filesystem in Userspace).
+      - examples of virtual filesystems include tmpfs, proc, sysfs, and fuse (e.g., blobfuse)
     - https://github.com/kubernetes-sigs/blob-csi-driver/blob/master/docs/csi-debug.md
     - https://learn.microsoft.com/en-us/azure/storage/blobs/blobfuse2-troubleshooting
-  - Azure Disk CSI driver - https://learn.microsoft.com/en-us/azure/aks/azure-disk-csi
+  - Azure Disk CSI driver (iscsi, nvme for ultra disk) - https://learn.microsoft.com/en-us/azure/aks/azure-disk-csi
+    - default file system is ext4: use mkfs.ext4 /dev/sdc, then mount /dev/sdc /mnt/data. 
+      - this can be changed to other file systems with pv.csi.fstype=xfs, ntfs, btrfs, ntfs, fat32
+        - note that this is a real, physical fs, such as HDD, SSD, VHD, etc.
     - https://github.com/kubernetes-sigs/azuredisk-csi-driver/blob/master/docs/csi-debug.md
     - https://github.com/andyzhangx/demo/blob/master/issues/azuredisk-issues.md#25-multi-attach-error
-  - Azure File CSI driver - https://learn.microsoft.com/en-us/azure/aks/azure-files-csi
+  - Azure File CSI driver (cifs for linux / smb for windows, nfs) - https://learn.microsoft.com/en-us/azure/aks/azure-files-csi
     - https://github.com/kubernetes-sigs/azurefile-csi-driver/blob/master/docs/csi-debug.md
   - Azure Container Storage driver with Azure Disk - https://learn.microsoft.com/en-us/azure/storage/container-storage/use-container-storage-with-managed-disk
   - Azure Container Storage driver with Elastic SAN - https://learn.microsoft.com/en-us/azure/storage/container-storage/use-container-storage-with-elastic-san

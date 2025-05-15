@@ -922,8 +922,7 @@ set expectations that this may require additional captures
 PING kubernetes.default.svc.cluster.local (10.0.0.1) 56(84) bytes of data.
 
 # in node (snat according to the iptables rule)
-root@aks-nodepool1-29985679-vmss000008:/# curl -v -k -H "Authorization: Bearer $(cat /var/run/secrets/kubernetes.io/serviceaccount/token)" https://$KUBERNETES_SERVICE_HOST:$KUBERNETES_SERVICE_PORT/api/v1/namespaces/default/pods
-cat: /var/run/secrets/kubernetes.io/serviceaccount/token: No such file or directory
+root@aks-nodepool1-29985679-vmss000008:/# curl -vk https://$KUBERNETES_SERVICE_HOST:$KUBERNETES_SERVICE_PORT/api/v1/namespaces/default/pods
 *   Trying 10.0.0.1:443...
 * Connected to 10.0.0.1 (10.0.0.1) port 443 (#0)
   "reason": "Unauthorized",
@@ -951,7 +950,7 @@ root@aks-nodepool1-29985679-vmss000008:/# ip route get 8.8.8.8
     cache
     
 # in node or laptop (snat since internet traffic)
-root@aks-nodepool1-29985679-vmss000008:/# curl -v -k -H "Authorization: Bearer $(cat /var/run/secrets/kubernetes.io/serviceaccount/token)" https://aks-rg-efec8e-rnbou1qj.hcp.swedencentral.azmk8s.io:$KUBERNETES_SERVICE_PORT/api/v1/namespaces/default/pods
+root@aks-nodepool1-29985679-vmss000008:/# curl -vk https://aks-rg-efec8e-rnbou1qj.hcp.swedencentral.azmk8s.io:$KUBERNETES_SERVICE_PORT/api/v1/namespaces/default/pods
 cat: /var/run/secrets/kubernetes.io/serviceaccount/token: No such file or directory
 * Host aks-rg-efec8e-rnbou1qj.hcp.swedencentral.azmk8s.io:443 was resolved.
 * IPv6: (none)

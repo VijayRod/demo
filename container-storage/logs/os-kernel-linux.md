@@ -31,3 +31,6 @@
   - http://www.staroceans.org/kernel-and-driver/Conceptual%20Architecture%20of%20the%20Linux%20Kernel.pdf
   - https://plg.uwaterloo.ca/~holt/cs/446/08/slides/linux-bowman-hindle.pdf: slides
   - https://dl.acm.org/doi/10.1145/302405.302691: Linux as a case study: its extracted software architecture (paper)
+
+## os-linux.distro.alpine
+- https://alpinelinux.org/releases/: End of support

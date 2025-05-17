@@ -22,6 +22,7 @@
 rg=rgkata
 az group create -n $rg -l $loc
 az aks create -g $rg -n aks --os-sku AzureLinux --workload-runtime KataMshvVmIsolation --node-vm-size Standard_D4s_v3 -c 1 # -s $vmsize -c 2 # generation 2 VM and supports nested virtualization
+# az aks nodepool add -g $rg --cluster-name akscal -n npkata --workload-runtime KataMshvVmIsolation --os-sku AzureLinux --node-vm-size Standard_D4s_v3
 az aks get-credentials -g $rg -n aks --overwrite-existing
 kubectl get no; kubectl get po -A
 

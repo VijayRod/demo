@@ -10,6 +10,13 @@
 
 ## ai-agents
 
+## ai-prompt
+
+```
+Copilot: Apps, Prompts
+Copilot: Chat, Agents, Prompt Coach
+```
+
 ## ai-tools
 
 - copilot

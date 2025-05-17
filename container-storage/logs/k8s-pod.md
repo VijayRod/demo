@@ -4,6 +4,8 @@
 
 ### pod.containers.livenessProbe.command
 
+- https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/#define-a-liveness-command
+  
 ```
 kubectl delete po liveness-exec
 cat << EOF | kubectl create -f -
@@ -29,9 +31,41 @@ spec:
       initialDelaySeconds: 5 # tells the kubelet that it should wait 5 seconds before performing the first probe
       periodSeconds: 5 # kubelet should perform a liveness probe every 5 seconds
 EOF
-```
+k get po -owide -w
 
-- https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/#define-a-liveness-command
+k describe po liveness-exec
+Containers:
+  liveness:
+    State:          Running
+      Started:      Fri, 16 May 2025 12:36:35 +0000
+    Last State:     Terminated
+      Reason:       Error
+      Exit Code:    137
+      Started:      Fri, 16 May 2025 12:35:20 +0000
+      Finished:     Fri, 16 May 2025 12:36:34 +0000
+    Ready:          True
+    Restart Count:  2
+    Liveness:       exec [cat /tmp/healthy] delay=5s timeout=1s period=5s #success=1 #failure=3
+
+# 'prober.go:107] "Probe failed" probeType="Liveness"', 'probeResult="failure" output=<'
+# 'kubelet.go:2528] "SyncLoop (probe)" probe="liveness" status="unhealthy"'
+# 'containerMessage="Container liveness failed liveness probe, will be restarted"'
+# '"Killing container with a grace period"'
+May 16 18:34:04 aks-nodepool1-29985679-vmss00000A kubelet[4052]: I0516 18:34:04.558677    4052 kubelet.go:2407] "SyncLoop ADD" source="api" pods=["default/liveness-exec"]
+..
+May 16 18:34:06 aks-nodepool1-29985679-vmss00000A kubelet[4052]: I0516 18:34:06.951598    4052 kubelet.go:2439] "SyncLoop (PLEG): event for pod" pod="default/liveness-exec" event={"ID":"93e17ecc-ab55-461a-b526-29248d2554ad","Type":"ContainerStarted","Data":"05657a9c673d612aedd955a65136ccca36b82ba987831de7844cdc0238f1d707"}
+May 16 18:34:06 aks-nodepool1-29985679-vmss00000A kubelet[4052]: I0516 18:34:06.965438    4052 pod_startup_latency_tracker.go:104] "Observed pod startup duration" pod="default/liveness-exec" podStartSLOduration=2.066691337 podStartE2EDuration="2.965419007s" podCreationTimestamp="2025-05-16 18:34:04 +0000 UTC" firstStartedPulling="2025-05-16 18:34:05.069571752 +0000 UTC m=+13458.285732079" lastFinishedPulling="2025-05-16 18:34:05.968299422 +0000 UTC m=+13459.184459749" observedRunningTime="2025-05-16 18:34:06.965398807 +0000 UTC m=+13460.181559234" watchObservedRunningTime="2025-05-16 18:34:06.965419007 +0000 UTC m=+13460.181579634"
+May 16 18:34:39 aks-nodepool1-29985679-vmss00000A kubelet[4052]: I0516 18:34:39.885628    4052 prober.go:107] "Probe failed" probeType="Liveness" pod="default/liveness-exec" podUID="93e17ecc-ab55-461a-b526-29248d2554ad" containerName="liveness" probeResult="failure" output=<
+May 16 18:34:44 aks-nodepool1-29985679-vmss00000A kubelet[4052]: I0516 18:34:44.887534    4052 prober.go:107] "Probe failed" probeType="Liveness" pod="default/liveness-exec" podUID="93e17ecc-ab55-461a-b526-29248d2554ad" containerName="liveness" probeResult="failure" output=<
+May 16 18:34:49 aks-nodepool1-29985679-vmss00000A kubelet[4052]: I0516 18:34:49.885197    4052 prober.go:107] "Probe failed" probeType="Liveness" pod="default/liveness-exec" podUID="93e17ecc-ab55-461a-b526-29248d2554ad" containerName="liveness" probeResult="failure" output=<
+May 16 18:34:49 aks-nodepool1-29985679-vmss00000A kubelet[4052]: I0516 18:34:49.885264    4052 kubelet.go:2528] "SyncLoop (probe)" probe="liveness" status="unhealthy" pod="default/liveness-exec"
+May 16 18:34:49 aks-nodepool1-29985679-vmss00000A kubelet[4052]: I0516 18:34:49.885576    4052 kuberuntime_manager.go:1027] "Message for Container of pod" containerName="liveness" containerStatusID={"Type":"containerd","ID":"05657a9c673d612aedd955a65136ccca36b82ba987831de7844cdc0238f1d707"} pod="default/liveness-exec" containerMessage="Container liveness failed liveness probe, will be restarted"
+May 16 18:34:49 aks-nodepool1-29985679-vmss00000A kubelet[4052]: I0516 18:34:49.885621    4052 kuberuntime_container.go:808] "Killing container with a grace period" pod="default/liveness-exec" podUID="93e17ecc-ab55-461a-b526-29248d2554ad" containerName="liveness" containerID="containerd://05657a9c673d612aedd955a65136ccca36b82ba987831de7844cdc0238f1d707" gracePeriod=30
+May 16 18:35:20 aks-nodepool1-29985679-vmss00000A kubelet[4052]: I0516 18:35:20.075426    4052 kubelet.go:2439] "SyncLoop (PLEG): event for pod" pod="default/liveness-exec" event={"ID":"93e17ecc-ab55-461a-b526-29248d2554ad","Type":"ContainerDied","Data":"05657a9c673d612aedd955a65136ccca36b82ba987831de7844cdc0238f1d707"}
+May 16 18:35:21 aks-nodepool1-29985679-vmss00000A kubelet[4052]: I0516 18:35:21.078268    4052 kubelet.go:2439] "SyncLoop (PLEG): event for pod" pod="default/liveness-exec" event={"ID":"93e17ecc-ab55-461a-b526-29248d2554ad","Type":"ContainerStarted","Data":"c6f825e51b97cba5742a8a857c789ed287ecd4bec7775e92473559d56026ef09"}
+
+# pod: tcpdump
+```
 
 ### pod.containers.livenessProbe.http
 

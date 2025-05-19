@@ -10,6 +10,8 @@ az vmss list-instances -g $rg -n devops -otable
 
 az vmss scale -g $rg -n devops --new-capacity 5
 
+az aks update -g $rg -n devops # reconcile
+
 az vmss delete --force-deletion --no-wait -g $rg -n devops
 az vmss delete-instances -g $rg -n devops --instance-ids 0 # instance-ids as seen in the output of az vmss list-instances (these have different values for flex orchestration mode)
 ```

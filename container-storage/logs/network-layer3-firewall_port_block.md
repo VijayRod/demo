@@ -1,6 +1,8 @@
 The following commands are for a Linux node:
 
 ```
+# port.block
+
 # To drop packets sent to a destination port.
 iptables -A OUTPUT -p tcp --dport 445 -j DROP
 
@@ -19,6 +21,11 @@ OR iptables -s 123.456.78.90/32 -p tcp -m tcp -A INPUT -m statistic --mode rando
 ```
 
 - https://www.linode.com/docs/guides/control-network-traffic-with-iptables/#block-traffic-by-port
+  
+```
+# port.block.aks
+iptables -A OUTPUT -p tcp -j DROP # kubectl get no: NotReady
+```
 
 ```
 # tbd with firewalld

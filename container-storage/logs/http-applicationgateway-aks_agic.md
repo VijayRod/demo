@@ -13,6 +13,7 @@ az role assignment create --assignee $agicAddonIdentity --scope $appGatewaySubne
 ```
 
 - https://learn.microsoft.com/en-us/azure/application-gateway/tutorial-ingress-controller-add-on-new
+- https://azure.github.io/application-gateway-kubernetes-ingress/proposals/multiple-gateways-single-cluster.md
 
 ```
 k get all -n app-routing-system --show-labels

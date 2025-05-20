@@ -65,3 +65,26 @@ Annotations:  <none>
 Controller:   webapprouting.kubernetes.azure.com/nginx
 Events:       <none>
 ```
+
+```
+az aks get-credentials -g $rg -n aks --overwrite-existing
+kubectl get no; kubectl get po -A
+
+# kube-system   ingress-appgw-deployment-c77b7c6bc-2nfvj        1/1     Running   1 (20m ago)   22m
+k describe po -n kube-system -l app=ingress-appgw
+k logs -n kube-system -l app=ingress-appgw
+
+kubectl apply -f https://raw.githubusercontent.com/Azure/application-gateway-kubernetes-ingress/master/docs/examples/aspnetapp.yaml
+kubectl get ingress
+
+curl 9.223.58.10 -I # ing.ADDRESS. HTTP/1.1 404 Not Found. Server: Microsoft-Azure-Application-Gateway/v2
+<html>
+<head><title>404 Not Found</title></head>
+<body>
+<center><h1>404 Not Found</h1></center>
+<hr><center>Microsoft-Azure-Application-Gateway/v2</center>
+</body>
+</html>
+
+az network application-gateway show -g MC_rg_aks_swedencentral -n myApplicationGateway --query httpListeners
+```

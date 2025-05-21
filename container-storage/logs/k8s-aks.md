@@ -69,6 +69,25 @@ kubectl cp node-debugger-{node-name-xxxx}:/host/var/log/syslog /tmp/syslog
 kubectl cp node-debugger-{node-name-xxxx}:/host/var/log/kern.log /tmp/kern.log
 ```
 
+```
+# aks.mitigate
+
+# mitigate.cluster
+az aks update -g $rg -n aks # cluster reconcile
+az aks update -g $rg -n aks --tags nametest=valuetest # cluster reconcile with forced put if new tag?
+az aks stop -g $rg -n aks
+
+# mitigate.nodepool/VMSS
+az aks nodepool update -g $rg --cluster-name aks -n nodepool1 # node pool reconcile which will not update the VMScaleSet if no property changes
+az aks nodepool update -g $rg --cluster-name aks -n nodepool1 --tags npname=npvalue # node pool reconcile with a new tag forces a VMScaleSet put
+az aks nodepool upgrade --node-image-only -g --cluster-name -n # node pool reconcile with a new node image forces a VMScaleSet put
+az aks nodepool stop -g $rg --cluster-name aks -n nodepool1
+az aks nodepool update -g $rg --cluster-name aks -n nodepool1 -c 0 # only in a user node pool and only when cluster-autoscaler is not enabled for that node pool
+
+# mitigate.VMSS
+az vmss update -g $rg -n # reconcile, unsupported, for test purpose
+```
+
 ## aks.core.reconcile
 
 ```

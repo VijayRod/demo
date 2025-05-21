@@ -336,3 +336,45 @@ Oct 12 19:34:45 aks-nodepool1-24207654-vmss000002 kubelet[2480]: I1012 19:34:45.
 Oct 12 19:34:45 aks-nodepool1-24207654-vmss000002 kubelet[2480]: I1012 19:34:45.357018    2480 kubelet.go:2231] "SyncLoop (PLEG): event for pod" pod="default/nginx" event=&{ID:27aff94d-e0d9-43d1-84d6-9ab000aa57e2 Type:ContainerDied Data:4296b9e2377fddb0e7e42d20223c36771268cb7a1828315331405b66f0030add}
 Oct 12 19:34:45 aks-nodepool1-24207654-vmss000002 kubelet[2480]: I1012 19:34:45.445172    2480 eviction_manager.go:595] "Eviction manager: pod is evicted successfully" pod="default/nginx"
 ```
+
+> ## exitcode.143
+
+```
+Quando vês 143 na prática?
+Escalonamento automático (horizontal scaling down)
+Rolling update
+Pod eviction (por falta de recursos)
+Comandos kubectl delete pod
+Falhas do nó
+```
+
+- https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#pod-termination: TERM (aka. SIGTERM) signal.. Once the grace period has expired, the KILL (SIGKILL) signal
+- https://discuss.kubernetes.io/t/when-scale-replicas-0-do-k8s-send-sigterm/11838: It should receive SIGTERM and if its taking too long, it will eventually get a SIGKILL. You can adjust the timeout with terminationGracePeriodSeconds.
+
+```
+# no repro with any of the items below, and no exitCode=143 in the syslog
+
+# exitcode.143.example (manual pod kill)
+kubectl run sigterm-test --image=nginx
+kubectl get po -w
+kubectl delete pod sigterm-test
+kubectl get pod sigterm-test -o jsonpath="{.status.containerStatuses[*].lastState.terminated.exitCode}" # Error from server (NotFound): pods "nginx-676b6c5bbc-2nzpk" not found
+
+kubectl create deploy nginx --image=nginx
+kubectl scale deploy nginx --replicas 10
+kubectl get deploy -w
+kubectl get po -l app=nginx -owide
+kubectl delete pod nginx-676b6c5bbc-2nzpk
+kubectl get pod nginx-676b6c5bbc-2nzpk -o jsonpath="{.status.containerStatuses[*].lastState.terminated.exitCode}" # Error from server (NotFound): pods "nginx-676b6c5bbc-2nzpk" not found
+
+# exitcode.143.example2 (send SIGTERM with kubectl exec)
+kubectl run test-143 --image=ubuntu --restart=Never -it -- bash
+sleep 3600
+## terminal 2
+kubectl exec test-143 -- pkill -15 sleep
+kubectl get pod test-143 -o jsonpath="{.status.containerStatuses[*].lastState.terminated.exitCode}" # no lastState.terminated
+
+# exitcode.143.example3 (scale-down to 0 with a deployment)
+kubectl scale deployment nginx --replicas=0
+Vai terminar os pods com SIGTERM > exit code 143 # no log indicating 143
+```

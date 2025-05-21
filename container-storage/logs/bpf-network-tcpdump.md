@@ -334,7 +334,7 @@ kubectl sniff nginx-azurefile -f "port 80" # tbd Error: exec: "wireshark": execu
 - https://github.com/eldadru/ksniff: ksniff use kubectl to upload a statically compiled tcpdump binary to your pod and redirecting it's output to your local Wireshark for smooth network debugging experience.
 - https://stackoverflow.com/questions/72388304/how-to-find-all-the-outgoing-network-traffic-from-a-pod-in-k8s
 
-## tcpdump.capture.tools.vm.iperf
+## tcpdump.capture.tools.iperf
 
 ```
 # install
@@ -444,6 +444,17 @@ for count in {1..1000} ; do  (echo `date +"%Y-%m-%d %H:%M:%S"` >> phy_interface
     TX:  bytes packets errors dropped carrier collsns
        3839047    3262      0       0       0       0
 ```
+
+## tcpdump.capture.tools.wireshark.tshark
+```
+root@aks-nodepool1-14724824-vmss000001:/# apt update -y && apt install tshark -y
+# root@aks-nodepool1-14724824-vmss000001:/# apt update -y && apt install wireshark -y
+
+tshark --version
+tshark
+```
+- https://tshark.dev/setup/install/
+- https://tshark.dev/setup/about/: tshark (Terminal wireSHARK) is the command line tool (CLI) that has most, but not all, of the features of Wireshark.
 
 ## tcpdump.capture.tools.windows.pktmon
 

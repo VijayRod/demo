@@ -11,20 +11,39 @@ sleep 10; kubectl get po -A
 
 ```
 # all
-kubectl run nginx --image=nginx
-kubectl exec -it nginx -- /bin/bash # -- curl google.com -I # apt-get update -y && apt-get install dnsutils -y
-kubectl run busybox --image=busybox --command -- sh -c 'sleep 1d' # https://busybox.net/about.html
-kubectl run -it --rm busybox --image=busybox -- wget -qO- google.com
-kubectl run -it --rm aks-ssh --image=debian:stable # apt-get update -y && apt-get install dnsutils -y && apt-get install curl -y
-kubectl run pause --image=registry.k8s.io/pause:3.1 --restart=Never
 
-# more
+# distro.alpine
+apk update && apk upgrade
+apk update && apk add bind-tools
+apk add tcpdump nano nmap
+
+
+# distro.alpine.container
+alpine: kubectl run debug -it --image=alpine -- sh
+nicolaka/netshoot: kubectl run netshoot --rm -it --image=nicolaka/netshoot -- bash # https://github.com/nicolaka/netshoot
+
+# distro.debian
 apt-get update -y && apt-get install net-tools strace -y # install multiple packages
 apt-get update -y && apt-get install iputils-ping -y # includes ping, not netstat. ping 10.224.0.4
 apt-get update -y && apt-get install net-tools -y # includes netstat, tbd ping. netstat -atunp | grep -E "10.224.0.4|10.224.0.5"
 apt-get update -y && apt-get install strace -y # strace -s 99 -ffp 8302
 apt update -y && apt install bind9-dnsutils -y # nslookup
 apt update -y && apt install inetutils-telnet -y # telnet
+apt update && apt install dnsutils
+
+# distro.debian.container
+debian: kubectl run -it --rm aks-ssh --image=debian:stable # apt-get update -y && apt-get install dnsutils -y && apt-get install curl -y
+nginx: kubectl exec -it nginx -- /bin/bash # -- curl google.com -I # apt-get update -y && apt-get install dnsutils -y
+nginx: kubectl run nginx --image=nginx
+
+# distro.distroless
+busybox: kubectl run -it --rm busybox --image=busybox -- wget -qO- google.com
+busybox: kubectl run busybox --image=busybox --command -- sh -c 'sleep 1d' # https://busybox.net/about.html. Lightweight 1 MB image, without /etc/os-release
+dnsutils: kubectl apply -f https://k8s.io/examples/admin/dns/dnsutils.yaml # k8s e2e, https://kubernetes.io/docs/tasks/administer-cluster/dns-debugging-resolution/ # commands: /agnhost --help, /agnhost serve-hostname, /agnhost connect --protocol HTTP --port 80, /agnhost netexec, /agnhost pause, /agnhost crash
+pause: kubectl run pause --image=registry.k8s.io/pause:3.1 --restart=Never # static image from scratch, without a shell or libc
+
+# more
+
 ```
 
 - https://kubernetes.io/docs/concepts/containers/images/

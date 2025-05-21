@@ -64,12 +64,19 @@ May 16 18:34:49 aks-nodepool1-29985679-vmss00000A kubelet[4052]: I0516 18:34:49.
 May 16 18:35:20 aks-nodepool1-29985679-vmss00000A kubelet[4052]: I0516 18:35:20.075426    4052 kubelet.go:2439] "SyncLoop (PLEG): event for pod" pod="default/liveness-exec" event={"ID":"93e17ecc-ab55-461a-b526-29248d2554ad","Type":"ContainerDied","Data":"05657a9c673d612aedd955a65136ccca36b82ba987831de7844cdc0238f1d707"}
 May 16 18:35:21 aks-nodepool1-29985679-vmss00000A kubelet[4052]: I0516 18:35:21.078268    4052 kubelet.go:2439] "SyncLoop (PLEG): event for pod" pod="default/liveness-exec" event={"ID":"93e17ecc-ab55-461a-b526-29248d2554ad","Type":"ContainerStarted","Data":"c6f825e51b97cba5742a8a857c789ed287ecd4bec7775e92473559d56026ef09"}
 
-# pod: tcpdump
+# pod: tcpdump - none since the liveness probe is a command
+# node: tcpdump (remove "rm -f /tmp/healthy" from the liveness command to prevent the pod from restarting soon) - none since the liveness probe is a command
 ```
 
 ### pod.containers.livenessProbe.http
 
+- https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/#define-a-liveness-http-request
+- https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/: A common pattern for liveness probes is to use the same low-cost HTTP endpoint as for readiness probes, but with a higher failureThreshold. This ensures that the pod is observed as not-ready for some period of time before it is hard killed...
+- https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/#http-probes: the kubelet sends an HTTP request to the specified port and path to perform the check. The kubelet sends the probe to the Pod's IP address
+
 ```
+# probe.liveness.http
+
 kubectl delete po liveness-http
 cat << EOF | kubectl create -f -
 apiVersion: v1
@@ -142,11 +149,102 @@ Connection: close
 
 az network vnet subnet show -g MC_rg_aks_swedencentral --vnet-name aks-vnet-92427521 -n aks-subnet --query addressPrefix -otsv
 10.224.0.0/16
+
+# node (kubenet cluster): tcpdump - tbd there is no traffic to the pod since the request is being sent by the kubelet within the same node (note that no lb service defined here)
+
+# pod (kubenet cluster): tcpdump - node ip to pod ip
+kubectl netshoot debug liveness-http
+tcpdump | grep HTTP
+18:57:08.912728 IP aks-nodepool1-14724824-vmss000001.internal.cloudapp.net.46410 > liveness-http.8080: Flags [P.], seq 1:136, ack 1, win 502, options [nop,nop,TS val 4053454415 ecr 1003138986], length 135: HTTP: GET /healthz HTTP/1.1
+18:57:08.913053 IP liveness-http.8080 > aks-nodepool1-14724824-vmss000001.internal.cloudapp.net.46410: Flags [P.], seq 1:138, ack 136, win 509, options [nop,nop,TS val 1003138987 ecr 4053454415], length 137: HTTP: HTTP/1.1 200 OK
+18:57:11.911973 IP aks-nodepool1-14724824-vmss000001.internal.cloudapp.net.34410 > liveness-http.8080: Flags [P.], seq 1:136, ack 1, win 502, options [nop,nop,TS val 4053457415 ecr 1003141985], length 135: HTTP: GET /healthz HTTP/1.1
+18:57:11.912215 IP liveness-http.8080 > aks-nodepool1-14724824-vmss000001.internal.cloudapp.net.34410: Flags [P.], seq 1:138, ack 136, win 509, options [nop,nop,TS val 1003141986 ecr 4053457415], length 137: HTTP: HTTP/1.1 200 OK
+PING aks-nodepool1-14724824-vmss000001.internal.cloudapp.net (10.224.0.4) 56(84) bytes of data.
 ```
 
-- https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/#define-a-liveness-http-request
-- https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/: A common pattern for liveness probes is to use the same low-cost HTTP endpoint as for readiness probes, but with a higher failureThreshold. This ensures that the pod is observed as not-ready for some period of time before it is hard killed...
+```
+# probe.liveness.http.lb
 
+kubectl delete svc liveness-agnhost
+kubectl delete po liveness-agnhost
+cat << EOF | kubectl create -f -
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    app: agnhost
+  name: liveness-agnhost
+spec:
+  containers:
+    - name: agnhost
+      image: registry.k8s.io/e2e-test-images/agnhost:2.39
+      args:
+        - serve-hostname
+        - --http=true
+        - --port=8080
+      ports:
+        - containerPort: 8080
+      livenessProbe:
+        httpGet:
+          path: /healthz
+          port: 8080
+        initialDelaySeconds: 5
+        periodSeconds: 5
+        timeoutSeconds: 2
+EOF
+kubectl get po -owide -w
+kubectl describe po liveness-agnhost | tail
+kubectl expose pod/liveness-agnhost --type=LoadBalancer --port 8080; kubectl get svc -w
+k get po liveness-agnhost -owide; kubectl get no -owide
+
+
+# node: tcpdump - lb to node ip
+root@aks-nodepool1-14724824-vmss000001:/# tcpdump port 31229
+tcpdump: verbose output suppressed, use -v[v]... for full protocol decode
+listening on eth0, link-type EN10MB (Ethernet), snapshot length 262144 bytes
+18:09:00.914189 IP 168.63.129.16.56360 > aks-nodepool1-14724824-vmss000001.internal.cloudapp.net.31229: Flags [SEW], seq 2714777894, win 64240, options [mss 1440,nop,wscale 8,nop,nop,sackOK], length 0
+18:09:00.914255 IP aks-nodepool1-14724824-vmss000001.internal.cloudapp.net.31229 > 168.63.129.16.56360: Flags [S.], seq 3881067145, ack 2714777895, win 64240, options [mss 1460,nop,nop,sackOK,nop,wscale 7], length 0
+18:09:00.914532 IP 168.63.129.16.56360 > aks-nodepool1-14724824-vmss000001.internal.cloudapp.net.31229: Flags [.], ack 1, win 16385, length 0
+18:09:05.916887 IP 168.63.129.16.56360 > aks-nodepool1-14724824-vmss000001.internal.cloudapp.net.31229: Flags [F.], seq 1, ack 1, win 16385, length 0
+18:09:05.917108 IP aks-nodepool1-14724824-vmss000001.internal.cloudapp.net.31229 > 168.63.129.16.56360: Flags [F.], seq 1, ack 2, win 502, length 0
+18:09:05.917342 IP 168.63.129.16.56360 > aks-nodepool1-14724824-vmss000001.internal.cloudapp.net.31229: Flags [.], ack 2, win 16385, length 0
+
+18:09:05.918020 IP 168.63.129.16.56450 > aks-nodepool1-14724824-vmss000001.internal.cloudapp.net.31229: Flags [SEW], seq 2455653299, win 64240, options [mss 1440,nop,wscale 8,nop,nop,sackOK], length 0
+18:09:05.918079 IP aks-nodepool1-14724824-vmss000001.internal.cloudapp.net.31229 > 168.63.129.16.56450: Flags [S.], seq 3042026384, ack 2455653300, win 64240, options [mss 1460,nop,nop,sackOK,nop,wscale 7], length 0
+18:09:05.918310 IP 168.63.129.16.56450 > aks-nodepool1-14724824-vmss000001.internal.cloudapp.net.31229: Flags [.], ack 1, win 16385, length 0
+18:09:10.920414 IP 168.63.129.16.56450 > aks-nodepool1-14724824-vmss000001.internal.cloudapp.net.31229: Flags [F.], seq 1, ack 1, win 16385, length 0
+18:09:10.920664 IP aks-nodepool1-14724824-vmss000001.internal.cloudapp.net.31229 > 168.63.129.16.56450: Flags [F.], seq 1, ack 2, win 502, length 0
+18:09:10.920960 IP 168.63.129.16.56450 > aks-nodepool1-14724824-vmss000001.internal.cloudapp.net.31229: Flags [.], ack 2, win 16385, length 0
+
+
+# node: tcpdump - from node ip to pod ip 10.244.1.228 on httpGet.port 8080
+root@aks-nodepool1-14724824-vmss000001:/# tcpdump port 8080
+18:57:18.500113 IP aks-nodepool1-14724824-vmss000000.internal.cloudapp.net.31041 > 10.244.1.228.http-alt: Flags [SEW], seq 1238502879, win 64240, options [mss 1390,nop,wscale 8,nop,nop,sackOK], length 0
+18:57:18.500255 IP 10.244.1.228.http-alt > aks-nodepool1-14724824-vmss000000.internal.cloudapp.net.31041: Flags [S.], seq 3296570580, ack 1238502880, win 64240, options [mss 1460,nop,nop,sackOK,nop,wscale 7], length 0
+18:57:18.500903 IP aks-nodepool1-14724824-vmss000000.internal.cloudapp.net.31041 > 10.244.1.228.http-alt: Flags [.], ack 1, win 49157, length 0
+18:57:23.515570 IP aks-nodepool1-14724824-vmss000000.internal.cloudapp.net.31041 > 10.244.1.228.http-alt: Flags [F.], seq 1, ack 1, win 49157, length 0
+18:57:23.515787 IP 10.244.1.228.http-alt > aks-nodepool1-14724824-vmss000000.internal.cloudapp.net.31041: Flags [F.], seq 1, ack 2, win 502, length 0
+18:57:23.517591 IP aks-nodepool1-14724824-vmss000000.internal.cloudapp.net.31041 > 10.244.1.228.http-alt: Flags [.], ack 2, win 49157, length 0
+
+18:57:23.520546 IP aks-nodepool1-14724824-vmss000000.internal.cloudapp.net.22876 > 10.244.1.228.http-alt: Flags [SEW], seq 4206141713, win 64240, options [mss 1390,nop,wscale 8,nop,nop,sackOK], length 0
+18:57:23.520608 IP 10.244.1.228.http-alt > aks-nodepool1-14724824-vmss000000.internal.cloudapp.net.22876: Flags [S.], seq 3972370641, ack 4206141714, win 64240, options [mss 1460,nop,nop,sackOK,nop,wscale 7], length 0
+18:57:23.522142 IP aks-nodepool1-14724824-vmss000000.internal.cloudapp.net.22876 > 10.244.1.228.http-alt: Flags [.], ack 1, win 49157, length 0
+18:57:28.525020 IP aks-nodepool1-14724824-vmss000000.internal.cloudapp.net.22876 > 10.244.1.228.http-alt: Flags [F.], seq 1, ack 1, win 49157, length 0
+18:57:28.525253 IP 10.244.1.228.http-alt > aks-nodepool1-14724824-vmss000000.internal.cloudapp.net.22876: Flags [F.], seq 1, ack 2, win 502, length 0
+18:57:28.526992 IP aks-nodepool1-14724824-vmss000000.internal.cloudapp.net.22876 > 10.244.1.228.http-alt: Flags [.], ack 2, win 49157, length 0
+
+PING aks-nodepool1-14724824-vmss000000.internal.cloudapp.net (10.224.0.5) 56(84) bytes of data.
+
+
+# pod: tcpdump
+k netshoot debug liveness-agnhost
+tcpdump | grep HTTP
+18:06:24.056327 IP aks-nodepool1-14724824-vmss000001.internal.cloudapp.net.38920 > liveness-agnhost.8080: Flags [P.], seq 1:112, ack 1, win 502, options [nop,nop,TS val 1925199290 ecr 1060421532], length 111: HTTP: GET /healthz HTTP/1.1
+18:06:24.056335 IP liveness-agnhost.8080 > aks-nodepool1-14724824-vmss000001.internal.cloudapp.net.38920: Flags [.], ack 112, win 509, options [nop,nop,TS val 1060421532 ecr 1925199290], length 0
+18:06:24.056500 IP liveness-agnhost.8080 > aks-nodepool1-14724824-vmss000001.internal.cloudapp.net.38920: Flags [P.], seq 1:153, ack 112, win 509, options [nop,nop,TS val 1060421532 ecr 1925199290], length 152: HTTP: HTTP/1.1 200 OK
+18:06:24.056521 IP aks-nodepool1-14724824-vmss000001.internal.cloudapp.net.38920 > liveness-agnhost.8080: Flags [.], ack 153, win 501, options [nop,nop,TS val 1925199290 ecr 1060421532], length 0
+```
+  
 ## pod.error
 
 ### Error 'spec.initContainers: Forbidden: pod updates may not add or remove containers'

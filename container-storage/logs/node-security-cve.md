@@ -1,9 +1,13 @@
+> ## cve
+
 - https://www.cve.org/CVERecord?id=CVE-2023-24540
 - https://nvd.nist.gov/vuln/detail/CVE-2023-24540
 - https://avd.aquasec.com/nvd/2024/cve-2024-5535/
 - https://www.cve.org/ResourcesSupport/FAQs: The U.S. National Vulnerability Database (NVD) provides fix and other information for records on the CVE List.
 - https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2023-24540
 - https://ubuntu.com/security/CVE-2024-37891#status # Includes information on Ubuntu versions that have been patched for this issue, for example, 22.04 LTS
+
+> ## cve.aks
 
 ```
 # cve.aks

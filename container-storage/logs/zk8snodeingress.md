@@ -65,20 +65,30 @@ echo "$(ingress ip) example.local" | sudo tee -a /etc/hosts # for instance, in a
 curl http://example.local # Hello from ingress!  
 ```
 
-> ## ing..core.listener
-- https://learn.microsoft.com/en-us/azure/application-gateway/configuration-listeners
-
-> ## ing.annotation
 ```
+# ing.annotation
+
 # ingress.kubernetes.io
 ```
+
+> ## ing.controller (ingress controller)
+
+```
+(kubectl get ingress).ANNOTATION
+```
+
+> ## ing.controller.agic..core.listener
+- https://learn.microsoft.com/en-us/azure/application-gateway/configuration-listeners
+
+> ## ing.controller.agic.annotation
+
 - https://azure.github.io/application-gateway-kubernetes-ingress/annotations/
 - https://learn.microsoft.com/en-us/azure/application-gateway/ingress-controller-annotations
 - https://learn.microsoft.com/en-us/azure/application-gateway/for-containers/migrate-from-agic-to-agc#feature-dependencies-and-mappings
 - https://learn.microsoft.com/en-us/azure/application-gateway/for-containers/overview#load-balancing-features
 - https://github.com/kubernetes/ingress-nginx/blob/main/docs/user-guide/nginx-configuration/annotations.md
 
-> ## ing.annotation.hostname-extension
+> ## ing.controller.agic.annotation.hostname-extension
 
 ```
 k get ing -oyaml
@@ -87,7 +97,7 @@ az network application-gateway show -g MC_rg_aksagic_swedencentral -n myApplicat
 ```
 - https://azure.github.io/application-gateway-kubernetes-ingress/annotations/#hostname-extension
 
-> ## ing.annotation.rewrite-target
+> ## ing.controller.nginx.annotation.rewrite-target
 
 ```
 

@@ -53,6 +53,17 @@ az extension remove --name aks-preview
 - https://github.com/MicrosoftDocs/azure-docs-cli/pulls?q=is%3Apr+is%3Aopen+release+note: PR detailing the fixes that have been included for the upcoming release
 - https://learn.microsoft.com/en-us/cli/azure/release-notes-azure-cli
 
+> ## cli..dev
+- https://github.com/Azure/azure-cli-dev-tools?tab=readme-ov-file: azdev extension create or azdev cli create <module-name>
+
+> ## cli..extension
+- https://github.com/Azure/azure-cli-extensions
+- https://github.com/Azure/azure-cli/tree/dev/doc/extensions
+
+> ## cli..extension.dev
+- https://github.com/Azure/azure-cli-dev-tools?tab=readme-ov-file: azdev extension create or azdev cli create <module-name>
+- https://github.com/Azure/azure-cli/blob/dev/doc/extensions/authoring.md: Development of extensions have been simplified by the public release of the azdev CLI.
+
 > ## cli.aks
 
 ```
@@ -74,6 +85,12 @@ Use --debug for more information
 
 - https://learn.microsoft.com/en-us/cli/azure/release-notes-azure-cli#aks
 - https://github.com/Azure/AKS/blob/master/CHANGELOG.md: CLI
+- https://github.com/Azure/azure-cli/tree/dev/src/azure-cli/azure/cli/command_modules/acs
+
+> ## cli.aks.aks-preview
+- https://github.com/Azure/azure-cli-extensions/tree/main/src/aks-preview
+- https://github.com/Azure/azure-cli-extensions/blob/main/src/aks-preview/HISTORY.rst
+- https://github.com/Azure/azure-cli-extensions/blob/main/src/aks-preview/azext_aks_preview/_help.py
 
 > ## cli.ps
 

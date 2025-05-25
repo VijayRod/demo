@@ -150,7 +150,27 @@ k exec -it -n app-routing-system nginx-7f6784b4b5-rjkm4 -- cat /etc/nginx/nginx.
 - https://medium.com/ww-engineering/kubernetes-nginx-ingress-traffic-redirect-using-annotations-demystified-b7de846fb43d
 - https://blog.nginx.org/blog/creating-nginx-rewrite-rules
 
-> ## ing.controller.nginx.multiple
+> ## ing.controller.nginx.ingressclass
+
+```
+# nginx.official
+
+helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+helm install nginx-ingress ingress-nginx/ingress-nginx \
+  --set controller.admissionWebhooks.enabled=false
+
+kubectl get ingressclass
+kubectl get po -A -owide | grep nginx
+kubectl logs -n kube-system -l app.kubernetes.io/component=controller
+kubectl logs -n kube-system nginx-
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+spec:
+  ingressClassName: nginx
+```
+
+> ## ing.controller.nginx.ingressclass.multiple
 
 - https://learn.microsoft.com/en-us/azure/aks/app-routing-nginx-configuration?tabs=azurecli#configuration-of-the-nginx-ingress-controller
 - https://github.com/Azure/aks-app-routing-operator/blob/main/config/crd/bases/approuting.kubernetes.azure.com_nginxingresscontrollers.yaml

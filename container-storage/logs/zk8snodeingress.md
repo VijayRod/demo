@@ -249,6 +249,26 @@ k exec -it -n app-routing-system nginx-7f6784b4b5-rjkm4 -- cat /etc/nginx/nginx.
 - https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/
 - https://nginx.org/en/docs/beginners_guide.html: Starting, Stopping, and Reloading Configuration
 
+```
+# nginx.debug
+
+helm upgrade --install nginx-ingress ingress-nginx/ingress-nginx --namespace ingress-nginx --create-namespace \
+  --set controller.logLevel=debug --set controller.extraArgs.v=3 # "DEBUG:" lines in k logs
+
+## using any ingress class of nginx ingress controller
+kubectl exec -n ingress-nginx ingress-nginx-controller-7fcbcb8d8d-9s5mn -- tail -f /var/log/nginx/error.log
+kubectl exec -n ingress-nginx ingress-nginx-controller-XXXX -- nginx -t # check active nginx configuration
+kubectl exec -n ingress-nginx ingress-nginx-controller-XXXX -- nginx -T # dump including the .config file, then "error_log /var/log/nginx/error.log debug;"
+kubectl exec -it -n ingress-nginx ingress-nginx-controller-XXXX -- nginx-debug -T
+kubectl port-forward -n ingress-nginx pod/ingress-nginx-controller-xxxxxx 8080:80 # expose local port 8080 to container port 80, then the ingress curl test in this window
+kubectl port-forward -n ingress-nginx pod/ingress-nginx-controller-xxxxxx 8443:443
+kubectl port-forward -n ingress-nginx svc/ingress-nginx-controller 8080:80 # equivalent to nginx pod 8080:80, but using the service instead of the pod
+
+## ingress test
+curl -iv -H "Host: tenant1.sports" http://localhost:8080/rluOKg6kHU # http, -i to inspect headers
+curl -iv -H "Host: tenant1.sports" http://localhost:8443/rluOKg6kHU # https
+```
+
 > ## ing.controller.nginx.annotation
 
 - https://github.com/kubernetes/ingress-nginx/blob/main/docs/user-guide/nginx-configuration/annotations.md

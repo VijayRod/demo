@@ -68,7 +68,14 @@ curl http://example.local # Hello from ingress!
 ```
 # ing.annotation
 
-# ingress.kubernetes.io
+## annotation: ingress.kubernetes.io
+## namespace is vendor-specific
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: example-ingress
+  annotations:
+    namespace.ingress.kubernetes.io/key: value
 ```
 
 ```

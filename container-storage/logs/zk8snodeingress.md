@@ -71,10 +71,38 @@ curl http://example.local # Hello from ingress!
 # ingress.kubernetes.io
 ```
 
+```
+# ing.multi-tenant
+Tenant: A different customer, team, or department; environment (e.g., dev, staging, prod)
+Tenant defined with: A unique hostname (e.g., tenant1.example.com), a dedicated path or namespace, optional custom headers or rewrites to identify the tenant
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: tenant1-ingress
+  namespace: tenant1
+  annotations:
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      proxy_set_header x-tenant-id "tenant1-id";
+    nginx.ingress.kubernetes.io/use-regex: "true"
+spec:
+  rules:
+    - host: tenant1.example.com
+      http:
+        paths:
+          - path: /?(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: tenant1-service
+                port:
+                  number: 80
+```
+
 > ## ing.controller (ingress controller)
 
 ```
-(kubectl get ingress).ANNOTATION
+(kubectl get ingress).CONTROLLER
 ```
 
 > ## ing.controller.agic..core.listener

@@ -1,6 +1,70 @@
 > ## ing
 - https://kubernetes.io/docs/concepts/services-networking/ingress/
 
+```
+kubectl delete ing example-ingress
+kubectl delete deploy example-deployment
+kubectl delete svc example-service
+cat << EOF | kubectl create -f -
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: example-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+  - host: example.local
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: example-service
+            port:
+              number: 80
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: example-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: example
+  template:
+    metadata:
+      labels:
+        app: example
+    spec:
+      containers:
+      - name: web
+        image: hashicorp/http-echo
+        args:
+        - "-text=Hello from ingress!"
+        ports:
+        - containerPort: 5678
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: example-service
+spec:
+  selector:
+    app: example
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 5678
+EOF
+kubectl get ing -w
+
+echo "$(ingress ip) example.local" | sudo tee -a /etc/hosts # for instance, in a k8s node
+curl http://example.local # Hello from ingress!  
+```
+
 > ## ing..core.listener
 - https://learn.microsoft.com/en-us/azure/application-gateway/configuration-listeners
 

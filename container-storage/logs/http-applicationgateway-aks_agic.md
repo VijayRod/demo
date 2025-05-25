@@ -1,3 +1,5 @@
+> ## agic
+
 ```
 rg=rgagic
 az group create -n $rg -l $loc
@@ -87,4 +89,81 @@ curl 9.223.58.10 -I # ing.ADDRESS. HTTP/1.1 404 Not Found. Server: Microsoft-Azu
 </html>
 
 az network application-gateway show -g MC_rg_aks_swedencentral -n myApplicationGateway --query httpListeners
+```
+
+> ## agic.cluster-existing
+
+```
+# agic.cluster-existing.azure-cni
+
+rg=rgagic
+az group create -n $rg -l $loc
+## deploy the cluster (simulate existing)
+az aks create -g $rg -n aks --network-plugin azure -s $vmsize
+## deploy the application gateway (simulate existing)
+az network public-ip create -g $rg -n myPublicIp --allocation-method Static --sku Standard
+az network vnet create -g $rg -n myVnet --address-prefix 10.0.0.0/16 --subnet-name mySubnet --subnet-prefix 10.0.0.0/24 
+az network application-gateway create -g $rg -n myApplicationGateway --sku Standard_v2 --public-ip-address myPublicIp --vnet-name myVnet --subnet mySubnet --priority 100
+appgwId=$(az network application-gateway show -g $rg -n myApplicationGateway -o tsv --query id); echo $appgwId
+### /subscriptions/redacts-1111-1111-1111-111111111111/resourceGroups/rgagic/providers/Microsoft.Network/applicationGateways/myApplicationGateway
+## enable agic
+az aks enable-addons -g $rg -n aks --addon ingress-appgw --appgw-id $appgwId
+az aks get-credentials -g $rg -n aks --overwrite-existing
+kubectl get no; kubectl get po -A
+
+az aks show -g $rg -n aks --query addonProfiles.ingressApplicationGateway
+{
+  "config": {
+    "applicationGatewayId": "/subscriptions/efec8e52-e1ad-4ae1-8598-f243e56e2b08/resourceGroups/rgagic/providers/Microsoft.Network/applicationGateways/myApplicationGateway",
+    "effectiveApplicationGatewayId": "/subscriptions/efec8e52-e1ad-4ae1-8598-f243e56e2b08/resourceGroups/rgagic/providers/Microsoft.Network/applicationGateways/myApplicationGateway"
+  },
+  "enabled": true,
+  "identity": {
+    "clientId": "bf0ef0cf-9ca0-42a0-8249-181ed7b973f1",
+    "objectId": "82f52c5b-0974-461d-9376-122b4f1a0253",
+    "resourceId": "/subscriptions/efec8e52-e1ad-4ae1-8598-f243e56e2b08/resourcegroups/MC_rgagic_aks_swedencentral/providers/Microsoft.ManagedIdentity/userAssignedIdentities/ingressapplicationgateway-aks"
+  }
+}
+
+az resource list -g MC_rgagic_aks_swedencentral -otable
+Name                                  ResourceGroup                Location       Type                                              Status
+------------------------------------  ---------------------------  -------------  ------------------------------------------------  --------
+ingressapplicationgateway-aks         MC_rgagic_aks_swedencentral  swedencentral  Microsoft.ManagedIdentity/userAssignedIdentities
+```
+- https://learn.microsoft.com/en-us/azure/application-gateway/tutorial-ingress-controller-add-on-existing
+
+```
+# agic.cluster-existing.azure-cni.overlay
+
+(tbd due to IngressAppGwAddonConfigCannotUseSubnet)
+rg=rgagicoverlay
+az group create -n $rg -l $loc
+## deploy the cluster (simulate existing)
+az aks create -g $rg -n aks --network-plugin azure --network-plugin-mode overlay --pod-cidr 192.168.0.0/16 -s $vmsize
+## deploy the application gateway (simulate existing)
+az network public-ip create -g $rg -n myPublicIp --allocation-method Static --sku Standard
+az network vnet create -g $rg -n myVnet --address-prefix 10.0.0.0/16 --subnet-name mySubnet --subnet-prefix 10.0.0.0/24 
+az network application-gateway create -g $rg -n myApplicationGateway --sku Standard_v2 --public-ip-address myPublicIp --vnet-name myVnet --subnet mySubnet --priority 100
+appgwId=$(az network application-gateway show -g $rg -n myApplicationGateway -o tsv --query id); echo $appgwId
+### /subscriptions/redacts-1111-1111-1111-111111111111/resourceGroups/rgagic/providers/Microsoft.Network/applicationGateways/myApplicationGateway
+## enable agic
+az aks enable-addons -g $rg -n aks --addon ingress-appgw --appgw-id $appgwId --aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AppGatewayWithOverlayPreview
+az aks get-credentials -g $rg -n aks --overwrite-existing
+kubectl get no; kubectl get po -A
+```
+- https://learn.microsoft.com/en-us/azure/application-gateway/tutorial-ingress-controller-add-on-existing: If you are planning on using AGIC with an AKS cluster using CNI Overlay, specify the parameter --aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AppGatewayWithOverlayPreview to configure AGIC to handle connectivity to the CNI Overlay enabled cluster.
+- https://github.com/Azure/AKS/issues/3641: [Feature] Azure CNI Overlay with AGIC Support
+
+```
+# agic.cluster-existing.azure-cni.overlay.error.IngressAppGwAddonConfigCannotUseSubnet
+
+rg=rgagicoverlay
+az aks create -g $rg -n aks --network-plugin azure --network-plugin-mode overlay --pod-cidr 192.168.0.0/16 -s $vmsize
+az network public-ip create -g $rg -n myPublicIp --allocation-method Static --sku Standard
+az network vnet create -g $rg -n myVnet --address-prefix 10.0.0.0/16 --subnet-name mySubnet --subnet-prefix 10.0.0.0/24 
+az network application-gateway create -g $rg -n myApplicationGateway --sku Standard_v2 --public-ip-address myPublicIp --vnet-name myVnet --subnet mySubnet --priority 100
+appgwId=$(az network application-gateway show -g $rg -n myApplicationGateway -o tsv --query id); echo $appgwId
+az aks enable-addons -g $rg -n aks --addon ingress-appgw --appgw-id $appgwId --aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AppGatewayWithOverlayPreview
+
+(IngressAppGwAddonConfigCannotUseSubnet) In Azure CNI Overlay clusters with AGIC cluster node subnet and AGIC subnet must be on the same VNET. AGIC VNET id: /subscriptions/redacts-1111-1111-1111-111111111111/resourceGroups/rgagicoverlay/providers/Microsoft.Network/virtualNetworks/myVnet, cluster node VNET id: /subscriptions/redacts-1111-1111-1111-111111111111/resourceGroups/MC_rgagicoverlay_aks_swedencentral/providers/Microsoft.Network/virtualNetworks/aks-vnet-36589243
 ```

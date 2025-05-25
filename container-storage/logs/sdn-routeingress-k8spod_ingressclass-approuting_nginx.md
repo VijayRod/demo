@@ -9,6 +9,10 @@ az aks get-credentials -g $rg -n aksapproute --overwrite-existing
 - https://github.com/Azure/aks-app-routing-operator/blob/main/pkg/manifests/nginx.go
 
 ```
+k get po -n app-routing-system -l app.kubernetes.io/component=ingress-controller -owide -w
+nginx-7f6784b4b5-5bn7s   1/1     Running   0          5m26s
+nginx-7f6784b4b5-rjkm4   1/1     Running   0          5m41s
+
 kubectl describe po -n app-routing-system -l app=nginx | grep Image
     Image:         mcr.microsoft.com/oss/kubernetes/ingress/nginx-ingress-controller:v1.11.2
 ```
@@ -40,9 +44,74 @@ I0902 18:19:24.048863       7 controller.go:224] "Initial sync, sleeping for 1 s
 I0902 18:19:24.049100       7 event.go:377] Event(v1.ObjectReference{Kind:"Pod", Namespace:"app-routing-system", Name:"nginx-7cd7f56848-fcvv7", UID:"d1f3d035-a5d2-4792-a90e-871c26177ae5", APIVersion:"v1", ResourceVersion:"1169", FieldPath:""}): type: 'Normal' reason: 'RELOAD' NGINX reload triggered due to a change in configuration
 I0902 18:19:24.049395       7 leaderelection.go:260] successfully acquired lease app-routing-system/nginx
 I0902 18:19:24.049516       7 status.go:85] "New leader elected" identity="nginx-7cd7f56848-fcvv7"
+
+k exec -it -n app-routing-system nginx-7f6784b4b5-rjkm4 -- cat /etc/nginx/nginx.conf
+
+k describe crd nginxingresscontrollers.approuting.kubernetes.azure.com
+
+k get po -A | grep nginx
+k delete po --all -n app-routing-system; sleep 5
 ```
 
 ```
+# ing.approuting.nginx.example.minimal
+
+k delete ing aks-helloworld
+cat << EOF | kubectl create -f -
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: aks-helloworld
+spec:
+  ingressClassName: webapprouting.kubernetes.azure.com
+  rules:
+  - 
+    http:
+      paths:
+      - backend:
+          service:
+            name: aks-helloworld
+            port:
+              number: 80
+        path: /
+        pathType: Prefix
+EOF
+date
+sleep 60
+
+# ing.create
+k logs -n app-routing-system -l app.kubernetes.io/component=ingress-controller -f
+I0523 18:03:26.856629       7 store.go:440] "Found valid IngressClass" ingress="default/aks-helloworld" ingressclass="webapprouting.kubernetes.azure.com"
+I0523 18:03:26.856921       7 event.go:377] Event(v1.ObjectReference{Kind:"Ingress", Namespace:"default", Name:"aks-helloworld", UID:"5ed6ac11-f55b-4c63-aca2-58d5caa22960", APIVersion:"networking.k8s.io/v1", ResourceVersion:"126664", FieldPath:""}): type: 'Normal' reason: 'Sync' Scheduled for sync
+W0523 18:03:26.857151       7 controller.go:1114] Error obtaining Endpoints for Service "default/aks-helloworld": no object matching key "default/aks-helloworld" in local store
+I0523 18:03:26.857204       7 controller.go:193] "Configuration changes detected, backend reload required"
+I0523 18:03:26.856996       7 store.go:440] "Found valid IngressClass" ingress="default/aks-helloworld" ingressclass="webapprouting.kubernetes.azure.com"
+W0523 18:03:26.857251       7 controller.go:1114] Error obtaining Endpoints for Service "default/aks-helloworld": no object matching key "default/aks-helloworld" in local store
+I0523 18:03:26.857304       7 controller.go:193] "Configuration changes detected, backend reload required"
+I0523 18:03:26.857907       7 event.go:377] Event(v1.ObjectReference{Kind:"Ingress", Namespace:"default", Name:"aks-helloworld", UID:"5ed6ac11-f55b-4c63-aca2-58d5caa22960", APIVersion:"networking.k8s.io/v1", ResourceVersion:"126664", FieldPath:""}): type: 'Normal' reason: 'Sync' Scheduled for sync
+I0523 18:03:26.904152       7 controller.go:213] "Backend successfully reloaded"
+
+I0523 18:03:26.904447       7 event.go:377] Event(v1.ObjectReference{Kind:"Pod", Namespace:"app-routing-system", Name:"nginx-7f6784b4b5-5bn7s", UID:"d65eadc8-9e9b-42ad-aac8-acc2e79597ad", APIVersion:"v1", ResourceVersion:"1389", FieldPath:""}): type: 'Normal' reason: 'RELOAD' NGINX reload triggered due to a change in configuration
+I0523 18:03:26.901035       7 controller.go:213] "Backend successfully reloaded"
+I0523 18:03:26.901437       7 event.go:377] Event(v1.ObjectReference{Kind:"Pod", Namespace:"app-routing-system", Name:"nginx-7f6784b4b5-rjkm4", UID:"4168009c-6885-4d0d-b2ee-1e46919425a0", APIVersion:"v1", ResourceVersion:"1507", FieldPath:""}): type: 'Normal' reason: 'RELOAD' NGINX reload triggered due to a change in configuration
+W0523 18:04:18.094523       7 controller.go:1114] Error obtaining Endpoints for Service "default/aks-helloworld": no object matching key "default/aks-helloworld" in local store
+I0523 18:04:18.094593       7 event.go:377] Event(v1.ObjectReference{Kind:"Ingress", Namespace:"default", Name:"aks-helloworld", UID:"5ed6ac11-f55b-4c63-aca2-58d5caa22960", APIVersion:"networking.k8s.io/v1", ResourceVersion:"126935", FieldPath:""}): type: 'Normal' reason: 'Sync' Scheduled for sync
+I0523 18:04:18.088390       7 status.go:304] "updating Ingress status" namespace="default" ingress="aks-helloworld" currentValue=null newValue=[{"ip":"135.116.15.69"}]
+W0523 18:04:18.094508       7 controller.go:1114] Error obtaining Endpoints for Service "default/aks-helloworld": no object matching key "default/aks-helloworld" in local store
+I0523 18:04:18.094667       7 event.go:377] Event(v1.ObjectReference{Kind:"Ingress", Namespace:"default", Name:"aks-helloworld", UID:"5ed6ac11-f55b-4c63-aca2-58d5caa22960", APIVersion:"networking.k8s.io/v1", ResourceVersion:"126935", FieldPath:""}): type: 'Normal' reason: 'Sync' Scheduled for sync
+
+# ing.delete
+I0523 18:06:12.340572       7 controller.go:193] "Configuration changes detected, backend reload required"
+I0523 18:06:12.340697       7 controller.go:193] "Configuration changes detected, backend reload required"
+I0523 18:06:12.368905       7 controller.go:213] "Backend successfully reloaded"
+I0523 18:06:12.369337       7 event.go:377] Event(v1.ObjectReference{Kind:"Pod", Namespace:"app-routing-system", Name:"nginx-7f6784b4b5-5bn7s", UID:"d65eadc8-9e9b-42ad-aac8-acc2e79597ad", APIVersion:"v1", ResourceVersion:"1389", FieldPath:""}): type: 'Normal' reason: 'RELOAD' NGINX reload triggered due to a change in configuration
+I0523 18:06:12.368758       7 controller.go:213] "Backend successfully reloaded"
+I0523 18:06:12.369846       7 event.go:377] Event(v1.ObjectReference{Kind:"Pod", Namespace:"app-routing-system", Name:"nginx-7f6784b4b5-rjkm4", UID:"4168009c-6885-4d0d-b2ee-1e46919425a0", APIVersion:"v1", ResourceVersion:"1507", FieldPath:""}): type: 'Normal' reason: 'RELOAD' NGINX reload triggered due to a change in configuration
+```
+
+```
+# ing.approuting.nginx.example
+
 kubectl delete deploy aks-helloworld -n hello-web-app-routing
 kubectl delete deploy nginx -n app-routing-system
 kubectl delete ns hello-web-app-routing

@@ -133,6 +133,7 @@ az network application-gateway show -g MC_rg_aksagic_swedencentral -n myApplicat
 
 > ## ing.controller.nginx.annotation
 - https://github.com/kubernetes/ingress-nginx/blob/main/docs/user-guide/nginx-configuration/annotations.md
+- https://learn.microsoft.com/en-us/azure/aks/app-routing-nginx-configuration?tabs=azurecli#configuration-of-the-nginx-ingress-controller
 
 > ## ing.controller.nginx.annotation.rewrite-target
 

@@ -141,6 +141,9 @@ az network application-gateway show -g MC_rg_aksagic_swedencentral -n myApplicat
 
 > ## ing.controller.nginx
 
+- https://github.com/nginx/nginx?tab=readme-ov-file
+- https://nginx.org/en/docs/beginners_guide.html
+
 > ## ing.controller.nginx..ingressclass
 
 ```
@@ -244,6 +247,7 @@ k exec -it -n app-routing-system nginx-7f6784b4b5-rjkm4 -- cat /etc/nginx/nginx.
 ```
 - https://learn.microsoft.com/en-us/azure/aks/app-routing-nginx-configuration?tabs=azurecli
 - https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/
+- https://nginx.org/en/docs/beginners_guide.html: Starting, Stopping, and Reloading Configuration
 
 > ## ing.controller.nginx.annotation
 

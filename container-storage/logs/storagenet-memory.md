@@ -31,8 +31,13 @@ Killed
   
 ## memory.error.OOMKilled.k8s
 
+```
+"This means that workloads that previously ran close to their memory limits may now be OOM-killed or throttled unless given more headroom."
+```
+
 - https://komodor.com/learn/how-to-fix-oomkilled-exit-code-137/
-- add tbd https://mihai-albert.com/2022/02/13/out-of-memory-oom-in-kubernetes-part-2-the-oom-killer-and-application-runtime-implications/
+- tbd https://mihai-albert.com/2022/02/13/out-of-memory-oom-in-kubernetes-part-2-the-oom-killer-and-application-runtime-implications/
+- https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/#node-oom-behavior
 
 ```
 # OOMKilled.k8s.example
@@ -190,6 +195,14 @@ Allocated resources:
   --------           --------    ------
   memory             510Mi (8%)  4460Mi (77%)
 ```
+
+## memory.cgroups.v2
+- https://github.com/torvalds/linux/blob/master/Documentation/admin-guide/cgroup-v2.rst: Determines whether the cgroup should be treated as an indivisible workload by the OOM killer. If set, all tasks belonging to the cgroup or to its descendants (if the memory cgroup is not a leaf cgroup) are killed together or not at all.
+- https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/create-upgrade-delete/aks-memory-saturation-after-upgrade: memory saturation or OOM issues.cgroup v2 uses a different API than cgroup v1. If there are any applications that directly access the cgroup file system, update them to later versions that support cgroup v2. 
+- https://github.com/kubernetes/kubernetes/issues/118916: Node memory usage on cgroupv2 reported higher than cgroupv1
+- https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/create-upgrade-delete/aks-increased-memory-usage-cgroup-v2: This increase is caused by a change in memory accounting within version 2 of the Linux control group (cgroup) API. Cgroup v2 is now the default cgroup version for Kubernetes 1.25 on AKS. *This issue is distinct from the memory saturation in nodes that's caused by applications or frameworks that aren't aware of cgroup v2.*
+- https://kubernetes.io/docs/concepts/architecture/cgroups/: Unified accounting for different types of memory allocations (network memory, kernel memory, etc)
+- https://github.com/kubernetes/kubernetes/pull/117793: toggle. In this mode, if a single process is OOM killed within a container, the remaining processes will not be OOM killed.
   
 ## memory.page-cache
 

@@ -16,6 +16,98 @@ az network nsg show -g $noderg -n aks-agentpool-37790187-nsg
 - https://learn.microsoft.com/en-us/azure/virtual-network/network-security-groups-overview
 - https://learn.microsoft.com/en-us/azure/well-architected/security/networking: Because network security groups work at layers 3 and 4 on the Open Systems Interconnection (OSI) stack
 - https://learn.microsoft.com/en-us/azure/network-watcher/vnet-flow-logs-overview: Virtual network flow logs are a feature of Azure Network Watcher. Virtual network flow logs overcome some of the limitations of Network security group flow logs.
+- https://learn.microsoft.com/en-us/azure/security/fundamentals/network-best-practices#logically-segment-subnets: Network security groups (NSGs) are simple, stateful packet inspection devices.
+  - NSGs use the 5-tuple approach (source IP, source port, destination IP, destination port and protocol) to create allow/deny rules for network traffic. You allow or deny traffic to and from a single IP address, to and from multiple IP addresses, or to and from entire subnets.
+  - Simplify network security group rule management by defining Application Security Groups.
+- https://learn.microsoft.com/en-us/azure/virtual-network/network-security-group-how-it-works
+
+## nsg.associate.nic
+
+- https://learn.microsoft.com/en-us/azure/virtual-network/virtual-network-network-interface?tabs=azure-portal#associate-or-dissociate-a-network-security-group
+
+```
+# nsg.associate.nic.vm
+
+az network nic update -g MyResourceGroup -n MyNic --network-security-group MyNewNsg
+```
+
+```
+# nsg.associate.nic.vmss
+
+## nic nsg is auto-created during az vmss create
+rg=rgnic
+az group create -g $rg -l $loc
+az vmss create -g $rg -n myVMSS --image Ubuntu2204 --vnet-name myVNet --subnet mySubnet --admin-username azureuser # --instance-count 2 --upgrade-policy-mode automatic
+
+az network nsg show -g $rg -n myVMSSNSG --query subnets # no rows since no "subnet" property
+az network nsg show -g $rg -n myVMSSNSG --query networkInterfaces
+[
+  {
+    "id": "/subscriptions/redacts-1111-1111-1111-111111111111/resourceGroups/rgsubnet3/providers/Microsoft.Network/networkInterfaces/myvmsd028Nic-fc57eb9e",
+    "resourceGroup": "rgsubnet3"
+  },
+  {
+    "id": "/subscriptions/redacts-1111-1111-1111-111111111111/resourceGroups/rgsubnet3/providers/Microsoft.Network/networkInterfaces/myvmsd028Nic-e36d6f6a",
+    "resourceGroup": "rgsubnet3"
+  }
+]
+```
+
+```
+# nsg.associate.nic.vmss.delete
+
+az network nsg delete -g $rg -n myVMSSNSG
+(InUseNetworkSecurityGroupCannotBeDeleted) Network security group /subscriptions/redacts-1111-1111-1111-111111111111/resourceGroups/rgsubnet3/providers/Microsoft.Network/networkSecurityGroups/myVMSSNSG cannot be deleted because it is in use by the following resources: /subscriptions/redacts-1111-1111-1111-111111111111/resourceGroups/rgsubnet3/providers/Microsoft.Network/networkInterfaces/myvmsd028Nic-fc57eb9e, /subscriptions/redacts-1111-1111-1111-111111111111/resourceGroups/rgsubnet3/providers/Microsoft.Network/networkInterfaces/myvmsd028Nic-e36d6f6a. In order to delete the Network security group, remove the association with the resource(s). To learn how to do this, see aka.ms/deletensg.
+
+az vmss delete-instances -g $rg -n myVMSS --instance-ids "*" 
+# or az vmss scale -g $rg -n myVMSS --new-capacity 0 # scale down
+# or az vmss delete -g $rg -n myVMSS
+az network nsg delete -g $rg -n myVMSSNSG # success
+```
+
+## nsg.associate.subnet
+
+```
+# nsg.associate.subnet
+
+rg=rgsubnet
+az group create -g $rg -l $loc
+az network nsg create -g $rg -n myNSG
+az network vnet subnet create -g $rg --vnet-name myVNet -n mySubnet --address-prefixes 10.0.0.0/24 --network-security-group myNSG
+az vmss create -g $rg -n myVMSS --image Ubuntu2204 --vnet-name myVNet --subnet mySubnet --admin-username azureuser # --instance-count 2 --upgrade-policy-mode automatic
+
+az vmss show -g $rg -n myvmss --query virtualMachineProfile.networkProfile.networkInterfaceConfigurations[0].networkSecurityGroup
+{
+  "id": "/subscriptions/redacts-1111-1111-1111-111111111111/resourceGroups/rgsubnet/providers/Microsoft.Network/networkSecurityGroups/myVMSSNSG",
+  "resourceGroup": "rgsubnet"
+}
+
+az network nsg show -g $rg -n myNSG --query subnets
+[
+  {
+    "id": "/subscriptions/redacts-1111-1111-1111-111111111111/resourceGroups/rgsubnet/providers/Microsoft.Network/virtualNetworks/myVNet/subnets/mySubnet",
+    "resourceGroup": "rgsubnet"
+  }
+]
+
+az network vnet subnet show -g $rg --vnet-name myVNet -n mySubnet --query networkSecurityGroup
+{
+  "id": "/subscriptions/redacts-1111-1111-1111-111111111111/resourceGroups/rgsubnet/providers/Microsoft.Network/networkSecurityGroups/myNSG",
+  "resourceGroup": "rgsubnet"
+}
+```
+```
+# nsg.associate.subnet.delete
+
+az network nsg delete -g $rg -n myNSG 
+(InUseNetworkSecurityGroupCannotBeDeleted) Network security group /subscriptions/redacts-1111-1111-1111-111111111111/resourceGroups/rgsubnet/providers/Microsoft.Network/networkSecurityGroups/myNSG cannot be deleted because it is in use by the following resources: /subscriptions/redacts-1111-1111-1111-111111111111/resourceGroups/rgsubnet/providers/Microsoft.Network/virtualNetworks/myVNet/subnets/mySubnet. In order to delete the Network security group, remove the association with the resource(s). To learn how to do this, see aka.ms/deletensg.
+
+az network vnet subnet update  -g $rg --vnet-name myVNet -n mySubnet --network-security-group null # Detach a network security group in a subnet
+az network nsg delete -g $rg -n myNSG # success
+```
+- aka.ms/deletensg
+- https://learn.microsoft.com/en-us/azure/virtual-network/manage-network-security-group?tabs=network-security-group-portal#delete-a-network-security-group
+- https://learn.microsoft.com/en-us/azure/virtual-network/manage-network-security-group?tabs=network-security-group-cli#associate-or-dissociate-a-network-security-group-to-or-from-a-subnet
 
 ## nsg.flowlog (network watcher)
 

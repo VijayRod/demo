@@ -84,8 +84,11 @@ az aks nodepool upgrade --node-image-only -g --cluster-name -n # node pool recon
 az aks nodepool stop -g $rg --cluster-name aks -n nodepool1
 az aks nodepool update -g $rg --cluster-name aks -n nodepool1 -c 0 # only in a user node pool and only when cluster-autoscaler is not enabled for that node pool
 
-# mitigate.VMSS
-az vmss update -g $rg -n # reconcile, unsupported, for test purpose
+# mitigate.VMSS (unsupported, for test purpose)
+az vmss update -g $rg -n # reconcile
+az vmss delete-instances -g $rg -n myVMSS --instance-ids "*" 
+az vmss scale -g $rg -n myVMSS --new-capacity 0 # scale down
+az vmss delete -g $rg -n myVMSS # then reconcile the cluster to automatically recreate the vmss
 ```
 
 ## aks.core.reconcile

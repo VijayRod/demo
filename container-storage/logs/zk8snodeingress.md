@@ -121,7 +121,6 @@ spec:
 - https://learn.microsoft.com/en-us/azure/application-gateway/ingress-controller-annotations
 - https://learn.microsoft.com/en-us/azure/application-gateway/for-containers/migrate-from-agic-to-agc#feature-dependencies-and-mappings
 - https://learn.microsoft.com/en-us/azure/application-gateway/for-containers/overview#load-balancing-features
-- https://github.com/kubernetes/ingress-nginx/blob/main/docs/user-guide/nginx-configuration/annotations.md
 
 > ## ing.controller.agic.annotation.hostname-extension
 
@@ -131,6 +130,9 @@ k edit ing # appgw.ingress.kubernetes.io/hostname-extension: "hostname1, hostnam
 az network application-gateway show -g MC_rg_aksagic_swedencentral -n myApplicationGateway --query httpListeners[0].hostNames # [  "hostname1",  "hostname2"]
 ```
 - https://azure.github.io/application-gateway-kubernetes-ingress/annotations/#hostname-extension
+
+> ## ing.controller.nginx.annotation
+- https://github.com/kubernetes/ingress-nginx/blob/main/docs/user-guide/nginx-configuration/annotations.md
 
 > ## ing.controller.nginx.annotation.rewrite-target
 

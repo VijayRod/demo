@@ -112,7 +112,15 @@ spec:
 (kubectl get ingress).CONTROLLER
 ```
 
-> ## ing.controller.agic..core.listener
+> ## ing.controller.agic..ingressclass
+
+```
+kubectl get ingressclass
+NAME                        CONTROLLER                  PARAMETERS   AGE
+azure-application-gateway   azure/application-gateway   <none>       9s
+```
+
+> ## ing.controller.agic..listener
 - https://learn.microsoft.com/en-us/azure/application-gateway/configuration-listeners
 
 > ## ing.controller.agic.annotation
@@ -133,24 +141,7 @@ az network application-gateway show -g MC_rg_aksagic_swedencentral -n myApplicat
 
 > ## ing.controller.nginx
 
-```
-# nginx.config
-k exec -it -n app-routing-system nginx-7f6784b4b5-rjkm4 -- cat /etc/nginx/nginx.conf
-```
-- https://learn.microsoft.com/en-us/azure/aks/app-routing-nginx-configuration?tabs=azurecli
-- https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/
-
-> ## ing.controller.nginx.annotation
-- https://github.com/kubernetes/ingress-nginx/blob/main/docs/user-guide/nginx-configuration/annotations.md
-- https://learn.microsoft.com/en-us/azure/aks/app-routing-nginx-configuration?tabs=azurecli#configuration-of-the-nginx-ingress-controller
-
-```
-# nginx.annotation.rewrite-target
-```
-- https://medium.com/ww-engineering/kubernetes-nginx-ingress-traffic-redirect-using-annotations-demystified-b7de846fb43d
-- https://blog.nginx.org/blog/creating-nginx-rewrite-rules
-
-> ## ing.controller.nginx.ingressclass
+> ## ing.controller.nginx..ingressclass
 
 ```
 # nginx.official
@@ -160,6 +151,9 @@ helm install nginx-ingress ingress-nginx/ingress-nginx \
   --set controller.admissionWebhooks.enabled=false
 
 kubectl get ingressclass
+NAME    CONTROLLER             PARAMETERS   AGE
+nginx   k8s.io/ingress-nginx   <none>       145m
+
 kubectl get po -A -owide | grep nginx
 kubectl logs -n kube-system -l app.kubernetes.io/component=controller
 kubectl logs -n kube-system nginx-
@@ -170,7 +164,15 @@ spec:
   ingressClassName: nginx
 ```
 
-> ## ing.controller.nginx.ingressclass.multiple
+```
+# nginx.webapprouting
+
+kubectl get ingressclass
+NAME                                 CONTROLLER                                 PARAMETERS   AGE
+webapprouting.kubernetes.azure.com   webapprouting.kubernetes.azure.com/nginx   <none>       79s
+```
+
+> ## ing.controller.nginx..ingressclass.multiple
 
 - https://learn.microsoft.com/en-us/azure/aks/app-routing-nginx-configuration?tabs=azurecli#configuration-of-the-nginx-ingress-controller
 - https://github.com/Azure/aks-app-routing-operator/blob/main/config/crd/bases/approuting.kubernetes.azure.com_nginxingresscontrollers.yaml
@@ -233,3 +235,24 @@ EOF
 date
 sleep 60
 ```
+
+> ## ing.controller.nginx..nginx-conf
+
+```
+# nginx.config
+k exec -it -n app-routing-system nginx-7f6784b4b5-rjkm4 -- cat /etc/nginx/nginx.conf
+```
+- https://learn.microsoft.com/en-us/azure/aks/app-routing-nginx-configuration?tabs=azurecli
+- https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/
+
+> ## ing.controller.nginx.annotation
+
+- https://github.com/kubernetes/ingress-nginx/blob/main/docs/user-guide/nginx-configuration/annotations.md
+- https://learn.microsoft.com/en-us/azure/aks/app-routing-nginx-configuration?tabs=azurecli#configuration-of-the-nginx-ingress-controller
+
+```
+# nginx.annotation.rewrite-target
+```
+- https://medium.com/ww-engineering/kubernetes-nginx-ingress-traffic-redirect-using-annotations-demystified-b7de846fb43d
+- https://blog.nginx.org/blog/creating-nginx-rewrite-rules
+

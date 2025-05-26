@@ -46,6 +46,43 @@ bXl1c2VybmFtZQ==
 
 - https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/file-share-mount-failures-azure-files: Manually update the azurestorageaccountkey field in an Azure file secret...
 
+## k8s-secret.op
+
+```
+# secret.op.delete.garbage-collector.example
+# Tip for delete RCA: Find the k8s object with the UID (it may not be available, for example, if there was a pod or node scale down or delete, unless the creation was within the data retention time).
+
+kubectl create deploy webapp --image=nginx
+kubectl get deploy webapp -n default -o jsonpath='{.metadata.uid}' # replace the value below
+# kubectl get deploy webapp -n default -o yaml | yq '.metadata.uid'
+# kubectl get deploy webapp -n default -o yaml | grep uid:
+
+cat << EOF | kubectl create -f -
+apiVersion: v1
+kind: Secret
+metadata:
+  name: webapp-credentials
+  namespace: default
+  ownerReferences:
+  - apiVersion: apps/v1
+    kind: Deployment
+    name: webapp
+    uid: 859ef882-bdb0-4d08-9d19-e217d9422d41 # replace the uid here
+    controller: true
+    blockOwnerDeletion: true
+type: Opaque
+data:
+  username: dXNlcg==   # base64 de 'user'
+  password: cGFzc3dvcmQ= # base64 de 'password'
+EOF
+kubectl get secret # webapp-credentials
+
+kubectl delete deploy webapp
+kubectl get secret # no entries found
+```
+
+- tbd https://overcast.blog/kubernetes-garbage-collection-a-practical-guide-22a5c7125257: Automate Garbage Collection Processes. Secrets that are no longer in use.
+
 ## k8s-secret.pod.environment-variable
 
 ```

@@ -319,6 +319,14 @@ sleep 60
 - https://learn.microsoft.com/en-us/azure/aks/app-routing-nginx-configuration?tabs=azurecli#configuration-of-the-nginx-ingress-controller
 
 ```
+# nginx.annotation.configuration.snippet
+
+## nginx.official.helm.deploy
+--set controller.allowSnippetAnnotations=true
+```
+
+
+```
 # nginx.annotation.rewrite-target
 ```
 - https://medium.com/ww-engineering/kubernetes-nginx-ingress-traffic-redirect-using-annotations-demystified-b7de846fb43d

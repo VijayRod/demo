@@ -144,27 +144,101 @@ az network application-gateway show -g MC_rg_aksagic_swedencentral -n myApplicat
 - https://github.com/nginx/nginx?tab=readme-ov-file
 - https://nginx.org/en/docs/beginners_guide.html
 
+```
+# nginx.debug
+# check if the issue occurs with the nginx.official ingress controller
+
+# nginx.official ingress controller
+helm upgrade --install nginx-ingress ingress-nginx/ingress-nginx \
+  --set controller.logLevel=debug --set controller.extraArgs.v=3 # "DEBUG:" lines in k logs # --namespace ingress-nginx --create-namespace
+kubectl get deploy -l app.kubernetes.io/instance=nginx-ingress -o jsonpath='{.items[0].spec.template.spec.containers[0].args}'
+## (no change) ["/nginx-ingress-controller","--publish-service=$(POD_NAMESPACE)/nginx-ingress-ingress-nginx-controller","--election-id=nginx-ingress-ingress-nginx-leader","--controller-class=k8s.io/ingress-nginx","--ingress-class=nginx","--configmap=$(POD_NAMESPACE)/nginx-ingress-ingress-nginx-controller","--enable-metrics=false"]
+
+## using any ingress class of nginx ingress controller
+kubectl exec -n ingress-nginx ingress-nginx-controller-7fcbcb8d8d-9s5mn -- tail -f /var/log/nginx/error.log
+kubectl exec -n ingress-nginx ingress-nginx-controller-XXXX -- nginx -t # check active nginx configuration
+kubectl exec -n ingress-nginx ingress-nginx-controller-XXXX -- nginx -T # dump including the .config file, then "error_log /var/log/nginx/error.log debug;"
+kubectl exec -it -n ingress-nginx ingress-nginx-controller-XXXX -- nginx-debug -T
+kubectl port-forward -n ingress-nginx pod/ingress-nginx-controller-xxxxxx 8080:80 # expose local port 8080 to container port 80, then the ingress curl test in this window
+kubectl port-forward -n ingress-nginx pod/ingress-nginx-controller-xxxxxx 8443:443
+kubectl port-forward -n ingress-nginx svc/ingress-nginx-controller 8080:80 # equivalent to nginx pod 8080:80, but using the service instead of the pod
+
+## ingress test
+curl -iv -H "Host: tenant1.sports" http://localhost:8080/rluOKg6kHU # http, -i to inspect headers
+curl -iv -H "Host: tenant1.sports" http://localhost:8443/rluOKg6kHU # https
+
+# more
+kubectl delete ing --all
+kubectl delete po --all
+```
+
+```
+# nginx.debug.config
+k exec -it -n app-routing-system nginx-7f6784b4b5-rjkm4 -- cat /etc/nginx/nginx.conf
+```
+- https://learn.microsoft.com/en-us/azure/aks/app-routing-nginx-configuration?tabs=azurecli
+- https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/
+- https://nginx.org/en/docs/beginners_guide.html: Starting, Stopping, and Reloading Configuration
+
+```
+# debug.logLevel
+
+## default: --set controller.logLevel=info
+## default: --set controller.extraArgs.v=2 # https://github.com/kubernetes/component-base/blob/master/logs/api/v1/options.go
+```
+- controller.extraArgs.v: https://github.com/kubernetes/component-base/blob/master/logs/api/v1/options.go
+
+```
+# debug.reload
+# after deploying an ingress yaml (it does not restart the nginx ingress controller pods)
+kubectl logs -n kube-system -l app.kubernetes.io/component=controller
+I0526 18:42:10.693239       8 event.go:377] Event(v1.ObjectReference{Kind:"Pod", Namespace:"default", Name:"nginx-ingress-ingress-nginx-controller-6cf667bcb7-d284w", UID:"6e2a2054-e6b7-4663-a33a-58f694a5158f", APIVersion:"v1", ResourceVersion:"487616", FieldPath:""}): type: 'Normal' reason: 'RELOAD' NGINX reload triggered due to a change in configuration
+kubectl describe po -l app.kubernetes.io/component=controller
+  Normal  RELOAD     7m19s (x3 over 10m)  nginx-ingress-controller  NGINX reload triggered due to a change in configuration
+```
+
 > ## ing.controller.nginx..ingressclass
 
 ```
 # nginx.official
+# Refer to the nginx.conf section for debugging
 
 helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
 helm install nginx-ingress ingress-nginx/ingress-nginx \
-  --set controller.admissionWebhooks.enabled=false
+  --set controller.admissionWebhooks.enabled=false # --namespace ingress-nginx --create-namespace
 
 kubectl get ingressclass
 NAME    CONTROLLER             PARAMETERS   AGE
 nginx   k8s.io/ingress-nginx   <none>       145m
 
-kubectl get po -A -owide | grep nginx
-kubectl logs -n kube-system -l app.kubernetes.io/component=controller
-kubectl logs -n kube-system nginx-
+kubectl get po -A -owide | grep nginx # nginx-ingress-ingress-nginx-controller-
+kubectl get po -l app.kubernetes.io/instance=nginx-ingress -w
+kubectl logs -l app.kubernetes.io/instance=nginx-ingress -f
 
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 spec:
   ingressClassName: nginx
+
+kubectl get po -l app.kubernetes.io/component=controller 
+Labels:           app.kubernetes.io/component=controller
+                  app.kubernetes.io/instance=nginx-ingress
+                  app.kubernetes.io/managed-by=Helm
+                  app.kubernetes.io/name=ingress-nginx
+                  app.kubernetes.io/part-of=ingress-nginx
+                  app.kubernetes.io/version=1.11.3
+                  helm.sh/chart=ingress-nginx-4.11.3
+                  pod-template-hash=6cf667bcb7
+kubectl get deploy -l app.kubernetes.io/instance=nginx-ingress -w # nginx-ingress-ingress-nginx-controller
+
+k get mutatingwebhookconfigurations
+NAME                               WEBHOOKS   AGE
+aks-webhook-admission-controller   1          5d2h
+k get validatingwebhookconfigurations
+NAME                                    WEBHOOKS   AGE
+nginx-ingress-ingress-nginx-admission   1          16m
+k describe mutatingwebhookconfigurations aks-webhook-admission-controller
+k describe validatingwebhookconfigurations nginx-ingress-ingress-nginx-admission
 ```
 
 ```
@@ -237,36 +311,6 @@ spec:
 EOF
 date
 sleep 60
-```
-
-> ## ing.controller.nginx..nginx-conf
-
-```
-# nginx.config
-k exec -it -n app-routing-system nginx-7f6784b4b5-rjkm4 -- cat /etc/nginx/nginx.conf
-```
-- https://learn.microsoft.com/en-us/azure/aks/app-routing-nginx-configuration?tabs=azurecli
-- https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/
-- https://nginx.org/en/docs/beginners_guide.html: Starting, Stopping, and Reloading Configuration
-
-```
-# nginx.debug
-
-helm upgrade --install nginx-ingress ingress-nginx/ingress-nginx --namespace ingress-nginx --create-namespace \
-  --set controller.logLevel=debug --set controller.extraArgs.v=3 # "DEBUG:" lines in k logs
-
-## using any ingress class of nginx ingress controller
-kubectl exec -n ingress-nginx ingress-nginx-controller-7fcbcb8d8d-9s5mn -- tail -f /var/log/nginx/error.log
-kubectl exec -n ingress-nginx ingress-nginx-controller-XXXX -- nginx -t # check active nginx configuration
-kubectl exec -n ingress-nginx ingress-nginx-controller-XXXX -- nginx -T # dump including the .config file, then "error_log /var/log/nginx/error.log debug;"
-kubectl exec -it -n ingress-nginx ingress-nginx-controller-XXXX -- nginx-debug -T
-kubectl port-forward -n ingress-nginx pod/ingress-nginx-controller-xxxxxx 8080:80 # expose local port 8080 to container port 80, then the ingress curl test in this window
-kubectl port-forward -n ingress-nginx pod/ingress-nginx-controller-xxxxxx 8443:443
-kubectl port-forward -n ingress-nginx svc/ingress-nginx-controller 8080:80 # equivalent to nginx pod 8080:80, but using the service instead of the pod
-
-## ingress test
-curl -iv -H "Host: tenant1.sports" http://localhost:8080/rluOKg6kHU # http, -i to inspect headers
-curl -iv -H "Host: tenant1.sports" http://localhost:8443/rluOKg6kHU # https
 ```
 
 > ## ing.controller.nginx.annotation

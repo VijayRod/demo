@@ -79,6 +79,8 @@ kubectl get secret # webapp-credentials
 
 kubectl delete deploy webapp
 kubectl get secret # no entries found
+
+# k get sa -n kube-system | grep garb # generic-garbage-collector                     0         3d7h
 ```
 
 - tbd https://overcast.blog/kubernetes-garbage-collection-a-practical-guide-22a5c7125257: Automate Garbage Collection Processes. Secrets that are no longer in use.

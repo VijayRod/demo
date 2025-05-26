@@ -1,3 +1,8 @@
+> ## json..jq
+
+- https://github.com/jqlang/jq
+- https://github.com/jqlang/jq/wiki
+
 ```
 json='{"key1":"value1"}'; echo "$json" | jq .key1 # "value1"
 json='{"key1":"value1"}'; echo "$json" | jq '.key1' # "value1"
@@ -22,5 +27,9 @@ kubectl run nginx --image=nginx
 kubectl get pods -o json | jq -r '.items[] | select(.metadata.name | test("nginx")).metadata.name'
 ```
 
-- https://github.com/jqlang/jq
-- https://github.com/jqlang/jq/wiki
+> ## json.k8s
+
+```
+kubectl get deploy -l app.kubernetes.io/instance=nginx-ingress -o jsonpath='{.items[0].spec}'
+kubectl get deploy -l app.kubernetes.io/instance=nginx-ingress -o jsonpath='{.items[*].metadata.name}'
+```

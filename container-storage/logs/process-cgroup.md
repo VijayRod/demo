@@ -5,9 +5,14 @@ stat -fc %T /sys/fs/cgroup/ # Returns 'tmpfs' if cgroupv1 is enabled, and 'cgrou
 ```
 
 - https://lwn.net/Kernel/Index/#Control_groups
-
-## process-cgroup.k8s
+- https://kubernetes.io/docs/concepts/architecture/cgroups/
+  
+## process-cgroup.v2
 
 - https://github.com/Azure/AKS/blob/master/examples/cgroups/revert-cgroup-v1.yaml
-- https://kubernetes.io/docs/concepts/architecture/cgroups/
 - https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/aks-increased-memory-usage-cgroup-v2
+
+```
+kubectl describe no
+  Warning  CgroupV1                 8m29s                  kubelet          Cgroup v1 support is in maintenance mode, please migrate to Cgroup v2.
+```

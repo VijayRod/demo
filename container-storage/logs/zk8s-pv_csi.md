@@ -13,6 +13,9 @@
       - examples of virtual filesystems include tmpfs, proc, sysfs, and fuse (e.g., blobfuse)
     - https://github.com/kubernetes-sigs/blob-csi-driver/blob/master/docs/csi-debug.md
     - https://learn.microsoft.com/en-us/azure/storage/blobs/blobfuse2-troubleshooting
+    - nfs: https://learn.microsoft.com/en-us/azure/storage/blobs/network-file-system-protocol-support-how-to
+    - fuse driver: https://github.com/Azure/azure-storage-fuse/blob/main/TSG.md
+    - fuse driver errors: https://github.com/Azure/azure-storage-fuse/blob/main/cmd/mount.go
   - Azure Disk CSI driver (iscsi, nvme for ultra disk) - https://learn.microsoft.com/en-us/azure/aks/azure-disk-csi
     - default file system is ext4: use mkfs.ext4 /dev/sdc, then mount /dev/sdc /mnt/data. 
       - this can be changed to other file systems with pv.csi.fstype=xfs, ntfs, btrfs, ntfs, fat32

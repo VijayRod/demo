@@ -27,7 +27,16 @@ kubectl get deploy -n kube-system | grep ama
 ama-logs-rs                       1/1     1            1           3m17s
 
 kubectl get po -n kube-system -l component=ama-logs-agent
+
+k describe po -n kube-system ama-logs-c7p9n | grep Image -B 2
+  addon-token-adapter:
+    Image:         mcr.microsoft.com/aks/msi/addon-token-adapter:master.250423.2
+  ama-logs:
+    Image:          mcr.microsoft.com/azuremonitor/containerinsights/ciprod:3.1.26
+  ama-logs-prometheus:
+    Image:          mcr.microsoft.com/azuremonitor/containerinsights/ciprod:3.1.26
 ```
 
 - https://learn.microsoft.com/en-Us/azure/azure-monitor/containers/container-insights-enable-aks?tabs=azure-cli
 - https://learn.microsoft.com/en-us/azure/azure-monitor/containers/kubernetes-monitoring-enable: Container insights for log collection
+- https://github.com/microsoft/Docker-Provider/blob/ci_prod/ReleaseNotes.md

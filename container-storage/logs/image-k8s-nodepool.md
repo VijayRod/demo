@@ -46,3 +46,18 @@ az aks upgrade -g $rg -n aks -n --node-image-only # All node pools
 - https://learn.microsoft.com/en-us/azure/aks/planned-maintenance: default, aksManagedNodeOSUpgradeSchedule
 - https://github.com/Azure/AKS/blob/master/CHANGELOG.md: option None in the node OS upgrade
 - https://learn.microsoft.com/en-us/azure/aks/node-image-upgrade
+
+```
+# image.aks.node.image
+```
+
+- https://github.com/Azure/AKS/tree/2023-10-29/vhd-notes/aks-ubuntu/AKSUbuntu-2204
+- https://github.com/Azure/AgentBaker/blob/master/vhdbuilder/release-notes/AKSUbuntu/gen2/2204containerd/latest.txt (latest)
+- https://github.com/Azure/AKS/releases: image has been updated to
+
+```
+# image.aks.node.diff
+
+diff <(curl -s https://raw.githubusercontent.com/Azure/AKS/2025-03-16/vhd-notes/aks-ubuntu/AKSUbuntu-2204/202503.13.0.txt) \
+     <(curl -s https://raw.githubusercontent.com/Azure/AKS/2025-04-06/vhd-notes/aks-ubuntu/AKSUbuntu-2204/202504.06.0.txt)
+```

@@ -36,6 +36,14 @@
   - https://github.com/kubernetes-sigs/azurefile-csi-driver/ (Andy)
   - https://github.com/kubernetes-sigs/blob-csi-driver (Andy)
 
+- Kernel:
+  - fs: https://man7.org/linux/man-pages/man5/filesystems.5.html
+  - fs.mount: https://man7.org/linux/man-pages/man8/mount.8.html
+  - fstype.ext4: https://man7.org/linux/man-pages/man5/ext4.5.html
+  - fstype.fuse: https://man7.org/linux/man-pages/man4/fuse.4.html, https://man7.org/linux/man-pages/man8/mount.fuse3.8.html
+  - fstype.nfs: https://man7.org/linux/man-pages/man5/nfs.5.html
+  - fstype.xfs: https://www.man7.org/linux/man-pages/man8/mkfs.xfs.8.html, https://man7.org/linux/man-pages/man5/xfs.5.html
+    
 ```
 # k8s.csi.sidecar
 ```

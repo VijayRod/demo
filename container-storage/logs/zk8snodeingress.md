@@ -139,6 +139,14 @@ az network application-gateway show -g MC_rg_aksagic_swedencentral -n myApplicat
 ```
 - https://azure.github.io/application-gateway-kubernetes-ingress/annotations/#hostname-extension
 
+```
+# agic.annotation.appgw-trusted-root-certificate
+# appgw.ingress.kubernetes.io/appgw-trusted-root-certificate
+# Refer to the https sample with agic since the appgw-trusted-root-certificate annotation is required for https
+```
+- https://learn.microsoft.com/en-us/azure/application-gateway/ingress-controller-annotations#application-gateway-trusted-root-certificate
+- https://azure.github.io/application-gateway-kubernetes-ingress/annotations/#appgw-trusted-root-certificate
+
 > ## ing.controller.nginx
 
 - https://github.com/nginx/nginx?tab=readme-ov-file

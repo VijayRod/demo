@@ -10,7 +10,8 @@ stat -fc %T /sys/fs/cgroup/ # Returns 'tmpfs' if cgroupv1 is enabled, and 'cgrou
 ## process-cgroup.v2
 
 - https://github.com/Azure/AKS/blob/master/examples/cgroups/revert-cgroup-v1.yaml
-- https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/aks-increased-memory-usage-cgroup-v2
+- https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/aks-increased-memory-usage-cgroup-v2: Cgroup v2 is now the default cgroup version for Kubernetes 1.25 on AKS.
+- https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/create-upgrade-delete/aks-memory-saturation-after-upgrade: Beginning in the release of Kubernetes 1.25, the cgroup version 2 API has reached general availability (GA). AKS now uses Ubuntu Linux version 22.04. By default, version 22.04 uses cgroup version 2 API.
 
 ```
 kubectl describe no

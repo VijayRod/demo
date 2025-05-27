@@ -1,4 +1,52 @@
 ```
+# cni.azure.cns (in overlay, podsubnet clusters)
+# cns (container networking service) is the ipam for each node
+# cni uses nnc configuration on each node (nnc only works with cns)
+
+k get ds -n kube-system
+NAME                             DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR   AGE
+azure-cns                        2         2         2       2            2           <none>          11m
+azure-cns-win                    0         0         0       0            0           <none>          11m
+
+kubectl get pods -n kube-system -l k8s-app=azure-cns
+
+root@aks-nodepool1-14460412-vmss000000:/# cat /etc/cni/net.d/15-azure-swift-overlay.conflist
+{
+        "cniVersion": "0.3.0",
+        "name": "azure",
+        "plugins": [
+                {
+                        "type": "azure-vnet",
+                        "mode": "transparent",
+                        "ipsToRouteViaHost": [
+                                "169.254.20.10"
+                        ],
+                        "executionMode": "v4swift",
+                        "ipam": {
+                                "mode": "v4overlay",
+                                "type": "azure-cns"
+                        },
+                        "dns": {},
+                        "runtimeConfig": {
+                                "dns": {}
+                        },
+                        "windowsSettings": {}
+                },
+                {
+                        "type": "portmap",
+                        "capabilities": {
+                                "portMappings": true
+                        },
+                        "snat": true
+                }
+        ]
+}
+
+```
+
+
+```
+# cni.azure.cns.nnc
 # cni.azure.overlay,podsubnet
 
 kubectl get nnc -n kube-system

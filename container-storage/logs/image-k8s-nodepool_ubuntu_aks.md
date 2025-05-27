@@ -1,3 +1,0 @@
-- https://github.com/Azure/AKS/tree/2023-10-29/vhd-notes/aks-ubuntu/AKSUbuntu-2204
-- https://github.com/Azure/AgentBaker/blob/master/vhdbuilder/release-notes/AKSUbuntu/gen2/2204containerd/latest.txt (latest)
-- https://github.com/Azure/AKS/releases: image has been updated to

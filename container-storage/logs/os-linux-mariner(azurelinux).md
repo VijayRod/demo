@@ -3,6 +3,7 @@
 ```
 # See the section on azurelinux.version.mariner
 ```
+- https://github.com/microsoft/azurelinux/releases/
 
 ## azurelinux.app.k8s
 

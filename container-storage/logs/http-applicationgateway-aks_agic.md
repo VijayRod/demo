@@ -1,5 +1,11 @@
 > ## agic
 
+- https://learn.microsoft.com/en-us/azure/application-gateway/ingress-controller-expose-service-over-http-https
+- https://learn.microsoft.com/en-us/azure/application-gateway/quick-create-cli
+- https://github.com/Azure/application-gateway-kubernetes-ingress/blob/master/docs/setup/install.md
+- https://github.com/Azure/application-gateway-kubernetes-ingress/tree/master/pkg/appgw
+- https://azure.github.io/application-gateway-kubernetes-ingress/
+
 ```
 rg=rgagic
 az group create -n $rg -l $loc
@@ -12,10 +18,159 @@ az role assignment create --assignee $agicAddonIdentity --scope $appGatewaySubne
 
 # appGatewayId: /subscriptions/redacts-1111-1111-1111-111111111111/resourceGroups/MC_rgagic_aks_swedencentral/providers/Microsoft.Network/applicationGateways/myApplicationGateway
 # appGatewaySubnetId: /subscriptions/redacts-1111-1111-1111-111111111111/resourceGroups/MC_rgagic_aks_swedencentral/providers/Microsoft.Network/virtualNetworks/aks-vnet-85961757/subnets/myApplicationGateway-subnet
+
+az aks get-credentials -g $rg -n aks --overwrite-existing
+kubectl get po -A; kubectl get no
+k get ing
+
+k get ingressclass
+NAME                        CONTROLLER                  PARAMETERS   AGE
+azure-application-gateway   azure/application-gateway   <none>       97m
+
+k get po -A | grep ingress
+k logs -n kube-system -l app=ingress-appgw
+kube-system   ingress-appgw-deployment-555fb448cd-gbnbx            1/1     Running   1 (91m ago)   93m
+
+Name:             ingress-appgw-deployment-555fb448cd-gbnbx
+Namespace:        kube-system
+Priority:         0
+Service Account:  ingress-appgw-sa
+Node:             aks-nodepool1-12969479-vmss000001/10.224.0.4
+Start Time:       Tue, 27 May 2025 18:03:56 +0000
+Labels:           app=ingress-appgw
+                  kubernetes.azure.com/managedby=aks
+                  pod-template-hash=555fb448cd
+Annotations:      checksum/config: a20a26166740b87d2ca11ef047cde69645f3040b21ba5f60763e7c03e19d4d42
+                  cluster-autoscaler.kubernetes.io/safe-to-evict: true
+                  kubernetes.azure.com/metrics-scrape: true
+                  prometheus.io/path: /metrics
+                  prometheus.io/port: 8123
+                  prometheus.io/scrape: true
+                  resource-id:
+                    /subscriptions/efec8e52-e1ad-4ae1-8598-f243e56e2b08/resourceGroups/rgagic2/providers/Microsoft.ContainerService/managedClusters/aks
+Status:           Running
+IP:               10.224.0.14
+IPs:
+  IP:           10.224.0.14
+Controlled By:  ReplicaSet/ingress-appgw-deployment-555fb448cd
+Containers:
+  ingress-appgw-container:
+    Container ID:   containerd://a2918bdf93c0318d1bcbeda2f560f92c78efa40a1cfcf769f59e24f851077523
+    Image:          mcr.microsoft.com/azure-application-gateway/kubernetes-ingress:1.8.1
+    
+k get deploy -n kube-system
+NAME                                READY   UP-TO-DATE   AVAILABLE   AGE
+ingress-appgw-deployment            1/1     1            1           95m
 ```
 
 - https://learn.microsoft.com/en-us/azure/application-gateway/tutorial-ingress-controller-add-on-new
 - https://azure.github.io/application-gateway-kubernetes-ingress/proposals/multiple-gateways-single-cluster.md
+
+```
+# ing.http
+kubectl delete ing secure-ingress
+kubectl delete deploy https-backend
+kubectl delete svc https-backend 
+kubectl create deployment https-backend \
+  --image=hashicorp/http-echo \
+  --port=5678 \
+  -- /http-echo -text="Hello via HTTPS"
+kubectl expose deployment https-backend \
+  --name=https-backend \
+  --port=443 \
+  --target-port=5678
+kubectl apply -f - <<EOF
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: secure-ingress
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: https-backend
+                port:
+                  number: 443
+EOF
+kubectl get ing
+kubectl describe ing
+root@aks-nodepool1-12969479-vmss000000:/# curl 10.224.0.73:5678
+Hello via HTTPS
+```
+
+```
+# ing.https
+# az network application-gateway: replace the resource group and name if needed
+openssl req -x509 -newkey rsa:4096 -days 365 -nodes \
+  -keyout rootCA.key -out rootCA.crt -subj "/CN=RootCA"
+openssl req -new -newkey rsa:4096 -nodes -keyout backend.key -out backend.csr \
+  -subj "/CN=backend.default.svc.cluster.local"
+openssl x509 -req -in backend.csr -CA rootCA.crt -CAkey rootCA.key -CAcreateserial \
+  -out backend.crt -days 365
+kubectl create secret tls backend-tls \
+  --key backend.key \
+  --cert backend.crt
+noderg=$(az aks show -g $rg -n aks --query nodeResourceGroup -o tsv)
+az network application-gateway root-cert create \
+  --resource-group $noderg \
+  --gateway-name myApplicationGateway \
+  --name my-root-cert \
+  --cert-file rootCA.crt
+kubectl delete ing secure-ingress
+kubectl delete deploy https-backend
+kubectl delete svc https-backend 
+kubectl create deployment https-backend \
+  --image=hashicorp/http-echo \
+  --port=5678 \
+  -- /http-echo -text="Hello via HTTPS"
+kubectl expose deployment https-backend \
+  --name=https-backend \
+  --port=443 \
+  --target-port=5678
+kubectl apply -f - <<EOF
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: secure-ingress
+  annotations:
+    appgw.ingress.kubernetes.io/backend-protocol: "https"
+    appgw.ingress.kubernetes.io/appgw-trusted-root-certificate: my-root-cert
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: https-backend
+                port:
+                  number: 443
+EOF
+kubectl get ing
+kubectl describe ing
+root@aks-nodepool1-12969479-vmss000000:/# curl 10.224.0.73:5678
+Hello via HTTPS
+
+az network application-gateway show -g $noderg -n myApplicationGateway --query trustedRootCertificates
+[
+  {
+    "data": "LS0tLS1CRUd..LS0tLS0K",
+    "etag": "W/\"514829a0-80ba-476c-86da-7b2d714976b1\"",
+    "id": "/subscriptions/redacts-1111-1111-1111-111111111111/resourceGroups/MC_rgagic2_aks_swedencentral/providers/Microsoft.Network/applicationGateways/myApplicationGateway/trustedRootCertificates/my-root-cert",
+    "name": "my-root-cert",
+    "provisioningState": "Succeeded",
+    "resourceGroup": "MC_rgagic2_aks_swedencentral",
+    "type": "Microsoft.Network/applicationGateways/trustedRootCertificates"
+  }
+]
+```
+
+> ## tbd app-routing-system
 
 ```
 k get all -n app-routing-system --show-labels

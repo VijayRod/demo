@@ -2,6 +2,15 @@
 
 ```
 # See the section on secrets-store key
+# refer to secret
+
+Pod
++-- VolumeMount (CSI: secrets-store.csi.k8s.io)
+    +-- SecretProviderClass (YAML Config)
+        +-- Secrets Store CSI Driver (Controller DaemonSet)
+            +-- Fetch secrets from external provider (e.g. Azure Key Vault, Vault, AWS SM)
+            +-- Mount secrets as files inside the pod (ephemeral volume)
+            +-- [Optional] Sync secrets as Kubernetes Secrets (cluster-scoped objects)
 ```
 
 ## secrets-store.debug.error.FailedMount.SecretNotFound
@@ -166,6 +175,17 @@ az keyvault set-policy -n $keyvaultName --key-permissions get --spn "$userAssign
 az keyvault set-policy -n $keyvaultName --secret-permissions get --spn "$userAssignedIdentityID"
 # Set policy to access certs in your key vault
 az keyvault set-policy -n $keyvaultName --certificate-permissions get --spn "$userAssignedIdentityID"
+```
+
+```
+k get sc #  no additional rows besides the default disk and file storage classes
+
+k api-resources | grep secret
+secrets                                                 v1                                true         Secret
+secretproviderclasses                                   secrets-store.csi.x-k8s.io/v1     true         SecretProviderClass
+secretproviderclasspodstatuses                          secrets-store.csi.x-k8s.io/v1     true         SecretProviderClassPodStatus
+
+k get secretproviderclasses -A # No resources found by default
 ```
 
 ```

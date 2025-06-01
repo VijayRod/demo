@@ -39,6 +39,8 @@
   - nfs: https://learn.microsoft.com/en-us/azure/storage/blobs/network-file-system-protocol-support-how-to
   - fuse driver: https://github.com/Azure/azure-storage-fuse/blob/main/TSG.md
   - fuse driver errors: https://github.com/Azure/azure-storage-fuse/blob/main/cmd/mount.go
+  - https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/storage/mounting-azure-blob-storage-container-fail
+  - https://learn.microsoft.com/en-us/azure/storage/blobs/data-lake-storage-abfs-driver#the-azure-blob-file-system-driver
 
 - Disk:
   - default file system is ext4: use mkfs.ext4 /dev/sdc, then mount /dev/sdc /mnt/data. 
@@ -46,10 +48,14 @@
       - note that this is a real, physical fs, such as HDD, SSD, VHD, etc.
   - https://github.com/kubernetes-sigs/azuredisk-csi-driver/blob/master/docs/csi-debug.md
   - https://github.com/andyzhangx/demo/blob/master/issues/azuredisk-issues.md#25-multi-attach-error
+  - https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/storage/fail-to-mount-azure-disk-volume
 
 - File:
   - https://github.com/kubernetes-sigs/azurefile-csi-driver/blob/master/docs/csi-debug.md
   - https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/storage/fail-to-mount-azure-file-share
+  - https://learn.microsoft.com/en-us/troubleshoot/azure/azure-storage/files/connectivity/files-troubleshoot?tabs=powershell
+
+- cifs/smb: curl -kv http://redacted.privatelink.file.core.windows.net:445 # curl: (52) Empty reply from server
     
 ```
 # k8s.csi.sidecar

@@ -13,6 +13,34 @@ Pod
             +-- [Optional] Sync secrets as Kubernetes Secrets (cluster-scoped objects)
 ```
 
+```
+# k8s-secret-management.provider.secret-store-csi-driver
+# See the section on secrets-store key
+
+# k8s-secret-management.provider.secret-store-csi-driver.secret-controller
+# utilizes daemonsets
+ds: kube-system   aks-secrets-store-csi-driver               2         2         2       2            2           <none>                     156m
+ds: kube-system   aks-secrets-store-csi-driver-windows       0         0         0       0            0           <none>                     156m
+kubectl get SecretProviderClass -A # Secret sync controller (opcional)
+kubectl get SecretProviderClassPodStatus -A # Pod status controller
+
+# k8s-secret-management.provider.secret-store-csi-driver.provider-plugin
+# utilizes daemonsets
+ds: kube-system   aks-secrets-store-provider-azure           2         2         2       2            2           kubernetes.io/os=linux     156m
+ds: kube-system   aks-secrets-store-provider-azure-windows
+```
+- https://secrets-store-csi-driver.sigs.k8s.io/
+
+```
+# k8s-secret-management.provider.external-secrets
+# Refer to external-secrets (https://github.com/external-secrets)
+
+# k8s-secret-management.provider.external-secrets.secret-controller
+kubectl get ExternalSecret -A # ExternalSecret Controller, Refresh Controller
+kubectl get SecretStore -A # SecretStore Controller
+kubectl get ClusterSecretStore # SecretStore Controller
+```
+
 ## secrets-store.debug.error.FailedMount.SecretNotFound
 
 FailedMount with SecretNotFound indicates that the key vault does not have a secret defined in the configured SecretProviderClass.
@@ -186,6 +214,56 @@ secretproviderclasses                                   secrets-store.csi.x-k8s.
 secretproviderclasspodstatuses                          secrets-store.csi.x-k8s.io/v1     true         SecretProviderClassPodStatus
 
 k get secretproviderclasses -A # No resources found by default
+
+k describe po -n kube-system aks-secrets-store-provider-azure-qxkwp
+Name:                 aks-secrets-store-provider-azure-qxkwp
+Namespace:            kube-system
+Priority:             2000001000
+Priority Class Name:  system-node-critical
+Service Account:      aks-secrets-store-provider-azure
+Node:                 aks-nodepool1-22302342-vmss000003/10.224.0.4
+Start Time:           Fri, 30 May 2025 18:54:18 +0000
+Labels:               app=secrets-store-provider-azure
+                      controller-revision-hash=8468d6dbdf
+                      kubernetes.azure.com/managedby=aks
+                      pod-template-generation=1
+Annotations:          <none>
+Status:               Running
+IP:                   10.224.0.4
+IPs:
+  IP:           10.224.0.4
+Controlled By:  DaemonSet/aks-secrets-store-provider-azure
+Containers:
+  provider-azure-installer:
+    Container ID:  containerd://ae8c65f63d17e98753e7beae98e0c0f0f50ab505f2b8a16c407cb15c3bd7cc5b
+    Image:         mcr.microsoft.com/oss/azure/secrets-store/provider-azure:v1.6.2
+
+k describe po -n kube-system aks-secrets-store-csi-driver-h4s8s
+Name:                 aks-secrets-store-csi-driver-h4s8s
+Namespace:            kube-system
+Priority:             2000001000
+Priority Class Name:  system-node-critical
+Service Account:      aks-secrets-store-csi-driver
+Node:                 aks-nodepool1-22302342-vmss000002/10.224.0.5
+Start Time:           Fri, 30 May 2025 18:53:56 +0000
+Labels:               app=secrets-store-csi-driver
+                      controller-revision-hash=69c7d4bfd8
+                      kubernetes.azure.com/managedby=aks
+                      pod-template-generation=1
+Annotations:          <none>
+Status:               Running
+IP:                   10.244.0.244
+IPs:
+  IP:           10.244.0.244
+Controlled By:  DaemonSet/aks-secrets-store-csi-driver
+Containers:
+  node-driver-registrar:
+    Container ID:  containerd://47ba8923193324a191ce87e0fa7e206d608de8c7bb1cc5a56194ce1c1b17fa93
+    Image:         mcr.microsoft.com/oss/kubernetes-csi/csi-node-driver-registrar:v2.11.1
+  secrets-store:
+    Container ID:  containerd://5f871cd65cb2b91190f8a2ecaa8c7d6c232e7b8960e628bd81260307be2be11a
+    Image:         mcr.microsoft.com/oss/kubernetes-csi/secrets-store/driver:v1.4.8
+
 ```
 
 ```

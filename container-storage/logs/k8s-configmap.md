@@ -1,4 +1,6 @@
 ```
+# cm.create
+
 cat <<EOF >/tmp/example-redis-config.yaml
 apiVersion: v1
 kind: ConfigMap
@@ -8,9 +10,17 @@ data:
   redis-config: ""
 EOF
 kubectl create cm redis --from-file=/tmp/example-redis-config.yaml
+
+kubectl create configmap app-config \
+  --from-literal=ENV=production \
+  --from-literal=DEBUG=false
 ```
 
 ```
+# cm.get
+
+kubectl get cm --output=custom-columns=NAME:.metadata.name,CREATE_TIMESTAMP:.metadata.creationTimestamp
+
 kubectl get cm redis
 NAME    DATA   AGE
 redis   1      10s

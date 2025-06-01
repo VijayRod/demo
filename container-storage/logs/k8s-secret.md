@@ -85,6 +85,59 @@ kubectl get secret # no entries found
 
 - tbd https://overcast.blog/kubernetes-garbage-collection-a-practical-guide-22a5c7125257: Automate Garbage Collection Processes. Secrets that are no longer in use.
 
+```
+# secret.op.delete.garbage-collector.secretproviderclass.example
+# Tip for delete RCA: Check for deletions of /apis/secrets-store.csi.x-k8s.io/v1/namespaces/redactn/secretproviderclasspodstatuses/redactname around this time. If so, this might be the cause of the issue, as it could set ownership on the secret leading to cascading deletion. Does the secret object have ownerReferences set that could cause cascading deletion? Who is responsible for managing the lifecycle of the secret? Is it created by a controller or manually created?
+
+echo $keyvaultName # ensure this has a value
+
+kubectl delete SecretProviderClass my-secrets
+kubectl apply -f -<<EOF
+apiVersion: secrets-store.csi.x-k8s.io/v1
+kind: SecretProviderClass
+metadata:
+  name: my-secrets
+  namespace: default
+spec:
+  provider: azure
+  parameters:
+    usePodIdentity: "false"
+    keyvaultName: "$($keyvaultName)"
+    objects: |
+      array:
+        - objectName: my-secret
+          objectType: secret
+  secretObjects:
+    - secretName: my-synced-secret
+      type: Opaque
+      data:
+        - objectName: my-secret
+          key: password
+EOF
+sleep 1 # for uid generation
+kubectl get secretproviderclass my-secrets -o jsonpath="{.metadata.uid}" # ensure this has a value
+
+kubectl delete secret my-synced-secret
+kubectl apply -f -<<EOF
+apiVersion: v1
+kind: Secret
+metadata:
+  name: my-synced-secret
+  ownerReferences:
+    - apiVersion: secrets-store.csi.x-k8s.io/v1
+      kind: SecretProviderClass
+      name: my-secrets
+      uid: "$(kubectl get secretproviderclass my-secrets -n default -o jsonpath="{.metadata.uid}")"
+type: Opaque
+data:
+  password: $(echo -n "minha-senha-super-secreta" | base64)
+EOF
+kubectl get secret
+
+kubectl delete secretproviderclass my-secrets
+kubectl get secret # No resources found in default namespace
+```
+
 ## k8s-secret.pod.environment-variable
 
 ```

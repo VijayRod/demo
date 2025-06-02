@@ -91,6 +91,18 @@ az vmss scale -g $rg -n myVMSS --new-capacity 0 # scale down
 az vmss delete -g $rg -n myVMSS # then reconcile the cluster to automatically recreate the vmss
 ```
 
+```
+# aks.release
+```
+- release.aks
+  - https://releases.aks.azure.com/
+  - https://github.com/Azure/AKS/releases
+- release.node-image.component
+  - The component version can be found on the component release page, for example, in https://github.com/kubernetes-sigs/azuredisk-csi-driver/releases
+  - https://github.com/Azure/AgentBaker/releases: contains the node image version corresponding to the "VHD Component Updates" PR (or see open PRs) which has the component version
+    - Alternatively, https://github.com/Azure/AgentBaker/blob/master/vhdbuilder/release-notes/AKSAzureLinux/gen2/latest.txt though it cannot have the ones in open PR
+  - https://releases.aks.azure.com/
+
 ## aks.core.reconcile
 
 ```

@@ -22,7 +22,7 @@ Could you have the report include the following details: - CVE   |   container/i
 - https://github.com/Azure/AKS/issues?q=is%3Aissue+is%3Aopen+cve
 - https://learn.microsoft.com/en-us/azure/aks/concepts-vulnerability-management#how-vulnerabilities-are-updated
 - https://github.com/Azure/AKS/releases
-- https://releases.aks.azure.com/: AKS Security Patch
+- https://releases.aks.azure.com/: AKS Security Patch and AKS CVE Status
 - https://github.com/Azure/AgentBaker/tree/master/vhdbuilder/release-notes/security-patch
 - https://learn.microsoft.com/en-us/azure/architecture/guide/devsecops/devsecops-on-aks#best-practice--secure-your-container-images: Trivy is an example of an open-source tool that you can use to analyze security vulnerabilities within your container images.
 

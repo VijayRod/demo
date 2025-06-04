@@ -1,2 +1,0 @@
-- https://github.com/kubernetes/kubectl/blob/master/pkg/cmd/top/top_node.go
-- https://github.com/kubernetes/kubernetes/issues/118916

@@ -1,3 +1,4 @@
+> ## k8s.metrics..metrics-server
 
 ```
 kubectl logs -n kube-system k8s-app=metrics-server
@@ -57,3 +58,23 @@ kubectl get --raw /metrics
 Here are some related links for AKS:
 - [Container Insights metrics](https://learn.microsoft.com/en-us/azure/azure-monitor/containers/container-insights-analyze#view-container-metrics-in-metrics-explorer) - List of container metrics in Metrics Explorer
 - [Essential metrics](https://learn.microsoft.com/en-us/azure/azure-monitor/essentials/metrics-supported#microsoftcontainerservicemanagedclusters) - Metrics supported for Microsoft Container Service Managed Clusters
+
+> ## k8s.metrics..metrics-server.top-node
+
+- https://github.com/kubernetes/kubectl/blob/master/pkg/cmd/top/top_node.go
+- https://github.com/kubernetes/kubernetes/issues/118916
+
+> ## k8s.metrics.alert
+
+```
+# alert.prometheus.aggregator_unavailable_apiservice_total{name="vlbetal.metrics.k8s.io",reason="FailedDiscoveryCheck"}
+# check api server failover, and optionally tunnel health and metrics-server logs
+# rca: expected for non-managed prometheus since it can only scrape a single (tbd api server) instance
+# mitigate: alert is unnecessary for non-managed prometheus
+```
+
+- https://github.com/prometheus-community/helm-charts/issues/3539: [kube-prometheus-stack] Frequent errors for alert rule KubeAggregatedAPIErrors (aggregator_unavailable_apiservice_total) 
+- RCA for non-managed Prometheus: https://github.com/prometheus-community/helm-charts/issues/3539#issuecomment-2880489366
+  - https://learn.microsoft.com/en-us/azure/aks/control-plane-metrics-monitor#can-i-scrape-control-plane-metrics-with-self-hosted-prometheus: Self hosted Prometheus can only scrape the single instance depending on the load balancer. The metrics aren't reliable, as there are often multiple replicas of the control plane metrics are only visible through managed Prometheus
+- RCA 2: https://github.com/prometheus-community/helm-charts/issues/3539#issuecomment-2498299135: The alerts always coincide with the restarts of the API server pods, and for your cluster, this is indeed the case. This alert/error is inevitable because it is due to the destruction/creation (considering the container startup) of the API server pods, knowing that there are several replicas that coexist at all times to maintain a 100% SLA. According to your cluster metrics, the SLA has always been maintained at 100%. Conclusion: This Prometheus alert is unnecessary in a PaaS service like AKS because the control plane is completely managed on our side, and the API availability is automatically guaranteed, except in the case of a regional/global outage.
+- https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/apiserver-aggregation/#response-latency: Discovery requests are required to round-trip from the kube-apiserver in five seconds or less.

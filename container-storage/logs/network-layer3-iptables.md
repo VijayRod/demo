@@ -14,6 +14,15 @@ cat /tmp/iptables
 - https://blog.stevegriffith.nyc/posts/aks-networking-iptables
 - tbd https://www.baeldung.com/linux/iptables-intro
 
+## iptables.debug
+
+```
+# if there are no other successful connections, for example in a repro environment, check for an increase in pkts/bytes in the chain using iptables -vnL to see if the request passed through the iptables chain
+
+iptables -A FORWARD -s 10.1.0.2 -j LOG --log-prefix "AFTER_NAT: " --log-level 4 # the source ip 10.1.0.2 is experiencing the issue
+```
+- https://tecadmin.net/enable-logging-in-iptables-on-linux/?amp
+
 ## iptables.app.k8s.node
 
 ```

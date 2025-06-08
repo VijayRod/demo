@@ -12,6 +12,8 @@ layer 7 (http/https):
 ./agic
 ```
 
+> ## traffic..host-networking
+
 ```
 # traffic.host-networking
 # logs0: The traffic should reach the VM as observed in a tcpdump
@@ -20,6 +22,64 @@ layer 7 (http/https):
 ```
 
 - https://nwktimes.blogspot.com/2023/01/Azure-VFP-and-AccelNet.html: Azure Host-Based Networking: VFP and AccelNet Introduction
+
+```
+[network] > [Netfilter Hook] > [conntrack] > [iptables rules] > [Stack IP/kernel]
+
+node ingress: traditional stack (iptables/nftables)
+[ interface (e.g. eth0) ]
+   |
+[ kernel receives the packet ]
+   |
+[ iptables PREROUTING ]
+   |
+[ routing decision (ip route) ]
+   |
+[ iptables INPUT (if the destination IP is local) ]
+or
+[ iptables FORWARD + ip route again (if the packet is being routed) ]
+
+node ingress: ebpf stack
+[ Interface (eth0) ]
+      |
+[ XDP hook (optional – very early eBPF layer) ]
+      |
+[ eBPF program (replaces iptables PREROUTING) ]
+      |
+[ Routing / forwarding decision ]
+      |
+[ eBPF filtering, load balancing, NAT ]
+      |
+[ Application or egress path ]
+
+node egress: traditional stack (iptables/nftables)
+[ Application generates packet ]
+      |
+[ iptables OUTPUT chain ]
+      |
+[ Routing decision (ip route) ]
+      |
+[ iptables POSTROUTING chain ]
+      |
+[ Network interface (e.g. eth0) ]
+      |
+[ Packet leaves the host ]
+
+node egress: ebpf stack
+[ Application generates packet ]
+      |
+[ eBPF socket/cgroup hooks (can filter or redirect) ]
+      |
+[ Routing decision ]
+      |
+[ eBPF for SNAT, policy enforcement, load balancing ]
+      |
+[ TC egress hook (optional, lower level eBPF) ]
+      |
+[ Interface (eth0) ]
+      |
+[ Packet exits host ]
+```
 
 ```
 # ip route

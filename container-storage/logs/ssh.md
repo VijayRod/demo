@@ -19,9 +19,10 @@ az ssh vm -g $rgname -n $vm
 ls -l ~/.ssh/
 cat ~/.ssh/id_rsa
 cat ~/.ssh/id_rsa.pub
+cp ~/.ssh/id_rsa /tmp/id_rsa; ls id*
 
 # destination
-mkdir ~/.ssh/
+mkdir -p ~/.ssh; chmod 600 ~/.ssh
 cat << EOF > ~/.ssh/id_rsa
 -----BEGIN RSA PRIVATE KEY-----
 content==

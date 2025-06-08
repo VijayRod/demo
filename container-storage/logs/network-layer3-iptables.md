@@ -233,5 +233,12 @@ iptables -vL -t raw
 iptables -vL -t security
 ```
 
-- https://unix.stackexchange.com/questions/205867/viewing-all-iptables-rules: iptables controls five different tables: filter, nat, mangle, raw and security. ...
+- https://unix.stackexchange.com/questions/205867/viewing-all-iptables-rules: iptables controls five different tables: filter, nat, mangle, raw and security. 
 - https://thelinuxcode.com/iptables-tutorial/: These built-in chains belong to various  iptables tables...
+
+# iptable.tool.portmap
+```
+# portmap (kubenet) employs iptables
+```
+- https://github.com/Azure/AgentBaker/blob/master/aks-node-controller/parser/templates/kubenet-cni.json.gtpl: "type": "portmap",
+- https://www.cni.dev/plugins/current/meta/portmap/: "type": "portmap", "backend": "iptables",

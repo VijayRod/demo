@@ -17,12 +17,37 @@ layer 7 (http/https):
 # logs0: The traffic should reach the VM as observed in a tcpdump
 # logs: Could you check if the IP masq agent is running correctly for the cluster (daemonset/pods, configmap)?
 # logs: Could you have the engineer obtain the IP table rules (iptables-save output) and IP routes (ip route output) on the AKS VM in a text file, including the node name? Can they ping the pod from the node and the node from the ABC pod, share the output, and provide the names and IPs of both for this test?
-
-# scenario: the source syn reaches the destination vm (as seen in tcpdump) but does not reach the pod in the vm (no related pod traffic in tcpdump). this issue occurs only from a specific source ip, although ping works.
-# rca: this is likely due to an iptables drop rule in the destination vm. it might be configured with a daemonset or pod running nsenter (verified with a kubectl describe command) and having NET_ADMIN capability in the securityContext (verified with kubectl get -oyaml)
 ```
 
 - https://nwktimes.blogspot.com/2023/01/Azure-VFP-and-AccelNet.html: Azure Host-Based Networking: VFP and AccelNet Introduction
+
+```
+# ip route
+
+root@aks-nodepool1-31079220-vmss000004:/# ip route
+default via 10.224.0.1 dev eth0 proto dhcp src 10.224.0.4 metric 100
+10.224.0.0/16 dev eth0 proto kernel scope link src 10.224.0.4 metric 100
+10.224.0.1 dev eth0 proto dhcp scope link src 10.224.0.4 metric 100
+10.244.1.38 dev azv2db6f3bb8e4 proto static
+10.244.1.252 dev azv8b67eb71693 proto static
+168.63.129.16 via 10.224.0.1 dev eth0 proto dhcp src 10.224.0.4 metric 100
+169.254.169.254 via 10.224.0.1 dev eth0 proto dhcp src 10.224.0.4 metric 100
+
+az network vnet subnet show -g MC_rg_aks_swedencentral --vnet-name aks-vnet-92427521 -n aks-subnet --query addressPrefix -otsv # 10.224.0.0/16
+k get no -owide # aks-nodepool1-31079220-vmss000004   Ready    <none>   4h44m   v1.31.8   10.224.0.4
+
+10.224.0.0: network address
+10.224.0.1: (reserved by azure) for the default gateway
+10.224.0.2, 10.224.0.3: (reserved by azure) to map the azure dns ip addresses to the vnet space
+10.224.0.255: network broadcast address
+168.63.129.16: (reserved by azure) for the virtual public ip address
+169.254.169.254: (reserved by azure) for the service endpoint for instance metadata
+```
+
+```
+# scenario: the source syn reaches the destination vm (as seen in tcpdump) but does not reach the pod in the vm (no related pod traffic in tcpdump). this issue occurs only from a specific source ip, although ping works.
+# rca: this is likely due to an iptables drop rule in the destination vm. it might be configured with a daemonset or pod running nsenter (verified with a kubectl describe command) and having NET_ADMIN capability in the securityContext (verified with kubectl get -oyaml)
+```
 
 > ## .traffic.k8s
 

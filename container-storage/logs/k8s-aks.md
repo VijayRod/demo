@@ -291,6 +291,8 @@ scp -P 8080 /tmp/iptables azureuser@127.0.0.1:/tmp/iptables-dump # scp: stat loc
 ```
 # k8s.unexpected.dynatrace
 # dynatrace will instrument app binaries. Has the customer already ruled out dynatrace with dynatrace support?
+# If you see any issue like this w/ dynatrace involved we need to engage their dynatrace support first. 
+# We could recommend that they contact the Dynatrace support team for guidance on the necessary instrumentation. This also assumes they have comparable Dynatrace data from before the issue for reference.
  
 ## k describe no has an annotation and may have namespace/pods
 Name:               aks-apppool-18777100-vmss000000

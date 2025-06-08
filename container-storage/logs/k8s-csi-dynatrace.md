@@ -1,4 +1,4 @@
-## k8s-csi-dynatrace
+> ## k8s-csi-dynatrace
 
 ```
 # dynatrace
@@ -92,3 +92,12 @@ managed-premium         disk.csi.azure.com   Delete          WaitForFirstConsume
 
 - https://github.com/Dynatrace/dynatrace-operator/issues/3490: csi.oneagent.dynatrace.com not found in the list of registered CSI drivers. Dynatrace responds to requests like these via Dynatrace ONE support (Support request)
 - https://github.com/Dynatrace/dynatrace-operator/issues/4380: Upgrading Kubernetes version to 1.30.9, calico-node is failing with "driver name csi.oneagent.dynatrace.com not found in the list of registered CSI drivers". Dynatrace responds to requests like these via Dynatrace ONE support (Support request)
+
+
+> ## k8s-csi-dynatrace.debug
+
+- https://docs.dynatrace.com/docs/ingest-from/dynatrace-oneagent/oneagent-troubleshooting/oneagent-diagnostics#analyze-automatically
+
+> ## k8s-csi-dynatrace.debug.profiling.memory-profiling
+- https://www.dynatrace.com/news/blog/dynatrace-memory-analysis-helps-product-architects-identify-unknown-unknowns/
+- https://docs.dynatrace.com/docs/observe/applications-and-microservices/profiling-and-optimization/memory-profiling

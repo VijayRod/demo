@@ -281,6 +281,41 @@ scp -P 8080 /tmp/iptables azureuser@127.0.0.1:/tmp/iptables-dump # scp: stat loc
 
 - https://learn.microsoft.com/en-us/azure/aks/node-auto-repair: AKS initiates repair operations with the user account aks-remediator.
 
+## aks.core.unexpected
+
+```
+# k8s.unexpected.datadog-agent
+# Refer to pv for mount issues caused by datadog and ensure the subtle / is excluded from the datadog mount list
+```
+
+```
+# k8s.unexpected.dynatrace
+# dynatrace will instrument app binaries. Has the customer already ruled out dynatrace with dynatrace support?
+ 
+## k describe no has an annotation and may have namespace/pods
+Name:               aks-apppool-18777100-vmss000000
+Annotations:        csi.volume.kubernetes.io/nodeid: {"csi.oneagent.dynatrace.com":"aks-apppool-18777100-vmss000000",
+Non-terminated Pods:          (14 in total)
+  Namespace                   Name                                                CPU Requests  CPU Limits  Memory Requests  Memory Limits  Age
+  ---------                   ----                                                ------------  ----------  ---------------  -------------  ---
+  dynatrace                   dynatrace-oneagent-csi-driver-8d5m6                 ..
+  dynatrace                   mypod-oneagent-kj7lt    				  .. 
+ 
+## dynatrace namespace 
+Name:                 dynatrace-oneagent-csi-driver-8d5m6
+Namespace:            dynatrace
+
+## app with dynatrace annotations and init container
+Name: app-web-1asdf
+Annotations:      dynakube.dynatrace.com/injected: true
+                  metadata-enrichment.dynatrace.com/injected: true
+                  metadata.dynatrace.com/k8s.workload.kind: deployment
+                  metadata.dynatrace.com/k8s.workload.name: app-web
+Init Containers:
+  install-oneagent:
+    Image:         ../vendor/docker/dynatrace/dynatrace-operator:v1.3.2    
+```
+
 ## aks.spec.agentPool.vmSize
 
 - https://learn.microsoft.com/en-us/azure/aks/quotas-skus-regions#supported-vm-sizes

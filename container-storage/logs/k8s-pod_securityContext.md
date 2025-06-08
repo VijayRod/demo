@@ -1,3 +1,49 @@
+> ## k8s.pod.securityContext
+
+- https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+
+```
+kubectl delete po --all
+kubectl apply -f -<<EOF
+apiVersion: v1
+kind: Pod
+metadata:
+  name: netshoot
+spec:
+  containers:
+  - name: netshoot
+    image: nicolaka/netshoot
+    command: ["/bin/bash"]
+    args: ["-c", "sleep 60000;"]
+    securityContext:
+      capabilities:
+        add: ["NET_ADMIN", "SYS_TIME"]
+EOF
+kubectl get po -w
+
+# the securityContext is not visible in kubectl describe output
+k get po -oyaml
+apiVersion: v1
+items:
+- apiVersion: v1
+  kind: Pod
+  spec:
+    containers:
+    - args:
+      - -c
+      - sleep 60000;
+      name: netshoot
+      securityContext:
+        capabilities:
+          add:
+          - NET_ADMIN
+          - SYS_TIME
+```
+
+- https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-capabilities-for-a-container
+
+
+> ## k8s.pod.securityContext.fsGroup
 ```
 # mount.timeout.fsGroup
 
@@ -144,3 +190,9 @@ kubectl get po,pv,pvc
 kubectl exec -it mypod -- ls -l /mnt/azure | wc -l # 501
 kubectl logs -n kube-system -l app=csi-azurefile-node -c azurefile | tail
 ```
+
+> ## k8s.pod.securityContext.runAsUser(uid)
+
+
+- https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+- https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/failure-setting-azure-disk-mount-options-uid-gid

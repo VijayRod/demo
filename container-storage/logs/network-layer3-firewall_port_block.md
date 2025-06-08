@@ -10,6 +10,12 @@ iptables -A OUTPUT -p tcp --dport 445 -j DROP
 # Output of the command: -A OUTPUT -p tcp -m tcp --dport 445 -j DROP
 iptables-save | grep dport | grep 445
 
+iptables -vnL
+Chain OUTPUT (policy ACCEPT 0 packets, 0 bytes)
+ pkts bytes target     prot opt in     out     source               destination
+ 586K  200M KUBE-FIREWALL  all  --  *      *       0.0.0.0/0            0.0.0.0/0
+    0     0 DROP       tcp  --  *      *       0.0.0.0/0            0.0.0.0/0            tcp dpt:445
+
 # To delete the rule.
 iptables -D OUTPUT -p tcp --dport 445 -j DROP
 ```

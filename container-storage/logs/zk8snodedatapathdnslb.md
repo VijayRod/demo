@@ -17,6 +17,9 @@ layer 7 (http/https):
 # logs0: The traffic should reach the VM as observed in a tcpdump
 # logs: Could you check if the IP masq agent is running correctly for the cluster (daemonset/pods, configmap)?
 # logs: Could you have the engineer obtain the IP table rules (iptables-save output) and IP routes (ip route output) on the AKS VM in a text file, including the node name? Can they ping the pod from the node and the node from the ABC pod, share the output, and provide the names and IPs of both for this test?
+
+# scenario: the source syn reaches the destination vm (as seen in tcpdump) but does not reach the pod in the vm (no related pod traffic in tcpdump). this issue occurs only from a specific source ip, although ping works.
+# rca: this is likely due to an iptables drop rule in the destination vm. it might be configured with a daemonset or pod running nsenter (verified with a kubectl describe command) and having NET_ADMIN capability in the securityContext (verified with kubectl get -oyaml)
 ```
 
 - https://nwktimes.blogspot.com/2023/01/Azure-VFP-and-AccelNet.html: Azure Host-Based Networking: VFP and AccelNet Introduction

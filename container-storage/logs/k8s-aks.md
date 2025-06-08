@@ -1,4 +1,22 @@
 ## aks
+
+- https://github.com/Azure/azure-rest-api-specs/blob/main/specification/containerservice/resource-manager/Microsoft.ContainerService/aks/stable/2023-02-01/managedClusters.json
+- https://github.com/andyzhangx/demo/blob/master/debug/README.md
+- https://github.com/feiskyer/kubernetes-handbook/blob/master/README.md
+- https://learn.microsoft.com/en-us/azure/aks/
+- https://learn.microsoft.com/en-us/rest/api/aks/managed-clusters/create-or-update?tabs=HTTP#examples
+- https://learn.microsoft.com/en-us/training/paths/aks-cluster-architecture/
+- https://cloudacademy.com/course/introduction-to-aks-954/course-introduction/
+- https://learn.microsoft.com/en-us/azure/architecture/guide/multitenant/service/aks
+- https://learn.microsoft.com/en-us/azure/aks/best-practices-app-cluster-reliability
+- https://github.com/Azure/AKS/
+- https://issuetracker.google.com/savedsearches/559746: Open Kubernetes Engine Issues
+- https://github.com/Azure/aks-gbb-officehours/blob/main/README.md: updates up to 2022
+- https://www.youtube.com/@theakscommunity
+- https://azure.github.io/AKS/: AKS Engineering Blog
+- https://github.com/Azure/AKS/?tab=readme-ov-file#important-links
+- https://cloud.google.com/kubernetes-engine/docs/troubleshooting
+
 ```
 # See the section on aks op
 
@@ -41,22 +59,20 @@ az aks nodepool add -g $rg --cluster-name aks -n $nodepool --vnet-subnet-id $sub
 for i in {2..100}; do az aks nodepool delete -g $rg --cluster-name aks -n nodepool$i --no-wait; done
 ```
 
-- https://github.com/Azure/azure-rest-api-specs/blob/main/specification/containerservice/resource-manager/Microsoft.ContainerService/aks/stable/2023-02-01/managedClusters.json
-- https://github.com/andyzhangx/demo/blob/master/debug/README.md
-- https://github.com/feiskyer/kubernetes-handbook/blob/master/README.md
-- https://learn.microsoft.com/en-us/azure/aks/
-- https://learn.microsoft.com/en-us/rest/api/aks/managed-clusters/create-or-update?tabs=HTTP#examples
-- https://learn.microsoft.com/en-us/training/paths/aks-cluster-architecture/
-- https://cloudacademy.com/course/introduction-to-aks-954/course-introduction/
-- https://learn.microsoft.com/en-us/azure/architecture/guide/multitenant/service/aks
-- https://learn.microsoft.com/en-us/azure/aks/best-practices-app-cluster-reliability
-- https://github.com/Azure/AKS/
-- https://issuetracker.google.com/savedsearches/559746: Open Kubernetes Engine Issues
-- https://github.com/Azure/aks-gbb-officehours/blob/main/README.md: updates up to 2022
-- https://www.youtube.com/@theakscommunity
-- https://azure.github.io/AKS/: AKS Engineering Blog
-- https://github.com/Azure/AKS/?tab=readme-ov-file#important-links
-- https://cloud.google.com/kubernetes-engine/docs/troubleshooting
+```
+# create clusters in multiple regions
+clear
+rg=rg
+locations=$(az account list-locations --query "[].name" -o tsv)
+az group create -n $rg -l $loc
+for location in $locations; do
+  cluster_name="aks-${location}"
+    echo "Creating cluster in $location with the name $cluster_name..."
+    az aks create -g $rg -n $cluster_name -s $vmsize -c 2 -l $location --no-wait \
+        && echo "✅ Started: $cluster_name in $location" \
+        || echo "❌ Failed in $location (quota issue, region unsupported, or error)"
+done
+```
 
 ```
 # aks.mitigate

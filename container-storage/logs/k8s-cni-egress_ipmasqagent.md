@@ -138,7 +138,15 @@ az aks show -g $rg -n akskube --query networkProfile
 az network vnet subnet show -g MC_rg_akskube_swedencentral --vnet-name aks-vnet-12544801 -n aks-subnet --query addressPrefix -otsv # 10.224.0.0/16
 ```
 
-## ipmasq.nonMasqueradeCIDRs
+## ipmasq.spec.custom (ip-masq-agent-config)
+```
+k get cm -n kube-system | grep masq # azure-ip-masq-agent-config-reconciled. Note that ip-masq-agent-config is not present by default
+```
+- https://github.com/Azure/ip-masq-agent-v2/blob/master/examples/config-custom.yaml
+- https://github.com/Azure/AKS/issues/2653#issuecomment-980524123: many users have custom configurations in their ip-masq-agent
+- https://learn.microsoft.com/en-us/azure/aks/upgrade-azure-cni: custom azure-ip-masq-agent config to include additional IP ranges that shouldn't SNAT packets from pods.. If this ConfigMap, named azure-ip-masq-agent-config, exists, and isn't intentionally in-place it should be deleted before running the update command. If not using a custom ip-masq-agent config, only the azure-ip-masq-agent-config-reconciled ConfigMap should exist with respect to Azure ip-masq-agent ConfigMaps and is updated automatically
+
+## ipmasq.spec.nonMasqueradeCIDRs
 
 ```
 

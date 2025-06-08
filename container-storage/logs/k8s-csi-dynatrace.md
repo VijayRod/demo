@@ -2,6 +2,7 @@
 
 ```
 # dynatrace
+# Refer to k8s unexpected to identify dynatrace in a cluster
 
 # https://docs.dynatrace.com/docs/setup-and-configuration/setup-on-k8s/installation/cloud-native-fullstack#helm
 ```

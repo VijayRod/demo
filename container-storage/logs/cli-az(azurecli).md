@@ -60,10 +60,13 @@ az extension remove --name aks-preview
 - https://github.com/Azure/azure-cli-extensions
 - https://github.com/Azure/azure-cli/tree/dev/doc/extensions
 
+> ## cli..extension.core.serviceconnector
+- https://github.com/Azure/azure-cli/tree/dev/src/azure-cli/azure/cli/command_modules/serviceconnector
+  
 > ## cli..extension.dev
 - https://github.com/Azure/azure-cli-dev-tools?tab=readme-ov-file: azdev extension create or azdev cli create <module-name>
 - https://github.com/Azure/azure-cli/blob/dev/doc/extensions/authoring.md: Development of extensions have been simplified by the public release of the azdev CLI.
-
+  
 > ## cli.aks
 
 ```

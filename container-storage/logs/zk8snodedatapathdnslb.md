@@ -12,6 +12,14 @@ layer 7 (http/https):
 ./agic
 ```
 
+> ## traffic..host
+
+- https://www.elastic.co/observability-labs/blog/debugging-aks-packet-loss: when a packet arrives at the NIC..
+- https://github.com/leandromoreira/linux-network-performance-parameters?tab=readme-ov-file#linux-network-queues-overview
+- https://blog.packagecloud.io/illustrated-guide-monitoring-tuning-linux-networking-stack-receiving-data/
+- https://blog.cloudflare.com/how-to-achieve-low-latency/
+  - https://blog.cloudflare.com/author/marek-majkowski/
+
 > ## traffic..host-networking
 
 ```
@@ -80,12 +88,6 @@ node egress: ebpf stack
       |
 [ Packet exits host ]
 ```
-
-- https://www.elastic.co/observability-labs/blog/debugging-aks-packet-loss: when a packet arrives at the NIC..
-- https://github.com/leandromoreira/linux-network-performance-parameters?tab=readme-ov-file#linux-network-queues-overview
-- https://blog.packagecloud.io/illustrated-guide-monitoring-tuning-linux-networking-stack-receiving-data/
-- https://blog.cloudflare.com/how-to-achieve-low-latency/
-  - https://blog.cloudflare.com/author/marek-majkowski/
 
 ```
 # ip route

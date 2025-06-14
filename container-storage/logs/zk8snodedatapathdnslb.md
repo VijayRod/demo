@@ -32,7 +32,7 @@ layer 7 (http/https):
 ```
 # scenario, ingress: the source syn reaches the destination vm (as seen in tcpdump) but does not reach the pod in the vm (no related pod traffic in tcpdump). this issue occurs only from a specific source ip, although ping works.
 # tcpdump: shows a syn followed by retransmissions and then a rst, all originating from the source
-# rca: this is likely due to an iptables drop rule in the destination vm. it might be configured with a daemonset or pod running nsenter (verified with a kubectl describe command) and having NET_ADMIN capability in the securityContext (verified with kubectl get -oyaml)
+# rca: this is likely due to an iptables DROP rule in the destination vm. it might be configured with a daemonset or pod running nsenter (verified with a kubectl describe command) and having NET_ADMIN capability in the securityContext (verified with kubectl get -oyaml)
 # rca2: the ip table likely has a k8s network policy drop rule. If the source ip is an azure firewall private ip (Client (Internet) > Azure firewall > AKS LB > AKS(Nodes) ), ensure the network policy allows ingress from the AzureFirewallSubnet ip range
 ```
 

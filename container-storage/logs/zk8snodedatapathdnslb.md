@@ -26,7 +26,7 @@ layer 7 (http/https):
 # traffic.host-networking
 # logs0: The traffic should reach the VM as observed in a tcpdump
 # logs: Could you check if the IP masq agent is running correctly for the cluster (daemonset/pods, configmap)?
-# logs: Could you have the engineer obtain the IP table rules (iptables-save output) and IP routes (ip route output) on the AKS VM in a text file, including the node name? Can they ping the pod from the node and the node from the ABC pod, share the output, and provide the names and IPs of both for this test?
+# logs: Could you have the engineer obtain the IP table rules (output from iptables-save, etc.) and IP routes (ip route output) on the AKS VM in a text file, including the node name? Can they ping the pod from the node and the node from the ABC pod, share the output, and provide the names and IPs of both for this test?
 ```
 
 ```

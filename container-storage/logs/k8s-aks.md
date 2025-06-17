@@ -140,6 +140,18 @@ node=aks-nodepool1-31079220-vmss000006; kubectl get --raw "/api/v1/nodes/$node/p
 iptables -vnL
 iptables-legacy -vNL
 iptables-nft -vNL
+## or
+iptables -t filter -vnL
+iptables -t nat -vnL
+iptables -t mangle -vnL
+iptables -t raw -vnL        
+iptables-legacy -t filter -vnL
+iptables-legacy -t nat -vnL
+iptables-legacy -t mangle -vnL
+iptables-legacy -t raw -vnL
+## optionally, include the following
+iptables-save
+iptables-legacy-save
 
 kubectl node-shell aks-nodepool1-31079220-vmss000000
 root@aks-nodepool1-31079220-vmss000000:/# iptables -vnL

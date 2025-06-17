@@ -1,3 +1,11 @@
+> ## fio.k8s
+
+```
+# determinants: disk size, disk type (e.g., standard ssd), virtualization (e.g., accelerated networking), vm size (e.g., nvme), vm node image, vm osdisk size and type (e.g., 128 GB Ephemeral), pv accessModes of ReadWriteOnce
+```
+- https://learn.microsoft.com/en-us/azure/virtual-machines/disks-types#standard-ssds
+- https://learn.microsoft.com/en-us/azure/virtual-machines/enable-nvme-faqs
+
 ```
 rg=rg
 az group create -n $rg -l $loc
@@ -136,6 +144,52 @@ kubectl exec -it fiopod -- fio --name=benchtest --size=10g --filename=/mnt/azure
 kubectl exec -it fiopod -- fio --name=benchtest --size=10g --filename=/mnt/azureblob-nfs/test --direct=1 --rw=randwrite --ioengine=libaio --bs=4k --iodepth=256 --numjobs=4 --time_based --runtime=30
 kubectl exec -it fiopod -- fio --name=benchtest --size=10g --filename=/mnt/azurefile-nfs/test --direct=1 --rw=randwrite --ioengine=libaio --bs=4k --iodepth=256 --numjobs=4 --time_based --runtime=30
 kubectl exec -it fiopod -- fio --name=benchtest --size=10g --filename=/mnt/azurefile-smb/test --direct=1 --rw=randwrite --ioengine=libaio --bs=4k --iodepth=256 --numjobs=4 --time_based --runtime=30
+kubectl exec -it fiopod -- fio --name=benchtest --size=10g --filename=/mnt/azuredisk-scsi/test --direct=1 --rw=randwrite --ioengine=libaio --bs=4k --iodepth=256 --numjobs=4 --time_based --runtime=30
+date
+```
+
+> ## fio.standard-ssd
+```
+# managed-csi: skuname=StandardSSD_LRS
+size=100Gi
+kubectl delete po pvc-azuredisk-scsi
+kubectl delete pvc pvc-azuredisk-scsi
+cat << EOF | kubectl create -f -
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvc-azuredisk-scsi
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: $size
+  storageClassName: managed-csi
+---
+kind: Pod
+apiVersion: v1
+metadata:
+  name: fiopod
+spec:
+  containers:
+  - name: fio
+    image: nixery.dev/shell/fio
+    args:
+      - sleep
+      - "1000000"
+    volumeMounts:
+      - mountPath: /mnt/azuredisk-scsi  
+        name: volume-azuredisk-scsi  
+  volumes:
+    - name: volume-azuredisk-scsi
+      persistentVolumeClaim:
+        claimName: pvc-azuredisk-scsi
+EOF
+kubectl get po -owide -w
+kubectl get pv,pvc,sc
+kubectl describe pv | grep VolumeH
+
 kubectl exec -it fiopod -- fio --name=benchtest --size=10g --filename=/mnt/azuredisk-scsi/test --direct=1 --rw=randwrite --ioengine=libaio --bs=4k --iodepth=256 --numjobs=4 --time_based --runtime=30
 date
 ```

@@ -80,6 +80,16 @@ kubectl create deploy hostnames --image=registry.k8s.io/serve_hostname # From an
 ```
 
 ```
+# other.image.history
+docker pull mcr.microsoft.com/oss/v2/kubernetes/metrics-server:v0.6.3-5
+docker history --no-trunc mcr.microsoft.com/oss/v2/kubernetes/metrics-server:v0.6.3-5
+ID                                                                CREATED       CREATED BY                            SIZE        COMMENT
+60d9a859229fa02513eae5b9ee817540a7dfd2714b599f2345c89738d4ad734f  5 months ago  COPY EULA-Container.txt . # buildkit  2.05kB      buildkit.dockerfile.v0
+<missing>                                                         5 months ago  ARG EULA=@EULA_FILE@                  0B          buildkit.dockerfile.v0
+<missing>                                                         5 months ago                                        86.1MB      Imported from -
+```
+
+```
 # other
 ```
 - https://docs.dynatrace.com/docs/ingest-from/setup-on-container-platforms/docker/set-up-dynatrace-oneagent-as-docker-container: dynatrace/oneagent

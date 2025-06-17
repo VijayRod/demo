@@ -3,9 +3,10 @@
 ```
 # See the section on storage-device-filesystem_overlayfs and Dockerfile
 
-apt update && apt install docker.io -y # Execute it in a laptop instead of a containerd worker node
+sudo apt update && sudo apt install podman-docker -y # preferred over docker.io since it's rootless
+# apt update && apt install docker.io -y # Execute it in a laptop instead of a containerd worker node
 
-$HOME/.docker/config.json
+cat $HOME/.docker/config.json
 ```
 
 - https://docs.docker.com/get-started/docker-concepts/the-basics/what-is-a-container/

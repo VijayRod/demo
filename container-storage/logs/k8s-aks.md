@@ -102,6 +102,10 @@ az vmss delete -g $rg -n myVMSS # then reconcile the cluster to automatically re
 - release.aks
   - https://releases.aks.azure.com/
   - https://github.com/Azure/AKS/releases
+  - https://learn.microsoft.com/en-us/azure/aks/supported-kubernetes-versions?tabs=azure-cli#aks-kubernetes-release-calendar
+  - https://endoflife.date/azure-kubernetes-service: includes retirement (end of support) dates for unmaintained releases, in addition to and earlier than the last few releases mentioned in the aks-kubernetes-release-calendar
+- release.aks.roadmap
+  - https://aka.ms/aks/roadmap
 - release.node-image.component
   - The component version can be found on the component release page, for example, in https://github.com/kubernetes-sigs/azuredisk-csi-driver/releases
   - https://github.com/Azure/AgentBaker/releases: contains the node image version corresponding to the "VHD Component Updates" PR (or see open PRs) which has the component version

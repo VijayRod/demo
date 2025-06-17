@@ -1,6 +1,16 @@
-`microsoft.flux`
+`extension: microsoft.flux`
+`rp: Microsoft.KubernetesConfiguration/extensions/flux`
 
+- https://fluxcd.io/flux/installation/bootstrap/azure-devops/
+- https://github.com/Azure/arc-k8s-demo
+- https://github.com/Azure/gitops-flux2-kustomize-helm-mt
+- https://learn.microsoft.com/en-us/azure/aks/cluster-extensions
+- https://learn.microsoft.com/en-us/azure/azure-arc/kubernetes/conceptual-gitops-flux2
+- https://learn.microsoft.com/en-us/azure/azure-arc/kubernetes/tutorial-use-gitops-flux2?tabs=azure-cli
+  
 ```
+# flux
+
 rg=rgflux
 az group create -n $rg -l swedencentral
 az aks create -g $rg -n aks
@@ -55,6 +65,14 @@ kubectl get po -n kube-system --show-labels | grep ext
 extension-agent-79f88c7d65-sscss      2/2     Running   0          9m2s   app.kubernetes.io/component=extension-agent,app.kubernetes.io/name=extension-manager,control-plane=extension-agent,kubernetes.azure.com/managedby=aks,pod-template-hash=79f88c7d65
 extension-operator-8fc67cf49-wmdsh    2/2     Running   0          9m2s   app.kubernetes.io/component=extension-operator,app.kubernetes.io/name=extension-manager,control-plane=extension-operator,kubernetes.azure.com/managedby=aks,pod-template-hash=8fc67cf49
 
+k describe po -n flux-system -l app.kubernetes.io/component=fluxconfig-agent | grep Image:
+    Image:          mcr.microsoft.com/azurek8sflux/fluxconfig-agent:1.15.2
+    Image:          mcr.microsoft.com/azurek8sflux/fluent-bit-mdm:1.15.2
+
+k describe po -n flux-system -l app.kubernetes.io/component=fluxconfig-controller | grep Image:
+    Image:          mcr.microsoft.com/azurek8sflux/fluxconfig-controller:1.15.2
+    Image:          mcr.microsoft.com/azurek8sflux/fluent-bit-mdm:1.15.2
+
 kubectl get crd | grep flux
 
 alerts.notification.toolkit.fluxcd.io            2023-09-01T19:05:25Z
@@ -74,16 +92,8 @@ providers.notification.toolkit.fluxcd.io         2023-09-01T19:05:25Z
 receivers.notification.toolkit.fluxcd.io         2023-09-01T19:05:25Z
 ````
 
-- https://fluxcd.io/flux/installation/bootstrap/azure-devops/
-- https://github.com/Azure/arc-k8s-demo
-- https://github.com/Azure/gitops-flux2-kustomize-helm-mt
-- https://learn.microsoft.com/en-us/azure/aks/cluster-extensions
-- https://learn.microsoft.com/en-us/azure/azure-arc/kubernetes/conceptual-gitops-flux2
-- https://learn.microsoft.com/en-us/azure/azure-arc/kubernetes/extensions-release#flux-gitops
-- https://learn.microsoft.com/en-us/azure/azure-arc/kubernetes/tutorial-use-gitops-flux2?tabs=azure-cli
-
 ```
-# delete
+# flux.delete
 az k8s-configuration flux delete -g $rg -c aks -t managedClusters --name cluster-config -y
 
 # force delete
@@ -93,3 +103,9 @@ az k8s-extension delete -g $rg -n aks --cluster-type managedClusters --name myex
 
 - https://learn.microsoft.com/en-us/cli/azure/k8s-extension?view=azure-cli-latest#az-k8s-extension-delete
 - https://learn.microsoft.com/en-us/cli/azure/k8s-configuration/flux?view=azure-cli-latest#az-k8s-configuration-flux-delete
+
+```
+# flux.release-date
+```
+- https://learn.microsoft.com/en-us/azure/azure-arc/kubernetes/extensions-release#flux-gitops: When a new version of the microsoft.flux extension is released, it might take several days for the new version to become available in all regions. (this link has the "Flux version" and the flux "Release" version)
+- https://github.com/fluxcd/flux2/releases

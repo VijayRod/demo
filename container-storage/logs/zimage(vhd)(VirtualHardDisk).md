@@ -35,6 +35,7 @@ apt update && apt install dnsutils
 
 # distro.debian.container
 debian: kubectl run -it --rm aks-ssh --image=debian:stable # apt-get update -y && apt-get install dnsutils -y && apt-get install curl -y
+debian:stable: https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/connectivity/connection-issues-application-hosted-aks-cluster
 nginx: kubectl exec -it nginx -- /bin/bash # -- curl google.com -I # apt-get update -y && apt-get install dnsutils -y
 nginx: kubectl run nginx --image=nginx
 

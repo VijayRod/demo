@@ -245,6 +245,18 @@ iptables-save v1.8.10 (nf_tables): Could not fetch rule set generation id: Permi
 ```
 
 ```
+# aks.logs.node.core.tcpdump
+
+# success
+kubectl debug node/aks-nodepool1-27122115-vmss000000 -it --image=debian:stable -- bash # chroot /host # tcpdump (it's already installed on the cluster node)
+# or kubectl debug node/aks-nodepool1-27122115-vmss000000 -it --image=debian:stable -- bash # apt update && apt install tcpdump -y # tcpdump # success (hostname: aks-nodepool1-27122115-vmss000000)
+
+# failure
+kubectl debug node/aks-nodepool1-27122115-vmss000000 -it --image=debian:stable --profile=netadmin -- bash # chroot /host # chroot: cannot change root directory to '/host': No such file or directory
+kubectl debug node/aks-nodepool1-26030419-vmss000000 -it --image=mcr.microsoft.com/cbl-mariner/busybox:2.0 # chroot /host # tcpdump # bash: tcpdump: command not found
+```
+
+```
 # vm in the same vnet (recommended, works like a normal bash file, however requires copying the credentials)
 noderg=$(az aks show -g $rg -n aks --query nodeResourceGroup -o tsv); echo $noderg
 vnet=$(az resource list -g $noderg --resource-type "Microsoft.Network/virtualNetworks" --query "[0].name" -otsv); echo $vnet

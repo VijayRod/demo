@@ -22,6 +22,10 @@ az aks show -g $rg -n aks | jq .agentPoolProfiles[0].count # az aks show -g $rg 
 az acr login -n $registry --expose-token | jq .accessToken
 az aks show -g $rg -n aks | jq .accessToken
 
+# azure.cli.retrieve-two-values
+az aks nodepool show -g $rg --cluster-name aks -n nodepool1 --query "[nodeImageVersion, workloadRuntime]" # retrieve two values without using key names in a key-value pair
+az aks nodepool show -g $rg --cluster-name aks -n nodepool1 --query "{image: nodeImageVersion, runtime: workloadRuntime}" # retrieve two values using key names in a key-value pair
+
 # kubectl
 kubectl run nginx --image=nginx
 kubectl get pods -o json | jq -r '.items[] | select(.metadata.name | test("nginx")).metadata.name'

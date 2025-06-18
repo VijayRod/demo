@@ -92,6 +92,10 @@ root@aks-nodepool1-20742417-vmss000000:/#
 
 - https://github.com/kvaps/kubectl-node-shell#installation
 
+## kubectl.debug.tools.netshoot
+
+- https://github.com/nicolaka/netshoot?tab=readme-ov-file#the-netshoot-kubectl-plugin: diagram
+
 ## kubectl.debug.tools.sshnode
 
 ```

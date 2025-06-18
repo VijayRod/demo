@@ -2,6 +2,9 @@
 
 ```
 # determinants: disk size, disk type (e.g., standard ssd), virtualization (e.g., accelerated networking), vm size (e.g., nvme), vm node image, vm osdisk size and type (e.g., 128 GB Ephemeral), pv accessModes of ReadWriteOnce
+
+# all operations (application, database, web app, etc.) need to be stopped to obtain meaningful results. 
+# besides the --filename parameter referring to the drive being tested, ideally the fio command can be run on the drive being tested, though this is not a requirement and does not matter.
 ```
 - https://learn.microsoft.com/en-us/azure/virtual-machines/disks-types#standard-ssds
 - https://learn.microsoft.com/en-us/azure/virtual-machines/enable-nvme-faqs

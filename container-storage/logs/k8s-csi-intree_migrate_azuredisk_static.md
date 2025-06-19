@@ -57,9 +57,9 @@ Volumes:
 noderg=$(az aks show -g $rg -n aks --query nodeResourceGroup -o tsv)
 diskName="myAKSDisk"
 diskUri=$(az disk create -g $noderg -n $diskName --size-gb 1 --query id --output tsv)
-kubectl delete pv azure-disk-pv
-kubectl delete pvc azure-disk-pvc
 kubectl delete po nginx
+kubectl delete pvc azure-disk-pvc
+kubectl delete pv azure-disk-pv
 cat << EOF | kubectl apply -f -
 apiVersion: v1
 kind: PersistentVolume

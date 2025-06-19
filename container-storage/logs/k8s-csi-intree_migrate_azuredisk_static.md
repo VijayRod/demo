@@ -44,11 +44,94 @@ Volumes:
   azuredisk:
     Type:         AzureDisk (an Azure Data Disk mount on the host and bind mount to the pod)
     DiskName:     myAKSDisk
-    DiskURI:      /subscriptions/efec8e52-e1ad-4ae1-8598-f243e56e2b08/resourceGroups/MC_rg_aks_swedencentral/providers/Microsoft.Compute/disks/myAKSDisk
+    DiskURI:      /subscriptions/redacts-1111-1111-1111-111111111111/resourceGroups/MC_rg_aks_swedencentral/providers/Microsoft.Compute/disks/myAKSDisk
     Kind:         Managed
     FSType:       ext4
     CachingMode:  None
     ReadOnly:     false
+```
+
+```
+# pod with a static pv created with an in-tree "azureDisk:" has a pv of type AzureDisk
+
+noderg=$(az aks show -g $rg -n aks --query nodeResourceGroup -o tsv)
+diskName="myAKSDisk"
+diskUri=$(az disk create -g $noderg -n $diskName --size-gb 1 --query id --output tsv)
+kubectl delete pv azure-disk-pv
+kubectl delete pvc azure-disk-pvc
+kubectl delete po nginx
+cat << EOF | kubectl apply -f -
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: azure-disk-pv
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  azureDisk:
+    diskURI: "$diskUri"
+    diskName: "$diskName" # required value
+    cachingMode: None
+    fsType: ext4
+    kind: Managed
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: azure-disk-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: "" # otherwise, the pvc will be a pending state with a VolumeMismatch error 'Cannot bind to requested volume "azure-disk-pv": storageClassName does not match'
+  volumeName: azure-disk-pv  
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+    volumeMounts:
+    - name: azuredisk
+      mountPath: /mnt/azuredisk
+  volumes:
+  - name: azuredisk
+    persistentVolumeClaim:
+      claimName: azure-disk-pvc
+EOF
+kubectl get po -w
+
+k describe pv
+Name:            azure-disk-pv
+Labels:          <none>
+Annotations:     pv.kubernetes.io/bound-by-controller: yes
+Finalizers:      [kubernetes.io/pv-protection external-attacher/disk-csi-azure-com]
+StorageClass:
+Status:          Bound
+Claim:           default/azure-disk-pvc
+Reclaim Policy:  Retain
+Access Modes:    RWO
+VolumeMode:      Filesystem
+Capacity:        1Gi
+Node Affinity:   <none>
+Message:
+Source:
+    Type:         AzureDisk (an Azure Data Disk mount on the host and bind mount to the pod)
+    DiskName:     myAKSDisk
+    DiskURI:      /subscriptions/redacts-1111-1111-1111-111111111111/resourceGroups/MC_rg_aks_swedencentral/providers/Microsoft.Compute/disks/myAKSDisk
+    Kind:         Managed
+    FSType:       ext4
+    CachingMode:  None
+    ReadOnly:     false
+Events:           <none>
 ```
 
 - https://github.com/kubernetes/design-proposals-archive/blob/main/storage/csi-migration.md: An overall feature flag: CSIMigration is enabled for the Kubernetes Controller Manager and Kubelet.

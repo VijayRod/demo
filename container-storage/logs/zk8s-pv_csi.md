@@ -6,7 +6,95 @@
 
 ```
 # k8s.csi.driver
+
+Volume
+├── Ephemeral
+│   └── emptyDir
+│       ├── Type: File (tmpfs or node disk)
+│       ├── Mounted on node: e.g., /dev/sda or tmpfs
+│       ├── Exposed to pod: via bind mount
+│       ├── Driver: internal (built-in, no CSI)
+│       └── Mount command (by kubelet): mount -t tmpfs tmpfs /var/lib/kubelet/pods/...
+│
+├── Persistent (PV + PVC)
+│
+│   ├── Filesystem (volumeMode: Filesystem)
+│   │
+│   │   ├── azurefile (in-tree)
+│   │   │   ├── Type: File (SMB/NFS)
+│   │   │   ├── Mounted on node: network path
+│   │   │   ├── Driver: kubernetes.io/azure-file
+│   │   │   ├── Exposed to pod: /mnt/volume (bind mount)
+│   │   │   └── Mount example: mount -t cifs //<storage>.file.core.windows.net/share /mnt/volume -o username=...,password=...
+│   │
+│   │   ├── azurefile (CSI)
+│   │   │   ├── Type: File (SMB/NFS)
+│   │   │   ├── Mounted on node: network path
+│   │   │   ├── Driver: file.csi.azure.com
+│   │   │   ├── Exposed to pod: /mnt/volume
+│   │   │   └── Mount example: same as in-tree (CSI does mounting logic)
+│   │
+│   │   ├── azuredisk (in-tree)
+│   │   │   ├── Type: Block (mounted as FileSystem)
+│   │   │   ├── Mounted on node: /dev/sdb
+│   │   │   ├── Driver: kubernetes.io/azure-disk
+│   │   │   ├── kubelet runs: mkfs.ext4 /dev/sdb; mount /dev/sdb /mnt/data
+│   │   │   └── Exposed to pod: /mnt/data (bind mount)
+│   │
+│   │   ├── azuredisk (CSI)
+│   │   │   ├── Type: Block (mounted as FileSystem)
+│   │   │   ├── Mounted on node: /dev/sdc
+│   │   │   ├── Driver: disk.csi.azure.com
+│   │   │   ├── kubelet runs: mkfs.ext4 /dev/sdc; mount /dev/sdc /mnt/data
+│   │   │   └── Exposed to pod: /mnt/data
+│   │
+│   │   ├── azureblob (blobfuse2 CSI)
+│   │   │   ├── Type: Object (simulated FileSystem via FUSE)
+│   │   │   ├── Mounted on node: FUSE mount (no block device)
+│   │   │   ├── Driver: blob.csi.azure.com
+│   │   │   ├── Exposed to pod: /mnt/blob
+│   │   │   └── Mount command (internal): blobfuse2 mount /mnt/blob --container-name=... --config-file=...
+│   │
+│   │   └── azure blob via NFS 3.0 (external to Kubernetes)
+│   │       ├── Type: Object (exposed as NFS)
+│   │       ├── Mounted manually on node (outside K8s)
+│   │       ├── Exposed to pod: 
+│   │       ├── Not a Kubernetes volume type
+│   │       └── Mount command: mount -t nfs <account>.blob.core.windows.net:/<container> /mnt/blobnfs
+│
+│   └── Block (volumeMode: Block)
+│       └── azuredisk (CSI only)
+│           ├── Type: Block (raw device)
+│           ├── Mounted directly in pod: /dev/sdd
+│           ├── Not mounted on node
+│           ├── Driver: disk.csi.azure.com
+│           ├── kubelet: passes device, no mkfs
+│           └── Mount handled by app in pod (e.g., LVM, raw access)
+│
+├── Azure Container Storage (CSI platform)
+│   └── azuredisk (Container Storage, managed)
+│       ├── Type: Block or Filesystem
+│       ├── Mounted on node: same as CSI azuredisk (e.g., /dev/sde)
+│       ├── Driver: containerstorage.azure.com
+│       ├── Mounts: mkfs + mount (FS mode), raw pass-through (Block mode)
+│       └── Features: snapshots, replication (future), scalable
+│
+└── Other
+    ├── ConfigMap / Secret
+    │   ├── Type: File
+    │   ├── Mounted on node: tmpfs
+    │   ├── Exposed to pod: /etc/config (or custom path)
+    │   └── Mount command (internal): tmpfs + file injection
+    ├── CSI Ephemeral
+    │   ├── Type: Depends on driver
+    │   ├── Mounted on node
+    │   └── Usually inline volume, managed by CSI logic
+    └── Downward API / Projected
+        ├── Type: File (metadata injection)
+        └── Mounted by Kubelet into pod path (read-only)
+
 ```
+
 - Here is the list of supported storage drivers. All other drivers, including those maintained by Microsoft employees, are not supported by the AKS or the Azure Container Storage team and are generally supported online in their repository:
   - Azure Blob Storage CSI driver (blobfuse2, nfs) - https://learn.microsoft.com/en-us/azure/aks/azure-blob-csi
   - Azure Disk CSI driver (iscsi, nvme for ultra disk) - https://learn.microsoft.com/en-us/azure/aks/azure-disk-csi

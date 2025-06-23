@@ -67,6 +67,8 @@ ssh-keygen -f "/root/.ssh/known_hosts" -R "10.224.0.91" ## To optionally remove 
 ## ssh.tools.scp
 
 ```
+# refer to kubectl cp
+
 # scp source destination
 scp ~/.ssh/id_rsa.pub azureuser@4.225.175.48:~/.ssh/id_rsa.pub
 ```

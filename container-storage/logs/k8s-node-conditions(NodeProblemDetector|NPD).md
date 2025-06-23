@@ -43,6 +43,9 @@ grep -r "reason" /etc/node-problem-detector.d/
 /etc/node-problem-detector.d/custom-plugin-monitor/custom-node-not-ready-monitor.json:      "reason": "NodeNotReadyDetected",
 ..
 
+grep -r "not_ready" /etc/node-problem-detector.d/
+grep -r "npd:check" /etc/node-problem-detector.d/
+
 ls /var/log/azure/Microsoft.AKS.Compute.AKS.Linux.AKSNode
 cat extension.log | tail
 2025/04/29 18:11:21 [Microsoft.AKS.Compute.AKS.Linux.AKSNode-1.0.0.0] JSON config: {"runtimeSettings": [{"handlerSettings": {"publicSettings": {"disable-uu": "true", "enable-uu": "false", "node-exporter-tls": "false"}, "protectedSettings": null, "protectedSettingsCertThumbprint": null}}]}

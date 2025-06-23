@@ -20,6 +20,10 @@ kubectl delete po node-debugger-{node-name-xxxx} # Once you have gathered the lo
 
 # log files - copy
 kubectl cp nsenter-es99e8:/tmp/capture_file_nodeC.pcap /tmp/capture_file_nodeC.pcap --retries=10
+
+# log files - zip & copy
+zip -r archive.zip .; rm /tmp/archive.zip; cp archive.zip /tmp; ls /tmp # compress current folder and copy to /tmp
+rm /tmp/archive.zip; kubectl cp default/nsenter-851ei4:/tmp/archive.zip /tmp/archive.zip; ls
 ```
 
 - https://kubernetes.io/docs/tasks/debug/debug-cluster/kubectl-node-debug/

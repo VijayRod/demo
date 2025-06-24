@@ -4,7 +4,7 @@
 - https://kubernetes.io/docs/tasks/extend-kubernetes/http-proxy-access-api/
 
 ```
-# httpproxy.k8s.basic
+# httpproxy.k8s.aks.basic
 
 cd /tmp
 rm aks-proxy-config.json
@@ -92,7 +92,7 @@ Jun 16 20:26:12 aks-nodepool1-10466718-vmss000006 kubelet[3724]: E0616 20:26:12.
 - https://github.com/Azure/AKS/issues/205: AKS in VNET behind company HTTP proxy
 
 ```
-# httpproxy.k8s.trustedCA.placeholder
+# httpproxy.k8s.aks.trustedCA.placeholder
 # generate a dummy trustedCA value if this is only for cluster update testing
 
 cd /tmp
@@ -128,5 +128,6 @@ az aks show -g $rg -n aks --query httpProxyConfig
 ```
 
 ```
+# httpproxy.k8s.istio
 ```
 - https://istio.io/latest/docs/tasks/traffic-management/egress/http-proxy/#configure-traffic-to-external-https-proxy

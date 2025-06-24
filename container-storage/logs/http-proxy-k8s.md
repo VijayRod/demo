@@ -76,10 +76,10 @@ k describe po nginx
 Containers:
   nginx:
     Environment:
-      HTTP_PROXY:   http://myproxy.server.com:8080/
-      http_proxy:   http://myproxy.server.com:8080/
-      HTTPS_PROXY:  https://myproxy.server.com:8080/
-      https_proxy:  https://myproxy.server.com:8080/
+      HTTP_PROXY:   http://proxy.pretendhub.com:8080/
+      http_proxy:   http://proxy.pretendhub.com:8080/
+      HTTPS_PROXY:  https://proxy.pretendhub.com:8080/
+      https_proxy:  https://proxy.pretendhub.com:8080/
       NO_PROXY:     localhost,aks-rg-efec8e-xlodk0w7.hcp.swedencentral.azmk8s.io,169.254.169.254,10.0.0.0/16,168.63.129.16,127.0.0.1,10.244.0.0/16,konnectivity,10.224.0.0/12
       no_proxy:     localhost,aks-rg-efec8e-xlodk0w7.hcp.swedencentral.azmk8s.io,169.254.169.254,10.0.0.0/16,168.63.129.16,127.0.0.1,10.244.0.0/16,konnectivity,10.224.0.0/12
       

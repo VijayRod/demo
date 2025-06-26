@@ -6,6 +6,7 @@
 - https://azure.microsoft.com/en-us/updates/public-preview-azure-container-storage/
 - https://azure.microsoft.com/en-us/blog/transforming-containerized-applications-with-azure-container-storage-now-in-preview/
 - https://learn.microsoft.com/en-us/azure/storage/container-storage/troubleshoot-container-storage
+- https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/extensions/cluster-extension-deployment-errors
 
 ```
 # Begin with k8s-csi-acstor.storagepool.type.ephemeralDisk.TempSSD

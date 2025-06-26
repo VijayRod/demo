@@ -26,7 +26,7 @@ az aks create -g $rg -n aks -s $vmsize -c 2
 az aks get-credentials -g $rg -n aks --overwrite-existing
 kubectl get no; kubectl get po -A
 
-az aks nodepool add -g $rg --cluster-name aks -n npmar -s $vmsize # --os-sku Mariner
+az aks nodepool add -g $rg --cluster-name aks -n npmar -s $vmsize --mode user # --os-sku Mariner
 az aks nodepool delete -g $rg --cluster-name aks -n np2 --no-wait
 
 rg=$rg; az aks stop -g $rg -n aks --no-wait

@@ -1,11 +1,35 @@
+> ##httpproxy.k8s.access-api
+
 ```
 # httpproxy.k8s.access-api
 ```
 - https://kubernetes.io/docs/tasks/extend-kubernetes/http-proxy-access-api/
 
+> ## httpproxy.k8s.aks.basic
+
 ```
 # httpproxy.k8s.aks.basic
 
+az aks create -g $rg -n aks -s $vmsize \ # only applies during creation, not for updates
+  --http-proxy-config httpProxy=http://proxy.pretendhub.com:3128 \
+                      httpsProxy=http://proxy.pretendhub.com:3128 \
+                      noProxy='1.1.1.1,google.com'
+
+root@aks-nodepool1-31060421-vmss000004:/# env | grep -i proxy
+no_proxy=127.0.0.1,google.com,10.0.0.0/16,169.254.169.254,aks-rg2-efec8e-ohsy464e.hcp.swedencentral.azmk8s.io,localhost,1.1.1.1,konnectivity,10.224.0.0/12,168.63.129.16,10.244.0.0/16
+https_proxy=https://proxy.pretendhub.com:8080/
+NO_PROXY=127.0.0.1,google.com,10.0.0.0/16,169.254.169.254,aks-rg2-efec8e-ohsy464e.hcp.swedencentral.azmk8s.io,localhost,1.1.1.1,konnectivity,10.224.0.0/12,168.63.129.16,10.244.0.0/16
+HTTPS_PROXY=https://proxy.pretendhub.com:8080/
+HTTP_PROXY=http://proxy.pretendhub.com:8080/
+http_proxy=http://proxy.pretendhub.com:8080/
+
+root@aks-nodepool1-31060421-vmss000004:/# iptables-save | grep "1.1.1.1" # no results found
+```
+
+- https://learn.microsoft.com/en-us/azure/aks/http-proxy?tabs=use-azure-cli
+- https://github.com/Azure/AKS/issues/205: AKS in VNET behind company HTTP proxy
+
+```
 cd /tmp
 rm aks-proxy-config.json
 cat << EOF > aks-proxy-config.json
@@ -87,9 +111,6 @@ Containers:
 root@aks-nodepool1-10466718-vmss000006:/# cat /var/log/syslog | grep http_proxy | head -n 1
 Jun 16 20:26:12 aks-nodepool1-10466718-vmss000006 kubelet[3724]: E0616 20:26:12.891791    3724 kuberuntime_manager.go:1274] "Unhandled Error" err="container &Container{Name:app,Image:busybox,Command:[sleep 3600],Args:[],WorkingDir:,Ports:[]ContainerPort{},Env:[]EnvVar{EnvVar{Name:HTTP_PROXY,Value:http://myproxy.server.com:8080/,ValueFrom:nil,},EnvVar{Name:http_proxy,Value:http://myproxy.server.com:8080/,ValueFrom:nil,},EnvVar{Name:HTTPS_PROXY,Value:https://myproxy.server.com:8080/,ValueFrom:nil,},EnvVar{Name:https_proxy,Value:https://myproxy.server.com:8080/,ValueFrom:nil,},EnvVar{Name:NO_PROXY,Value:localhost,aks-rg-efec8e-xlodk0w7.hcp.swedencentral.azmk8s.io,169.254.169.254,10.0.0.0/16,168.63.129.16,127.0.0.1,10.244.0.0/16,konnectivity,10.224.0.0/12,ValueFrom:nil,},EnvVar{Name:no_proxy,Value:localhost,aks-rg-efec8e-xlodk0w7.hcp.swedencentral.azmk8s.io,169.254.169.254,10.0.0.0/16,168.63.129.16,127.0.0.1,10.244.0.0/16,konnectivity,10.224.0.0/12,ValueFrom:nil,},},Resources:ResourceRequirements{Limits:ResourceList{},Requests:ResourceList{},Claims:[]ResourceClaim{},},VolumeMounts:[]VolumeMount{VolumeMount{Name:workdir,ReadOnly:false,MountPath:/mnt/data,SubPath:redacted,MountPropagation:nil,SubPathExpr:,RecursiveReadOnly:nil,},VolumeMount{Name:kube-api-access-wkn2n,ReadOnly:true,MountPath:/var/run/secrets/kubernetes.io/serviceaccount,SubPath:,MountPropagation:nil,SubPathExpr:,RecursiveReadOnly:nil,},},LivenessProbe:nil,ReadinessProbe:nil,Lifecycle:nil,TerminationMessagePath:/dev/termination-log,ImagePullPolicy:Always,SecurityContext:nil,Stdin:false,StdinOnce:false,TTY:false,EnvFrom:[]EnvFromSource{},TerminationMessagePolicy:File,VolumeDevices:[]VolumeDevice{},StartupProbe:nil,ResizePolicy:[]ContainerResizePolicy{},RestartPolicy:nil,} start failed in pod subpath-emptydir-demo_default(889326fa-da21-41e9-acc9-7596a3b64ff8): CreateContainerConfigError: failed to prepare subPath for volumeMount \"workdir\" of container \"app\"" logger="UnhandledError"
 ```
-
-- https://learn.microsoft.com/en-us/azure/aks/http-proxy?tabs=use-azure-cli
-- https://github.com/Azure/AKS/issues/205: AKS in VNET behind company HTTP proxy
 
 ```
 # httpproxy.k8s.aks.trustedCA.placeholder

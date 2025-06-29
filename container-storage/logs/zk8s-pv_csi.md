@@ -121,11 +121,12 @@ Volume
 
 - Blob:
   - "blobfuse2 mount" sets up a virtual fs mountpoint in memory using FUSE (Filesystem in Userspace).
-    - examples of virtual filesystems include tmpfs, proc, sysfs, and fuse (e.g., blobfuse)
-  - https://github.com/kubernetes-sigs/blob-csi-driver/blob/master/docs/csi-debug.md
-  - https://learn.microsoft.com/en-us/azure/storage/blobs/blobfuse2-troubleshooting
+    - examples of virtual filesystems include tmpfs, proc, sysfs, and fuse (e.g., blobfuse)    
+  - https://github.com/kubernetes-sigs/blob-csi-driver/blob/master/docs/csi-debug.md  
   - nfs: https://learn.microsoft.com/en-us/azure/storage/blobs/network-file-system-protocol-support-how-to
   - fuse driver: https://github.com/Azure/azure-storage-fuse/blob/main/TSG.md
+    - https://github.com/Azure/azure-storage-fuse/tree/main: Blobfuse2 - A Microsoft supported Azure Storage FUSE driver
+    - https://learn.microsoft.com/en-us/azure/storage/blobs/blobfuse2-troubleshooting
   - fuse driver errors: https://github.com/Azure/azure-storage-fuse/blob/main/cmd/mount.go
   - https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/storage/mounting-azure-blob-storage-container-fail
   - https://learn.microsoft.com/en-us/azure/storage/blobs/data-lake-storage-abfs-driver#the-azure-blob-file-system-driver

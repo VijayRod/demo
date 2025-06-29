@@ -118,6 +118,8 @@ az vmss delete -g $rg -n myVMSS # then reconcile the cluster to automatically re
     - Alternatively, https://github.com/Azure/AgentBaker/blob/master/vhdbuilder/release-notes/AKSAzureLinux/gen2/latest.txt though it cannot have the ones in open PR
   - https://releases.aks.azure.com/
 - release.components.public, along with the node-image and storage components
+  - https://github.com/Azure/azure-cli-extensions
+  - https://github.com/Azure/azure-diskinspect-service
   - https://github.com/kubernetes-sigs/cloud-provider-azure
   - https://github.com/kubernetes/autoscaler/tree/master/cluster-autoscaler
   - https://github.com/kubernetes/autoscaler/tree/master/vertical-pod-autoscaler: vpa
@@ -127,8 +129,51 @@ az vmss delete -g $rg -n myVMSS # then reconcile the cluster to automatically re
   - https://github.com/kubernetes/kubelet
   - https://github.com/kubernetes/kubernetes
   - https://github.com/kubernetes/node-problem-detector
+  - https://github.com/MicrosoftDocs/azure-docs
 
-## aks.core.logs
+## aks.core.debug
+
+- https://github.com/andyzhangx/demo
+
+## aks.core.debug..unexpected
+
+```
+# k8s.unexpected.datadog-agent
+# Refer to pv for mount issues caused by datadog and ensure the subtle / is excluded from the datadog mount list
+```
+
+```
+# k8s.unexpected.dynatrace
+# dynatrace will instrument app binaries. Has the customer already ruled out dynatrace with dynatrace support?
+# If you see any issue like this w/ dynatrace involved we need to engage their dynatrace support first. 
+# We could recommend that they contact the Dynatrace support team for guidance on the necessary instrumentation. This also assumes they have comparable Dynatrace data from before the issue for reference.
+ 
+## k describe no has an annotation and may have namespace/pods
+Name:               aks-apppool-18777100-vmss000000
+Annotations:        csi.volume.kubernetes.io/nodeid: {"csi.oneagent.dynatrace.com":"aks-apppool-18777100-vmss000000",
+Non-terminated Pods:          (14 in total)
+  Namespace                   Name                                                CPU Requests  CPU Limits  Memory Requests  Memory Limits  Age
+  ---------                   ----                                                ------------  ----------  ---------------  -------------  ---
+  dynatrace                   dynatrace-oneagent-csi-driver-8d5m6                 ..
+  dynatrace                   mypod-oneagent-kj7lt    				  .. 
+ 
+## dynatrace namespace 
+Name:                 dynatrace-oneagent-csi-driver-8d5m6
+Namespace:            dynatrace
+
+## app with dynatrace annotations and init container
+Name: app-web-1asdf
+Annotations:      dynakube.dynatrace.com/injected: true
+                  metadata-enrichment.dynatrace.com/injected: true
+                  metadata.dynatrace.com/k8s.workload.kind: deployment
+                  metadata.dynatrace.com/k8s.workload.name: app-web
+Init Containers:
+  install-oneagent:
+    Image:         ../vendor/docker/dynatrace/dynatrace-operator:v1.3.2    
+```
+
+
+## aks.core.debug.logs
 
 ```
 # aks.logs.node
@@ -361,42 +406,6 @@ scp -P 8080 /tmp/iptables azureuser@127.0.0.1:/tmp/iptables-dump # scp: stat loc
 
 - https://learn.microsoft.com/en-us/azure/aks/node-auto-repair: AKS initiates repair operations with the user account aks-remediator.
 
-## aks.core.unexpected
-
-```
-# k8s.unexpected.datadog-agent
-# Refer to pv for mount issues caused by datadog and ensure the subtle / is excluded from the datadog mount list
-```
-
-```
-# k8s.unexpected.dynatrace
-# dynatrace will instrument app binaries. Has the customer already ruled out dynatrace with dynatrace support?
-# If you see any issue like this w/ dynatrace involved we need to engage their dynatrace support first. 
-# We could recommend that they contact the Dynatrace support team for guidance on the necessary instrumentation. This also assumes they have comparable Dynatrace data from before the issue for reference.
- 
-## k describe no has an annotation and may have namespace/pods
-Name:               aks-apppool-18777100-vmss000000
-Annotations:        csi.volume.kubernetes.io/nodeid: {"csi.oneagent.dynatrace.com":"aks-apppool-18777100-vmss000000",
-Non-terminated Pods:          (14 in total)
-  Namespace                   Name                                                CPU Requests  CPU Limits  Memory Requests  Memory Limits  Age
-  ---------                   ----                                                ------------  ----------  ---------------  -------------  ---
-  dynatrace                   dynatrace-oneagent-csi-driver-8d5m6                 ..
-  dynatrace                   mypod-oneagent-kj7lt    				  .. 
- 
-## dynatrace namespace 
-Name:                 dynatrace-oneagent-csi-driver-8d5m6
-Namespace:            dynatrace
-
-## app with dynatrace annotations and init container
-Name: app-web-1asdf
-Annotations:      dynakube.dynatrace.com/injected: true
-                  metadata-enrichment.dynatrace.com/injected: true
-                  metadata.dynatrace.com/k8s.workload.kind: deployment
-                  metadata.dynatrace.com/k8s.workload.name: app-web
-Init Containers:
-  install-oneagent:
-    Image:         ../vendor/docker/dynatrace/dynatrace-operator:v1.3.2    
-```
 
 ## aks.spec.agentPool.vmSize
 

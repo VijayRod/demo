@@ -108,12 +108,25 @@ az vmss delete -g $rg -n myVMSS # then reconcile the cluster to automatically re
   - https://learn.microsoft.com/en-us/azure/aks/supported-kubernetes-versions?tabs=azure-cli#aks-kubernetes-release-calendar
   - https://endoflife.date/azure-kubernetes-service: includes retirement (end of support) dates for unmaintained releases, in addition to and earlier than the last few releases mentioned in the aks-kubernetes-release-calendar
 - release.aks.roadmap
-  - https://aka.ms/aks/roadmap
-- release.node-image.component
+  - https://aka.ms/aks/roadmap, https://github.com/orgs/Azure/projects/685
+  - https://github.com/kubernetes/enhancements?tab=readme-ov-file#enhancements-tracking-board
+- release.component.fleet
+  - https://github.com/orgs/Azure/projects/712
+- release.component.node-image
   - The component version can be found on the component release page, for example, in https://github.com/kubernetes-sigs/azuredisk-csi-driver/releases
   - https://github.com/Azure/AgentBaker/releases: contains the node image version corresponding to the "VHD Component Updates" PR (or see open PRs) which has the component version
     - Alternatively, https://github.com/Azure/AgentBaker/blob/master/vhdbuilder/release-notes/AKSAzureLinux/gen2/latest.txt though it cannot have the ones in open PR
   - https://releases.aks.azure.com/
+- release.components.public, along with the node-image and storage components
+  - https://github.com/kubernetes-sigs/cloud-provider-azure
+  - https://github.com/kubernetes/autoscaler/tree/master/cluster-autoscaler
+  - https://github.com/kubernetes/autoscaler/tree/master/vertical-pod-autoscaler: vpa
+  - https://github.com/kubernetes/dns: kube-dns and nodelocaldns
+  - https://github.com/kubernetes/ingress-nginx
+  - https://github.com/kubernetes/kubectl
+  - https://github.com/kubernetes/kubelet
+  - https://github.com/kubernetes/kubernetes
+  - https://github.com/kubernetes/node-problem-detector
 
 ## aks.core.logs
 

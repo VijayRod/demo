@@ -138,6 +138,7 @@ az extension add --upgrade --name k8s-extension
 rg=rg
 az group create -n $rg -l $loc
 az aks create -g $rg -n akssan -s Standard_D4s_v3 --enable-azure-container-storage elasticSan
+# az aks update -g rg -n akssan --enable-azure-container-storage elasticSan
 az aks get-credentials -g $rg -n akssan --overwrite-existing
 ```
 

@@ -15,8 +15,9 @@
 > # arm..core.resource.op..http-202
 - https://github.com/AzureExpert/azure-resource-manager-rpc/blob/master/v1.0/Addendum.md:The asynchronous operation APIs frequently use the 202 Accepted status code and Location headers to indicate progress.
 
-> # arm..core.resource.op..proxyrequest
+> # arm..core.resource.op..proxyrequest (Proxy API)
 - https://github.com/AzureExpert/azure-resource-manager-rpc/blob/master/v1.0/Addendum.md: ARM will proxy requests to backing resource providers even if they are not related directly to resource management or subscription lifecycle changes. examples include: restart a VM
+- https://github.com/AzureExpert/azure-resource-manager-rpc/blob/master/README.md: The fourth section covers APIs or resources which will not be managed by Azure Resource Manager (ARM) but will be proxied directly to the resource provider. 
   
 > # arm..core.resource.op.create/update
 - https://github.com/AzureExpert/azure-resource-manager-rpc/blob/master/v1.0/Addendum.md: 1. Respond to the initial PUT request with a 201 Created or 200 OK (per normal guidance); 2. Since provisioning is not complete, the PUT response body MUST contain a provisioningState set to a non-terminal value (e.g. "Accepted", or "Created");

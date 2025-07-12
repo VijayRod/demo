@@ -108,6 +108,7 @@ az vmss delete -g $rg -n myVMSS # then reconcile the cluster to automatically re
 - release.aks.roadmap
   - https://aka.ms/aks/roadmap, https://github.com/orgs/Azure/projects/685
   - https://github.com/kubernetes/enhancements?tab=readme-ov-file#enhancements-tracking-board
+  - - Feature request can be submitted via [Issues · Azure/AKS](https://github.com/Azure/AKS/issues)
 - release.component.fleet
   - https://github.com/orgs/Azure/projects/712
 - release.component.node-image
@@ -128,11 +129,20 @@ az vmss delete -g $rg -n myVMSS # then reconcile the cluster to automatically re
   - https://github.com/kubernetes/kubernetes
   - https://github.com/kubernetes/node-problem-detector
   - https://github.com/MicrosoftDocs/azure-docs
+- release.aks.version.support
+  - https://docs.azure.cn/en-us/aks/supported-kubernetes-versions?tabs=azure-cli
+  - https://docs.azure.cn/en-us/aks/support-policies
 
 ## aks.core.debug
 
 - https://github.com/andyzhangx/demo/blob/master/debug/README.md
 - https://github.com/feiskyer/kubernetes-handbook/blob/master/README.md
+
+```
+# aks.logs.node.core.conn
+curl -kvv https://mcr.microsoft.com
+curl -kvv google.com
+```
 
 ## aks.core.debug..unexpected
 

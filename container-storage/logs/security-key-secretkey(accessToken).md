@@ -36,6 +36,7 @@ az cognitiveservices account list-usage -g $rg -n $name
 rg="rg-core"; name="gptstack-v1"; echo $rg $name
 export AZURE_OPENAI_KEY=$(az cognitiveservices account keys list -g $rg -n $name --query "key2" -o tsv); echo $AZURE_OPENAI_KEY
 export AZURE_OPENAI_ENDPOINT=$(az cognitiveservices account show -g $rg -n $name --query "properties.endpoint" -otsv); echo $AZURE_OPENAI_ENDPOINT
+# AZURE_OPENAI_ENDPOINT: https://$name.openai.azure.com/
 export AZURE_OPENAI_DEPLOYMENT="gpt-35-turbo"; echo $AZURE_OPENAI_DEPLOYMENT
 # export AZURE_OPENAI_DEPLOYMENT="gpt-4o"; echo $AZURE_OPENAI_DEPLOYMENT
 

@@ -176,6 +176,10 @@ strace: Process 8302 attached with 5 threads
 - https://github.com/Azure/azure-storage-fuse/issues/1114#issuecomment-1635272833: limit in config file, its not a hard limit... log_debug
 
 ```
+# High API Calls: Blobfuse is a file system driver that interacts with the kernel when users perform file I/O on a mounted path. If you notice a high number of GetBlobProperties calls, it's important to identify the operations the customer is performing on the mounted path, review the configuration and mount options, and determine whether the storage account uses FNS (flat namespace) or HNS (hierarchical namespace). Obtaining blobfuse debug logs from the customer's environment would also be very helpful.
+```
+
+```
 # blobfuse2.data.corruption
 # The data path does not go through the CSI driver; the storage team is appropriate.
 ```

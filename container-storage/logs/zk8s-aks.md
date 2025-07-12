@@ -147,6 +147,25 @@ curl -kvv google.com
 ## aks.core.debug..unexpected
 
 ```
+# k8s.unexpected.aquasec-enforcer
+# mitigate: uninstall the aquasec enforcer
+
+# k describe no may have namespace/pods
+
+# pod
+  Labels:           app=aqua-runtime-enforcer-ds
+                    app.kubernetes.io/instance=aqua-runtime-enforcer
+                    app.kubernetes.io/managed-by=Helm
+                    app.kubernetes.io/name=aqua-runtime-enforcers
+                    aqua.component=enforcer
+  Annotations:      container.apparmor.security.beta.kubernetes.io/enforcer: unconfined
+  Service Account:  aqua-runtime-enforcer-agent-sa
+  Containers:
+   enforcer:
+    Image:      redacted.azurecr.io/redactedf/registry.aquasec.com/enforcer:2022.4.720
+```
+
+```
 # k8s.unexpected.datadog-agent
 # Refer to pv for mount issues caused by datadog and ensure the subtle / is excluded from the datadog mount list
 ```
@@ -181,6 +200,13 @@ Init Containers:
     Image:         ../vendor/docker/dynatrace/dynatrace-operator:v1.3.2    
 ```
 
+```
+# k8s.unexpected.twistlock
+# this is one of the main workloads that can overwhelm API servers or cause node performance degradation.
+
+# k describe no may have namespace/pods
+-n twistlock twistlock-defender-ds-11111
+```
 
 ## aks.core.debug.logs
 

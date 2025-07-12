@@ -9,7 +9,39 @@ holmes version
 https://github.com/robusta-dev/holmesgpt/blob/master/docs/installation.md
 
 ```
-# usage
+# usage-openai
+
+export OPENAI_API_KEY="sk-proj-redacted"; echo $OPENAI_API_KEY
+holmes ask  "why are my nginx pods are unhealthy?" # --model=azure/gpt-4o
+
+AI: I couldn't find any pods with "nginx" in their name. Please check if the pods are named differently or if they are
+in a different namespace. If you have more specific details about the pod names or namespaces, please provide them.
+```
+
+```
+kubectl run nginx --image=nginx2
+holmes ask  "why are my nginx pods are unhealthy?" # --model=azure/gpt-4o
+
+AI: The nginx pod is unhealthy due to an ErrImagePull error. The image "nginx2" cannot be pulled because the repository
+does not exist or may require authorization. The error message indicates "pull access denied" and
+"insufficient_scope: authorization failed."
+To resolve this issue, ensure that the image name is correct and that you have access to the repository. If "nginx2"
+is a private image, make sure to provide the necessary credentials for pulling the image. If it's a typo, correct
+the image name to a valid one, such as "nginx".
+```
+
+```
+holmes ask  "Do my pods and nodes have enough resources, and do you have any recommendations based on that?"
+```
+
+```
+Error: litellm.RateLimitError: RateLimitError: OpenAIException - Request too large for gpt-4o in organization
+org-redacted on tokens per min (TPM): Limit 30000, Requested 31330. The input or output tokens must
+be reduced in order to run successfully. Visit https://platform.openai.com/account/rate-limits to learn more.
+```
+
+```
+# usage-azure-openai
 rg="rg-core"; name="gptstack-v1"; echo $rg $name
 export AZURE_API_BASE=$(az cognitiveservices account show -g $rg -n $name --query "properties.endpoint" -otsv); echo $AZURE_API_BASE
 export AZURE_API_VERSION="2024-02-15-preview"; echo $AZURE_API_VERSION

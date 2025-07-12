@@ -10,6 +10,80 @@
 - https://github.com/Azure/azure-storage-fuse#cli-parameters
 - https://learn.microsoft.com/en-us/azure/storage/blobs/blobfuse2-how-to-deploy
 
+## blobfuse.app..azurevm
+
+```
+blobfuse2 -v # blobfuse2 version 2.4.1
+cat /usr/share/blobfuse2/baseConfig.yaml # this file is available on an aks node
+cat /var/log/blobfuse2.log | tail # shows logs for objects created with blobfuse2, such as during pod creation
+grep blobfuse2 /var/log/syslog # displays limited blobfuse2 logs by default during pod creation
+```
+
+```
+# storage account create
+storage="storage$RANDOM$RANDOM"; echo $storage
+noderg=$(az aks show -g $rg -n aks --query nodeResourceGroup -o tsv); echo $noderg
+az storage account create -g $noderg -n $storage --sku Premium_LRS --output none
+az storage container create -n mycontainer --account-name $storage --auth-mode login
+key=$(az storage account keys list -g $noderg -n $storage --query [0].value -o tsv); echo $key
+echo $storage "mycontainer" $key
+
+# blobfuse2 config.yaml file creation on an aks node (node with blobfuse2 installed)
+rm /tmp/config.yaml
+cat << EOF > /tmp/config.yaml
+components:
+  - libfuse
+  - block_cache
+  - file_cache
+  - attr_cache
+  - azstorage
+
+libfuse:
+  mount-path: /mnt/blobfuse
+  attribute-expiration-sec: 120
+  entry-expiration-sec: 120
+  negative-entry-expiration-sec: 240
+
+block_cache:
+  path: /tmp/blobfuse2_block_cache
+  timeout-sec: 120
+  size-mb: 512
+
+file_cache:
+  path: /tmp/blobfuse2_file_cache
+  timeout-sec: 120
+  size-mb: 1024
+
+attr_cache:
+  timeout-sec: 300
+
+logging:
+  type: base
+  level: log_debug
+  file-path: /var/log/blobfuse2.log
+
+azstorage:
+  type: block
+  account-name: <SEU_STORAGE_ACCOUNT>
+  container: mycontainer
+  auth-type: key
+  account-key: <SUA_STORAGE_KEY>
+EOF
+ls /tmp/config.yaml
+cat /tmp/config.yaml 
+
+# blobfuse2 mount on an aks node
+mkdir -p /mnt/blobfuse
+mkdir -p /tmp/blobfuse2_cache # /tmp/config.yaml.file_cache.path
+blobfuse2 mount /mnt/blobfuse --config-file=/tmp/config.yaml --log-level=LOG_DEBUG --log-file-path=/var/log/blobfuse2.log
+
+# after mounting blobfuse2 (on an AKS node using the Azure Blob CSI driver, since this setup includes blobfuse2)
+mount | grep blobfuse # blobfuse2 on /mnt/blobfuse type fuse (rw,nosuid,nodev,relatime,user_id=0,group_id=0,max_read=1048576) # indicates a blob mounted volume
+ls /mnt/blobfuse # check for files mounted from the storage container
+grep blobfuse2 /var/log/syslog # no entries found
+```
+
+
 ## blobfuse.app.k8s.csi.azureblob
 
 Here are steps from https://learn.microsoft.com/en-us/azure/aks/azure-blob-csi to install this driver.
@@ -174,6 +248,142 @@ strace: Process 8302 attached with 5 threads
 - https://techcommunity.microsoft.com/blog/azurepaasblog/how-to-troubleshoot-blobfuse2-issues/4110844
 - https://github.com/Azure/azure-storage-fuse/issues/1114#issuecomment-1633704535: files remain forever in your disk cache...
 - https://github.com/Azure/azure-storage-fuse/issues/1114#issuecomment-1635272833: limit in config file, its not a hard limit... log_debug
+
+```
+# blobfuse2 volume mount using the Azure Blob CSI driver
+
+mount | grep blobfuse
+blobfuse2 on /var/lib/kubelet/plugins/kubernetes.io/csi/blob.csi.azure.com/7fcac1533f11a7d76487db054708f153a8ae777db7e77996b1640a42428bc851/globalmount type fuse (rw,nosuid,nodev,relatime,user_id=0,group_id=0,max_read=1048576)
+blobfuse2 on /var/lib/kubelet/pods/9178c7ee-a3e8-40a3-8256-6636569a2278/volumes/kubernetes.io~csi/pvc-5c05f157-b19b-48a4-b05f-5f79208d2151/mount type fuse (rw,nosuid,nodev,relatime,user_id=0,group_id=0,max_read=1048576)
+
+grep blobfuse2 /var/log/syslog # no entries found
+
+root@aks-nodepool1-88307121-vmss000006:/# cat /var/log/blobfuse2.log # view the blobfuse2 log file, which is generated after the first PV is created on the node using the blob driver
+Jul  3 19:56:50 aks-nodepool1-88307121-vmss000006 blobfuse2[293962]: [/var/lib/kubelet/plugins/kubernetes.io/csi/blob.csi.azure.com/26580f396b8db810ff15c5edb4bf070aa77570ff3ee4a4b32dae9299e2d038cc/globalmount] LOG_CRIT [mount.go (438)]: Starting Blobfuse2 Mount : 2.4.1 on [Ubuntu 22.04.5 LTS]
+Jul  3 19:56:50 aks-nodepool1-88307121-vmss000006 blobfuse2[293962]: [/var/lib/kubelet/plugins/kubernetes.io/csi/blob.csi.azure.com/26580f396b8db810ff15c5edb4bf070aa77570ff3ee4a4b32dae9299e2d038cc/globalmount] LOG_CRIT [mount.go (440)]: Logging level set to : LOG_WARNING
+
+k describe sc azureblob-fuse-premium
+Name:                  azureblob-fuse-premium
+IsDefaultClass:        No
+Annotations:           <none>
+Provisioner:           blob.csi.azure.com
+Parameters:            skuName=Premium_LRS
+AllowVolumeExpansion:  True
+MountOptions:
+  -o allow_other
+  --file-cache-timeout-in-seconds=120
+  --use-attr-cache=true
+  --cancel-list-on-mount-seconds=10
+  -o attr_timeout=120
+  -o entry_timeout=120
+  -o negative_timeout=120
+  --log-level=LOG_WARNING
+  --cache-size-mb=1000
+ReclaimPolicy:      Delete
+VolumeBindingMode:  Immediate
+Events:             <none>
+
+root@aks-nodepool1-88307121-vmss000006:/# ps -aux | grep blob
+root        7652  0.0  0.3 1264476 31860 ?       Ssl  08:50   0:00 /usr/bin/blobfuse-proxy --v=5 --blobfuse-proxy-endpoint=unix://var/lib/kubelet/plugins/blob.csi.azure.com/blobfuse-proxy.sock
+root       16710  0.0  0.2 1244468 18908 ?       Ssl  08:51   0:00 /csi-node-driver-registrar --csi-address=/csi/csi.sock --kubelet-registration-path=/var/lib/kubelet/plugins/blob.csi.azure.com/csi.sock --v=2
+root       16982  0.0  0.6 1292612 51640 ?       Ssl  08:51   0:00 /blobplugin --v=5 --endpoint=unix:///csi/csi.sock --blobfuse-proxy-endpoint=unix:///csi/blobfuse-proxy.sock --enable-blobfuse-proxy=true --nodeid=aks-nodepool1-88307121-vmss000006 --user-agent-suffix=AKS --enable-aznfs-mount=true
+root      248448  0.0  0.3 2062820 26464 ?       Ssl  09:35   0:00 blobfuse2 mount /var/lib/kubelet/plugins/kubernetes.io/csi/blob.csi.azure.com/5695a9c83c34fb34538dc718e62882fd7ace032ef5fdf5b2a58d9a0291b2345d/globalmount -o allow_other --file-cache-timeout-in-seconds=120 --use-attr-cache=true --cancel-list-on-mount-seconds=10 -o attr_timeout=120 -o entry_timeout=120 -o negative_timeout=120 --log-level=LOG_WARNING --cache-size-mb=1000 --pre-mount-validate=true --use-https=true --empty-dir-check=false --tmp-path=/mnt/MC_rg_aks_swedencentral#fuse1c45e9d028df440d88c#pvc-02fd672a-bc30-44a9-ba13-b7eab5e9c41c##default# --container-name=pvc-02fd672a-bc30-44a9-ba13-b7eab5e9c41c --ignore-open-flags=true
+```
+
+```
+# workload: primarily read-only
+
+kubectl delete sc blobfuse2-readmax
+cat << EOF | kubectl create -f -
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: blobfuse2-readmax
+provisioner: blob.csi.azure.com
+parameters:
+  skuName: Premium_LRS
+  containerName: my-container
+  protocol: fuse2
+mountOptions:
+- -o allow_other
+- --file-cache-timeout-in-seconds=300
+- --use-attr-cache=true
+- --cancel-list-on-mount-seconds=10
+- -o attr_timeout=300
+- -o entry_timeout=300
+- -o negative_timeout=120
+- --cache-size-mb=1024
+reclaimPolicy: Delete
+volumeBindingMode: Immediate
+allowVolumeExpansion: true
+EOF
+kubectl get sc
+```
+
+```
+# mountOptions: enable debug logs
+# client: Also can you have the customer enable --log-level=LOG_DEBUG along with the earlier options in the yaml, wait for say 15 minutes, and from a node with the airflow-logs and airflow-sql  containers, capture the CSI driver pod logs along with blobfuse2.log which is in /var/log/?
+
+kubectl delete sc blobfuse2-debug
+cat << EOF | kubectl create -f -
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: blobfuse2-debug
+provisioner: blob.csi.azure.com
+parameters:
+  skuName: Premium_LRS
+  containerName: my-container
+  protocol: fuse2
+mountOptions:
+- --log-level=LOG_DEBUG
+reclaimPolicy: Delete
+volumeBindingMode: Immediate
+allowVolumeExpansion: true
+EOF
+kubectl get sc
+
+# --log-level=LOG_DEBUG, "Logging level set to : LOG_DEBUG", "LOG_DEBUG [mount.go"
+root@aks-nodepool1-88307121-vmss000006:/# cat /var/log/blobfuse2.log 
+Jul  3 18:10:43 aks-nodepool1-88307121-vmss000006 blobfuse2[313631]: [/var/lib/kubelet/plugins/kubernetes.io/csi/blob.csi.azure.com/7fcac1533f11a7d76487db054708f153a8ae777db7e77996b1640a42428bc851/globalmount] LOG_INFO [mount.go (439)]: Mount Command: [blobfuse2 mount /var/lib/kubelet/plugins/kubernetes.io/csi/blob.csi.azure.com/7fcac1533f11a7d76487db054708f153a8ae777db7e77996b1640a42428bc851/globalmount --log-level=LOG_DEBUG --container-name=my-container --pre-mount-validate=true --use-https=true --cancel-list-on-mount-seconds=10 --empty-dir-check=false --tmp-path=/mnt/MC_rg_aks_swedencentral#fuse1c45e9d028df440d88c#my-container#pvc-5c05f157-b19b-48a4-b05f-5f79208d2151#default# --ignore-open-flags=true]
+Jul  3 18:10:43 aks-nodepool1-88307121-vmss000006 blobfuse2[313631]: [/var/lib/kubelet/plugins/kubernetes.io/csi/blob.csi.azure.com/7fcac1533f11a7d76487db054708f153a8ae777db7e77996b1640a42428bc851/globalmount] LOG_CRIT [mount.go (440)]: Logging level set to : LOG_DEBUG
+Jul  3 18:10:43 aks-nodepool1-88307121-vmss000006 blobfuse2[313631]: [/var/lib/kubelet/plugins/kubernetes.io/csi/blob.csi.azure.com/7fcac1533f11a7d76487db054708f153a8ae777db7e77996b1640a42428bc851/globalmount] LOG_DEBUG [mount.go (441)]: Mount allowed on nonempty path : false
+```
+
+```
+# mountOptions: mount option is incorrect. validate by creating a pod and, if needed, check /var/log/blobfuse2.log
+
+kubectl delete sc blobfuse2-debug
+cat << EOF | kubectl create -f -
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: blobfuse2-debug
+provisioner: blob.csi.azure.com
+parameters:
+  skuName: Premium_LRS
+  containerName: my-container
+  protocol: fuse2
+mountOptions:
+- --log-level=debug
+reclaimPolicy: Delete
+volumeBindingMode: Immediate
+allowVolumeExpansion: true
+EOF
+kubectl get sc
+
+k get pvc
+NAME                 STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS      VOLUMEATTRIBUTESCLASS   AGE
+pvc-azureblob-fuse   Bound    pvc-dddd19a4-0cb1-4b00-ad88-38f40411fa72   5Gi        RWX            blobfuse2-debug   <unset>                 4m40s
+
+kubectl get po
+mypod            0/1     ContainerCreating   0          70s
+
+kubectl describe po
+  Warning  FailedMount       24s (x9 over 2m32s)  kubelet            MountVolume.MountDevice failed for volume "pvc-dddd19a4-0cb1-4b00-ad88-38f40411fa72" : rpc error: code = Internal desc = Mount failed with error: rpc error: code = Unknown desc = exit status 1 Error: invalid log level [couldn't parse "debug" into a "LogLevel"]
+, output:
+Please refer to http://aka.ms/blobmounterror for possible causes and solutions for mount errors.
+```
 
 ```
 # High API Calls: Blobfuse is a file system driver that interacts with the kernel when users perform file I/O on a mounted path. If you notice a high number of GetBlobProperties calls, it's important to identify the operations the customer is performing on the mounted path, review the configuration and mount options, and determine whether the storage account uses FNS (flat namespace) or HNS (hierarchical namespace). Obtaining blobfuse debug logs from the customer's environment would also be very helpful.

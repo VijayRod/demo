@@ -1,0 +1,2 @@
+- https://platform.openai.com/tokenizer
+- https://tiktokenizer.vercel.app/

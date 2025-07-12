@@ -1,7 +1,65 @@
-> ## azureopenai
+> ## azure-aifoundary
 
 ```
-# azureopenai..env
+# Microsoft.CognitiveServices/accounts
+
+rg=rg-core
+az group create -n $rg -l $loc
+
+foundry="foundry$RANDOM"; echo $foundry
+cd /tmp
+git clone https://github.com/Azure-AI-Foundry/foundry-samples
+cd foundry-samples/samples/microsoft/infrastructure-setup/00-basic
+az deployment group create -g $rg --template-file main.bicep --parameters aiFoundryName=$foundry aiProjectName=myAIProject location=$loc
+
+# portal: https://portal.azure.com/#view/Microsoft_Azure_AI_Foundry, Resource Mgmt, Projects, select the project to access the Azure AI Foundry portal
+# foundry portal: https://ai.azure.com/resource/playground, select the project, or alternatively you can choose an existing Azure OpenAI resource. The Overview section displays the endpoint.
+```
+
+- https://portal.azure.com/#view/Microsoft_Azure_AI_Foundry
+  - https://ai.azure.com/resource/playground
+- https://github.com/Azure-AI-Foundry/foundry-samples
+  - https://github.com/azure-ai-foundry/foundry-samples/blob/main/samples/microsoft/infrastructure-setup/00-basic/main.bicep
+
+```
+# azure-aifoundary.key/aad
+# foundry portal, project, Overview: "API key authentication is disabled", so use AAD (az account get-access-token) or enable api key authentication (Set-AzCognitiveServicesAccount -ResourceGroupName $rg -Name $foundary -DisableLocalAuth $true)
+
+# project endpoints see in the Overview page:
+## Azure AI Foundry project endpoint: https://foundry13889.services.ai.azure.com/api/projects/myAIProject
+## Azure OpenAI endpoint: https://foundry13889.openai.azure.com/
+## Azure AI Services endpoint: https://foundry13889.cognitiveservices.azure.com/; Speech to text endpoint: https://eastus2.stt.speech.microsoft.com; Text to speech endpoint: https://eastus2.tts.speech.microsoft.com
+
+# foundry portal, project, Playgrounds: This section contains the Deployment names
+```
+
+```
+# azure-aifoundary.aad.azure-openai
+
+az login
+az account set -s $subId
+ACCESS_TOKEN=$(az account get-access-token --resource https://cognitiveservices.azure.com/ --query accessToken -o tsv); echo $ACCESS_TOKEN
+
+# deployment=gpt-4o; echo $foundry $deployment
+curl -X POST "https://foundry13889.openai.azure.com/openai/deployments/gpt-4o/chat/completions?api-version=2024-06-01" \
+  -H "Authorization: Bearer $ACCESS_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "messages": [
+      {"role": "system", "content": "You are a helpful assistant."},
+      {"role": "user", "content": "Hello, can you help me?"}
+    ],
+    "max_tokens": 100,
+    "temperature": 0.7
+  }'
+
+{"choices":[{"content_filter_results":{"hate":{"filtered":false,"severity":"safe"},"self_harm":{"filtered":false,"severity":"safe"},"sexual":{"filtered":false,"severity":"safe"},"violence":{"filtered":false,"severity":"safe"}},"finish_reason":"stop","index":0,"logprobs":null,"message":{"annotations":[],"content":"Of course! I'm here to help. What do you need assistance with?","refusal":null,"role":"assistant"}}],"created":1751467085,"id":"chatcmpl-redacted11111","model":"gpt-4o-2024-08-06","object":"chat.completion","prompt_filter_results":[{"prompt_index":0,"content_filter_results":{"hate":{"filtered":false,"severity":"safe"},"self_harm":{"filtered":false,"severity":"safe"},"sexual":{"filtered":false,"severity":"safe"},"violence":{"filtered":false,"severity":"safe"}}}],"system_fingerprint":"fp_ab9114d383","usage":{"completion_tokens":16,"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0},"prompt_tokens":24,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"total_tokens":40}}
+```
+
+> ## azure-openai
+
+```
+# azur-eopenai..env
 
 # portal, Azure OpenAI
 # portal 2 is the Azure AI Foundry portal
@@ -31,7 +89,7 @@ az cognitiveservices account list-usage -g $rg -n $name
 ```
 
 ```
-# azureopenai.key
+# azure-openai.key
 
 rg="rg-core"; name="gptstack-v1"; echo $rg $name
 export AZURE_OPENAI_KEY=$(az cognitiveservices account keys list -g $rg -n $name --query "key2" -o tsv); echo $AZURE_OPENAI_KEY
@@ -60,7 +118,7 @@ curl "${AZURE_OPENAI_ENDPOINT}openai/deployments/${AZURE_OPENAI_DEPLOYMENT}/chat
 
 
 ```
-# azureopenai.entra-id
+# azure-openai.entra-id
 
 # sample: Azure AI Foundry portal, Chat, Sample Code, curl, Entra ID authentication
 
@@ -92,7 +150,7 @@ az role assignment list --assignee $principalId --all --output table | grep Cog
 ```
 
 ```
-# azureopenai.python3
+# azure-openai.python3
 
 #!/bin/bash
 
@@ -186,3 +244,4 @@ curl https://api.openai.com/v1/chat/completions \
 - https://openai.com/api/pricing/
 - https://platform.openai.com/settings/organization/limits: Rate limits. "Current tier" "At least $5 spent on the API"
 - https://platform.openai.com/docs/guides/error-codes/api-errors
+- https://learn.microsoft.com/en-us/azure/ai-foundry/openai/supported-languages?tabs=dotnet-secure%2Csecure%2Cpython-secure%2Ccommand&pivots=programming-language-python

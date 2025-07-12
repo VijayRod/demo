@@ -149,6 +149,17 @@ az aks show -g $rg -n aks --query httpProxyConfig
 ```
 
 ```
+# httpproxy.k8s.aks.cni.kubenet
+# The route table rules do not change after setting up httpProxy, httpsProxy, or noProxy
+
+rg=rgkube
+az aks create -g $rg -n aks --network-plugin kubenet -s $vmsize -c 2
+noderg=$(az aks show -g $rg -n aks --query nodeResourceGroup -o tsv); echo $noderg
+
+az network route-table route list -g $noderg --route-table-name aks-agentpool-28794932-routetable -otable
+```
+
+```
 # httpproxy.k8s.istio
 ```
 - https://istio.io/latest/docs/tasks/traffic-management/egress/http-proxy/#configure-traffic-to-external-https-proxy

@@ -5,6 +5,14 @@ az aks --debug
 az aks --no-wait
 ```
 
+```
+# op.provioningState
+# check for OperationNotAllowed messages on this page "when the ProvisioningState is Failed"
+
+```
+
+- https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/create-upgrade-delete/upgrading-or-scaling-does-not-succeed: If a cluster is in a failed state, upgrade or scale operations won't succeed.
+
 ## k8s-aks-op.abort
 
 ```

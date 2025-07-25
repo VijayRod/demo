@@ -9,6 +9,12 @@ holmes version
 https://github.com/robusta-dev/holmesgpt/blob/master/docs/installation.md
 
 ```
+# usage
+holmes version
+holmes ask --help
+```
+
+```
 # usage-openai
 
 export OPENAI_API_KEY="sk-proj-redacted"; echo $OPENAI_API_KEY
@@ -18,7 +24,12 @@ AI: I couldn't find any pods with "nginx" in their name. Please check if the pod
 in a different namespace. If you have more specific details about the pod names or namespaces, please provide them.
 ```
 
+- https://robusta-dev.github.io/holmesgpt/ai-providers/openai/
+- https://litellm.vercel.app/docs/providers/openai
+
 ```
+# usage-openai.example
+
 kubectl run nginx --image=nginx2
 holmes ask  "why are my nginx pods are unhealthy?" # --model=azure/gpt-4o
 
@@ -31,13 +42,37 @@ the image name to a valid one, such as "nginx".
 ```
 
 ```
+# usage-openai.example
 holmes ask  "Do my pods and nodes have enough resources, and do you have any recommendations based on that?"
 ```
 
 ```
+# usage-openai.error.RateLimitError
+
 Error: litellm.RateLimitError: RateLimitError: OpenAIException - Request too large for gpt-4o in organization
 org-redacted on tokens per min (TPM): Limit 30000, Requested 31330. The input or output tokens must
 be reduced in order to run successfully. Visit https://platform.openai.com/account/rate-limits to learn more.
+```
+
+- https://platform.openai.com/api-keys
+- https://platform.openai.com/docs/guides/error-codes/api-errors: 429 (Rate limit, quota)
+- https://platform.openai.com/account/rate-limits: rate limits applied on tokens per minute (TPM), requests per minute or day (RPM/RPD), and other model-specific limits
+  - https://platform.openai.com/settings/organization/limits
+- https://platform.openai.com/docs/guides/rate-limits#usage-tiers
+- https://platform.openai.com/settings/organization/billing/overview: Credit remaining
+- https://openai.com/policies/service-credit-terms/
+
+```
+# usage-openai.key.permissions.Read only.error.Missing scopes: model.request
+# repro: grant Permissions=ReadOnly, and submit a holmes ask request
+# mitigate: grant Permissions=All
+# mitigate (preferred): grant Permissions=Restricted with /v1/chat/completions (Write), /v1/models (Read)
+
+holmes ask "how are my pods"
+
+Error: litellm.BadRequestError: OpenAIException - You have insufficient permissions for this operation. Missing
+scopes: model.request. Check that you have the correct role in your organization (Reader, Writer, Owner) and project
+(Member, Owner), and if you're using a restricted API key, that it has the necessary scopes.
 ```
 
 ```

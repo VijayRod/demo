@@ -9,6 +9,48 @@
 
 ```
 # httpproxy.k8s.aks.basic
+# Node provisioning will fail if the proxy is not configured. You can connect to the nodes where provisioning failed using Bastion. Alternatively, update an existing cluster with --http-proxy-config
+
+cd /tmp
+rm aks-proxy-config.json
+cat << EOF > aks-proxy-config.json
+{
+  "httpProxy": "http://proxy.pretendhub.com:8080/", 
+  "httpsProxy": "https://proxy.pretendhub.com:8080/", 
+  "noProxy": [
+    "1.1.1.1",
+    "google.com"
+  ]
+}
+EOF
+cat aks-proxy-config.json
+az group create -n $rg -l $loc
+az aks create -g $rg -n aks -s $vmsize --http-proxy-config aks-proxy-config.json
+az aks show -g $rg -n aks --query httpProxyConfig
+az aks get-credentials -g $rg -n aks --overwrite-existing; kubectl get no
+
+azureuser@aks-nodepool1-41782152-vmss000000:~$ echo $HTTP_PROXY $HTTPS_PROXY $NO_PROXY
+http://proxy.pretendhub.com:8080/ https://proxy.pretendhub.com:8080/ aks-rgproxy-efec8e-7qbomrnr.hcp.swedencentral.azmk8s.io,10.224.0.0/12,konnectivity,10.0.0.0/16,127.0.0.1,10
+.244.0.0/16,localhost,169.254.169.254,1.1.1.1,google.com,168.63.129.16
+
+azureuser@aks-nodepool1-41782152-vmss000000:~$ echo $http_proxy $https_proxy $no_proxy
+http://proxy.pretendhub.com:8080/ https://proxy.pretendhub.com:8080/ aks-rgproxy-efec8e-7qbomrnr.hcp.swedencentral.azmk8s.io,10.224.0.0/12,konnectivity,10.0.0.0/16,127.0.0.1,10
+.244.0.0/16,localhost,169.254.169.254,1.1.1.1,google.com,168.63.129.16
+
+azureuser@aks-nodepool1-41782152-vmss000000:~$ curl -v https://google.com
+* Connection #0 to host google.com left intact
+
+azureuser@aks-nodepool1-41782152-vmss000000:~$ curl -v https://example.com
+* Uses proxy env variable no_proxy == 'aks-rgproxy-efec8e-7qbomrnr.hcp.swedencentral.azmk8s.io,10.224.0.0/12,konnectivity,10.0.0.0/16,127.0.0.1,10.244.0.0/16,localhost,169.254.
+169.254,1.1.1.1,google.com,168.63.129.16'
+* Uses proxy env variable https_proxy == 'https://proxy.pretendhub.com:8080/'
+* Could not resolve proxy: proxy.pretendhub.com
+* Closing connection 0
+curl: (5) Could not resolve proxy: proxy.pretendhub.com
+```
+
+```
+# httpproxy.k8s.aks.basic 2
 
 az aks create -g $rg -n aks -s $vmsize \ # only applies during creation, not for updates
   --http-proxy-config httpProxy=http://proxy.pretendhub.com:3128 \
@@ -114,7 +156,8 @@ Jun 16 20:26:12 aks-nodepool1-10466718-vmss000006 kubelet[3724]: E0616 20:26:12.
 
 ```
 # httpproxy.k8s.aks.trustedCA.placeholder
-# generate a dummy trustedCA value if this is only for cluster update testing
+# generate a dummy certificate encoded in Base64 format if this is only for cluster update testing
+# no new certs in /etc/ssl/certs/ without node image upgrade, even for new nodes in the same node pool
 
 cd /tmp
 rm aks-proxy-config.json
@@ -146,7 +189,26 @@ az aks show -g $rg -n aks --query httpProxyConfig
   ],
   "trustedCa": "LS0tLS1CRUdJT..LS0tLS0K"
 }
+
+azureuser@aks-nptrustedca-14793160-vmss000001:~$ curl -v https://google.com
+* Uses proxy env variable no_proxy == '127.0.0.1,168.63.129.16,aks-rgproxy2-efec8e-3o5np12c.hcp.swedencentral.azmk8s.io,localhost,10.224.0.0/12,10.244.0.0/16,10.0.0.0/16,169.25
+4.169.254,konnectivity'
+* Uses proxy env variable https_proxy == 'https://myproxy.server.com:8080/'
+* Could not resolve proxy: myproxy.server.com
+* Closing connection 0
+curl: (5) Could not resolve proxy: myproxy.server.com
+
+azureuser@aks-nptrustedca-14793160-vmss000001:~$ ls /etc/ssl/certs/proxy*
+/etc/ssl/certs/proxyCA.pem
+azureuser@aks-nptrustedca-14793160-vmss000001:~$ ls -l /etc/ssl/certs/proxy*
+lrwxrwxrwx 1 root root     44 Jul 15 18:04  proxyCA.pem -> /usr/local/share/ca-certificates/proxyCA.crt
+azureuser@aks-nptrustedca-14793160-vmss000001:~$ cat /etc/ssl/certs/proxyCA.pem 
+-----BEGIN CERTIFICATE-----...
+azureuser@aks-nptrustedca-14793160-vmss000001:~$ base64 -w 0 /etc/ssl/certs/proxyCA.pem 
+LS0tLS1CRUdJT...
 ```
+
+- https://learn.microsoft.com/en-us/azure/aks/http-proxy?pivots=azure-cli#update-a-cluster-to-update-or-enable-http-proxy: After configuring the proxy, you must upgrade the node image to apply the changes (Newly scaled nodes will also lack this configuration, so another option is to transfer workloads to a new node pool)
 
 ```
 # httpproxy.k8s.aks.cni.kubenet

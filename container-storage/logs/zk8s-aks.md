@@ -144,10 +144,101 @@ curl -kvv https://mcr.microsoft.com
 curl -kvv google.com
 ```
 
+```
+# aks.logs.node.core.daemonset
+# example scenario: TLS handshake errors occur only within the first five minutes of node provisioning
+
+# 1-minute (60 seconds) tcpdump capture
+# 2284959 bytes ˜ 2.18 MB, represents a minute of capture in my cluster
+# timeout command returns exit code 124, causing the pod to restart and triggering a new tcpdump capture. That's why ";" is used instead of "&&" with sleep infinity.
+cat << EOF | kubectl apply -f -
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: net-capture-agent
+spec:
+  selector:
+    matchLabels:
+      app: net-capture
+  template:
+    metadata:
+      labels:
+        app: net-capture
+    spec:
+      hostNetwork: true
+      containers:
+      - name: capture-agent
+        image: debian:latest
+        securityContext:
+          privileged: true
+        command: ["/bin/bash", "-c"]
+        args:
+          - |
+            apt update && \
+            apt install -y tcpdump && \
+            echo "Starting capture..." && \
+            timeout 60 tcpdump -i any -w /tmp/capture.pcap || echo "Capture ended with code $?" ; \
+            echo "Capture complete, sleeping to avoid restart" ; \
+            sleep infinity
+      terminationGracePeriodSeconds: 5
+EOF
+kubectl get po -owide -w
+
+k logs net-capture-agent-4gcb7
+Get:1 http://deb.debian.org/debian bookworm InRelease [151 kB]
+..
+
+k exec -it net-capture-agent-4gcb7 -- ls -l /tmp
+total 20268
+-rw-r--r-- 1 tcpdump tcpdump 20750336 Jul 23 18:45 capture.pcap
+
+root@aks-nodepool1-23208673-vmss000000:/# ls /tmp/packet*
+ls: cannot access '/tmp/packet*': No such file or directory
+
+rm /tmp/capture.pcap
+k cp net-capture-agent-4gcb7:/tmp/capture.pcap /tmp/capture.pcap
+
+wireshark: /tmp/capture.pcap
+1	2025-07-23 18:09:26.017081	10.224.0.5	169.254.169.254	TCP	TCP	80	0x7d5e (32094)	51556 ? 80 [SYN] Seq=0 Win=64240 Len=0 MSS=1460 SACK_PERM TSval=629026319 TSecr=0 WS=128
+k get no -owide
+NAME                                STATUS   ROLES    AGE   VERSION   INTERNAL-IP   EXTERNAL-IP   OS-IMAGE             KERNEL-VERSION      CONTAINER-RUNTIME
+aks-nodepool1-23208673-vmss000000   Ready    <none>   3h    v1.32.5   10.224.0.5
+```
+
+```
+# aks.logs.node.core.daemonset.hostPath
+
+# update /host-tmp (tcpdump path, volumeMounts, volumes) using hostPath to enable automatic and direct copying to the node (VM)
+            timeout 60 tcpdump -i any -w /host-tmp/capture.pcap || echo "Capture ended with code $?" ; \
+            echo "Capture complete, sleeping to avoid restart" ; \
+            sleep infinity
+        volumeMounts:
+        - name: host-tmp
+          mountPath: /host-tmp
+      volumes:
+      - name: host-tmp
+        hostPath:
+          path: /tmp
+          type: Directory
+      terminationGracePeriodSeconds: 5
+EOF
+kubectl get po -owide -w
+
+root@aks-nodepool1-23208673-vmss000000:/# ls /tmp
+capture.pcap
+
+k exec net-capture-agent-7l78x -- ls -l /host-tmp
+total 2216
+-rw-r--r-- 1 tcpdump tcpdump 2140930 Jul 23 18:10 capture.pcap
+
+rm /tmp/capture.pcap
+k cp nsenter-azki7c:/tmp/capture.pcap /tmp/capture.pcap
+```
+
 ## aks.core.debug..unexpected
 
 ```
-# k8s.unexpected.aquasec-enforcer
+# k8s.unexpected.app.aquasec-enforcer
 # mitigate: uninstall the aquasec enforcer
 
 # k describe no may have namespace/pods
@@ -166,12 +257,12 @@ curl -kvv google.com
 ```
 
 ```
-# k8s.unexpected.datadog-agent
+# k8s.unexpected.app.datadog-agent
 # Refer to pv for mount issues caused by datadog and ensure the subtle / is excluded from the datadog mount list
 ```
 
 ```
-# k8s.unexpected.dynatrace
+# k8s.unexpected.app.dynatrace
 # dynatrace will instrument app binaries. Has the customer already ruled out dynatrace with dynatrace support?
 # If you see any issue like this w/ dynatrace involved we need to engage their dynatrace support first. 
 # We could recommend that they contact the Dynatrace support team for guidance on the necessary instrumentation. This also assumes they have comparable Dynatrace data from before the issue for reference.
@@ -201,7 +292,7 @@ Init Containers:
 ```
 
 ```
-# k8s.unexpected.twistlock
+# k8s.unexpected.app.twistlock
 # this is one of the main workloads that can overwhelm API servers or cause node performance degradation.
 
 # k describe no may have namespace/pods

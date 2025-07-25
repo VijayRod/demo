@@ -5,3 +5,13 @@
 - https://openid.net/developers/how-connect-works/
 - https://openid.net/specs/openid-connect-core-1_0.html
 - https://stackoverflow.com/questions/1087031/whats-the-difference-between-openid-and-oauth
+
+```
+# Entra ID
+# Microsoft Entra admin center: https://entra.microsoft.com/
+## Entra admin center, Overview, to view login details
+## Entra admin center, App Registrations: to check the apps in the tenant
+```
+
+- Microsoft Entra admin center: https://entra.microsoft.com/
+- https://learn.microsoft.com/en-us/entra/architecture/authenticate-applications-and-users

@@ -26,7 +26,9 @@ Copilot: Chat, Agents, Prompt Coach
 
 - copilot
   - https://www.microsoft365.com/copilot
+  - https://www.microsoft.com/en-us/microsoft-copilot/microsoft-copilot-studio
   - https://www.microsoft.com/en-us/microsoft-365/mobile: mobile app
+  - vscode: https://code.visualstudio.com/docs/copilot/chat/chat-agent-mode
 - k8s
   - kubectl: https://github.com/GoogleCloudPlatform/kubectl-a
   - kubectl: https://github.com/Azure/mcp-kubernetes

@@ -231,8 +231,27 @@ pvc-02f76403-276c-4c3b-afd4-eb5427153c3e   10Gi       RWO            Delete     
 NAME                STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS        VOLUMEATTRIBUTESCLASS   AGE
 pvc-azuredisk       Bound    pvc-02f76403-276c-4c3b-afd4-eb5427153c3e   10Gi       RWO            managed-csi         <unset>                 2m33s
 
+# success
 k exec -it nginx-azuredisk -- touch /mnt/azuredisk/testfile
 k exec -it nginx-azuredisk -- ls /mnt/azuredisk # lost+found  outfile  testfile
+
+# The deletion time is specified in 'k describe' (153d) and also appears in the yaml under 'deletionTimestamp'.
+## kubectl describe pv
+Name:              pvc-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+Finalizers:        [kubernetes.io/pv-protection external-attacher/disk-csi-azure-com]
+Status:            Terminating (lasts 153d)
+Claim:             <namespace>/<pvc-claim-name>
+## kubectl get pv -oyaml
+- apiVersion: v1
+  kind: PersistentVolume
+  metadata:
+    creationTimestamp: "2024-12-12T18:00Z"
+    deletionGracePeriodSeconds: 0
+    deletionTimestamp: "2025-02-02T18:00Z"
+    finalizers:
+    - kubernetes.io/pv-protection
+    - external-attacher/disk-csi-azure-com
+    name: pvc-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
 ```
 
 ```

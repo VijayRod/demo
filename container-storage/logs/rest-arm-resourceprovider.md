@@ -30,9 +30,11 @@ az provider show -n Microsoft.RedHatOpenShift | grep regis
 ## rest-arm-resourceprovider.feature
 
 ```
-az feature register --namespace "Microsoft.ContainerService" --name "NodeAutoProvisioningPreview"
+az feature register --namespace Microsoft.ContainerService --name NodeAutoProvisioningPreview
 az feature show --namespace "Microsoft.ContainerService" --name "NodeAutoProvisioningPreview"
+az feature list -otable
 # Once the feature status shows as Registered, go ahead and refresh the resource provider's registration with the az provider register command.
+# Once the feature 'xxx' is registered, invoking 'az provider register -n Microsoft.Compute' (use the relevant RP) is required to get the change propagated
 ```
 
 ## rest-arm-resourceprovider.manifest

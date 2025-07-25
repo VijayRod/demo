@@ -72,7 +72,84 @@ az aks show -g $rg -n aks --query 'agentPoolProfiles[].{nodepoolName:name,tags:t
 - https://learn.microsoft.com/en-us/azure/aks/faq#can-i-provide-my-own-name-for-the-aks-node-resource-group: tag
 
 ```
-# resource.rp.microsoft.containerservice.pv.tag
+# resource.rp.microsoft.compute.vm
+
+az vm create -g $rg -n myvm  --image Ubuntu2404 --admin-username azureuser
+# az vm update -g $rg -n myvm --set tags.env=prod tags.owner=me
+# az vm create -g $rg -n myvmtag  --image Ubuntu2404 --admin-username azureuser --tags env=prod owner=me
+az vm show -g $rg -n myvm  --query tags
+```
+
+```
+# resource.rp.microsoft.compute.vm.vmss
+
+rg=rgtag
+az group create -n $rg -l $loc
+az vmss create -g $rg -n myvmss --image Ubuntu2404 --admin-username azureuser --vm-sku $vmsize
+# az vmss create -g $rg -n myvmsstag --image Ubuntu2404 --admin-username azureuser --vm-sku $vmsize --tags env=prod owner=me
+# az vmss update -g $rg -n myvmss --set tags.env=prod tags.owner=me
+az vmss show -g $rg -n myvmss --query tags
+
+```
+
+```
+# resource.rp.microsoft.compute/disks
+# this is relevant only for managed disks and does not apply to ephemeral disks, as ephemeral disks are free and not used for billing purposes, which is a primary reason for using tags.
+```
+
+```
+# resource.rp.microsoft.compute/disks.data-disk.aks (PVC)
+
+kubectl delete po nginx-pv-pod
+kubectl delete pvc azure-disk-pvc
+kubectl delete sc azure-disk-sc
+cat << EOF | kubectl create -f -
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: azure-disk-sc
+provisioner: disk.csi.azure.com
+parameters:
+  skuName: Premium_LRS
+  tags: "env=prod,owner=me"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: azure-disk-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: azure-disk-sc
+  resources:
+    requests:
+      storage: 5Gi
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-pv-pod
+spec:
+  containers:
+    - name: nginx
+      image: nginx
+      volumeMounts:
+        - mountPath: "/mnt/azure"
+          name: azure-storage
+  volumes:
+    - name: azure-storage
+      persistentVolumeClaim:
+        claimName: azure-disk-pvc
+EOF
+kubectl get po -w
+Kubectl get pv
+
+az disk show -g MC_RG9TAG_AKS_SWEDENCENTRAL -n pvc-7d2e5624-5ea1-4bdd-b0a6-ed33d806e548 --query "tags"
+
+```
+
+```
+# resource.rp.microsoft.compute/disks.data-disk.aks 2
 
 kubectl delete po nginx-azuredisk
 kubectl delete pvc pvc-azuredisk
@@ -140,3 +217,42 @@ az disk show -g $noderg -n pvc-44dd2af0-d46a-44c7-b3b0-76be50f7499d --query tags
 
 - https://learn.microsoft.com/en-us/azure/aks/azure-csi-disk-storage-provision#dynamic-provisioning-parameters
 - https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/tag-policies#policy-definitions: Add or replace a tag on resources (PVC - VolumeResizeFailed  - RequestDisallowedByPolicy)
+
+```
+# resource.rp.microsoft.compute/disks.os-disk.vm
+
+# /subscriptions/$subId/resourceGroups/rgtag/providers/Microsoft.Compute/disks/myvm_OsDisk_1_f728bc93898d447880a35bc96991c224
+diskUri=$(az vm show -g $rg -n myvm  --query storageProfile.osDisk.managedDisk.id -otsv); echo $diskUri
+az disk show --query tags --ids $diskUri
+```
+
+```
+# resource.rp.microsoft.compute/disks.os-disk.vm.vmss
+
+az vmss list-instances -g $rg -n myvmss
+az vmss list-instances -g $rg -n myvmss \
+                       --query "[].{InstanceId:instanceId, OS_Disk:storageProfile.osDisk.managedDisk.id}" \
+                       --output table # no rows
+az disk show --query tags --ids /subscriptions/$subId/resourceGroups/rgtag/providers/Microsoft.Compute/disks/myvmss_8f9b10a7_OsDisk_1_a445bcbfa3da487fb01ca4d9a0fb8917 # disk URI from the VMSS instance in portal
+```
+
+```
+# resource.rp.microsoft.compute/disks.os-disk.vm.vmss.k8s.aks
+# To see the updated node pool tags on the OS disk of an existing node pool, you need to create a new VM instance, such as by performing a node image upgrade.
+
+Portal: Cost Management: lists resources including the node pool VM instance and the OS disk with their tags
+
+az vmss list-instances -g MC_rgtag_aks_swedencentral -n aks-nodepool1-30351815-vmss \
+                       --query "[].{InstanceId:instanceId, OS_Disk:storageProfile.osDisk.managedDisk.id}" \
+                       --output table # has rows
+```
+
+```
+# resource.rp.microsoft.containerservice.nodepool
+
+az aks nodepool update -g $rg --cluster-name aks -n nodepool1 --tags appversion=0.0.2 costcenter=4444
+
+az aks nodepool show -g $rg --cluster-name aks -n nodepool1 --query tags
+```
+
+

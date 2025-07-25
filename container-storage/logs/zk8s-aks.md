@@ -238,7 +238,97 @@ k cp nsenter-azki7c:/tmp/capture.pcap /tmp/capture.pcap
 ## aks.core.debug..unexpected
 
 ```
-# k8s.unexpected.app.aquasec-enforcer
+# k8s.unexpected.app.k8s.op.delete.garbage-collector.example
+# Tip for delete RCA: Find the k8s object with the UID (it may not be available, for example, if there was a pod or node scale down or delete, unless the creation was within the data retention time).
+
+kubectl create deploy webapp --image=nginx
+kubectl get deploy webapp -n default -o jsonpath='{.metadata.uid}' # replace the value below
+# kubectl get deploy webapp -n default -o yaml | yq '.metadata.uid'
+# kubectl get deploy webapp -n default -o yaml | grep uid:
+
+cat << EOF | kubectl create -f -
+apiVersion: v1
+kind: Secret
+metadata:
+  name: webapp-credentials
+  namespace: default
+  ownerReferences:
+  - apiVersion: apps/v1
+    kind: Deployment
+    name: webapp
+    uid: 859ef882-bdb0-4d08-9d19-e217d9422d41 # replace the uid here
+    controller: true
+    blockOwnerDeletion: true
+type: Opaque
+data:
+  username: dXNlcg==   # base64 de 'user'
+  password: cGFzc3dvcmQ= # base64 de 'password'
+EOF
+kubectl get secret # webapp-credentials
+
+kubectl delete deploy webapp
+kubectl get secret # no entries found
+
+# k get sa -n kube-system | grep garb # generic-garbage-collector                     0         3d7h
+```
+
+- tbd https://overcast.blog/kubernetes-garbage-collection-a-practical-guide-22a5c7125257: Automate Garbage Collection Processes. Secrets that are no longer in use.
+
+```
+# k8s.unexpected.app.k8s.op.delete.garbage-collector.secretproviderclass.example
+# Tip for delete RCA: Check for deletions of /apis/secrets-store.csi.x-k8s.io/v1/namespaces/redactn/secretproviderclasspodstatuses/redactname around this time. If so, this might be the cause of the issue, as it could set ownership on the secret leading to cascading deletion. Does the secret object have ownerReferences set that could cause cascading deletion? Who is responsible for managing the lifecycle of the secret? Is it created by a controller or manually created?
+
+echo $keyvaultName # ensure this has a value
+
+kubectl delete SecretProviderClass my-secrets
+kubectl apply -f -<<EOF
+apiVersion: secrets-store.csi.x-k8s.io/v1
+kind: SecretProviderClass
+metadata:
+  name: my-secrets
+  namespace: default
+spec:
+  provider: azure
+  parameters:
+    usePodIdentity: "false"
+    keyvaultName: "$($keyvaultName)"
+    objects: |
+      array:
+        - objectName: my-secret
+          objectType: secret
+  secretObjects:
+    - secretName: my-synced-secret
+      type: Opaque
+      data:
+        - objectName: my-secret
+          key: password
+EOF
+sleep 1 # for uid generation
+kubectl get secretproviderclass my-secrets -o jsonpath="{.metadata.uid}" # ensure this has a value
+
+kubectl delete secret my-synced-secret
+kubectl apply -f -<<EOF
+apiVersion: v1
+kind: Secret
+metadata:
+  name: my-synced-secret
+  ownerReferences:
+    - apiVersion: secrets-store.csi.x-k8s.io/v1
+      kind: SecretProviderClass
+      name: my-secrets
+      uid: "$(kubectl get secretproviderclass my-secrets -n default -o jsonpath="{.metadata.uid}")"
+type: Opaque
+data:
+  password: $(echo -n "minha-senha-super-secreta" | base64)
+EOF
+kubectl get secret
+
+kubectl delete secretproviderclass my-secrets
+kubectl get secret # No resources found in default namespace
+```
+
+```
+# k8s.unexpected.app.third-party.aquasec-enforcer
 # mitigate: uninstall the aquasec enforcer
 
 # k describe no may have namespace/pods
@@ -257,12 +347,12 @@ k cp nsenter-azki7c:/tmp/capture.pcap /tmp/capture.pcap
 ```
 
 ```
-# k8s.unexpected.app.datadog-agent
+# k8s.unexpected.app.third-party.datadog-agent
 # Refer to pv for mount issues caused by datadog and ensure the subtle / is excluded from the datadog mount list
 ```
 
 ```
-# k8s.unexpected.app.dynatrace
+# k8s.unexpected.app.third-party.dynatrace
 # dynatrace will instrument app binaries. Has the customer already ruled out dynatrace with dynatrace support?
 # If you see any issue like this w/ dynatrace involved we need to engage their dynatrace support first. 
 # We could recommend that they contact the Dynatrace support team for guidance on the necessary instrumentation. This also assumes they have comparable Dynatrace data from before the issue for reference.
@@ -292,8 +382,8 @@ Init Containers:
 ```
 
 ```
-# k8s.unexpected.app.twistlock
-# this is one of the main workloads that can overwhelm API servers or cause node performance degradation.
+# k8s.unexpected.app.third-party.twistlock
+# this is one of the workloads that can overwhelm API servers or cause node performance degradation.
 
 # k describe no may have namespace/pods
 -n twistlock twistlock-defender-ds-11111

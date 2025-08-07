@@ -7,6 +7,7 @@
 
 ```
 # k8s.csi.driver
+# p: different types of workloads, including read-heavy workloads and the strategies used to optimize them
 
 Volume
 ├── Ephemeral
@@ -121,16 +122,39 @@ Volume
   - fstype.xfs: https://www.man7.org/linux/man-pages/man8/mkfs.xfs.8.html, https://man7.org/linux/man-pages/man5/xfs.5.html
 
 - Blob:
-  - "blobfuse2 mount" sets up a virtual fs mountpoint in memory using FUSE (Filesystem in Userspace).
-    - examples of virtual filesystems include tmpfs, proc, sysfs, and fuse (e.g., blobfuse)    
+  - refer to blob/blobfuse2
   - https://github.com/kubernetes-sigs/blob-csi-driver/blob/master/docs/csi-debug.md  
-  - nfs: https://learn.microsoft.com/en-us/azure/storage/blobs/network-file-system-protocol-support-how-to
-  - fuse driver: https://github.com/Azure/azure-storage-fuse/blob/main/TSG.md
-    - https://github.com/Azure/azure-storage-fuse/tree/main: Blobfuse2 - A Microsoft supported Azure Storage FUSE driver
-    - https://learn.microsoft.com/en-us/azure/storage/blobs/blobfuse2-troubleshooting
-  - fuse driver errors: https://github.com/Azure/azure-storage-fuse/blob/main/cmd/mount.go
   - https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/storage/mounting-azure-blob-storage-container-fail
   - https://learn.microsoft.com/en-us/azure/storage/blobs/data-lake-storage-abfs-driver#the-azure-blob-file-system-driver
+  - nfs: https://learn.microsoft.com/en-us/azure/storage/blobs/network-file-system-protocol-support-how-to
+    - mountOptions: https://learn.microsoft.com/en-us/azure/aks/azure-csi-blob-storage-provision?tabs=mount-nfs%2Csecret#storage-class-using-nfs-protocol
+    - https://deepwiki.com/kubernetes-sigs/blob-csi-driver/6.3-volume-mount-options#nfs-mount-options
+
+- Blob/blobfuse2 aka fuse driver:
+  - "blobfuse2 mount" sets up a virtual fs mountpoint in memory using FUSE (Filesystem in Userspace).
+    - examples of virtual filesystems include tmpfs, proc, sysfs, and fuse (e.g., blobfuse)    
+  - blobfuse2/fuse driver: https://github.com/Azure/azure-storage-fuse/blob/main/TSG.md
+  - driver-parameters/mountOptions
+  - p: full table mapping showing how Blobfuse2 config options, such as disable-writeback-cache, correspond to Azure CSI StorageClass mountOptions like "-o direct_io"
+  - p: mount options for read-heavy workloads
+  - https://github.com/Azure/azure-storage-fuse/tree/main: Blobfuse2 - A Microsoft supported Azure Storage FUSE driver
+  - https://learn.microsoft.com/en-us/azure/storage/blobs/blobfuse2-troubleshooting
+  - https://github.com/Azure/azure-storage-fuse?tab=readme-ov-file#frequently-asked-questions
+  - fuse driver errors: https://github.com/Azure/azure-storage-fuse/blob/main/cmd/mount.go
+  - https://docs.azure.cn/en-us/storage/blobs/blobfuse2-configuration
+  - https://github.com/Azure/azure-storage-fuse/blob/main/docker/Dockerfile
+  - https://github.com/Azure/azure-storage-fuse/tree/main?tab=readme-ov-file#cli-parameters
+  - https://github.com/kubernetes-sigs/blob-csi-driver/blob/master/deploy/example/pv-blobfuse-csi.yaml
+  - https://github.com/kubernetes-sigs/blob-csi-driver/blob/master/deploy/example/storageclass-blobfuse2.yaml
+  - https://github.com/kubernetes-sigs/blob-csi-driver/blob/master/docs/driver-parameters.md
+  - https://github.com/kubernetes-sigs/blob-csi-driver/issues/1657#issuecomment-2455192586: to disable all cache options
+  - https://learn.microsoft.com/en-us/azure/aks/azure-csi-blob-storage-provision?tabs=mount-nfs%2Csecret#storage-class-using-blobfuse, 
+  - https://learn.microsoft.com/en-us/azure/storage/blobs/blobfuse2-commands-mount#flags-that-apply-only-to-the-blobfuse2-mount-command
+  - https://learn.microsoft.com/en-us/azure/storage/blobs/blobfuse2-how-to-deploy?tabs=RHEL#how-to-configure-blobfuse2
+  - https://techcommunity.microsoft.com/blog/azurepaasblog/how-to-troubleshoot-blobfuse2-issues/4110844
+  - https://deepwiki.com/kubernetes-sigs/blob-csi-driver/6.3-volume-mount-options#blobfuse-v1-and-v2-mount-options
+  - https://deepwiki.com/kubernetes-sigs/blob-csi-driver/6.2-storage-class-options
+  - https://deepwiki.com/Azure/azure-storage-fuse/3-configuration
 
 - Disk:
   - default file system is ext4: use mkfs.ext4 /dev/sdc, then mount /dev/sdc /mnt/data. 

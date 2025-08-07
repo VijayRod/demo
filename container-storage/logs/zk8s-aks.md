@@ -622,9 +622,11 @@ scp -P 8080 /tmp/iptables azureuser@127.0.0.1:/tmp/iptables-dump # scp: stat loc
 
 - https://learn.microsoft.com/en-us/azure/aks/node-auto-repair: AKS initiates repair operations with the user account aks-remediator.
 
-## aks.security.identity.mi
+## aks.security.identity
 
 ```
+# aks.security.identity.mi
+
 # portal, Managed Identity
 
 noderg=$(az aks show -g $rg -n aks --query nodeResourceGroup -o tsv) 
@@ -642,15 +644,11 @@ az identity federated-credential list -g $noderg --identity-name aks-agentpool #
 # aks.security.identity.mi.wi (--enable-oidc-issuer --enable-workload-identity, az identity federated-credential create)
 ```
 
-## aks.security.user.masterclient
+## aks.security.user
 
-- https://github.com/abhinabsarkar/aks/blob/master/concepts/local-account-auditlogs-readme.md: masterclient
-- https://stackoverflow.com/questions/74885835/azure-kubernets-service-regular-user-with-rbac-enabled-cluster-has-systemmaste
-- https://github.com/Azure/AKS/issues/877: Each user has the same "Subject: O = system:masters, CN = masterclient": This is the same root issue as bug #756 which is a known issue with mapping Kubernetes roles to AAD.
-- https://github.com/Azure/AKS/issues/756: Support for rotating cluster-admin credential
 
 ```
-# user.masterclient refers to the end user who executes commands (such as with kubectl, k8s, etc.) after retrieving credentials using az aks get-credentials
+# aks.security.user.masterclient refers to the end user who executes commands (such as with kubectl, k8s, etc.) after retrieving credentials using az aks get-credentials
 
 # get-credentials
 az aks get-credentials -g $rg -n aks
@@ -686,6 +684,12 @@ yq -r '.users[] | [.name, .user["client-certificate-data"]] | @tsv' ~/.kube/conf
 done
 
 ```
+
+- https://github.com/abhinabsarkar/aks/blob/master/concepts/local-account-auditlogs-readme.md: masterclient
+- https://stackoverflow.com/questions/74885835/azure-kubernets-service-regular-user-with-rbac-enabled-cluster-has-systemmaste
+- https://github.com/Azure/AKS/issues/877: Each user has the same "Subject: O = system:masters, CN = masterclient": This is the same root issue as bug #756 which is a known issue with mapping Kubernetes roles to AAD.
+- https://github.com/Azure/AKS/issues/756: Support for rotating cluster-admin credential
+
 
 ## aks.spec.agentPool.vmSize
 

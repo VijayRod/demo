@@ -622,6 +622,50 @@ scp -P 8080 /tmp/iptables azureuser@127.0.0.1:/tmp/iptables-dump # scp: stat loc
 
 - https://learn.microsoft.com/en-us/azure/aks/node-auto-repair: AKS initiates repair operations with the user account aks-remediator.
 
+## aks.security.user.masterclient
+
+- https://github.com/abhinabsarkar/aks/blob/master/concepts/local-account-auditlogs-readme.md: masterclient
+- https://stackoverflow.com/questions/74885835/azure-kubernets-service-regular-user-with-rbac-enabled-cluster-has-systemmaste
+- https://github.com/Azure/AKS/issues/877: Each user has the same "Subject: O = system:masters, CN = masterclient": This is the same root issue as bug #756 which is a known issue with mapping Kubernetes roles to AAD.
+- https://github.com/Azure/AKS/issues/756: Support for rotating cluster-admin credential
+
+```
+# user.masterclient refers to the end user who executes commands (such as with kubectl, k8s, etc.) after retrieving credentials using az aks get-credentials
+
+# get-credentials
+az aks get-credentials -g $rg -n aks
+cat ~/.kube/config
+
+# the certificate contains O=system:masters, CN=masterclient
+# Retrieve the client-certificate-data, which is the certificate encoded in base64. The certificate contains "Assunto (Subject): O=system:masters, CN=masterclient"
+- name: clusterUser_rg_aks
+  user:
+    client-certificate-data:
+    
+# the O=system:masters group is assigned to the cluster-admin role
+k describe clusterrolebinding cluster-admin
+Name:         cluster-admin
+Labels:       kubernetes.io/bootstrapping=rbac-defaults
+Annotations:  rbac.authorization.kubernetes.io/autoupdate: true
+Role:
+  Kind:  ClusterRole
+  Name:  cluster-admin
+Subjects:
+  Kind   Name            Namespace
+  ----   ----            ---------
+  Group  system:masters
+``` 
+
+```
+# user.masterclient.list
+
+yq -r '.users[] | [.name, .user["client-certificate-data"]] | @tsv' ~/.kube/config | while IFS=$'\t' read -r NAME CERT; do
+  echo -n "$NAME: "
+  echo "$CERT" | base64 -d | openssl x509 -noout -subject -dates | tr "\n" " "
+  echo
+done
+
+```
 
 ## aks.spec.agentPool.vmSize
 

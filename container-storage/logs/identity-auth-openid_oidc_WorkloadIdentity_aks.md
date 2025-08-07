@@ -84,12 +84,16 @@ Annotations:         azure.workload.identity/client-id: 36443789-442e-4ce2-af87-
 kubectl get token # error: the server doesn't have a resource type "token"
 # test: kubectl create token workload-identity-sa
 
+kubectl describe po sample-workload-identity | grep token # AZURE_FEDERATED_TOKEN_FILE:  /var/run/secrets/azure/tokens/azure-identity-token
+
 k exec -it sample-workload-identity -- bash
 root@sample-workload-identity:/# printenv
 AZURE_TENANT_ID=redactt-1111-1111-1111-111111111111
 AZURE_FEDERATED_TOKEN_FILE=/var/run/secrets/azure/tokens/azure-identity-token
 AZURE_AUTHORITY_HOST=https://login.microsoftonline.com/
 AZURE_CLIENT_ID=36443789-442e-4ce2-af87-d0a06be813df
+
+kubectl exec -it sample-workload-identity -- cat /var/run/secrets/azure/tokens/azure-identity-token # ey...
 ```
 
 - https://learn.microsoft.com/en-us/azure/aks/learn/tutorial-kubernetes-workload-identity

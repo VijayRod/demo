@@ -23,7 +23,7 @@ k get po -A # No karpenter pods
 
 - https://learn.microsoft.com/en-us/azure/aks/node-autoprovision?tabs=azure-cli#sku-selectors-with-well-known-labels
 - https://github.com/Azure/karpenter-provider-azure
-- https://karpenter.sh/
+- https://karpenter.sh/: How It Works 
 
 ```
 # node pools

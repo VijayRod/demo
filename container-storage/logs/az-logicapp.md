@@ -12,6 +12,11 @@
 
 - https://aka.ms/logicexpressions
   - https://learn.microsoft.com/en-us/azure/logic-apps/expression-functions-reference
+
+```
+# Azure Logic App (javascript) expressions with html markup
+"concat('<p>Olá ', triggerBody()?['nome'], '</p>')"
+```
   
 > ## Microsoft.Logic/workflows/runs
 

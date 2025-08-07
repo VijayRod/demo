@@ -26,7 +26,13 @@ Connected to blob.dsm10prdstf02a.store.core.windows.net.
 ```
 
 - https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/mounting-azure-blob-storage-container-fail: Azure Blob BlobFuse relies on port 443. Make sure that port 443 and/or the IP address of the storage account aren't blocked.
-  
+
+```
+# update the version as shown below
+kubectl patch daemonset csi-blob-node -n kube-system -p '{"spec":{"template":{"spec":{"initContainers":[{"env":[{"name":"INSTALL_BLOBFUSE2","value":"true"},{"name":"BLOBFUSE2_VERSION","value":"2.3.0 --allow-downgrades"}],"name":"install-blobfuse-proxy"}]}}}}'
+```
+- https://deepwiki.com/kubernetes-sigs/blob-csi-driver/2-installation-and-configuration#blobfuse-version-management: To downgrade to a lower version of blobfuse2..
+    
 ## azureblob.debug.perf
 
 ```

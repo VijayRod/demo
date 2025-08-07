@@ -1,6 +1,11 @@
 ## k8s.csi.intree
 
 ```
+kubectl get pv -o yaml | grep azureDisk | wc -l
+kubectl get pv -o yaml | grep azureFile | wc -l
+```
+
+```
 # pod with in-tree volume has an "azureDisk:" type volume (and there's no associated pv since it's inline)
 
 noderg=$(az aks show -g $rg -n aks --query nodeResourceGroup -o tsv)

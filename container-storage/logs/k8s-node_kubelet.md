@@ -86,3 +86,26 @@ root@aks-nodepool1-74128781-vmss000000:/# cat /etc/kubernetes/azure.json
     "aadClientSecret": "msi",
     "userAssignedIdentityID": "redactc-ff96-4106-873c-7f52972f0c52",
 ```
+
+## k8s-node.kubelet.evict
+```
+k8s-node.kubelet.evict.pod
+
+kubectl get pod mypod -o json | jq '.status'
+
+status:
+  phase: Failed
+  reason: Evicted
+  message: "The node had condition: [DiskPressure]"
+
+
+```
+- https://github.com/kubernetes/kubernetes/issues/132001: Evicted pods from soft eviction do not always generate an event: When Pods are evicted due to a soft eviction threshold (e.g., disk pressure), most pods have an Evicted event(kubectl get events), but some do not.
+- https://learn.microsoft.com/en-us/azure/aks/resize-node-pool?tabs=azure-cli: drain/evict operation will fail.
+- https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/: Node-pressure eviction is the process by which the kubelet proactively terminates pods to reclaim resources on nodes
+
+```
+# k8s-node.kubelet.evict.pod.node
+```
+- https://learn.microsoft.com/en-us/azure/aks/spot-node-pool: If Azure needs capacity back, the Azure infrastructure evicts the Spot nodes.
+- https://kubernetes.io/docs/concepts/scheduling-eviction/api-eviction/

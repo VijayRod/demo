@@ -54,6 +54,44 @@ sleep 5
 kubectl get po sample-workload-identity
 ```
 
+```
+# portal, Managed Identity, Federated Credentials
+# pls share the federation identity configuration values as displayed in the portal or CLI
+# pls provide the cluster issuer URL in the federated credential
+az identity federated-credential list -g $rg --identity-name myIdentity
+[
+  {
+    "audiences": [
+      "api://AzureADTokenExchange"
+    ],
+    "id": "/subscriptions/$subId/resourcegroups/rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myIdentity/federatedIdentityCredentials/myFedIdentity",
+    "issuer": "https://swedencentral.oic.prod-aks.azure.com/redactt-1111-1111-1111-111111111111/redacti-1111-1111-1111-111111111111/",
+    "name": "myFedIdentity",
+    "resourceGroup": "rg",
+    "subject": "system:serviceaccount:default:workload-identity-sa",
+    "systemData": null,
+    "type": "Microsoft.ManagedIdentity/userAssignedIdentities/federatedIdentityCredentials"
+  }
+]
+
+k describe sa workload-identity-sa
+Name:                workload-identity-sa
+Namespace:           default
+Labels:              <none>
+Annotations:         azure.workload.identity/client-id: 36443789-442e-4ce2-af87-d0a06be813df
+
+# kubectl get sa workload-identity-sa
+kubectl get token # error: the server doesn't have a resource type "token"
+# test: kubectl create token workload-identity-sa
+
+k exec -it sample-workload-identity -- bash
+root@sample-workload-identity:/# printenv
+AZURE_TENANT_ID=redactt-1111-1111-1111-111111111111
+AZURE_FEDERATED_TOKEN_FILE=/var/run/secrets/azure/tokens/azure-identity-token
+AZURE_AUTHORITY_HOST=https://login.microsoftonline.com/
+AZURE_CLIENT_ID=36443789-442e-4ce2-af87-d0a06be813df
+```
+
 - https://learn.microsoft.com/en-us/azure/aks/learn/tutorial-kubernetes-workload-identity
 - https://azure.github.io/azure-workload-identity/docs/installation/managed-clusters.html
 

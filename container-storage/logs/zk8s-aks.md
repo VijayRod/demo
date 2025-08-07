@@ -622,6 +622,26 @@ scp -P 8080 /tmp/iptables azureuser@127.0.0.1:/tmp/iptables-dump # scp: stat loc
 
 - https://learn.microsoft.com/en-us/azure/aks/node-auto-repair: AKS initiates repair operations with the user account aks-remediator.
 
+## aks.security.identity.mi
+
+```
+# portal, Managed Identity
+
+noderg=$(az aks show -g $rg -n aks --query nodeResourceGroup -o tsv) 
+az identity show -g $noderg -n aks-agentpool --query id -otsv
+/subscriptions/$subId/resourcegroups/MC_rg_aks_swedencentral/providers/Microsoft.ManagedIdentity/userAssignedIdentities/aks-agentpool
+```
+
+```
+# aks.security.identity.mi.oidc (--enable-oidc-issuer)
+az aks show -g $rg -n aks --query oidcIssuerProfile -otsv
+az identity federated-credential list -g $noderg --identity-name aks-agentpool # []
+```
+
+```
+# aks.security.identity.mi.wi (--enable-oidc-issuer --enable-workload-identity, az identity federated-credential create)
+```
+
 ## aks.security.user.masterclient
 
 - https://github.com/abhinabsarkar/aks/blob/master/concepts/local-account-auditlogs-readme.md: masterclient

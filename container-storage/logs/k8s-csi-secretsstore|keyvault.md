@@ -1,5 +1,10 @@
 ## secrets-store
 
+- https://azure.github.io/secrets-store-csi-driver-provider-azure/docs/
+- https://github.com/kubernetes-sigs/secrets-store-csi-driver
+- https://deepwiki.com/kubernetes-sigs/secrets-store-csi-driver
+- https://deepwiki.com/Azure/secrets-store-csi-driver-provider-azure
+
 ```
 # See the section on secrets-store key
 # refer to secret
@@ -575,6 +580,500 @@ az keyvault certificate download --vault-name vault -n cert-name -f cert.pem && 
 # Download a certificate as DER and check its fingerprint in openssl.
 az keyvault certificate download --vault-name vault -n cert-name -f cert.crt -e DER && \
        openssl x509 -in cert.crt -inform DER  -noout -sha1 -fingerprint        
+```
+
+```
+# *kv-secret.sync
+# by default, a k8s secret is not configured, and the secret value within the application pod does not automatically refresh when the secret value (version) in the key vault is updated
+
+# mitigation to ensure secret sync: secret delete, pod delete/recreate
+# logs: Please provide the secrets-store container logs from the node driver during a repro with the mitigation applied, and if possible, include the GMT timestamps for when the key was added to the KV and when the mitigation was performed.
+# logs 2: k logs -n kube-system aks-secrets-store-csi-driver-t99tz -c secrets-store
+
+az aks show -g $rgname -n $clustername --query addonProfiles.azureKeyvaultSecretsProvider
+{
+  "config": {
+    "enableSecretRotation": "false",
+    "rotationPollInterval": "2m"
+  },
+  "enabled": true,
+  "identity": {
+    "clientId": "f265d535-386d-45d7-be37-ea2e48706917",
+    "objectId": "92b6f6c3-031f-4219-b042-911e40ab2ff1",
+    "resourceId": "/subscriptions/$subId/resourcegroups/$noderg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/azurekeyvaultsecretsprovider-akssecretstore"
+  }
+}
+
+# portal, Key Vault / Objects / Secrets: Choose the secret you need, then you can view its version or add a new version.
+az keyvault secret show --vault-name $keyvaultName -n ExampleSecret --query "{Version:id, Created:attributes.created}"
+{
+  "Created": "2025-08-05T19:51:22+00:00",
+  "Version": "https://keyvault12944.vault.azure.net/secrets/ExampleSecret/6fbede6a0862412eb2261c2291121f47"
+}
+
+kubectl describe po 
+    Mounts:
+      /mnt/secrets-store from secrets-store01-inline (ro)
+Volumes:
+  secrets-store01-inline:
+    Type:              CSI (a Container Storage Interface (CSI) volume source)
+    Driver:            secrets-store.csi.k8s.io
+    FSType:
+    ReadOnly:          true
+    VolumeAttributes:      secretProviderClass=azure-kvname-user-msi
+    
+k exec -it busybox-secrets-store-inline-user-msi -- ls /mnt/secrets-store
+ExampleSecret
+k exec -it busybox-secrets-store-inline-user-msi -- cat /mnt/secrets-store/ExampleSecret # View secret value in plain text
+    
+k get secret # returns no rows
+
+k describe secretproviderclass
+Name:         azure-kvname-user-msi
+Namespace:    default
+Labels:       <none>
+Annotations:  <none>
+API Version:  secrets-store.csi.x-k8s.io/v1
+Kind:         SecretProviderClass
+Metadata:
+  Creation Timestamp:  2025-08-05T19:51:47Z
+  Generation:          1
+  Resource Version:    2165
+  UID:                 093d4363-f8b8-48b9-82e3-01388b1ce696
+Spec:
+  Parameters:
+    Cloud Name:
+    Keyvault Name:  keyvault12944
+    Objects:        array:
+  - |
+    objectName: ExampleSecret
+    objectType: secret              # object types: secret, key, or cert
+    objectVersion: ""               # [OPTIONAL] object versions, default to latest if empty
+
+    Tenant Id:                  redactedt-1111-1111-1111-111111111111
+    Use Pod Identity:           false
+    Use VM Managed Identity:    true
+    User Assigned Identity ID:  f265d535-386d-45d7-be37-ea2e48706917
+  Provider:                     azure
+Events:                         <none>
+
+k describe po -n kube-system -l app=secrets-store-csi-driver | grep Image
+    Image:         mcr.microsoft.com/oss/kubernetes-csi/csi-node-driver-registrar:v2.13.0
+    Image:         mcr.microsoft.com/oss/v2/kubernetes-csi/secrets-store/driver:v1.5.1
+    Image:         mcr.microsoft.com/oss/kubernetes-csi/livenessprobe:v2.15.0
+    
+k describe po -n kube-system -l app=secrets-store-provider-azure | grep Image
+    Image:         mcr.microsoft.com/oss/v2/azure/secrets-store/provider-azure:v1.7.0
+```
+
+- https://secrets-store-csi-driver.sigs.k8s.io/known-limitations#mounted-content-and-kubernetes-secret-not-updated
+- https://learn.microsoft.com/en-us/azure/aks/csi-secrets-store-configuration-options
+- https://learn.microsoft.com/en-us/azure/azure-arc/kubernetes/tutorial-akv-secrets-provider#additional-configuration-options
+
+
+```
+# *kv-secret.sync.app=secrets-store-csi-driver (present on every node)
+```
+- faq: The CSI driver sends GET requests to the Key Vault to retrieve the most recent version of a secret.
+  - https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/extensions/troubleshoot-key-vault-csi-secrets-store-csi-driver: error: failed to get objectType:secret.. curl -X GET 'https://<key-vault-name>.vault.azure.net/secrets/<secret-name>..
+
+```
+# *kv-secret.sync.pod-mnt/secrets-store aka auto rotation
+
+az aks addon update -g $rgname -n $clustername --addon azure-keyvault-secrets-provider --enable-secret-rotation # --rotation-poll-interval 1m
+az aks show -g $rgname -n $clustername --query addonProfiles.azureKeyvaultSecretsProvider #     "enableSecretRotation": "true",    "rotationPollInterval": "2m"
+
+az keyvault secret set --vault-name $keyvaultName -n ExampleSecret --value "MyAKSExampleSecret$(date +%Y%m%d%H%M%S)" # you can also update the secret value directly in the portal
+sleep 120; k exec -it busybox-secrets-store-inline-user-msi -- cat /mnt/secrets-store/ExampleSecret # has updated secret value
+
+
+  secrets-store:
+      --enable-secret-rotation=true
+      --rotation-poll-interval=2m
+```
+
+- https://secrets-store-csi-driver.sigs.k8s.io/known-limitations#mounted-content-and-kubernetes-secret-not-updated: Enable Secret autorotation feature has been released in..
+- https://secrets-store-csi-driver.sigs.k8s.io/topics/secret-auto-rotation: When the secret/key is updated in external secrets store after the initial pod deployment, the updated secret will be periodically updated in the pod mount and the Kubernetes Secret.
+- https://azure.github.io/secrets-store-csi-driver-provider-azure/docs/configurations/enable-auto-rotation-secrets/: The CSI driver does not restart the application pods. It only handles updating the pod mount and Kubernetes secret similar to how Kubernetes handles updates to Kubernetes secret mounted as volumes.
+- faq: when a new secret reference (e.g., key4) is added to a SecretProviderClass, the CSI Driver does not immediately sync the new secret to the Kubernetes secret object. Instead, it waits for the next polling interval to detect and apply the change.
+  - https://learn.microsoft.com/en-us/azure/aks/csi-secrets-store-configuration-options: Once you enable auto-rotation for Azure Key Vault Secrets Provider, it updates the pod mount and the Kubernetes secret defined in the secretObjects field of SecretProviderClass. It does so by polling for changes periodically, based on the rotation poll interval you defined. The default rotation poll interval is two minutes. - When a secret updates in an external secrets store after initial pod deployment, the Kubernetes Secret and the pod mount periodically update depending on how the application consumes the secret data.
+- faq: the Azure Key Vault CSI Driver only queries the secrets explicitly defined in the SecretProviderClass associated with the pod being mounted on a node. It does not query all secrets in the Key Vault or across the cluster
+  - https://learn.microsoft.com/en-us/azure/aks/csi-secrets-store-configuration-options: Once you enable auto-rotation for Azure Key Vault Secrets Provider, it updates the pod mount and the Kubernetes secret defined in the secretObjects field of SecretProviderClass. It does so by polling for changes periodically, based on the rotation poll interval you defined.
+  - https://learn.microsoft.com/en-us/azure/aks/aksarc/secrets-store-csi-driver: The Kubernetes Secrets Store CSI driver integrates secrets stores with Kubernetes using a Container Storage Interface (CSI) volume. The data is then mounted in the container's file system.
+  - https://learn.microsoft.com/en-us/azure/aks/csi-secrets-store-driver: 
+- faq: it's one GET call per keyvault object defined in secret provider class. If you have 10 objects in secret provider class and 5 pods using it in that node, then it'll result in 5 * 10 = 100 calls. This is only for pods on the same node as the driver. The driver needs to mount the secrets in pod, so it's a node local process.
+
+```
+# *kv-secret.sync.pod-mnt/secrets-store aka auto rotation.secret2 has been added to the existing SecretProviderClass
+# When ExampleSecret2 is added to an existing SecretProviderClass, the secret is immediately available in a new pod as expected (although after the polling interval rather than immediately, if the pod is getting secret from a k8s secret))
+
+echo $rgname, $clustername, $keyvaultName, $userAssignedIdentityID
+kubectl cluster-info | grep control
+az aks addon update -g $rgname -n $clustername --addon azure-keyvault-secrets-provider --enable-secret-rotation --rotation-poll-interval 10m # using a longer interval for testing purposes
+az aks show -g $rgname -n $clustername --query addonProfiles.azureKeyvaultSecretsProvider
+az keyvault update -n $keyvaultName --public-network-access Enabled
+az keyvault secret set --vault-name $keyvaultName -n ExampleSecret2 --value MyAKSExampleSecret2
+
+userAssignedIdentityID=$(az aks show -g $rgname -n $clustername --query addonProfiles.azureKeyvaultSecretsProvider.identity.clientId -o tsv)
+tenantId=$(az aks show -g $rgname -n $clustername --query identity.tenantId -o tsv)
+az aks get-credentials -g $rgname -n $clustername --overwrite-existing
+
+kubectl delete po --all
+kubectl delete secretproviderclass --all
+kubectl delete po busybox-secrets-store-inline-user-msi
+kubectl delete secretproviderclass azure-kvname-user-msi
+cat << EOF | kubectl apply -f -
+# This is a SecretProviderClass example using user-assigned identity to access your key vault
+apiVersion: secrets-store.csi.x-k8s.io/v1
+kind: SecretProviderClass
+metadata:
+  name: azure-kvname-user-msi
+spec:
+  provider: azure
+  parameters:
+    usePodIdentity: "false"
+    useVMManagedIdentity: "true"          # Set to true for using managed identity
+    userAssignedIdentityID: "$userAssignedIdentityID"   # Set the clientID of the user-assigned managed identity to use
+    keyvaultName: "$keyvaultName"        # Set to the name of your key vault
+    cloudName: ""                         # [OPTIONAL for Azure] if not provided, the Azure environment defaults to AzurePublicCloud
+    objects:  |
+      array:
+        - |
+          objectName: ExampleSecret
+          objectType: secret              # object types: secret, key, or cert
+          objectVersion: ""               # [OPTIONAL] object versions, default to latest if empty
+        - |
+          objectName: ExampleSecret2
+          objectType: secret              # object types: secret, key, or cert
+          objectVersion: ""               # [OPTIONAL] object versions, default to latest if empty
+    tenantId: $tenantId                 # The tenant ID of the key vault
+---
+# This is a sample pod definition for using SecretProviderClass and the user-assigned identity to access your key vault
+kind: Pod
+apiVersion: v1
+metadata:
+  name: busybox-secrets-store-inline-user-msi
+spec:
+  containers:
+    - name: busybox
+      image: registry.k8s.io/e2e-test-images/busybox:1.29-1
+      command:
+        - "/bin/sleep"
+        - "10000"
+      volumeMounts:
+      - name: secrets-store01-inline
+        mountPath: "/mnt/secrets-store"
+        readOnly: true
+  volumes:
+    - name: secrets-store01-inline
+      csi:
+        driver: secrets-store.csi.k8s.io
+        readOnly: true
+        volumeAttributes:
+          secretProviderClass: "azure-kvname-user-msi"
+EOF
+kubectl get po -w
+k exec -it busybox-secrets-store-inline-user-msi -- ls /mnt/secrets-store
+k exec -it busybox-secrets-store-inline-user-msi -- cat /mnt/secrets-store/ExampleSecret2
+
+
+
+sleep 120
+k exec -it busybox-secrets-store-inline-user-msi -- ls /mnt/secrets-store
+k exec -it busybox-secrets-store-inline-user-msi -- cat /mnt/secrets-store/ExampleSecret2
+```
+
+```
+# kv-secret.sync.k8s-secret
+# SecretProviderClass: use secretObjects to create a Kubernetes secret
+# pod: apply volumes and containers.volumeMounts, including for environment variables
+
+# failed: the secret was not automatically created because there is no pod referencing it
+az keyvault secret set --vault-name $keyvaultName -n ExampleSecret --value "MyAKSExampleSecret$(date +%Y%m%d%H%M%S)" # you can also update the secret value directly in the portal
+kubectl delete po --all
+kubectl delete secret --all # example-k8s-secret
+k delete secretproviderclass --all
+cat << EOF | kubectl apply -f -
+apiVersion: secrets-store.csi.x-k8s.io/v1
+kind: SecretProviderClass
+metadata:
+  name: azure-kvname-user-msi
+spec:
+  provider: azure
+  parameters:
+    usePodIdentity: "false"
+    useVMManagedIdentity: "true"
+    userAssignedIdentityID: "$userAssignedIdentityID"
+    keyvaultName: "$keyvaultName"
+    cloudName: ""
+    tenantId: "$tenantId"
+    objects: |
+      array:
+        - |
+          objectName: ExampleSecret
+          objectType: secret
+          objectVersion: ""
+  secretObjects:
+    - secretName: example-k8s-secret
+      type: Opaque
+      data:
+        - key: example-key
+          objectName: ExampleSecret
+EOF
+kubectl get secret -w
+```
+
+```
+# success: The secret is created by the secret store driver when the first pod that references it starts on the node.
+# az keyvault secret set --vault-name $keyvaultName -n ExampleSecret --value "MyAKSExampleSecret$(date +%Y%m%d%H%M%S)" # you can also update the secret value directly in the portal
+kubectl delete po --all
+kubectl delete secret --all # example-k8s-secret
+k delete secretproviderclass --all
+cat << EOF | kubectl apply -f -
+apiVersion: secrets-store.csi.x-k8s.io/v1
+kind: SecretProviderClass
+metadata:
+  name: azure-kvname-user-msi
+spec:
+  provider: azure
+  parameters:
+    usePodIdentity: "false"
+    useVMManagedIdentity: "true"
+    userAssignedIdentityID: "$userAssignedIdentityID"
+    keyvaultName: "$keyvaultName"
+    cloudName: ""
+    tenantId: "$tenantId"
+    objects: |
+      array:
+        - |
+          objectName: ExampleSecret
+          objectType: secret
+          objectVersion: ""
+  secretObjects:
+    - secretName: example-k8s-secret
+      type: Opaque
+      data:
+        - key: example-key
+          objectName: ExampleSecret
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: busybox-secret-env
+spec:
+  containers:
+    - name: busybox
+      image: registry.k8s.io/e2e-test-images/busybox:1.29-1
+      command: ["/bin/sh", "-c", "env && sleep 10000"]
+      env:
+        - name: EXAMPLE_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: example-k8s-secret
+              key: example-key
+      volumeMounts:
+      - name: secrets-store01-inline
+        mountPath: "/mnt/secrets-store"
+        readOnly: true
+  volumes:
+    - name: secrets-store01-inline
+      csi:
+        driver: secrets-store.csi.k8s.io
+        readOnly: true
+        volumeAttributes:
+          secretProviderClass: azure-kvname-user-msi
+EOF
+kubectl get secret
+kubectl get po -w 
+kubectl get secret example-k8s-secret -o jsonpath="{.data.example-key}" | base64 --decode
+kubectl exec -it busybox-secret-env -- printenv # EXAMPLE_SECRET=MyAKSExampleSecret20250805143710
+
+NAME                 TYPE     DATA   AGE
+example-k8s-secret   Opaque   1      0s
+NAME                      READY   STATUS    RESTARTS   AGE
+busybox-secret-env        1/1     Running   0          4s
+^CMyAKSExampleSecret20250805143710
+EXAMPLE_SECRET=MyAKSExampleSecret20250805143710
+```
+
+- * https://learn.microsoft.com/en-us/azure/aks/csi-secrets-store-configuration-options#sync-mounted-content-with-a-kubernetes-secret: Your secrets sync after you start a pod to mount them. When you delete the pods that consume the secrets, your Kubernetes secret is also deleted.
+- https://learn.microsoft.com/en-us/azure/aks/csi-secrets-store-configuration-options#set-an-environment-variable-to-reference-kubernetes-secrets
+- faq when a new secretObjects is added to the secret provider class, and when a pod retrieves this from a k8s secret: if a new pod is created and if they added a new Kubernetes secret in the secretObjects it will be created by the driver automatically! Only existing Kubernetes secret won't get updated until poll interval
+
+```
+# success: When a new secretObject is added to the secret provider class, just like the initial secret, the local secret store driver creates the new secret immediately when it is first referenced by a pod created on that node.
+az keyvault secret set --vault-name $keyvaultName -n ExampleSecret2 --value "MyAKSExampleSecret$(date +%Y%m%d%H%M%S)" # you can also update the secret value directly in the portal
+kubectl delete po --all
+# kubectl delete secret --all # example-k8s-secret
+k delete secretproviderclass --all
+cat << EOF | kubectl apply -f -
+apiVersion: secrets-store.csi.x-k8s.io/v1
+kind: SecretProviderClass
+metadata:
+  name: azure-kvname-user-msi
+spec:
+  provider: azure
+  parameters:
+    usePodIdentity: "false"
+    useVMManagedIdentity: "true"
+    userAssignedIdentityID: "$userAssignedIdentityID"
+    keyvaultName: "$keyvaultName"
+    cloudName: ""
+    tenantId: "$tenantId"
+    objects: |
+      array:
+        - |
+          objectName: ExampleSecret
+          objectType: secret
+          objectVersion: ""
+        - |
+          objectName: ExampleSecret2
+          objectType: secret
+          objectVersion: ""          
+  secretObjects:
+    - secretName: example-k8s-secret
+      type: Opaque
+      data:
+        - key: example-key
+          objectName: ExampleSecret
+    - secretName: example-k8s-secret2
+      type: Opaque
+      data:
+        - key: example-key2
+          objectName: ExampleSecret2
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: busybox-secret-env
+spec:
+  containers:
+    - name: busybox
+      image: registry.k8s.io/e2e-test-images/busybox:1.29-1
+      command: ["/bin/sh", "-c", "env && sleep 10000"]
+      env:
+        - name: EXAMPLE_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: example-k8s-secret
+              key: example-key
+        - name: EXAMPLE_SECRET2
+          valueFrom:
+            secretKeyRef:
+              name: example-k8s-secret2
+              key: example-key2
+      volumeMounts:
+      - name: secrets-store01-inline
+        mountPath: "/mnt/secrets-store"
+        readOnly: true
+  volumes:
+    - name: secrets-store01-inline
+      csi:
+        driver: secrets-store.csi.k8s.io
+        readOnly: true
+        volumeAttributes:
+          secretProviderClass: azure-kvname-user-msi
+EOF
+kubectl get secret
+kubectl get po
+kubectl get secret example-k8s-secret -o jsonpath="{.data.example-key}" | base64 --decode
+kubectl get secret example-k8s-secret -o jsonpath="{.data.example-key2}" | base64 --decode
+kubectl exec -it busybox-secret-env -- printenv # EXAMPLE_SECRET=MyAKSExampleSecret20250805143710, EXAMPLE_SECRET2=MyAKSExampleSecret2
+```
+
+
+```
+# success: when a secret value in secretObjects is updated, the new value is typically available right away both in the secret and in the pod.
+kubectl get secret # no output until the polling interval has passed
+
+az keyvault secret set --vault-name $keyvaultName -n ExampleSecret --value "MyAKSExampleSecret$(date +%Y%m%d%H%M%S)" # you can also update the secret value directly in the portal
+kubectl delete po --all
+# kubectl delete secret --all # example-k8s-secret
+# kubectl delete secretproviderclass --all
+cat << EOF | kubectl apply -f -
+apiVersion: v1
+kind: Pod
+metadata:
+  name: busybox-secret-env
+spec:
+  containers:
+    - name: busybox
+      image: registry.k8s.io/e2e-test-images/busybox:1.29-1
+      command: ["/bin/sh", "-c", "env && sleep 10000"]
+      env:
+        - name: EXAMPLE_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: example-k8s-secret
+              key: example-key
+      volumeMounts:
+      - name: secrets-store01-inline
+        mountPath: "/mnt/secrets-store"
+        readOnly: true
+  volumes:
+    - name: secrets-store01-inline
+      csi:
+        driver: secrets-store.csi.k8s.io
+        readOnly: true
+        volumeAttributes:
+          secretProviderClass: azure-kvname-user-msi
+EOF
+kubectl get secret
+kubectl get po -w 
+kubectl get secret example-k8s-secret -o jsonpath="{.data.example-key}" | base64 --decode
+kubectl exec -it busybox-secret-env -- printenv # EXAMPLE_SECRET=MyAKSExampleSecret20250805143710
+```
+- faq about updating secret values (versions) in key vault, and when a pod retrieves this from a k8s secret: The new pod will get the new key immediately in the volume mounted file but the Kubernetes secret will only be updated at the poll interval. If they want the Kubernetes secret to have the latest key, they need to delete it before creating the pod. The new Kubernetes secret that will be created when the pod is deployed will contain all keys that are defined in the secret provider class. This is by design. i.e. if a new pod is created and if they added a new Kubernetes secret in the secretObjects it will be created by the driver automatically! Only existing Kubernetes secret won't get updated until poll interval
+
+
+
+```
+# kv-secret.sync.k8s-secret.err.ContainerCreating / 403 Forbidden
+# mitigate: az keyvault update -n $keyvaultName --public-network-access Enabled
+
+k get secret
+No resources found in default namespace.
+k get po
+NAME                      READY   STATUS              RESTARTS   AGE
+busybox-secret-env        0/1     ContainerCreating   0          27s
+k describe po
+  Warning  FailedMount  3s (x7 over 35s)  kubelet            MountVolume.SetUp failed for volume "secrets-store01-inline" : rpc error: code = Unknown desc = failed to mount secrets store objects for pod default/busybox-secret-env, err: rpc error: code = Unknown desc = failed to mount objects, error: failed to get objectType:secret, objectName:ExampleSecret, objectVersion:: GET https://keyvault12944.vault.azure.net/secrets/ExampleSecret/
+--------------------------------------------------------------------------------
+RESPONSE 403: 403 Forbidden
+ERROR CODE: Forbidden
+--------------------------------------------------------------------------------
+{
+  "error": {
+    "code": "Forbidden",
+    "message": "Public network access is disabled and request is not from a trusted service nor via an approved private link.\r\nCaller: appid=f265d535-386d-45d7-be37-111111111111;oid=92b6f6c3-031f-4219-b042-111111111111;iss=https://sts.windows.net/redactt-1111-1111-1111-111111111111/;xms_mirid=/subscriptions/redacts-1111-1111-1111-111111111111/resourcegroups/MC_rgkv_akssecretstore_swedencentral/providers/Microsoft.Compute/virtualMachineScaleSets/aks-nodepool1-85712729-vmss;xms_az_rid=/subscriptions/redacts-1111-1111-1111-111111111111/resourcegroups/MC_rgkv_akssecretstore_swedencentral/providers/Microsoft.Compute/virtualMachineScaleSets/aks-nodepool1-85712729-vmss\r\nVault: keyvault12944;location=swedencentral",
+    "innererror": {
+      "code": "ForbiddenByConnection"
+    }
+  }
+}
+
+az keyvault update -n $keyvaultName --public-network-access Enabled
+k get secret
+NAME                 TYPE     DATA   AGE
+example-k8s-secret   Opaque   1      2m9s
+k get po
+NAME                      READY   STATUS    RESTARTS   AGE
+busybox-secret-env        1/1     Running   0          4m16s
+```
+- https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/extensions/troubleshoot-key-vault-csi-secrets-store-csi-driver#cause-2-the-provider-pod-cant-access-the-key-vault-instance
+
+
+```
+tbd
+# kv-secret.sync.k8s-secret.err.CreateContainerConfigError / k8s secret does not exist
+# mitigate: If a new pod enters a CreateContainerConfigError state because the (new secretObjects) secret cannot be found, wait for the rotation-poll-interval to pass. After this interval, the same pod will automatically transition to the Running state. The pod shows a CreateContainerConfigError with 'secret "example-k8s-secret" not found' in the pod description, but after the polling interval, it automatically transitions to a Running state.
+
+```
+
+```
+tbd
+# kv-secret.sync.k8s-secret.err.CreateContainerConfigError / existing k8s secret (does not have the correct secret value) 
+# mitigate: Delete the secret if it already exists. This allows the local secret store driver to create it right away, instead of waiting for the polling interval to update the secret value from the latest version.
 ```
 
 ```

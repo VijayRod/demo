@@ -14,12 +14,13 @@ env # | grep PATH
 
 ```
 # cp ~/.bash_profile ~/.bash_profile-old # No such file or directory
-echo 'loc=swedencentral; rg=rg; vmsize=Standard_B2ms; subId=redacted; tenantId="redacted"' >> ~/.bash_profile
-echo 'echo $(date),$HOME,$loc,$rg,$vmsize,sub $subId,tenant $tenantId' >> ~/.bash_profile
 echo 'cd /tmp' >> ~/.bash_profile
 echo 'alias k=kubectl' >> ~/.bash_profile
 echo 'export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"' >> ~/.bash_profile
 echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> ~/.bash_profile
+echo 'loc=swedencentral; rg=rg; vmsize=Standard_B2ms; subId=redacted; tenantId="redacted"' >> ~/.bash_profile
+echo 'echo $(date),$HOME,$loc,$rg,$vmsize,sub $subId,tenant $tenantId' >> ~/.bash_profile
+echo 'k get no; k get po -A; k cluster-info | grep control' >> ~/.bash_profile
 source ~/.bash_profile
 cat ~/.bash_profile | tail -n 10
 # vi ~/.bash_profile

@@ -106,6 +106,8 @@ Volume
   - Azure Container Storage driver with Ephemeral Disk NVMe - https://learn.microsoft.com/en-us/azure/storage/container-storage/use-container-storage-with-local-disk
   - Azure Container Storage driver with Ephemeral Disk Temp SSD - https://learn.microsoft.com/en-us/azure/storage/container-storage/use-container-storage-with-local-disk
 
+- Other supported CSI drivers include the following:
+  - refer to secretsstore (csi driver)
 
 - Examples of drivers that are not supported include:
   - https://github.com/kubernetes-csi/csi-driver-nfs (Andy)
@@ -122,6 +124,7 @@ Volume
   - fstype.xfs: https://www.man7.org/linux/man-pages/man8/mkfs.xfs.8.html, https://man7.org/linux/man-pages/man5/xfs.5.html
 
 - Blob:
+  - refer to storage blob
   - refer to blob/blobfuse2
   - https://github.com/kubernetes-sigs/blob-csi-driver/blob/master/docs/csi-debug.md  
   - https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/storage/mounting-azure-blob-storage-container-fail

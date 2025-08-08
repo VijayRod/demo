@@ -113,7 +113,7 @@ az aks show -g $rgname -n $clustername --query autoUpgradeProfile # No rows
 - https://azure.microsoft.com/id-id/updates/public-preview-planned-maintenance-windows-in-aks/
 - https://learn.microsoft.com/en-us/azure/aks/planned-maintenance
   
-## k8s-aks-op.reconcile
+## k8s-aks-op.update/reconcile
 
 ```
 az aks update -g $rg -n aks
@@ -121,7 +121,9 @@ az aks nodepool update -g $noderg --cluster-name aks -n nodepool1
 az resource update --id /subscriptions/redacts-1111-1111-1111-111111111111/resourceGroups/$rg/providers/Microsoft.ContainerService/managedClusters/aks
 ```
 
-## k8s-aks-op.reconcile.auto
+- https://medium.com/@yizhang4321/command-line-to-fix-an-aks-cluster-sometimes-also-called-reconcile-a-cluster-99a83bebca29
+
+## k8s-aks-op.update/reconcile.auto
 
 ```
 k describe ds -n kube-system csi-azuredisk-node | grep Limits: -A 1.

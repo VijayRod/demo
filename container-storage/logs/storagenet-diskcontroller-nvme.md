@@ -21,7 +21,7 @@ major minor  #blocks  name
 
 - https://askubuntu.com/questions/1367342/major-number-259-on-ubuntu-20-04-3-lts: 259 means the device type is 'Block Extended Major'. NVMe device
 - https://learn.microsoft.com/en-us/azure/virtual-machines/nvme-overview
-- https://learn.microsoft.com/en-us/azure/virtual-machines/enable-nvme-faqs
+- https://learn.microsoft.com/en-us/azure/virtual-machines/enable-nvme-faqs#how-do-azure-boost-and-nvme-improve-the-performance-of-the-vms-that-azure-offers-
 - https://learn.microsoft.com/en-us/azure/virtual-machines/enable-nvme-interface
 - https://learn.microsoft.com/en-us/azure/virtual-machines/lsv2-series
 - https://learn.microsoft.com/en-us/azure/virtual-machines/sizes-storage
@@ -42,6 +42,12 @@ major minor  #blocks  name
   - OS disk - SCSI /dev/sda, NVMe /dev/nvme0n1
   - Temp Disk - SCSI /dev/sdb, NVMe /dev/sda
   - First Data Disk - SCSI /dev/sdc, NVMe /dev/nvme0n2
+- https://learn.microsoft.com/en-us/azure/virtual-machines/enable-nvme-remote-faqs#how-can-i-identify-remote-nvme-disks-on-a-linux-vm-
+  
+```
+# nvme.disks.temp
+```
+- ** https://learn.microsoft.com/en-us/azure/virtual-machines/enable-nvme-temp-faqs: the new v6 VMs come with raw, unformatted NVMe disks. Customers should initialize and format the disks into a file system of their preference after the VM starts up.
 
 ## NVMe.app.k8s.csi
 

@@ -138,6 +138,46 @@ kubectl get po -owide -w
         memory: "8Gi"  # limits to 8 GB de RAM
 ```
 
+
+> ## stress.k8s.stress
+
+```
+# stress.k8s.stress
+
+cat << EOF | kubectl create -f - 
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: stress
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: stress
+  template:
+    metadata:
+      labels:
+        app: stress
+    spec:
+      containers:
+      - name: stress
+        image: ubuntu
+        imagePullPolicy: IfNotPresent
+        env:
+        command: ["/bin/bash"]
+        args: ["-c", "apt-get update; apt-get install stress -y;stress --vm 1 --vm-bytes 100M"]
+        resources:
+          limits:
+            memory: 123Mi
+          requests:
+            memory: 100Mi
+EOF
+kubectl get po -w
+# k exec -it stress-764ff7cfbf-d2z5w -- /bin/bash
+# stress --vm 1 --vm-bytes 50M
+# k describe po -l app=stress | grep OOM # Reason:       OOMKilled
+```
+
 > ## stress.k8s.stress-ng
 - https://github.com/ColinIanKing/stress-ng#debian-packages-for-ubuntu: stress-ng (stress next generation)
 - https://wiki.ubuntu.com/Kernel/Reference/stress-ng
@@ -202,43 +242,4 @@ NAME                                CPU(cores)   CPU%   MEMORY(bytes)   MEMORY%
 aks-nodepool1-31060421-vmss000002   1783m        93%    4632Mi          79%
 
 k top po --sort-by=memory
-```
-
-> ## stress.k8s.stress
-
-```
-# stress.k8s.stress
-
-cat << EOF | kubectl create -f - 
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: stress
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: stress
-  template:
-    metadata:
-      labels:
-        app: stress
-    spec:
-      containers:
-      - name: stress
-        image: ubuntu
-        imagePullPolicy: IfNotPresent
-        env:
-        command: ["/bin/bash"]
-        args: ["-c", "apt-get update; apt-get install stress -y;stress --vm 1 --vm-bytes 100M"]
-        resources:
-          limits:
-            memory: 123Mi
-          requests:
-            memory: 100Mi
-EOF
-kubectl get po -w
-# k exec -it stress-764ff7cfbf-d2z5w -- /bin/bash
-# stress --vm 1 --vm-bytes 50M
-# k describe po -l app=stress | grep OOM # Reason:       OOMKilled
 ```

@@ -1,3 +1,10 @@
+- https://learn.microsoft.com/en-Us/azure/azure-monitor/containers/prometheus-metrics-enable?tabs=azure-portal
+- https://github.com/Azure/AKS/issues/4508: Retina-agent will be installed on clusters with ama-metrics and k8s versions >= 1.29
+- https://learn.microsoft.com/en-us/azure/aks/container-network-observability-guide#retina-oss
+- https://retina.sh/
+- https://github.com/microsoft/retina
+- https://github.com/microsoft/retina/discussions
+
 ```
 rg=rgmetrics
 az group create -n $rg -l $loc
@@ -100,5 +107,4 @@ kube_configmap_annotations{namespace="default",configmap="kube-root-ca.crt"} 1
 ...
 ```
 
-- https://learn.microsoft.com/en-Us/azure/azure-monitor/containers/prometheus-metrics-enable?tabs=azure-portal
-- https://github.com/Azure/AKS/issues/4508: Retina-agent will be installed on clusters with ama-metrics and k8s versions >= 1.29
+

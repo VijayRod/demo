@@ -50,6 +50,204 @@ Provisioner:           disk.csi.azure.com
 - https://learn.microsoft.com/en-us/azure/virtual-machines/managed-disks-overview#data-disk: Data disks are registered as SCSI drives and are labeled with a letter that you choose
 - https://learn.microsoft.com/en-us/azure/virtual-machines/disks-scalability-targets: For optimal performance, limit the number of highly utilized disks attached to the virtual machine to avoid possible throttling. If all attached disks aren't highly utilized at the same time, the virtual machine can support a larger number of disks.
 
+```
+# portal: Disk, Overview has Disk State = Attached, and the Managed By field displays the node name
+
+kubectl delete po nginx
+kubectl delete pvc pvc-azuredisk
+cat << EOF | kubectl create -f -
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: nginx
+  name: nginx
+spec:
+  containers:
+  - image: nginx
+    name: nginx
+    volumeMounts:
+    - name: azure
+      mountPath: /mnt/azure
+  volumes:
+  - name: azure
+    persistentVolumeClaim:
+      claimName: pvc-azuredisk
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvc-azuredisk
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  #storageClassName: managed-csi
+EOF
+kubectl get po -w
+
+k get po,pv,pvc,volumeattachment
+NAME        READY   STATUS    RESTARTS   AGE
+pod/nginx   1/1     Running   0          114s
+
+NAME                                                        CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                   STORAGECLASS   VOLUMEATTRIBUTESCLASS   REASON   AGE
+persistentvolume/pvc-e96a31a5-2246-449e-b90f-2b6933595e22   1Gi        RWO            Delete           Bound    default/pvc-azuredisk   default        <unset>                          110s
+
+NAME                                  STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   VOLUMEATTRIBUTESCLASS   AGE
+persistentvolumeclaim/pvc-azuredisk   Bound    pvc-e96a31a5-2246-449e-b90f-2b6933595e22   1Gi        RWO            default        <unset>                 113s
+
+NAME                                                                                                   ATTACHER             PV                                         NODE                                ATTACHED   AGE
+volumeattachment.storage.k8s.io/csi-859f338b71b4d725a1b92e6d8b78b36359b1de2c9bf293e7ffa96fc0f6bc8a20   disk.csi.azure.com   pvc-e96a31a5-2246-449e-b90f-2b6933595e22   aks-nodepool1-29436964-vmss000002   true       110s
+
+k describe po,pv,pvc,volumeattachment
+Name:             nginx
+Namespace:        default
+Priority:         0
+Service Account:  default
+Node:             aks-nodepool1-29436964-vmss000002/10.224.0.5
+Start Time:       Mon, 11 Aug 2025 18:06:01 +0000
+Labels:           run=nginx
+Annotations:      <none>
+Status:           Running
+IP:               10.244.2.35
+IPs:
+  IP:  10.244.2.35
+Containers:
+  nginx:
+    Container ID:   containerd://db132cf92ccaf9827e4b9091512c777a0befe4540299cc97f5682fa933138e4c
+    Image:          nginx
+    Image ID:       docker.io/library/nginx@sha256:84ec966e61a8c7846f509da7eb081c55c1d56817448728924a87ab32f12a72fb
+    Port:           <none>
+    Host Port:      <none>
+    State:          Running
+      Started:      Mon, 11 Aug 2025 14:06:24 +0000
+    Ready:          True
+    Restart Count:  0
+    Environment:    <none>
+    Mounts:
+      /mnt/azure from azure (rw)
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-qhkck (ro)
+Volumes:
+  azure:
+    Type:       PersistentVolumeClaim (a reference to a PersistentVolumeClaim in the same namespace)
+    ClaimName:  pvc-azuredisk
+    ReadOnly:   false
+  kube-api-access-qhkck:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    ConfigMapOptional:       <nil>
+    DownwardAPI:             true
+Events:
+  Type     Reason                  Age    From                     Message
+  ----     ------                  ----   ----                     -------
+  Warning  FailedScheduling        6m10s  default-scheduler        0/3 nodes are available: persistentvolumeclaim "pvc-azuredisk" not found. preemption: 0/3 nodes are available: 3 Preemption is not helpful for scheduling.
+  Normal   Scheduled               6m6s   default-scheduler        Successfully assigned default/nginx to aks-nodepool1-29436964-vmss000002
+  Normal   SuccessfulAttachVolume  5m53s  attachdetach-controller  AttachVolume.Attach succeeded for volume "pvc-e96a31a5-2246-449e-b90f-2b6933595e22"
+  Normal   Pulling                 5m51s  kubelet                  Pulling image "nginx"
+  Normal   Pulled                  5m44s  kubelet                  Successfully pulled image "nginx" in 6.707s (6.707s including waiting). Image size: 72223946 bytes.
+  Normal   Created                 5m44s  kubelet                  Created container: nginx
+  Normal   Started                 5m44s  kubelet                  Started container nginx
+
+
+Name:              pvc-e96a31a5-2246-449e-b90f-2b6933595e22
+Labels:            <none>
+Annotations:       pv.kubernetes.io/provisioned-by: disk.csi.azure.com
+                   volume.kubernetes.io/provisioner-deletion-secret-name:
+                   volume.kubernetes.io/provisioner-deletion-secret-namespace:
+Finalizers:        [external-provisioner.volume.kubernetes.io/finalizer kubernetes.io/pv-protection external-attacher/disk-csi-azure-com]
+StorageClass:      default
+Status:            Bound
+Claim:             default/pvc-azuredisk
+Reclaim Policy:    Delete
+Access Modes:      RWO
+VolumeMode:        Filesystem
+Capacity:          1Gi
+Node Affinity:
+  Required Terms:
+    Term 0:        topology.disk.csi.azure.com/zone in []
+Message:
+Source:
+    Type:              CSI (a Container Storage Interface (CSI) volume source)
+    Driver:            disk.csi.azure.com
+    FSType:
+    VolumeHandle:      /subscriptions/$subId/resourceGroups/MC_rg_aks_swedencentral/providers/Microsoft.Compute/disks/pvc-e96a31a5-2246-449e-b90f-2b6933595e22
+    ReadOnly:          false
+    VolumeAttributes:      csi.storage.k8s.io/pv/name=pvc-e96a31a5-2246-449e-b90f-2b6933595e22
+                           csi.storage.k8s.io/pvc/name=pvc-azuredisk
+                           csi.storage.k8s.io/pvc/namespace=default
+                           requestedsizegib=1
+                           skuname=StandardSSD_LRS
+                           storage.kubernetes.io/csiProvisionerIdentity=1754914100857-8712-disk.csi.azure.com
+Events:                <none>
+
+Name:          pvc-azuredisk
+Namespace:     default
+StorageClass:  default
+Status:        Bound
+Volume:        pvc-e96a31a5-2246-449e-b90f-2b6933595e22
+Labels:        <none>
+Annotations:   pv.kubernetes.io/bind-completed: yes
+               pv.kubernetes.io/bound-by-controller: yes
+               volume.beta.kubernetes.io/storage-provisioner: disk.csi.azure.com
+               volume.kubernetes.io/selected-node: aks-nodepool1-29436964-vmss000002
+               volume.kubernetes.io/storage-provisioner: disk.csi.azure.com
+Finalizers:    [kubernetes.io/pvc-protection]
+Capacity:      1Gi
+Access Modes:  RWO
+VolumeMode:    Filesystem
+Used By:       nginx
+Events:
+  Type    Reason                 Age                    From                                                                                               Message
+  ----    ------                 ----                   ----                                                                                               -------
+  Normal  WaitForPodScheduled    6m11s (x2 over 6m11s)  persistentvolume-controller                                                                        waiting for pod nginx to be scheduled
+  Normal  Provisioning           6m10s                  disk.csi.azure.com_csi-azuredisk-controller-5d665bc968-qm89h_d574326d-da61-4539-a48f-02f4cdd434dc  External provisioner is provisioning volume for claim "default/pvc-azuredisk"
+  Normal  ExternalProvisioning   6m10s                  persistentvolume-controller                                                                        Waiting for a volume to be created either by the external provisioner 'disk.csi.azure.com' or manually by the system administrator. If volume creation is delayed, please verify that the provisioner is running and correctly registered.
+  Normal  ProvisioningSucceeded  6m8s                   disk.csi.azure.com_csi-azuredisk-controller-5d665bc968-qm89h_d574326d-da61-4539-a48f-02f4cdd434dc  Successfully provisioned volume pvc-e96a31a5-2246-449e-b90f-2b6933595e22
+
+
+Name:         csi-859f338b71b4d725a1b92e6d8b78b36359b1de2c9bf293e7ffa96fc0f6bc8a20
+Namespace:
+Labels:       <none>
+Annotations:  csi.alpha.kubernetes.io/node-id: aks-nodepool1-29436964-vmss000002
+API Version:  storage.k8s.io/v1
+Kind:         VolumeAttachment
+Metadata:
+  Creation Timestamp:  2025-08-11T18:06:01Z
+  Finalizers:
+    external-attacher/disk-csi-azure-com
+  Resource Version:  34051
+  UID:               23084b6f-9dc8-4780-8551-28d30a657542
+Spec:
+  Attacher:   disk.csi.azure.com
+  Node Name:  aks-nodepool1-29436964-vmss000002
+  Source:
+    Persistent Volume Name:  pvc-e96a31a5-2246-449e-b90f-2b6933595e22
+Status:
+  Attached:  true
+  Attachment Metadata:
+    LUN:  0
+Events:   <none>
+
+k get sc
+NAME                    PROVISIONER          RECLAIMPOLICY   VOLUMEBINDINGMODE      ALLOWVOLUMEEXPANSION   AGE
+default (default)       disk.csi.azure.com   Delete          WaitForFirstConsumer   true                   125m
+
+k describe sc default
+Name:                  default
+IsDefaultClass:        Yes
+Annotations:           storageclass.kubernetes.io/is-default-class=true
+Provisioner:           disk.csi.azure.com
+Parameters:            skuname=StandardSSD_LRS
+AllowVolumeExpansion:  True
+MountOptions:          <none>
+ReclaimPolicy:         Delete
+VolumeBindingMode:     WaitForFirstConsumer
+Events:                <none>
+```
+
 > ## datadisk.error.MaxVolumeCountExceeded
 
 ```

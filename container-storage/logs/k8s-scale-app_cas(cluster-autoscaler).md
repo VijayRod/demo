@@ -121,3 +121,57 @@ aks-np2-52526230-vmss000002         Ready    <none>   32m   v1.30.7
 # default is 10 minutes
 az aks update -g $rg -n aks --cluster-autoscaler-profile scale-down-unneeded-time=60s   
 ```
+
+# cas.z.known-issues
+- https://github.com/openshift/kubernetes-autoscaler/blob/main/cluster-autoscaler/FAQ.md
+- https://learn.microsoft.com/en-us/azure/aks/cluster-autoscaler?tabs=azure-cli#use-the-cluster-autoscaler-profile
+
+# cas.z.known-issues.unready-nodes
+- https://github.com/openshift/kubernetes-autoscaler/blob/main/cluster-autoscaler/FAQ.md#how-does-ca-deal-with-unready-nodes: --max-total-unready-percentage and --ok-total-unready-count flags. Once there are more unready nodes in the cluster, CA stops all operations until the situation improves. 
+- https://github.com/kubernetes/autoscaler/issues/5959#issuecomment-1639639517
+
+```
+# cas.z.known-issues.unready-nodes.scale-down
+# It appears expected for the node controller to mark a node as not ready shortly after a scale-down, as I have observed the same behavior in my cluster.
+
+az aks update -g $rg -n aks --cluster-autoscaler-profile scan-interval=10s,scale-down-delay-after-add=1m,scale-down-unneeded-time=1m
+az aks show -g $rg -n aks --query autoScalerProfile
+az aks nodepool add -g $rg --cluster-name aks -n np2 --enable-cluster-autoscaler --min-count 1 --max-count 10 -s $vmsize -c 5 # --os-sku Mariner
+az aks nodepool show -g $rg --cluster-name aks -n np2 | jq '{count, enableAutoScaling, maxCount, minCount, scaleDownMode}'
+kubectl get no
+
+aks-np2-90825925-vmss000000         Ready    <none>   2m15s   v1.32.6
+aks-np2-90825925-vmss000001         Ready    <none>   2m30s   v1.32.6
+aks-np2-90825925-vmss000002         Ready    <none>   2m33s   v1.32.6
+aks-np2-90825925-vmss000003         Ready    <none>   2m21s   v1.32.6
+aks-np2-90825925-vmss000004         Ready    <none>   2m27s   v1.32.6
+sleep 60; kubectl get no
+aks-np2-90825925-vmss000000         NotReady   <none>   8m28s   v1.32.6
+aks-np2-90825925-vmss000001         NotReady   <none>   8m43s   v1.32.6
+aks-np2-90825925-vmss000002         NotReady   <none>   8m46s   v1.32.6
+aks-np2-90825925-vmss000003         Ready      <none>   8m34s   v1.32.6
+aks-np2-90825925-vmss000004         NotReady   <none>   8m40s   v1.32.6
+
+az aks update -g $rg -n aks --cluster-autoscaler-profile scale-down-unready-time=1m
+kubectl get no
+sleep 60; kubectl get no
+
+aks-np2-90825925-vmss000003         Ready    <none>   12m   v1.32.6
+```
+
+```
+# cas.z.known-issues.unready-nodes.scale-down
+
+az aks update -g $rg -n aks --cluster-autoscaler-profile scan-interval=10s,scale-down-delay-after-add=1m,scale-down-unneeded-time=1m,scale-down-unready-time=1m
+az aks show -g $rg -n aks --query autoScalerProfile
+az aks nodepool add -g $rg --cluster-name aks -n np2 --enable-cluster-autoscaler --min-count 1 --max-count 10 -s $vmsize -c 5 # --os-sku Mariner
+az aks nodepool show -g $rg --cluster-name aks -n np2 | jq '{count, enableAutoScaling, maxCount, minCount, scaleDownMode}'
+kubectl get no
+
+aks-np2-90825925-vmss000000         Ready    <none>   2m15s   v1.32.6
+aks-np2-90825925-vmss000001         Ready    <none>   2m30s   v1.32.6
+aks-np2-90825925-vmss000002         Ready    <none>   2m33s   v1.32.6
+aks-np2-90825925-vmss000003         Ready    <none>   2m21s   v1.32.6
+aks-np2-90825925-vmss000004         Ready    <none>   2m27s   v1.32.6
+```
+- https://github.com/kubernetes/autoscaler/blob/master/cluster-autoscaler/FAQ.md#how-does-scale-down-work

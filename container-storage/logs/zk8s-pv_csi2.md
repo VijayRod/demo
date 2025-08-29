@@ -401,6 +401,17 @@ sdc     ext4                   b3150c52-2bff-4283-9ce7-68be50db47ea brw-rw----
 sr0                                                                 brw-rw----
 ```
 
+```
+# example2
+
+k logs csi-azuredisk-node-* -c azuredisk
+<TIMESTAMP> stderr F I0208 <TIME>       1 utils.go:105] GRPC call: /csi.v1.Node/NodeStageVolume
+<TIMESTAMP> stderr F I0208 <TIME>       1 utils.go:106] GRPC request: ..
+<TIMESTAMP> stderr F W0208 <TIME>       1 azure_common_linux.go:110] failed to find disk by lun <LUN>, err <nil>, fall back to search in following device path: [/dev/disk/azure/scsi1/lun<LUN> /dev/disk/azure/data/by-lun/<LUN>]
+<TIMESTAMP> stderr F E0208 <TIME>       1 utils.go:110] GRPC error: rpc error: code = Internal desc = failed to find disk on lun <LUN>. azureDisk - findDiskByLun(<LUN>) failed with error(failed to find disk by lun <LUN>)
+```
+
+
 - https://github.com/andyzhangx/demo/blob/master/issues/azuredisk-issues.md#13-cannot-find-lun-for-disk
 - https://github.com/andyzhangx/demo/blob/master/linux/azuredisk/azuredisk-attachment-debugging.md#3-log-on-agent-node-and-check-device-info
 - https://github.com/kubernetes-sigs/azuredisk-csi-driver/issues/2777#issuecomment-2562539407

@@ -49,6 +49,23 @@ k get po,pvc
 ```
 
 ```
+# Measure max IOPS
+sudo fio --directory=/your_disk_mount --name=randrw2.dat --ioengine=libaio --iodepth=128 --rw=randwrite --bs=8k --direct=1 --size=1024M --numjobs=1 --runtime=30 --group_reporting --time_based
+Jobs: 1 (f=1): [w(1)][100.0%][r=0KiB/s,w=28.4MiB/s][r=0,w=3638 IOPS][eta 00m:00s]
+randrw2.dat: (groupid=0, jobs=1): err= 0: pid=22508: Tue Oct 18 18:57:40 2022
+  write: IOPS=3637, BW=28.4MiB/s (29.8MB/s)(854MiB/30045msec)
+   iops        : min= 3262, max= 4006, avg=3638.33, stdev=270.04, samples=60
+  
+# Measure max throughput
+sudo fio --directory=/your_disk_mount --name=randrw2.dat --ioengine=libaio --iodepth=128 --rw=randwrite --bs=512k --direct=1 --size=1024M --numjobs=1 --runtime=30 --group_reporting --time_based
+Jobs: 1 (f=1): [w(1)][100.0%][r=0KiB/s,w=165MiB/s][r=0,w=330 IOPS][eta 00m:00s]
+randrw2.dat: (groupid=0, jobs=1): err= 0: pid=30550: Tue Oct 18 18:02:00 2022
+  write: IOPS=335, BW=168MiB/s (176MB/s)(5094MiB/30376msec)
+   bw (  KiB/s): min=52224, max=285696, per=99.98%, avg=171679.23, stdev=25307.17, samples=60
+   iops        : min=  102, max=  558, avg=335.28, stdev=49.43, samples=60
+Run status group 0 (all jobs):
+  WRITE: bw=168MiB/s (176MB/s), 168MiB/s-168MiB/s (176MB/s-176MB/s), io=5094MiB (5341MB), run=30376-30376msec
+
 # To benchmark the OS disk:
 kubectl exec -it fiopod -- fio --name=benchtest --size=800m --filename=/tmp/test --direct=1 --rw=write --ioengine=libaio --bs=4k --iodepth=16 --numjobs=1 --time_based --runtime=60
 

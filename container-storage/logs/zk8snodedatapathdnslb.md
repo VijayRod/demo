@@ -1,4 +1,8 @@
 ```
+# refer to post hostNetwork
+```
+
+```
 layer 3 (tcp/udp):
 ./layer3 lb
 ./k8s svc lb

@@ -1,4 +1,6 @@
 ```
+# refer to cadvisor
+
 az resource create -g $rg -n myAzureMonitor --namespace microsoft.monitor --resource-type accounts --properties '{}'
 ```
 

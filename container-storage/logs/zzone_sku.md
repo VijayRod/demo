@@ -5,6 +5,26 @@
 ```
 
 ```
+# cli.test
+
+vmsize=Standard_FX16mds_v2; echo $vmsize
+
+rg=rgsku; echo $rg
+az group create -n $rg -l $loc
+
+az aks create -g $rg -n aks -s $vmsize # -c 2
+az aks show -g $rg -n aks --query agentPoolProfiles[0].vmSize -otsv
+az aks show -g $rg -n aks --query provisioningState
+az aks show -g $rg -n aks --query agentPoolProfiles[0].provisioningState
+
+az vm create -g $rg -n myvm --image Ubuntu2404 --admin-username azureuser --size $vmsize
+az vm show -g $rg -n myvm --query hardwareProfile.vmSize -otsv
+
+az vmss create -g $rg -n myvmss --image Ubuntu2404 --admin-username azureuser --vm-sku $vmsize
+az vmss show -g $rg -n myvmss --query sku.name -otsv
+```
+
+```
 # ps
 
 # list the available locations for your subscription

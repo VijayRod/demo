@@ -110,6 +110,35 @@ az aks maintenanceconfiguration list -g $rgname --cluster-name $clustername
 az aks show -g $rgname -n $clustername --query autoUpgradeProfile # No rows
 ```
 
+```
+# example: AKS-initiated maintenance is not permitted during the dates listed below (ensure that you also provide the required fields: startTime, durationHour, and schedule)
+az aks maintenanceconfiguration delete -g $rg --cluster-name aks -n default
+az rest --method PUT \
+  --uri "https://management.azure.com/subscriptions/$subId/resourceGroups/$rg/providers/Microsoft.ContainerService/managedClusters/aks/maintenanceConfigurations/default?api-version=2025-05-01" \
+  --body '{
+    "properties": {
+      "maintenanceWindow": {
+        "startTime": "00:00",
+        "durationHours": 4,
+        "schedule": {
+          "weekly": {
+            "dayOfWeek": "Monday",
+            "intervalWeeks": 1
+          }
+        },
+        "notAllowedDates": [
+          {
+            "start": "2025-08-25",
+            "end": "2025-08-31"
+          }
+        ]
+      }
+    }
+  }'
+az aks maintenanceconfiguration list -g $rg --cluster-name aks
+```
+
+
 - https://azure.microsoft.com/id-id/updates/public-preview-planned-maintenance-windows-in-aks/
 - https://learn.microsoft.com/en-us/azure/aks/planned-maintenance
   

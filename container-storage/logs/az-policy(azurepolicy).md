@@ -71,12 +71,37 @@ portal, Azure Policy: Complaince
 > ## aks.Running containers as root user should be avoided
 ```
 # apply SecurityContext at both the container level and the pod level
+
+# example
+kind: pod
+spec:
+  securityContext:
+    fsGroup: 2200
+    runAsGroup: 1000
+    runAsNonRoot: true
+    runAsUser: 1000
+    supplementalGroups:
+    - 1
+    - 65535
+  containers:
+  - name: n
+    securityContext:
+      allowPrivilegeEscalation: false
+      privileged: false
+      readOnlyRootFilesystem: true
+      runAsGroup: 1000
+      runAsNonRoot: true
+      runAsUser: 1000
 ```
 - https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/extensions/avoid-running-as-root-in-containers
 - https://stackoverflow.com/questions/69387966/how-to-fulfill-aks-advisor-recommendation-running-containers-as-root-user-shoul: bcs when the container image is build to with UID 0 it is still root. You would need both settings: runAsNonRoot: true & runAsUser: 1001
 - https://snyk.io/blog/10-kubernetes-security-context-settings-you-should-understand/
 - https://www.azadvertizer.net/azpolicyadvertizer_all.html: Ideally, search using the policy id
 - https://github.com/Azure/azure-policy/blob/master/built-in-policies/policyDefinitions/Kubernetes/AllowedUsersGroups.json
+- https://kubernetes.io/docs/tasks/configure-pod-container/security-context/: security context settings -- please see SecurityContext for a comprehensive list
+  - https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.33/#securitycontext-v1-core
+  - https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.33/#podsecuritycontext-v1-core
+  - or refer to https://kubernetes.io/docs/reference/kubernetes-api/
   
 ## az-policy.custom.example
 

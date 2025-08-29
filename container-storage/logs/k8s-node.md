@@ -1,0 +1,1 @@
+- https://kubernetes.io/docs/reference/kubernetes-api/cluster-resources/node-v1/

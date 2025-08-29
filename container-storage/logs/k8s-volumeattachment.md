@@ -1,4 +1,7 @@
 ```
+# refer to csi azuredisk
+# mitigate pod mount failure caused by unattached disk: kubectl delete volumeattachment
+
 kubectl get volumeattachment
 kubectl patch volumeattachment csi-234sdf -p '{"metadata":{"finalizers":null}}'
 ```

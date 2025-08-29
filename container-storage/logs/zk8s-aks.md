@@ -14,6 +14,7 @@
 - https://azure.github.io/AKS/: AKS Engineering Blog
 - https://github.com/Azure/AKS/?tab=readme-ov-file#important-links
 - https://cloud.google.com/kubernetes-engine/docs/troubleshooting
+- https://kubernetes.io/docs/reference/kubernetes-api/
 
 ```
 # See the section on aks op

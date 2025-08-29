@@ -4,3 +4,8 @@
 - https://spec.openapis.org/oas/latest.html
 - https://swagger.io/about/: The Swagger Specification was donated to the Linux foundation and renamed the OpenAPI. Specification to formally standardize the way REST APIs are described
 - https://swagger.io/specification/
+
+```
+# swagger.apps
+```
+- https://github.com/kubernetes/kubernetes/blob/release-1.33/api/openapi-spec/swagger.json

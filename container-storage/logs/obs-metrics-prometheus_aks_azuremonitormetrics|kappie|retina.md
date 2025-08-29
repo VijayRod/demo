@@ -4,6 +4,10 @@
 - https://retina.sh/
 - https://github.com/microsoft/retina
 - https://github.com/microsoft/retina/discussions
+- https://learn.microsoft.com/en-us/azure/azure-monitor/containers/container-insights-overview: See Enable monitoring for Kubernetes clusters to enable Managed Prometheus and Container Insights on your cluster.
+- https://learn.microsoft.com/en-us/azure/aks/monitor-aks: Enable monitoring for Kubernetes clusters - Azure Monitor
+- https://github.com/Azure/prometheus-collector/blob/main/otelcollector/configmaps/ama-metrics-settings-configmap.yaml:   default-scrape-settings-enabled: |-    networkobservabilityRetina = true
+- https://github.com/Azure/prometheus-collector/blob/main/otelcollector/deploy/retina/custom-files/network-observability-service.yaml
 
 ```
 rg=rgmetrics
@@ -77,6 +81,86 @@ NAME                          DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE
 daemonset.apps/retina-agent   1         1         1       1            1           <none>          8m8s
     Image:          mcr.microsoft.com/containernetworking/kappie-init:v0.1.4
     Image:         mcr.microsoft.com/containernetworking/kappie-agent:v0.1.4
+```
+
+```
+k describe cm -n kube-system retina-config
+Name:         retina-config
+Namespace:    kube-system
+Labels:       app.kubernetes.io/managed-by=Helm
+              helm.toolkit.fluxcd.io/name=kappie-adapter-helmrelease
+              helm.toolkit.fluxcd.io/namespace=6899dce2794f950001146d7a
+Annotations:  meta.helm.sh/release-name: aks-managed-kappie
+              meta.helm.sh/release-namespace: kube-system
+Data
+====
+config.yaml:
+----
+apiServer:
+  host: "0.0.0.0"
+  port: 10093
+logLevel: info
+enabledPlugin: ["dropreason","packetforward","linuxutil"]
+metricsInterval: 10
+enableTelemetry: true
+enablePodLevel: false
+enableAnnotations: false
+bypassLookupIPOfInterest: true
+dataAggregationLevel: "high"
+BinaryData
+====
+Events:  <none>
+
+
+k describe cm -n kube-system retina-config-win
+Name:         retina-config-win
+Namespace:    kube-system
+Labels:       app.kubernetes.io/managed-by=Helm
+              helm.toolkit.fluxcd.io/name=kappie-adapter-helmrelease
+              helm.toolkit.fluxcd.io/namespace=6899dce2794f950001146d7a
+Annotations:  meta.helm.sh/release-name: aks-managed-kappie
+              meta.helm.sh/release-namespace: kube-system
+Data
+====
+config.yaml:
+----
+apiServer:
+  host: "0.0.0.0"
+  port: 10093
+logLevel: info
+enabledPlugin: ["hnsstats"]
+metricsInterval: 10
+enableAnnotations: false
+enablePodLevel: false
+enableTelemetry: true
+bypassLookupIPOfInterest: true
+BinaryData
+====
+Events:  <none>
+
+k describe cm -n kube-system ama-metrics-settings-configmap
+Error from server (NotFound): configmaps "ama-metrics-settings-configmap" not found
+
+k describe svc -n kube-system network-observability
+Name:                     network-observability
+Namespace:                kube-system
+Labels:                   app.kubernetes.io/managed-by=Helm
+                          helm.toolkit.fluxcd.io/name=kappie-adapter-helmrelease
+                          helm.toolkit.fluxcd.io/namespace=6899dce2794f950001146d7a
+Annotations:              meta.helm.sh/release-name: aks-managed-kappie
+                          meta.helm.sh/release-namespace: kube-system
+Selector:                 <none>
+Type:                     ClusterIP
+IP Family Policy:         SingleStack
+IP Families:              IPv4
+IP:                       10.0.241.189
+IPs:                      10.0.241.189
+Port:                     retina  10093/TCP
+TargetPort:               10093/TCP
+Endpoints:                <none>
+Session Affinity:         None
+Internal Traffic Policy:  Cluster
+Events:                   <none>
 ```
 
 ```

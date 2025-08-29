@@ -123,6 +123,30 @@ k get no -owide # aks-nodepool1-31079220-vmss000004   Ready    <none>   4h44m   
 169.254.169.254: (reserved by azure) for the service endpoint for instance metadata
 ```
 
+```
+ip -s link
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN mode DEFAULT group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    RX:  bytes packets errors dropped  missed   mcast
+       1376080    9260      0       0       0       0
+    TX:  bytes packets errors dropped carrier collsns
+       1376080    9260      0       0       0       0
+```
+
+> ## .traffic..nic
+
+```
+# packet drops
+# indicates dropped or missed packets
+ip -s link
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN mode DEFAULT group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    RX:  bytes packets errors dropped  missed   mcast
+       1376080    9260      0       0       0       0
+    TX:  bytes packets errors dropped carrier collsns
+       1376080    9260      0       0       0       0
+```       
+
 > ## .traffic.k8s
 
 ```

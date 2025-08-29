@@ -1,6 +1,25 @@
 ## k8s-cni-calico
 
 ```
+rg=rgcal
+az group create -n $rg -l $loc
+az aks create -g $rg -n aks --network-plugin azure --network-policy calico
+# az aks create -g $rg -n akscal --network-plugin azure --network-policy calico
+az aks get-credentials -g $rg -n aks --overwrite-existing
+kubectl get no; kubectl get po -A; kubectl cluster-info | grep control
+
+k api-resources | grep kpoli
+globalnetworkpolicies                                   crd.projectcalico.org/v1            false        GlobalNetworkPolicy
+networkpolicies                                         crd.projectcalico.org/v1            true         NetworkPolicy
+networkpolicies                     netpol              networking.k8s.io/v1                true         NetworkPolicy
+adminnetworkpolicies                anp                 policy.networking.k8s.io/v1alpha1   false        AdminNetworkPolicy
+
+k get networkpolicy,networkpolicy.crd.projectcalico.org,globalnetworkpolicy -A
+NAMESPACE     NAME                                                 POD-SELECTOR             AGE
+kube-system   networkpolicy.networking.k8s.io/konnectivity-agent   app=konnectivity-agent   27m
+```
+
+```
 akscal
 aks-nodepool1-36628055-vmss000000:/# ps -aux | grep calico
 10001       7074  0.0  0.0   1156     4 ?        Ss   04:14   0:00 /sbin/tini -- calico-typha
@@ -245,6 +264,106 @@ calico-system     calico-typha-78fc59998c-8flzt              1/1     Running   0
 ```
 
 - https://www.tigera.io/blog/byocni-introducing-calico-cni-for-azure-aks/
+
+```
+# pod.example
+
+k run nginx --image=nginx
+k get po -w
+
+NAME    READY   STATUS              RESTARTS   AGE
+nginx   1/1     Running             0          7s
+
+k exec -it nginx -- curl google.com -I
+HTTP/1.1 301 Moved Permanently
+
+k delete globalnetworkpolicy deny-all-egress
+cat << EOF | kubectl create -f -
+apiVersion: crd.projectcalico.org/v1
+kind: GlobalNetworkPolicy
+metadata:
+  name: deny-all-egress
+spec:
+  selector: all()
+  types:
+    - Egress
+  egress:
+    - action: Deny
+EOF
+
+k exec -it nginx -- curl google.com -I
+curl: (6) Could not resolve host: google.com
+command terminated with exit code 6
+```
+
+```
+k delete networkpolicy allow-egress-to-internet
+cat << EOF | kubectl create -f -
+apiVersion: crd.projectcalico.org/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-egress-to-internet
+  namespace: default
+spec:
+  selector: app == 'frontend'
+  types:
+    - Egress
+  egress:
+    - action: Allow
+      destination:
+        nets:
+          - 0.0.0.0/0
+      protocol: TCP
+EOF
+k get networkpolicy # No resources found in default namespace
+kubectl get networkpolicy.crd.projectcalico.org # allow-egress-to-internet   77s
+
+k delete globalnetworkpolicy deny-google-egress
+cat << EOF | kubectl create -f -
+apiVersion: crd.projectcalico.org/v1
+kind: GlobalNetworkPolicy
+metadata:
+  name: deny-google-egress
+spec:
+  order: 100
+  types:
+    - Egress
+  egress:
+    - action: Deny
+      destination:
+        nets:
+          - 142.250.0.0/15   # Intervalo de IPs do Google
+    - action: Allow
+EOF
+k get globalnetworkpolicy # deny-google-egress
+
+k delete ns demo
+k create ns demo
+k delete networkpolicy demo-policy
+cat << EOF | kubectl create -f -
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: demo-policy
+  namespace: demo
+spec:
+  podSelector:
+    matchLabels:
+      app: server
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: client
+    ports:
+    - port: 80
+      protocol: TCP
+EOF
+k get networkpolicy demo-policy -A # demo          demo-policy          app=server               30s
+```
+
+- https://learn.microsoft.com/en-us/azure/aks/use-network-policies#test-connectivity-with-network-policy
+
 
 ## k8s-cni-calico.spec.installation
 

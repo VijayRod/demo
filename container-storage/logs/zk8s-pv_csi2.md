@@ -288,9 +288,20 @@ I1015 11:31:13.209240       1 utils.go:102] GRPC request: {"staging_target_path"
 ## k8s-csi.datapath
 
 ```
+# storage client: The CSI drivers aren't responsible for data plane operations; that's handled by the storage client. If the initial error occurred more than a month ago, we might not have sufficient information to identify the root cause because of log roll-over and retention limits.
+```
+
+```
 # data.corruption
 # the data path does not go through the CSI driver. The storage team is appropriate for this issue, which lies between the driver (blobfuse2, cifs) and storage.
 ```
+
+```
+# ext4 metadata corruption: The syslog errors indicate ext4 metadata corruption. Running fsck may help recover the disks, but workloads will need to be stopped during this process. The CSI driver will automatically run fsck when remounting, so you can cordon the affected node, delete the pods, and allow them to be recreated on other nodes.
+```
+
+https://github.com/kubernetes-sigs/azuredisk-csi-driver/blob/master/deploy/example/logs/0.3.0/csi-azuredisk-node.log: mount_linux.go:441] Checking for issues with fsck on disk: /devhost/disk/azure/scsi1/lun0
+https://github.com/kubernetes/kubernetes/blob/master/staging/src/k8s.io/mount-utils/mount_linux.go: checkAndRepairFilesystem. "Checking for issues with fsck on disk: %s"
 
 ## k8s-csi.error.GetDiskLun.Cannot find Lun for disk
 

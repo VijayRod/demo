@@ -91,7 +91,10 @@ az aks nodepool upgrade --node-image-only -g --cluster-name -n # node pool recon
 az aks nodepool stop -g $rg --cluster-name aks -n nodepool1
 az aks nodepool update -g $rg --cluster-name aks -n nodepool1 -c 0 # only in a user node pool and only when cluster-autoscaler is not enabled for that node pool
 
-# mitigate.VMSS (unsupported, for test purpose)
+# mitigate.VMSS (not supported; intended for mitigation or testing purpose only)
+az vmss list-instances -g -n -otable # list
+az vmss list-instances -g -n --query "[].instanceId" # list 
+az vmss reimage -g -n --instance-ids 1 # extension error during VM provisioning (K8SAPIServerDNSLookupFailVMExtensionError): reimage or delete the VM instance
 az vmss update -g $rg -n # reconcile
 az vmss delete-instances -g $rg -n myVMSS --instance-ids "*" 
 az vmss scale -g $rg -n myVMSS --new-capacity 0 # scale down

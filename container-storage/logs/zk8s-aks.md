@@ -99,6 +99,8 @@ az vmss update -g $rg -n # reconcile
 az vmss delete-instances -g $rg -n myVMSS --instance-ids "*" 
 az vmss scale -g $rg -n myVMSS --new-capacity 0 # scale down
 az vmss delete -g $rg -n myVMSS # then reconcile the cluster to automatically recreate the vmss
+
+etcd: helm revisionhistorylimit, 
 ```
 
 ```

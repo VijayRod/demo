@@ -99,6 +99,12 @@ az vmss update -g $rg -n # reconcile
 az vmss delete-instances -g $rg -n myVMSS --instance-ids "*" 
 az vmss scale -g $rg -n myVMSS --new-capacity 0 # scale down
 az vmss delete -g $rg -n myVMSS # then reconcile the cluster to automatically recreate the vmss
+
+# mitigate.VMSS.VM (not supported; intended for mitigation or testing purpose only)
+az aks nodepool delete-machines -g rg2 --cluster-name aks --nodepool-name nodepool1 --machine-names aks-nodepool1-13396952-vmss00000j aks-nodepool1-13396952-vmss00000k
+# You can restart the VM directly from the portal.
+# You can reimage the virtual machine directly through the portal # Reimaging a node reinstalls the operating system along with all configured components, such as GPU drivers.
+
 ```
 
 ```
@@ -237,6 +243,14 @@ total 2216
 
 rm /tmp/capture.pcap
 k cp nsenter-azki7c:/tmp/capture.pcap /tmp/capture.pcap
+```
+
+```
+# aks.logs.node.non-core.gpu
+
+nvidia-smi
+nvidia-bug-report.sh # built-in tool that comes with the NVIDIA driver installation
+
 ```
 
 ## aks.core.debug..unexpected

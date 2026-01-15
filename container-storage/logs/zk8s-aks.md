@@ -105,6 +105,9 @@ az aks nodepool delete-machines -g rg2 --cluster-name aks --nodepool-name nodepo
 # You can restart the VM directly from the portal.
 # You can reimage the virtual machine directly through the portal # Reimaging a node reinstalls the operating system along with all configured components, such as GPU drivers.
 
+# mitigate.VMSS.VM.extension.cse
+# https://github.com/Azure/AgentBaker/blob/main/parts/linux/cloud-init/artifacts/cse_helpers.sh
+
 ```
 
 ```
@@ -125,6 +128,7 @@ az aks nodepool delete-machines -g rg2 --cluster-name aks --nodepool-name nodepo
   - The component version can be found on the component release page, for example, in https://github.com/kubernetes-sigs/azuredisk-csi-driver/releases
   - https://github.com/Azure/AgentBaker/releases: contains the node image version corresponding to the "VHD Component Updates" PR (or see open PRs) which has the component version
     - Alternatively, https://github.com/Azure/AgentBaker/blob/master/vhdbuilder/release-notes/AKSAzureLinux/gen2/latest.txt though it cannot have the ones in open PR
+    - https://github.com/Azure/AgentBaker/tree/main/vhdbuilder/release-notes
   - https://releases.aks.azure.com/
 - release.components.public, along with the node-image and storage components
   - https://github.com/Azure/azure-cli-extensions

@@ -248,8 +248,13 @@ k cp nsenter-azki7c:/tmp/capture.pcap /tmp/capture.pcap
 ```
 # aks.logs.node.non-core.gpu
 
-nvidia-smi
-nvidia-bug-report.sh # built-in tool that comes with the NVIDIA driver installation
+nvidia-smi  
+# In PATH; can run from any directory or via privileged pod using chroot/host, but SSH is preferred.
+
+nvidia-bug-report.sh
+# built-in tool that comes with the NVIDIA driver installation, which also includes the NVIDIA device plugin
+# In PATH; can run from any directory or via privileged pod using chroot/host, but SSH is preferred.  
+# Outputs `nvidia-bug-report.log.gz` in the directory where the script is executed.
 
 ```
 

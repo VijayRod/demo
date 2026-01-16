@@ -153,13 +153,13 @@ az aks nodepool delete-machines -g rg2 --cluster-name aks --nodepool-name nodepo
 - https://github.com/feiskyer/kubernetes-handbook/blob/master/README.md
 
 ```
-# aks.logs.node.core.conn
+# aks.logs.node.core.network.conn
 curl -kvv https://mcr.microsoft.com
 curl -kvv google.com
 ```
 
 ```
-# aks.logs.node.core.daemonset
+# aks.logs.node.core.network.daemonset
 # example scenario: TLS handshake errors occur only within the first five minutes of node provisioning
 
 # 1-minute (60 seconds) tcpdump capture
@@ -220,7 +220,7 @@ aks-nodepool1-23208673-vmss000000   Ready    <none>   3h    v1.32.5   10.224.0.5
 ```
 
 ```
-# aks.logs.node.core.daemonset.hostPath
+# aks.logs.node.core.network.daemonset.hostPath
 
 # update /host-tmp (tcpdump path, volumeMounts, volumes) using hostPath to enable automatic and direct copying to the node (VM)
             timeout 60 tcpdump -i any -w /host-tmp/capture.pcap || echo "Capture ended with code $?" ; \
@@ -247,6 +247,55 @@ total 2216
 
 rm /tmp/capture.pcap
 k cp nsenter-azki7c:/tmp/capture.pcap /tmp/capture.pcap
+```
+
+```
+# aks.logs.node.core.network.dns.private-endpoint (PE)
+# private endpoint configured with private DNS zone for the private ACR
+
+root@aks-nodepool1-13396952-vmss00000L:/# nslookup myacr116.azurecr.io 168.63.129.16
+Server:         168.63.129.16
+Address:        168.63.129.16#53
+Non-authoritative answer:
+myacr116.azurecr.io     canonical name = myacr116.privatelink.azurecr.io.
+Name:   myacr116.privatelink.azurecr.io
+Address: 10.224.0.9
+
+root@aks-nodepool1-13396952-vmss00000L:/# nslookup myacr116.azurecr.io 10.0.0.10
+Server:         10.0.0.10
+Address:        10.0.0.10#53
+Non-authoritative answer:
+myacr116.azurecr.io     canonical name = myacr116.privatelink.azurecr.io.
+Name:   myacr116.privatelink.azurecr.io
+Address: 10.224.0.9
+
+root@aks-nodepool1-13396952-vmss00000L:/# curl -v myacr116.azurecr.io
+*   Trying 10.224.0.9:80...
+* Connected to myacr116.azurecr.io (10.224.0.9) port 80 (#0)
+> GET / HTTP/1.1
+> Host: myacr116.azurecr.io
+> User-Agent: curl/7.81.0
+> Accept: */*
+>
+* Mark bundle as not supporting multiuse
+< HTTP/1.1 301 Moved Permanently
+< Server: AzureContainerRegistry
+< Date: Fri, 16 Jan 2026 15:44:16 GMT
+< Content-Type: text/html
+< Content-Length: 179
+< Connection: keep-alive
+< Location: https://azure.microsoft.com/services/container-registry/
+< Strict-Transport-Security: max-age=31536000; includeSubDomains
+<
+<html>
+<head><title>301 Moved Permanently</title></head>
+<body>
+<center><h1>301 Moved Permanently</h1></center>
+<hr><center>AzureContainerRegistry</center>
+</body>
+</html>
+* Connection #0 to host myacr116.azurecr.io left intact
+
 ```
 
 ```

@@ -309,6 +309,8 @@ nvidia-bug-report.sh
 # In PATH; can run from any directory or via privileged pod using chroot/host, but SSH is preferred.  
 # Outputs `nvidia-bug-report.log.gz` in the directory where the script is executed.
 
+az aks nodepool add -g rg2 --cluster-name aks -n npgpu -s Standard_NC4as_T4_v3 --mode user # Standard_NC24ads_A100_v4 # swedencentral
+az aks nodepool scale -g rg2 --cluster-name aks -n npgpu -c 0
 ```
 
 ## aks.core.debug..unexpected

@@ -299,6 +299,14 @@ root@aks-nodepool1-13396952-vmss00000L:/# curl -v myacr116.azurecr.io
 ```
 
 ```
+# aks.logs.node.non-core.bpf_jit_limit
+cat /proc/sys/net/core/bpf_jit_limit
+cat /proc/vmallocinfo | grep bpf_jit | awk '{s+=$2} END {print s}'
+bpftool prog show
+bpftool link show
+```
+
+```
 # aks.logs.node.non-core.gpu
 
 nvidia-smi  
@@ -311,6 +319,13 @@ nvidia-bug-report.sh
 
 az aks nodepool add -g rg2 --cluster-name aks -n npgpu -s Standard_NC4as_T4_v3 --mode user # Standard_NC24ads_A100_v4 # swedencentral
 az aks nodepool scale -g rg2 --cluster-name aks -n npgpu -c 0
+```
+
+```
+# aks.logs.node.non-core.run-command
+kubectl debug node/aks-abcd-12345-vmss00000y -it --image=mcr.microsoft.com/cbl-mariner/busybox:2.0 -- chroot /host
+az vmss run-command invoke -g $noderg -n aks-abcd-12345-vmss --instance-id 5 --scripts “cat /proc/sys/net/core/bpf_jit_limit
+&& echo ' ' && cat /proc/vmallocinfo | grep bpf_jit | awk '{s+=$2} END {print s}'” --command-id RunShellScript
 ```
 
 ## aks.core.debug..unexpected

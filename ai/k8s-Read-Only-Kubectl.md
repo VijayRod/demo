@@ -75,7 +75,7 @@ Read‑only kubectl with whitelisted commands and flags; limited output formats;
 ║  • describe pod <pod-name> -n <namespace>                                    ║
 ║  • top nodes                                                                  ║
 ║  • top pods -n kube-system --sort-by=cpu                                     ║
-║  • logs -l app=nginx | tail -100 | grep error                                ║
+║  • logs -l k8s-app=kube-dns -n kube-system | tail -100 | grep error          ║
 ║  • get pods -A | grep -i pending                                             ║
 ║  • get pods | awk '{print $1,$3}' | head -20                                 ║
 ║  • get events | grep Warning | head -50                                      ║
@@ -89,8 +89,9 @@ Read‑only kubectl with whitelisted commands and flags; limited output formats;
 ║  • Watch mode (-w/--watch) not allowed                                       ║
 ║  • --all-namespaces: Blocked for endpoints, events, ingress, jobs, cronjobs, ║
 ║                      networkpolicy, pvc, services (namespace-scoped types)   ║
-║  • LOGS*: -l kubernetes.azure.com/managedby=aks applied when not specified;  ║
-║           --tail=10000 auto-applied when no tail flag present                ║
+║  • LOGS*: ALWAYS adds -l kubernetes.azure.com/managedby=aks if not present;  ║
+║           ALWAYS adds --tail=-1 when no --tail flag is specified             ║
+║           (else kubectl defaults to 10 lines when a selector is added)        ║
 ║  • TOP*: 'top pods -A' not allowed (metrics-server protection)               ║
 ║  • GREP: max 2 greps, pattern ≤200 chars, -A/-B/-C ≤20 lines                 ║
 ║  • AWK: safe subset only (column extraction, no BEGIN/END/conditions)        ║

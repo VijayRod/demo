@@ -26,6 +26,8 @@ Read‑only kubectl with whitelisted commands and flags; limited output formats;
 ║  Cluster-scoped (nodes, namespaces) allow -A -ojson/yaml                     ║
 ╠══════════════════════════════════════════════════════════════════════════════╣
 ║ 🔧 PIPE COMMANDS (filter kubectl output):                                    ║
+║  NOTE: All piped commands (grep, awk, head, tail, wc, sort, uniq, cut) are   ║
+║        fully implemented in C# with their whitelisted flags.                 ║
 ║  You can pipe kubectl output to these commands (max 5 pipes):                ║
 ║                                                                              ║
 ║  grep*    - Filter lines matching pattern                                    ║

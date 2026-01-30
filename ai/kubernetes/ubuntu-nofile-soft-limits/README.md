@@ -2,6 +2,12 @@
 
 Configure `LimitNOFILE` and `LimitNOFILESoft` for containerd on Ubuntu 24.04 AKS nodes to ensure pods inherit the correct open file limits.
 
+## Summary
+
+Ubuntu 24.04 AKS nodes default to `LimitNOFILESoft=1024`, causing pods to inherit insufficient file descriptor limits and potentially fail with "too many open files" errors. The expected behavior is `LimitNOFILE=1048576` (hard limit) and `LimitNOFILESoft=1048576` (soft limit), matching Ubuntu 22.04+ defaults so pods inherit `ulimit -n 1048576`. This can be configured using a Kubernetes DaemonSet.
+
+> **⚠️ Important:** Test this solution in a **development/staging environment** before deploying to production. The DaemonSet restarts containerd on all matching nodes, which may cause temporary pod disruptions.
+
 ## Problem
 
 Ubuntu 24.04 nodes ship with `LimitNOFILESoft=1024` (default), but to match Ubuntu 22.04+ behavior and ensure proper pod resource limits, this should be `1048576`.
@@ -132,3 +138,7 @@ root@aks-np24-84341029-vmss000001:/# systemctl show containerd -p LimitNOFILE -p
 LimitNOFILE=1048576
 LimitNOFILESoft=1048576
 ```
+
+## References
+
+- [AgentBaker containerd.service](https://github.com/Azure/AgentBaker/blob/main/parts/linux/cloud-init/artifacts/containerd.service) - Reference for permanent VHD configuration

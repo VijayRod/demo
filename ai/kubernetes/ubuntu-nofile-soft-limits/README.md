@@ -141,4 +141,4 @@ LimitNOFILESoft=1048576
 
 ## References
 
-- [AgentBaker containerd.service](https://github.com/Azure/AgentBaker/blob/main/parts/linux/cloud-init/artifacts/containerd.service) - Reference for permanent VHD configuration
+- [AgentBaker containerd.service](https://github.com/Azure/AgentBaker/blob/main/parts/linux/cloud-init/artifacts/containerd.service)

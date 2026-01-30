@@ -1,10 +1,10 @@
 # Containerd file descriptor limits (Ubuntu 24.04)
 
-Configure `LimitNOFILE` and `LimitNOFILESoft` for containerd on Ubuntu 24.04 AKS nodes to ensure pods inherit the correct open file limits.
+Configure `LimitNOFILE` and `LimitNOFILESoft` for containerd on Ubuntu 24.04 nodes to ensure pods inherit the correct open file limits.
 
 ## Summary
 
-Ubuntu 24.04 AKS nodes default to `LimitNOFILESoft=1024`, causing pods to inherit insufficient file descriptor limits and potentially fail with "too many open files" errors. The expected behavior is `LimitNOFILE=1048576` (hard limit) and `LimitNOFILESoft=1048576` (soft limit), matching Ubuntu 22.04+ defaults so pods inherit `ulimit -n 1048576`. This can be configured using a Kubernetes DaemonSet.
+Ubuntu 24.04 nodes default to `LimitNOFILESoft=1024`, causing pods to inherit insufficient file descriptor limits and potentially fail with "too many open files" errors. The expected behavior is `LimitNOFILE=1048576` (hard limit) and `LimitNOFILESoft=1048576` (soft limit), matching Ubuntu 22.04+ defaults so pods inherit `ulimit -n 1048576`. This can be configured using a Kubernetes DaemonSet.
 
 > **⚠️ Important:** Test this solution in a **development/staging environment** before deploying to production. The DaemonSet restarts containerd on all matching nodes, which may cause temporary pod disruptions.
 

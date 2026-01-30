@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: set-nofile-soft-ubuntu2404
+  labels:
+    app: set-nofile-soft-ubuntu2404
+spec:
+  selector:
+    matchLabels:
+      app: set-nofile-soft-ubuntu2404
+  template:
+    metadata:
+      labels:
+        app: set-nofile-soft-ubuntu2404
+    spec:
+      hostPID: true
+      nodeSelector:
+        kubernetes.azure.com/os-sku-effective: Ubuntu2404
+        kubernetes.azure.com/mode: user
+      tolerations:
+        - operator: Exists
+      containers:
+        - name: set-soft-hard
+          image: ubuntu:24.04
+          securityContext:
+            privileged: true
+          command:
+            - /bin/bash
+            - -c
+            - |
+              set -euxo pipefail
+              HARD_DESIRED=1048576
+              SOFT_DESIRED=1048576
+              DROPIN_DIR="/host/etc/systemd/system/containerd.service.d"
+              DROPIN_FILE="${DROPIN_DIR}/99-nofile.conf"
+              
+              h() { nsenter -t 1 -m -u -i -n -- /bin/bash -lc "$*"; }
+              
+              SOFT_BEFORE="$(h 'systemctl show containerd -p LimitNOFILESoft --value' || echo 0)"
+              HARD_CURRENT="$(h 'systemctl show containerd -p LimitNOFILE --value' || echo 0)"
+              echo "[INFO] before: soft=${SOFT_BEFORE} hard=${HARD_CURRENT}"
+              
+              if [ "${HARD_CURRENT}" -ne "${HARD_DESIRED}" ] || [ "${SOFT_BEFORE}" -ne "${SOFT_DESIRED}" ]; then
+                echo "[CHANGE] hard: ${HARD_CURRENT} → ${HARD_DESIRED}, soft: ${SOFT_BEFORE} → ${SOFT_DESIRED}"
+                mkdir -p "${DROPIN_DIR}"
+                
+                printf '[Service]\nLimitNOFILE=1048576:1048576\n' > "${DROPIN_FILE}"
+                
+                echo "[WRITE] ${DROPIN_FILE}"
+                h 'systemctl daemon-reload'
+                h 'systemctl restart containerd'
+                echo "[APPLIED] daemon-reload + restart containerd"
+              else
+                echo "[NOCHANGE] already at desired values"
+              fi
+              
+              echo "[AFTER] systemd values:"
+              h 'systemctl show containerd -p LimitNOFILE -p LimitNOFILESoft' || true
+              
+              echo "[DONE] Configuration complete. Pod will sleep indefinitely."
+              sleep infinity
+          volumeMounts:
+            - name: host-etc
+              mountPath: /host/etc
+      volumes:
+        - name: host-etc
+          hostPath:
+            path: /etc
+            type: Directory
+      restartPolicy: Always

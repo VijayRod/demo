@@ -20,6 +20,9 @@ az aks show -g $rg -n aks --query agentPoolProfiles[0].provisioningState
 az vm create -g $rg -n myvm --image Ubuntu2404 --admin-username azureuser --size $vmsize
 az vm show -g $rg -n myvm --query hardwareProfile.vmSize -otsv
 
+az vm list-skus --resource-type virtualMachines -l $loc --output table # faster in CloudShell
+az vm list-skus --location eastus2 --size Standard_D4pds_v6 --query "[0].capabilities" --output table
+
 az vmss create -g $rg -n myvmss --image Ubuntu2404 --admin-username azureuser --vm-sku $vmsize
 az vmss show -g $rg -n myvmss --query sku.name -otsv
 ```

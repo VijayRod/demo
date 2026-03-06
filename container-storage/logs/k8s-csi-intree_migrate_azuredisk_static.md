@@ -289,6 +289,26 @@ releasenote:
   text: Turn on CSIMigrationAzureDisk by default on 1.23
 
 ```
+# in-tree + csi
+
+k get sc
+NAME                      PROVISIONER                RECLAIMPOLICY   VOLUMEBINDINGMODE      ALLOWVOLUMEEXPANSION   AGE
+default (default)         disk.csi.azure.com         Delete          WaitForFirstConsumer   true                   2y1d
+sc-02		         kubernetes.io/azure-file   Delete          Immediate              false                  3y2d
+sc-03	               kubernetes.io/azure-disk   Retain          Immediate              false                  4y2d
+
+Customer RCA: The cluster is using deprecated storage drivers that are no longer supported. Please have the customer remove or migrate these drivers, and let us know if the intermittent issue still occurs. If you want to use CSI (container storage) features, you need to perform the migration or removal of these drivers.
+
+https://learn.microsoft.com/en-us/azure/aks/csi-storage-drivers: Starting with Kubernetes version 1.26, in-tree persistent volume types kubernetes.io/azure-disk and kubernetes.io/azure-file are deprecated and will no longer be supported. In-tree drivers refer to the storage drivers that are part of the core Kubernetes code opposed to the CSI drivers, which are plug-ins.
+Removing these drivers following their deprecation isn't planned, however you should migrate to the corresponding CSI drivers disk.csi.azure.com and file.csi.azure.com. To review the migration options for your storage classes and upgrade your cluster to use Azure Disks and Azure Files CSI drivers, see Migrate from in-tree to CSI drivers.
+If you created in-tree driver storage classes, those storage classes continue to work since CSI migration is turned on after upgrading your cluster to 1.21.x. If you want to use CSI features, you need to perform the migration.
+
+https://learn.microsoft.com/en-us/azure/aks/csi-migrate-in-tree-volumes: The implementation of the Container Storage Interface (CSI) driver was introduced in Azure Kubernetes Service (AKS) starting with version 1.21. By adopting and using CSI as the standard, your existing stateful workloads using in-tree Persistent Volumes (PVs) should be migrated or upgraded to use the CSI driver.
+```
+- https://learn.microsoft.com/en-us/azure/aks/csi-migrate-in-tree-volumes
+- https://learn.microsoft.com/en-us/azure/aks/csi-storage-drivers
+
+```
 # mix
 Mixing in-tree with CSI could cause some unexpected issues.
 ```

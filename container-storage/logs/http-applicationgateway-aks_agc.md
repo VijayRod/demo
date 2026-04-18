@@ -1,5 +1,48 @@
 ## agc
 
+## agc.debug.install.latest
+
+```
+### Create AKS Cluster
+Reference:  
+https://learn.microsoft.com/en-us/azure/application-gateway/for-containers/quickstart-deploy-application-gateway-for-containers-alb-controller-addon
+
+az aks create -g rg2 -n aksagc \
+  --network-plugin azure --enable-oidc-issuer --enable-workload-identity --enable-gateway-api
+
+az aks get-credentials -g rg2 -n aksagc
+
+---
+
+### Issue: ALB flag not recognized
+
+az aks update -g rg2 -n aksagc  \
+  --enable-gateway-api --enable-application-load-balancer
+
+Error:
+unrecognized arguments: --enable-application-load-balancer
+
+Note: Not supported in current Azure CLI / API version.
+
+---
+
+### Alternative: Helm-based ALB Controller
+Reference:  
+https://learn.microsoft.com/en-us/azure/application-gateway/for-containers/quickstart-deploy-application-gateway-for-containers-alb-controller-helm
+
+AKS_NAME=aksagc  
+RESOURCE_GROUP=rg2  
+
+HELM_NAMESPACE=azure-alb-system-helm  
+kubectl create ns $HELM_NAMESPACE  
+
+---
+
+### Next Step: Create Application Gateway for Containers managed by ALB Controller:  
+https://learn.microsoft.com/en-us/azure/application-gateway/for-containers/quickstart-create-application-gateway-for-containers-managed-by-alb-controller
+```
+
+
 ## agc.debug.install.1of3.alb-controller
 
 ```

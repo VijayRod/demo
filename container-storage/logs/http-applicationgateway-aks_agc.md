@@ -7,16 +7,16 @@
 Reference:  
 https://learn.microsoft.com/en-us/azure/application-gateway/for-containers/quickstart-deploy-application-gateway-for-containers-alb-controller-addon
 
-az aks create -g rg2 -n aksagc \
+az aks create -g $rg -n $aks \
   --network-plugin azure --enable-oidc-issuer --enable-workload-identity --enable-gateway-api
 
-az aks get-credentials -g rg2 -n aksagc
+az aks get-credentials -g $rg -n $aks
 
 ---
 
 ### Issue: ALB flag not recognized
 
-az aks update -g rg2 -n aksagc  \
+az aks update -g $rg -n $aks  \
   --enable-gateway-api --enable-application-load-balancer
 
 Error:
@@ -30,8 +30,8 @@ Note: Not supported in current Azure CLI / API version.
 Reference:  
 https://learn.microsoft.com/en-us/azure/application-gateway/for-containers/quickstart-deploy-application-gateway-for-containers-alb-controller-helm
 
-AKS_NAME=aksagc  
-RESOURCE_GROUP=rg2  
+AKS_NAME=$aks  
+RESOURCE_GROUP=$rg  
 
 HELM_NAMESPACE=azure-alb-system-helm  
 kubectl create ns $HELM_NAMESPACE  

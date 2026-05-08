@@ -17,8 +17,14 @@ imageshack.azurecr.io/samples/ubuntu   latest    5a81c4b8502e   4 weeks ago   77
 
 ```
 # To login to ACR (Azure Container Registry)
-az acr login --name $registry
 
+REFRESH_TOKEN=$(az acr login -n $registry --expose-token --query refreshToken -o tsv); # echo $REFRESH_TOKEN
+echo $REFRESH_TOKEN | docker login imageshack.azurecr.io -u 00000000-0000-0000-0000-000000000000 --password-stdin # Login Succeeded!
+
+# az acr login --name $registry
+```
+
+```
 # To upload an image to a registry 
 docker push $registry.azurecr.io/samples/ubuntu
 Using default tag: latest

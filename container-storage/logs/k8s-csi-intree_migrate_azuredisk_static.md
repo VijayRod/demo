@@ -222,6 +222,15 @@ Source:
     ReadOnly:     false
 ```
 
+```
+# sc with in-tree "azureFile:". This does not confirm whether a pod is actually using it.
+
+NAME                          PROVISIONER              RECLAIMPOLICY   VOLUMEBINDINGMODE     ALLOWVOLUMEEXPANSION   AGE
+azurefile-premium             file.csi.azure.com       Delete          Immediate             true                   3y320d
+default (default)             disk.csi.azure.com       Delete          WaitForFirstConsumer  true                   3y319d
+custom-sc-01                  kubernetes.io/azure-file Delete          Immediate             false                  5y22d
+```
+
 - https://github.com/kubernetes/design-proposals-archive/blob/main/storage/csi-migration.md: An overall feature flag: CSIMigration is enabled for the Kubernetes Controller Manager and Kubelet.
   - CSIMigration feature flag is enabled for Kubernetes Controller Manager and the Kubelet where the pod with references to volumes got scheduled
 - https://github.com/kubernetes/enhancements/blob/master/keps/sig-storage/625-csi-migration/README.md: In-tree Storage Plugin to CSI Migration Design Doc

@@ -1,7 +1,9 @@
 ```
 .\git_generate_bootstrap.ps1 # generate script to clone/update nested repos in C:\git
+
+Select-String -Path C:\git\git_clone_repos.ps1 -Pattern "FAILED" # run git_clone_repos.ps1 to retry failed or missing repos
+
 .\git_clone_repos.ps1 # rerun anytime to update or clone listed repos as needed
-Select-String -Path C:\git\git_clone_repos.ps1 -Pattern "FAILED"
 ```
 
 ```

@@ -1,5 +1,5 @@
 ```
-./git_pull_repos.ps1 # syncs nested repos in C:\git
+.\git_pull_repos.ps1 # syncs nested repos in C:\git
 ```
 ```
 Get-ChildItem C:\git -Recurse -Directory |
